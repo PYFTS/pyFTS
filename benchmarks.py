@@ -1,3 +1,11 @@
+import numpy as np
+import pandas as pd
+#import matplotlib as plt
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+from pyFTS import *
+
 # Erro quadrático médio
 def rmse(predictions,targets):
     return np.sqrt(np.mean((predictions-targets)**2))

@@ -1,4 +1,6 @@
-class FirstOrderFLRG:
+from pyFTS import *
+
+class ConventionalFLRG:
 	def __init__(self,premiss):
 		self.premiss = premiss
 		self.consequent = set()
@@ -16,9 +18,9 @@ class FirstOrderFLRG:
 		return tmp + tmp2
 
 
-class FirstOrderFTS(FTS):
+class ConventionalFTS(fts.FTS):
 	def __init__(self,name):
-		super(FirstOrderFTS, self).__init__(1,name)
+		super(ConventionalFTS, self).__init__(1,name)
         
 	def defuzzy(self,data):
         
@@ -52,7 +54,7 @@ class FirstOrderFTS(FTS):
 			
 			if count > self.order:
 				if last["fuzzyset"] not in self.flrgs:
-					self.flrgs[last["fuzzyset"]] = FirstOrderFLRG(last["fuzzyset"])
+					self.flrgs[last["fuzzyset"]] = ConventionalFLRG(last["fuzzyset"])
 			
 				self.flrgs[last["fuzzyset"]].append(actual["fuzzyset"])    
 			count = count + 1
