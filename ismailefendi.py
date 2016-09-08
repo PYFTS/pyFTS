@@ -1,3 +1,5 @@
+from pyFTS import *
+
 class ImprovedWeightedFLRG:
 	def __init__(self,premiss):
 		self.premiss = premiss
@@ -24,7 +26,7 @@ class ImprovedWeightedFLRG:
 		return tmp + tmp2
 		
 
-class ImprovedWeightedFTS(FTS):
+class ImprovedWeightedFTS(fts.FTS):
 	def __init__(self,name):
 		super(ImprovedWeightedFTS, self).__init__(1,name)
         

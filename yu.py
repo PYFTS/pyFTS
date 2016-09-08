@@ -1,4 +1,6 @@
-class WeightedFLRG(FTS):
+from pyFTS import *
+
+class WeightedFLRG(fts.FTS):
 	def __init__(self,premiss):
 		self.premiss = premiss
 		self.consequent = []
@@ -25,7 +27,7 @@ class WeightedFLRG(FTS):
 		return tmp + tmp2
 		
 
-class WeightedFTS(FTS):
+class WeightedFTS(fts.FTS):
 	def __init__(self,name):
 		super(WeightedFTS, self).__init__(1,name)
         

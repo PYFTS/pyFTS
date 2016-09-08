@@ -1,3 +1,5 @@
+from pyFTS import *
+
 class ExponentialyWeightedFLRG:
 	def __init__(self,premiss,c):
 		self.premiss = premiss
@@ -27,7 +29,7 @@ class ExponentialyWeightedFLRG:
 			cc = cc + 1
 		return tmp + tmp2
 		
-class ExponentialyWeightedFTS(FTS):
+class ExponentialyWeightedFTS(fts.FTS):
 	def __init__(self,name):
 		super(ExponentialyWeightedFTS, self).__init__(1,name)
         

@@ -1,10 +1,15 @@
 import numpy as np
 import pandas as pd
-#import matplotlib as plt
+import matplotlib as plt
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from pyFTS import *
+from pyFTS import common
+
+def Teste(par):
+	x = np.arange(1,par)
+	y = [ yy**yy for yyy in x]
+	plt.plot(x,y)
 
 # Erro quadrático médio
 def rmse(predictions,targets):
@@ -119,7 +124,7 @@ def SelecaoKFold_MenorRMSE(original,parameters,modelo):
 	min_rmse_fold = 100000.0
 	bestd = None
 	fc = 0
-	diff = diferencas(original)       
+	diff = common.differential(original)       
 	kf = KFold(len(original), n_folds=nfolds)
 	for train_ix, test_ix in kf:
 		train = diff[train_ix]
@@ -180,7 +185,7 @@ def SelecaoSimples_MenorRMSE(original,parameters,modelo):
 	min_rmse = 100000.0
 	best = None
 	for p in parameters:
-		sets = GridPartitionerTrimf(original,p)
+		sets = common.GridPartitionerTrimf(original,p)
 		fts = modelo(str(p)+ " particoes")
 		fts.learn(original,sets)
 		predicted = [fts.predict(xx) for xx in original]
@@ -216,9 +221,9 @@ def SelecaoSimples_MenorRMSE(original,parameters,modelo):
 	min_rmse = 100000.0
 	bestd = None
 	for p in parameters:
-		sets = GridPartitionerTrimf(diferencas(original),p)
+		sets = common.GridPartitionerTrimf(common.differential(original),p)
 		fts = modelo(str(p)+ " particoes")
-		fts.learn(diferencas(original),sets)
+		fts.learn(common.differential(original),sets)
 		predicted = [fts.predictDiff(original, xx) for xx in range(1,len(original))]
 		predicted.insert(0,original[0])
 		ax2.plot(predicted,label=fts.name)
@@ -367,7 +372,7 @@ def HOSelecaoSimples_MenorRMSE(original,parameters,orders):
 	for p in parameters:
 		oc = 0
 		for o in orders:
-			sets = GridPartitionerTrimf(diferencas(original),p)
+			sets = common.GridPartitionerTrimf(common.differential(original),p)
 			fts = HighOrderFTS(o,"k = " + str(p)+ " w = " + str(o))
 			fts.learn(original,sets)
 			predicted = [fts.predictDiff(original, xx) for xx in range(o,len(original))]

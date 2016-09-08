@@ -1,4 +1,6 @@
-class HighOrderFTS(FTS):
+from pyFTS import *
+
+class HighOrderFTS(fts.FTS):
 	def __init__(self,order,name):
 		super(HighOrderFTS, self).__init__(order,name)
         

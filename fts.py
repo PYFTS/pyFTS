@@ -1,3 +1,5 @@
+from pyFTS import *
+
 class FTS:
 	def __init__(self,order,name):
 		self.sets = {}
