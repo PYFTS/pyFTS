@@ -1,3 +1,4 @@
+import numpy as np
 from pyFTS import *
 
 class ConventionalFLRG:
@@ -21,15 +22,18 @@ class ConventionalFLRG:
 class ConventionalFTS(fts.FTS):
 	def __init__(self,name):
 		super(ConventionalFTS, self).__init__(1,name)
+		self.flrgs = {}
         
 	def forecast(self,data):
+		
+		mv = common.fuzzyInstance(data, self.sets)
+		
+		actual = self.sets[ np.argwhere( mv == max(mv) )[0,0] ]
         
-		actual = self.fuzzy(data)
-        
-		if actual["fuzzyset"] not in self.flrgs:
-			return self.sets[actual["fuzzyset"]].centroid
+		if actual.name not in self.flrgs:
+			return actual.centroid
 
-		flrg = self.flrgs[actual["fuzzyset"]]
+		flrg = self.flrgs[actual.name]
 
 		count = 0.0
 		denom = 0.0
@@ -39,24 +43,20 @@ class ConventionalFTS(fts.FTS):
 			count = count + 1.0
 
 		return denom/count
-        
+		
+	def generateFLRG(self, flrs):
+		flrgs = {}
+		for flr in flrs:
+			if flr.LHS in flrgs:
+				flrgs[flr.LHS].append(flr.RHS)
+			else:
+				flrgs[flr.LHS] = ConventionalFLRG(flr.LHS);
+				flrgs[flr.LHS].append(flr.RHS)
+		return (flrgs)
+
 	def train(self, data, sets):
-		last = {"fuzzyset":"", "membership":0.0}
-		actual = {"fuzzyset":"", "membership":0.0}
-		
-		for s in sets:
-			self.sets[s.name] = s
-		
-		self.flrgs = {}
-		count = 1
-		for inst in data:
-			actual = self.fuzzy(inst)
-			
-			if count > self.order:
-				if last["fuzzyset"] not in self.flrgs:
-					self.flrgs[last["fuzzyset"]] = ConventionalFLRG(last["fuzzyset"])
-			
-				self.flrgs[last["fuzzyset"]].append(actual["fuzzyset"])    
-			count = count + 1
-			last = actual
-        
+		self.sets = sets
+		tmpdata = common.fuzzySeries(data,sets)
+		flrs = common.generateNonRecurrentFLRs(tmpdata)
+		self.flrgs = self.generateFLRG(flrs)
+		 

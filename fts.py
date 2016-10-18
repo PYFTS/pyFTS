@@ -24,12 +24,6 @@ class FTS:
 	def train(self, data, sets):
 		pass  
 
-	def predict(self,data):
-		return self.forecast(data)
-
-	def predictDiff(self,data,t):
-		return data[t] + self.forecast(data[t-1]-data[t])
-
 	def __str__(self):
 		tmp = self.name + ":\n"
 		for r in self.flrgs.keys():

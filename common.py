@@ -42,12 +42,13 @@ def sigmf(x,parameters):
 
 
 class FuzzySet:
-
 	def __init__(self,name,mf,parameters,centroid):
 		self.name = name
 		self.mf = mf
 		self.parameters = parameters
 		self.centroid = centroid
+		self.lower = min(parameters)
+		self.upper = max(parameters)
         
 	def membership(self,x):
 		return self.mf(x,self.parameters)
@@ -55,16 +56,37 @@ class FuzzySet:
 	def __str__(self):
 		return self.name + ": " + str(self.mf) + "(" + str(self.parameters) + ")"
     
+class FLR:
+	def __init__(self,LHS,RHS):
+		self.LHS = LHS
+		self.RHS = RHS
+	
+	def __str__(self):
+		return str(self.LHS) + " -> " + str(self.RHS)
     
-def GridPartitionerTrimf(data,npart,names = None,prefix = "A"):
-	sets = []
-	dmax = max(data)
-	dmin = min(data)
-	dlen = dmax - dmin
-	partlen = dlen / npart
-	partition = dmin
-	for c in range(npart):
-		sets.append( FuzzySet(prefix+str(c),trimf,[partition-partlen, partition, partition+partlen], partition ) )
-		partition = partition + partlen
-		
-	return sets
+def fuzzyInstance(inst, fuzzySets):
+    mv = np.array([ fs.membership(inst) for fs in fuzzySets])
+    return mv
+
+
+def fuzzySeries(data,fuzzySets):
+	fts = []
+	for item in data:
+		mv = fuzzyInstance(item,fuzzySets)
+		fts.append(fuzzySets[  np.argwhere(mv == max(mv) )[0,0] ])
+	return fts
+
+
+def generateNonRecurrentFLRs(fuzzyData):
+	flrs = {}
+	for i in range(2,len(fuzzyData)):
+		tmp = FLR(fuzzyData[i-1],fuzzyData[i])
+		flrs[str(tmp)] = tmp
+	ret = [value for key, value in flrs.items()]
+	return ret
+
+def generateRecurrentFLRs(fuzzyData):
+	flrs = []
+	for i in range(2,len(fuzzyData)):
+		flrs[i-1] = FLR(fuzzyData[i-1],fuzzyData[i])
+	return flrs
