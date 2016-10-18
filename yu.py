@@ -32,7 +32,7 @@ class WeightedFTS(fts.FTS):
 	def __init__(self,name):
 		super(WeightedFTS, self).__init__(1,name)
         
-	def defuzzy(self,data):
+	def forecast(self,data):
         
 		actual = self.fuzzy(data)
         
@@ -45,7 +45,7 @@ class WeightedFTS(fts.FTS):
         
 		return mi.dot( flrg.weights() )
         
-	def learn(self, data, sets):
+	def train(self, data, sets):
 		last = {"fuzzyset":"", "membership":0.0}
 		actual = {"fuzzyset":"", "membership":0.0}
 		

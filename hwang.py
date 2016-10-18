@@ -5,7 +5,7 @@ class HighOrderFTS(fts.FTS):
 	def __init__(self,order,name):
 		super(HighOrderFTS, self).__init__(order,name)
         
-	def defuzzy(self,data,t):
+	def forecast(self,data,t):
 		cn = np.array([0.0 for k in range(len(self.sets))])
 		ow = np.array([[0.0 for k in range(len(self.sets))] for z in range(self.order-1)])
 		rn = np.array([[0.0 for k in range(len(self.sets))] for z in range(self.order-1)])
@@ -27,11 +27,11 @@ class HighOrderFTS(fts.FTS):
 		return out / count
 
 
-	def learn(self, data, sets):
+	def train(self, data, sets):
 		self.sets = sets
     
 	def predict(self,data,t):
-		return self.defuzzy(data,t)
+		return self.forecast(data,t)
 
 	def predictDiff(self,data,t):
-		return data[t] + self.defuzzy(common.differential(data),t)
+		return data[t] + self.forecast(common.differential(data),t)

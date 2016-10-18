@@ -21,9 +21,9 @@ class SeasonalFLRG(fts.FTS):
 
 class SeasonalFTS(fts.FTS):
 	def __init__(self,name):
-		super(WeightedFTS, self).__init__(1,name)
+		super(SeasonalFTS, self).__init__(1,name)
         
-	def defuzzy(self,data):
+	def forecast(self,data):
         
 		actual = self.fuzzy(data)
         
@@ -36,7 +36,7 @@ class SeasonalFTS(fts.FTS):
         
 		return mi.dot( flrg.weights() )
         
-	def learn(self, data, sets):
+	def train(self, data, sets):
 		last = {"fuzzyset":"", "membership":0.0}
 		actual = {"fuzzyset":"", "membership":0.0}
 		
@@ -50,7 +50,7 @@ class SeasonalFTS(fts.FTS):
 			
 			if count > self.order:
 				if last["fuzzyset"] not in self.flrgs:
-					self.flrgs[last["fuzzyset"]] = WeightedFLRG(last["fuzzyset"])
+					self.flrgs[last["fuzzyset"]] = SeasonalFLRG(last["fuzzyset"])
 			
 				self.flrgs[last["fuzzyset"]].append(actual["fuzzyset"])    
 			count = count + 1

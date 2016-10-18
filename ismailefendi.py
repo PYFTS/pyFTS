@@ -31,7 +31,7 @@ class ImprovedWeightedFTS(fts.FTS):
 	def __init__(self,name):
 		super(ImprovedWeightedFTS, self).__init__(1,name)
         
-	def defuzzy(self,data):
+	def forecast(self,data):
 		actual = self.fuzzy(data)
 		if actual["fuzzyset"] not in self.flrgs:
 			return self.sets[actual["fuzzyset"]].centroid
@@ -39,7 +39,7 @@ class ImprovedWeightedFTS(fts.FTS):
 		mi = np.array([self.sets[s].centroid for s in flrg.RHS.keys()])
 		return mi.dot( flrg.weights() )
         
-	def learn(self, data, sets):
+	def train(self, data, sets):
 		last = {"fuzzyset":"", "membership":0.0}
 		actual = {"fuzzyset":"", "membership":0.0}
 		

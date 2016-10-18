@@ -22,7 +22,7 @@ class ConventionalFTS(fts.FTS):
 	def __init__(self,name):
 		super(ConventionalFTS, self).__init__(1,name)
         
-	def defuzzy(self,data):
+	def forecast(self,data):
         
 		actual = self.fuzzy(data)
         
@@ -40,7 +40,7 @@ class ConventionalFTS(fts.FTS):
 
 		return denom/count
         
-	def learn(self, data, sets):
+	def train(self, data, sets):
 		last = {"fuzzyset":"", "membership":0.0}
 		actual = {"fuzzyset":"", "membership":0.0}
 		
