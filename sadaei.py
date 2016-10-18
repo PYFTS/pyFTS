@@ -1,14 +1,15 @@
+import numpy as np
 from pyFTS import *
 
 class ExponentialyWeightedFLRG:
-	def __init__(self,premiss,c):
-		self.premiss = premiss
-		self.consequent = []
+	def __init__(self,LHS,c):
+		self.LHS = LHS
+		self.RHS = []
 		self.count = 0.0
 		self.c = c
 
 	def append(self,c):
-		self.consequent.append(c)
+		self.RHS.append(c)
 		self.count = self.count + 1.0
 
 	def weights(self):
@@ -17,12 +18,12 @@ class ExponentialyWeightedFLRG:
 		return np.array([ k/tot for k in wei ])
         
 	def __str__(self):
-		tmp = self.premiss + " -> "
+		tmp = self.LHS + " -> "
 		tmp2 = ""
 		cc = 0
 		wei = [ self.c**k for k in np.arange(0.0,self.count,1.0)]
 		tot = sum( wei )
-		for c in self.consequent:
+		for c in self.RHS:
 			if len(tmp2) > 0:
 				tmp2 = tmp2 + ","
 			tmp2 = tmp2 + c + "(" + str(wei[cc]/tot) + ")"
@@ -42,7 +43,7 @@ class ExponentialyWeightedFTS(fts.FTS):
 
 		flrg = self.flrgs[actual["fuzzyset"]]
 
-		mi = np.array([self.sets[s].centroid for s in flrg.consequent])
+		mi = np.array([self.sets[s].centroid for s in flrg.RHS])
         
 		return mi.dot( flrg.weights() )
         

@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib as plt
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from sklearn.cross_validation import KFold
 
 from pyFTS import common
 
@@ -76,7 +77,7 @@ def SelecaoKFold_MenorRMSE(original,parameters,modelo):
 		errors_fold = []
 		pc = 0 #Parameter count
 		for p in parameters:
-			sets = GridPartitionerTrimf(train,p)
+			sets = common.GridPartitionerTrimf(train,p)
 			fts = modelo(str(p)+ " particoes")
 			fts.learn(train,sets)
 			predicted = [fts.predict(xx) for xx in test]
@@ -306,6 +307,8 @@ def compareModelsTable(original,models_fo,models_ho):
         
     return sup + header + body + "\\end{tabular}"
 
+from pyFTS import hwang
+
 def HOSelecaoSimples_MenorRMSE(original,parameters,orders):
 	ret = []
 	errors = np.array([[0 for k in range(len(parameters))] for kk in range(len(orders))])
@@ -326,8 +329,8 @@ def HOSelecaoSimples_MenorRMSE(original,parameters,orders):
 	for p in parameters:
 		oc = 0
 		for o in orders:
-			sets = GridPartitionerTrimf(original,p)
-			fts = HighOrderFTS(o,"k = " + str(p)+ " w = " + str(o))
+			sets = common.GridPartitionerTrimf(original,p)
+			fts = hwang.HighOrderFTS(o,"k = " + str(p)+ " w = " + str(o))
 			fts.learn(original,sets)
 			predicted = [fts.predict(original, xx) for xx in range(o,len(original))]
 			error = rmse(np.array(predicted),np.array(original[o:]))
@@ -373,7 +376,7 @@ def HOSelecaoSimples_MenorRMSE(original,parameters,orders):
 		oc = 0
 		for o in orders:
 			sets = common.GridPartitionerTrimf(common.differential(original),p)
-			fts = HighOrderFTS(o,"k = " + str(p)+ " w = " + str(o))
+			fts = hwang.HighOrderFTS(o,"k = " + str(p)+ " w = " + str(o))
 			fts.learn(original,sets)
 			predicted = [fts.predictDiff(original, xx) for xx in range(o,len(original))]
 			error = rmse(np.array(predicted),np.array(original[o:]))

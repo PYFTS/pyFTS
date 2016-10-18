@@ -1,17 +1,17 @@
 from pyFTS import *
 
 class ConventionalFLRG:
-	def __init__(self,premiss):
-		self.premiss = premiss
-		self.consequent = set()
+	def __init__(self,LHS):
+		self.LHS = LHS
+		self.RHS = set()
 	
 	def append(self,c):
-		self.consequent.add(c)
+		self.RHS.add(c)
 
 	def __str__(self):
-		tmp = self.premiss + " -> "
+		tmp = self.LHS + " -> "
 		tmp2 = ""
-		for c in self.consequent:
+		for c in self.RHS:
 			if len(tmp2) > 0:
 				tmp2 = tmp2 + ","
 			tmp2 = tmp2 + c
@@ -34,7 +34,7 @@ class ConventionalFTS(fts.FTS):
 		count = 0.0
 		denom = 0.0
 
-		for s in flrg.consequent:
+		for s in flrg.RHS:
 			denom = denom + self.sets[s].centroid
 			count = count + 1.0
 

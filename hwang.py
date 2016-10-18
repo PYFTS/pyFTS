@@ -1,3 +1,4 @@
+import numpy as np
 from pyFTS import *
 
 class HighOrderFTS(fts.FTS):
@@ -33,4 +34,4 @@ class HighOrderFTS(fts.FTS):
 		return self.defuzzy(data,t)
 
 	def predictDiff(self,data,t):
-		return data[t] + self.defuzzy(diferencas(data),t)
+		return data[t] + self.defuzzy(common.differential(data),t)

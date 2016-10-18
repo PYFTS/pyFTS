@@ -1,13 +1,14 @@
+import numpy as np
 from pyFTS import *
 
 class WeightedFLRG(fts.FTS):
-	def __init__(self,premiss):
-		self.premiss = premiss
-		self.consequent = []
+	def __init__(self,LHS):
+		self.LHS = LHS
+		self.RHS = []
 		self.count = 1.0
 
 	def append(self,c):
-		self.consequent.append(c)
+		self.RHS.append(c)
 		self.count = self.count + 1.0
 
 	def weights(self):
@@ -15,11 +16,11 @@ class WeightedFLRG(fts.FTS):
 		return np.array([ k/tot for k in np.arange(1.0,self.count,1.0) ])
         
 	def __str__(self):
-		tmp = self.premiss + " -> "
+		tmp = self.LHS + " -> "
 		tmp2 = ""
 		cc = 1.0
 		tot = sum( np.arange(1.0,self.count,1.0) )
-		for c in self.consequent:
+		for c in self.RHS:
 			if len(tmp2) > 0:
 				tmp2 = tmp2 + ","
 			tmp2 = tmp2 + c + "(" + str(round(cc/tot,3)) + ")"
@@ -40,7 +41,7 @@ class WeightedFTS(fts.FTS):
 
 		flrg = self.flrgs[actual["fuzzyset"]]
 
-		mi = np.array([self.sets[s].centroid for s in flrg.consequent])
+		mi = np.array([self.sets[s].centroid for s in flrg.RHS])
         
 		return mi.dot( flrg.weights() )
         
