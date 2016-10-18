@@ -33,36 +33,36 @@ class ExponentialyWeightedFLRG:
 class ExponentialyWeightedFTS(fts.FTS):
 	def __init__(self,name):
 		super(ExponentialyWeightedFTS, self).__init__(1,name)
+		this.c = 1
+		
+	def generateFLRG(self, flrs, c):
+		flrgs = {}
+		for flr in flrs:
+			if flr.LHS in flrgs:
+				flrgs[flr.LHS].append(flr.RHS)
+			else:
+				flrgs[flr.LHS] = ExponentialyWeightedFLRG(flr.LHS, c);
+				flrgs[flr.LHS].append(flr.RHS)
+		return (flrgs)
+
+	def train(self, data, sets, c):
+		this.c = c
+		self.sets = sets
+		tmpdata = common.fuzzySeries(data,sets)
+		flrs = common.generateRecurrentFLRs(tmpdata)
+		self.flrgs = self.generateFLRG(flrs,c)
         
 	def forecast(self,data):
+        mv = common.fuzzyInstance(data, self.sets)
+		
+		actual = self.sets[ np.argwhere( mv == max(mv) )[0,0] ]
         
-		actual = self.fuzzy(data)
-        
-		if actual["fuzzyset"] not in self.flrgs:
-			return self.sets[actual["fuzzyset"]].centroid
+		if actual.name not in self.flrgs:
+			return actual.centroid
 
-		flrg = self.flrgs[actual["fuzzyset"]]
+		flrg = self.flrgs[actual.name]
 
 		mi = np.array([self.sets[s].centroid for s in flrg.RHS])
         
 		return mi.dot( flrg.weights() )
         
-	def train(self, data, sets):
-		last = {"fuzzyset":"", "membership":0.0}
-		actual = {"fuzzyset":"", "membership":0.0}
-		
-		for s in sets:
-			self.sets[s.name] = s
-		
-		self.flrgs = {}
-		count = 1
-		for inst in data:
-			actual = self.fuzzy(inst)
-			
-			if count > self.order:
-				if last["fuzzyset"] not in self.flrgs:
-					self.flrgs[last["fuzzyset"]] = ExponentialyWeightedFLRG(last["fuzzyset"],2)
-			
-				self.flrgs[last["fuzzyset"]].append(actual["fuzzyset"])    
-			count = count + 1
-			last = actual
