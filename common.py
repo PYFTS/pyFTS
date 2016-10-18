@@ -87,6 +87,6 @@ def generateNonRecurrentFLRs(fuzzyData):
 
 def generateRecurrentFLRs(fuzzyData):
 	flrs = []
-	for i in range(2,len(fuzzyData)):
-		flrs[i-1] = FLR(fuzzyData[i-1],fuzzyData[i])
+	for i in np.arange(1,len(fuzzyData)):
+		flrs.append(FLR(fuzzyData[i-1],fuzzyData[i]))
 	return flrs

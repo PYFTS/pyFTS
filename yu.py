@@ -31,36 +31,35 @@ class WeightedFLRG(fts.FTS):
 class WeightedFTS(fts.FTS):
 	def __init__(self,name):
 		super(WeightedFTS, self).__init__(1,name)
+		
+	def generateFLRG(self, flrs):
+		flrgs = {}
+		for flr in flrs:
+			if flr.LHS in flrgs:
+				flrgs[flr.LHS].append(flr.RHS)
+			else:
+				flrgs[flr.LHS] = WeightedFLRG(flr.LHS);
+				flrgs[flr.LHS].append(flr.RHS)
+		return (flrgs)
+
+	def train(self, data, sets):
+		self.sets = sets
+		tmpdata = common.fuzzySeries(data,sets)
+		flrs = common.generateRecurrentFLRs(tmpdata)
+		self.flrgs = self.generateFLRG(flrs)
         
 	def forecast(self,data):
         
-		actual = self.fuzzy(data)
+		mv = common.fuzzyInstance(data, self.sets)
+		
+		actual = self.sets[ np.argwhere( mv == max(mv) )[0,0] ]
         
-		if actual["fuzzyset"] not in self.flrgs:
-			return self.sets[actual["fuzzyset"]].centroid
+		if actual.name not in self.flrgs:
+			return actual.centroid
 
-		flrg = self.flrgs[actual["fuzzyset"]]
+		flrg = self.flrgs[actual.name]
 
 		mi = np.array([self.sets[s].centroid for s in flrg.RHS])
         
 		return mi.dot( flrg.weights() )
         
-	def train(self, data, sets):
-		last = {"fuzzyset":"", "membership":0.0}
-		actual = {"fuzzyset":"", "membership":0.0}
-		
-		for s in sets:
-			self.sets[s.name] = s
-		
-		self.flrgs = {}
-		count = 1
-		for inst in data:
-			actual = self.fuzzy(inst)
-			
-			if count > self.order:
-				if last["fuzzyset"] not in self.flrgs:
-					self.flrgs[last["fuzzyset"]] = WeightedFLRG(last["fuzzyset"])
-			
-				self.flrgs[last["fuzzyset"]].append(actual["fuzzyset"])    
-			count = count + 1
-			last = actual

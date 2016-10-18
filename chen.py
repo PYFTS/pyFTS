@@ -23,6 +23,22 @@ class ConventionalFTS(fts.FTS):
 	def __init__(self,name):
 		super(ConventionalFTS, self).__init__(1,name)
 		self.flrgs = {}
+    
+    def generateFLRG(self, flrs):
+		flrgs = {}
+		for flr in flrs:
+			if flr.LHS in flrgs:
+				flrgs[flr.LHS].append(flr.RHS)
+			else:
+				flrgs[flr.LHS] = ConventionalFLRG(flr.LHS);
+				flrgs[flr.LHS].append(flr.RHS)
+		return (flrgs)
+
+	def train(self, data, sets):
+		self.sets = sets
+		tmpdata = common.fuzzySeries(data,sets)
+		flrs = common.generateNonRecurrentFLRs(tmpdata)
+		self.flrgs = self.generateFLRG(flrs)
         
 	def forecast(self,data):
 		
@@ -44,19 +60,5 @@ class ConventionalFTS(fts.FTS):
 
 		return denom/count
 		
-	def generateFLRG(self, flrs):
-		flrgs = {}
-		for flr in flrs:
-			if flr.LHS in flrgs:
-				flrgs[flr.LHS].append(flr.RHS)
-			else:
-				flrgs[flr.LHS] = ConventionalFLRG(flr.LHS);
-				flrgs[flr.LHS].append(flr.RHS)
-		return (flrgs)
-
-	def train(self, data, sets):
-		self.sets = sets
-		tmpdata = common.fuzzySeries(data,sets)
-		flrs = common.generateNonRecurrentFLRs(tmpdata)
-		self.flrgs = self.generateFLRG(flrs)
+	
 		 
