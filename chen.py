@@ -42,8 +42,6 @@ class ConventionalFTS(fts.FTS):
 		
 	def forecast(self,data):
 		
-		l = 1
-		
 		ndata = np.array(data)
 		
 		l = len(ndata)

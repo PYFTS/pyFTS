@@ -10,48 +10,56 @@ class SeasonalFLRG(fts.FTS):
 		self.RHS.append(c)
 
 	def __str__(self):
-		tmp = self.LHS + " -> "
+		tmp = str(self.LHS) + " -> "
 		tmp2 = ""
-		for c in self.RHS:
+		for c in sorted(self.RHS, key=lambda s: s.name):
 			if len(tmp2) > 0:
 				tmp2 = tmp2 + ","
-			tmp2 = tmp2 + c 
+			tmp2 = tmp2 + c.name 
 		return tmp + tmp2
 		
 
 class SeasonalFTS(fts.FTS):
 	def __init__(self,name):
 		super(SeasonalFTS, self).__init__(1,name)
+		self.seasonality = 1
+        
+        
+	def generateFLRG(self, flrs):
+		flrgs = []
+		season = 1
+		for flr in flrs:
+			if len(flrgs) < self.seasonality:
+				flrgs.append(SeasonalFLRG(season))
+			
+			flrgs[season].append(flr.RHS)
+			
+			season = (season + 1) % (self.seasonality + 1)
+			
+			if season == 0: season = 1
+			
+		return (flrgs)
+		
+	def train(self, data, sets, seasonality):
+		self.sets = sets
+		self.seasonality = seasonality
+		tmpdata = common.fuzzySeries(data,sets)
+		flrs = common.generateRecurrentFLRs(tmpdata)
+		self.flrgs = self.generateFLRG(flrs)
         
 	def forecast(self,data):
-        
-		actual = self.fuzzy(data)
-        
-		if actual["fuzzyset"] not in self.flrgs:
-			return self.sets[actual["fuzzyset"]].centroid
-
-		flrg = self.flrgs[actual["fuzzyset"]]
-
-		mi = np.array([self.sets[s].centroid for s in flrg.RHS])
-        
-		return mi.dot( flrg.weights() )
-        
-	def train(self, data, sets):
-		last = {"fuzzyset":"", "membership":0.0}
-		actual = {"fuzzyset":"", "membership":0.0}
 		
-		for s in sets:
-			self.sets[s.name] = s
+		ndata = np.array(data)
 		
-		self.flrgs = {}
-		count = 1
-		for inst in data:
-			actual = self.fuzzy(inst)
+		l = len(ndata)
+		
+		ret = []
+		
+		for k in np.arange(1,l):
+			flrg = self.flrgs[ data[k] ]
 			
-			if count > self.order:
-				if last["fuzzyset"] not in self.flrgs:
-					self.flrgs[last["fuzzyset"]] = SeasonalFLRG(last["fuzzyset"])
+			mp = self.getMidpoints(flrg)
+				
+			ret.append(sum(mp)/len(mp))
 			
-				self.flrgs[last["fuzzyset"]].append(actual["fuzzyset"])    
-			count = count + 1
-			last = actual
+		return ret
