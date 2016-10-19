@@ -53,16 +53,27 @@ class ExponentialyWeightedFTS(fts.FTS):
 		self.flrgs = self.generateFLRG(flrs,c)
         
 	def forecast(self,data):
-        mv = common.fuzzyInstance(data, self.sets)
+       l = 1
 		
-		actual = self.sets[ np.argwhere( mv == max(mv) )[0,0] ]
+		ndata = np.array(data)
+		
+		l = len(ndata)
+		
+		ret = []
+		
+		for k in np.arange(1,l):
+			
+			mv = common.fuzzyInstance(ndata[k], self.sets)
+		
+			actual = self.sets[ np.argwhere( mv == max(mv) )[0,0] ]
         
-		if actual.name not in self.flrgs:
-			return actual.centroid
-
-		flrg = self.flrgs[actual.name]
-
-		mi = np.array([self.sets[s].centroid for s in flrg.RHS])
-        
-		return mi.dot( flrg.weights() )
+			if actual.name not in self.flrgs:
+				ret.append(actual.centroid)
+			else:
+				flrg = self.flrgs[actual.name]
+				mp = self.getMidpoints(flrg)
+				
+				ret.append( mi.dot( flrg.weights() ))
+			
+		return ret
         

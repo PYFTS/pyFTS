@@ -35,11 +35,11 @@ class WeightedFTS(fts.FTS):
 	def generateFLRG(self, flrs):
 		flrgs = {}
 		for flr in flrs:
-			if flr.LHS in flrgs:
-				flrgs[flr.LHS].append(flr.RHS)
+			if flr.LHS.name in flrgs:
+				flrgs[flr.LHS.name].append(flr.RHS)
 			else:
-				flrgs[flr.LHS] = WeightedFLRG(flr.LHS);
-				flrgs[flr.LHS].append(flr.RHS)
+				flrgs[flr.LHS.name] = WeightedFLRG(flr.LHS);
+				flrgs[flr.LHS.name].append(flr.RHS)
 		return (flrgs)
 
 	def train(self, data, sets):
@@ -49,17 +49,26 @@ class WeightedFTS(fts.FTS):
 		self.flrgs = self.generateFLRG(flrs)
         
 	def forecast(self,data):
-        
-		mv = common.fuzzyInstance(data, self.sets)
+        l = 1
 		
-		actual = self.sets[ np.argwhere( mv == max(mv) )[0,0] ]
+		ndata = np.array(data)
+		
+		l = len(ndata)
+		
+		ret = []
+		
+		for k in np.arange(1,l):
+			
+			mv = common.fuzzyInstance(ndata[k], self.sets)
+		
+			actual = self.sets[ np.argwhere( mv == max(mv) )[0,0] ]
         
-		if actual.name not in self.flrgs:
-			return actual.centroid
-
-		flrg = self.flrgs[actual.name]
-
-		mi = np.array([self.sets[s].centroid for s in flrg.RHS])
-        
-		return mi.dot( flrg.weights() )
-        
+			if actual.name not in self.flrgs:
+				ret.append(actual.centroid)
+			else:
+				flrg = self.flrgs[actual.name]
+				mp = self.getMidpoints(flrg)
+				
+				ret.append( mi.dot( flrg.weights() ))
+			
+		return ret

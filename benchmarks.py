@@ -189,7 +189,10 @@ def SelecaoSimples_MenorRMSE(original,parameters,modelo):
 		sets = partitioner.GridPartitionerTrimf(original,p)
 		fts = modelo(str(p)+ " particoes")
 		fts.train(original,sets)
-		forecasted = [fts.forecast(xx) for xx in original]
+		#print(original)
+		forecasted = fts.forecast(original)
+		forecasted.insert(0,original[0])
+		#print(forecasted)
 		ax0.plot(forecasted,label=fts.name)
 		error = rmse(np.array(forecasted),np.array(original))
 		print(p,error)
@@ -226,8 +229,8 @@ def SelecaoSimples_MenorRMSE(original,parameters,modelo):
 		sets = partitioner.GridPartitionerTrimf(difffts,p)
 		fts = modelo(str(p)+ " particoes")
 		fts.train(difffts,sets)
-		forecasted = [fts.forecast(xx) for xx in difffts]
-		#forecasted.insert(0,difffts[0])
+		forecasted = fts.forecast(difffts)
+		forecasted.insert(0,difffts[0])
 		ax2.plot(forecasted,label=fts.name)
 		error = rmse(np.array(forecasted),np.array(difffts))
 		print(p,error)

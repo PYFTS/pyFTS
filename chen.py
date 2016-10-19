@@ -24,14 +24,14 @@ class ConventionalFTS(fts.FTS):
 		super(ConventionalFTS, self).__init__(1,name)
 		self.flrgs = {}
     
-    def generateFLRG(self, flrs):
+	def generateFLRG(self, flrs):
 		flrgs = {}
 		for flr in flrs:
-			if flr.LHS in flrgs:
-				flrgs[flr.LHS].append(flr.RHS)
+			if flr.LHS.name in flrgs:
+				flrgs[flr.LHS.name].append(flr.RHS)
 			else:
-				flrgs[flr.LHS] = ConventionalFLRG(flr.LHS);
-				flrgs[flr.LHS].append(flr.RHS)
+				flrgs[flr.LHS.name] = ConventionalFLRG(flr.LHS);
+				flrgs[flr.LHS.name].append(flr.RHS)
 		return (flrgs)
 
 	def train(self, data, sets):
@@ -39,26 +39,32 @@ class ConventionalFTS(fts.FTS):
 		tmpdata = common.fuzzySeries(data,sets)
 		flrs = common.generateNonRecurrentFLRs(tmpdata)
 		self.flrgs = self.generateFLRG(flrs)
-        
+		
 	def forecast(self,data):
 		
-		mv = common.fuzzyInstance(data, self.sets)
+		l = 1
 		
-		actual = self.sets[ np.argwhere( mv == max(mv) )[0,0] ]
+		ndata = np.array(data)
+		
+		l = len(ndata)
+		
+		ret = []
+		
+		for k in np.arange(1,l):
+			
+			mv = common.fuzzyInstance(ndata[k], self.sets)
+		
+			actual = self.sets[ np.argwhere( mv == max(mv) )[0,0] ]
         
-		if actual.name not in self.flrgs:
-			return actual.centroid
-
-		flrg = self.flrgs[actual.name]
-
-		count = 0.0
-		denom = 0.0
-
-		for s in flrg.RHS:
-			denom = denom + self.sets[s].centroid
-			count = count + 1.0
-
-		return denom/count
+			if actual.name not in self.flrgs:
+				ret.append(actual.centroid)
+			else:
+				flrg = self.flrgs[actual.name]
+				mp = self.getMidpoints(flrg)
+				
+				ret.append(sum(mp)/len(mp))
+			
+		return ret
 		
 	
 		 

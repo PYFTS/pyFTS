@@ -1,3 +1,4 @@
+import numpy as np
 from pyFTS import *
 
 class FTS:
@@ -23,6 +24,10 @@ class FTS:
 
 	def train(self, data, sets):
 		pass  
+		
+	def getMidpoints(self,flrg):
+		ret = np.array([s.centroid for s in flrg.RHS])
+		return ret
 
 	def __str__(self):
 		tmp = self.name + ":\n"
