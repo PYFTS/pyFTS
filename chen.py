@@ -10,12 +10,12 @@ class ConventionalFLRG:
 		self.RHS.add(c)
 
 	def __str__(self):
-		tmp = self.LHS + " -> "
+		tmp = self.LHS.name + " -> "
 		tmp2 = ""
-		for c in self.RHS:
+		for c in sorted(self.RHS, key=lambda s: s.name):
 			if len(tmp2) > 0:
 				tmp2 = tmp2 + ","
-			tmp2 = tmp2 + c
+			tmp2 = tmp2 + c.name
 		return tmp + tmp2
 
 

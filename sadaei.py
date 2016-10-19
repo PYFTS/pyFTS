@@ -18,42 +18,42 @@ class ExponentialyWeightedFLRG:
 		return np.array([ k/tot for k in wei ])
         
 	def __str__(self):
-		tmp = self.LHS + " -> "
+		tmp = self.LHS.name + " -> "
 		tmp2 = ""
 		cc = 0
 		wei = [ self.c**k for k in np.arange(0.0,self.count,1.0)]
 		tot = sum( wei )
-		for c in self.RHS:
+		for c in sorted(self.RHS, key=lambda s: s.name):
 			if len(tmp2) > 0:
 				tmp2 = tmp2 + ","
-			tmp2 = tmp2 + c + "(" + str(wei[cc]/tot) + ")"
+			tmp2 = tmp2 + c.name + "(" + str(wei[cc]/tot) + ")"
 			cc = cc + 1
 		return tmp + tmp2
 		
 class ExponentialyWeightedFTS(fts.FTS):
 	def __init__(self,name):
 		super(ExponentialyWeightedFTS, self).__init__(1,name)
-		this.c = 1
+		self.c = 1
 		
 	def generateFLRG(self, flrs, c):
 		flrgs = {}
 		for flr in flrs:
-			if flr.LHS in flrgs:
-				flrgs[flr.LHS].append(flr.RHS)
+			if flr.LHS.name in flrgs:
+				flrgs[flr.LHS.name].append(flr.RHS)
 			else:
-				flrgs[flr.LHS] = ExponentialyWeightedFLRG(flr.LHS, c);
-				flrgs[flr.LHS].append(flr.RHS)
+				flrgs[flr.LHS.name] = ExponentialyWeightedFLRG(flr.LHS, c);
+				flrgs[flr.LHS.name].append(flr.RHS)
 		return (flrgs)
 
 	def train(self, data, sets, c):
-		this.c = c
+		self.c = c
 		self.sets = sets
 		tmpdata = common.fuzzySeries(data,sets)
 		flrs = common.generateRecurrentFLRs(tmpdata)
 		self.flrgs = self.generateFLRG(flrs,c)
         
 	def forecast(self,data):
-       l = 1
+		l = 1
 		
 		ndata = np.array(data)
 		
@@ -73,7 +73,7 @@ class ExponentialyWeightedFTS(fts.FTS):
 				flrg = self.flrgs[actual.name]
 				mp = self.getMidpoints(flrg)
 				
-				ret.append( mi.dot( flrg.weights() ))
+				ret.append( mp.dot( flrg.weights() ))
 			
 		return ret
         

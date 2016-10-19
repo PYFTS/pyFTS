@@ -65,8 +65,8 @@ class FLR:
 		return str(self.LHS) + " -> " + str(self.RHS)
     
 def fuzzyInstance(inst, fuzzySets):
-    mv = np.array([ fs.membership(inst) for fs in fuzzySets])
-    return mv
+	mv = np.array([ fs.membership(inst) for fs in fuzzySets])
+	return mv
 
 
 def fuzzySeries(data,fuzzySets):

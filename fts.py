@@ -31,6 +31,6 @@ class FTS:
 
 	def __str__(self):
 		tmp = self.name + ":\n"
-		for r in self.flrgs.keys():
+		for r in sorted(self.flrgs):
 			tmp = tmp + str(self.flrgs[r]) + "\n"
 		return tmp

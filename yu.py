@@ -16,14 +16,14 @@ class WeightedFLRG(fts.FTS):
 		return np.array([ k/tot for k in np.arange(1.0,self.count,1.0) ])
         
 	def __str__(self):
-		tmp = self.LHS + " -> "
+		tmp = self.LHS.name + " -> "
 		tmp2 = ""
 		cc = 1.0
 		tot = sum( np.arange(1.0,self.count,1.0) )
-		for c in self.RHS:
+		for c in sorted(self.RHS, key=lambda s: s.name):
 			if len(tmp2) > 0:
 				tmp2 = tmp2 + ","
-			tmp2 = tmp2 + c + "(" + str(round(cc/tot,3)) + ")"
+			tmp2 = tmp2 + c.name + "(" + str(round(cc/tot,3)) + ")"
 			cc = cc + 1.0
 		return tmp + tmp2
 		
@@ -49,7 +49,7 @@ class WeightedFTS(fts.FTS):
 		self.flrgs = self.generateFLRG(flrs)
         
 	def forecast(self,data):
-        l = 1
+		l = 1
 		
 		ndata = np.array(data)
 		
@@ -69,6 +69,6 @@ class WeightedFTS(fts.FTS):
 				flrg = self.flrgs[actual.name]
 				mp = self.getMidpoints(flrg)
 				
-				ret.append( mi.dot( flrg.weights() ))
+				ret.append( mp.dot( flrg.weights() ))
 			
 		return ret
