@@ -2,17 +2,26 @@ import numpy as np
 from pyFTS import *
 
 
+
 class IntervalFTS(hofts.HighOrderFTS):
 	def __init__(self,name):
 		super(IntervalFTS, self).__init__(name)
 		self.flrgs = {}
     
 	def getUpper(self,flrg):
-		ret = np.array([s.upper for s in flrg.RHS])
+		if flrg.strLHS() in self.flrgs:
+			tmp = self.flrgs[ flrg.strLHS() ]
+			ret = max(np.array([s.upper for s in tmp.RHS]))
+		else:
+			ret = flrg.LHS[-1].upper
 		return ret
 		
 	def getLower(self,flrg):
-		ret = np.array([s.lower for s in flrg.RHS])
+		if flrg.strLHS() in self.flrgs:
+			tmp = self.flrgs[ flrg.strLHS() ]
+			ret = min(np.array([s.lower for s in tmp.RHS]))
+		else:
+			ret = flrg.LHS[-1].lower
 		return ret
 		
 	def getSequenceMembership(self, data, fuzzySets):
@@ -23,7 +32,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 		if level >= self.order:
 			return
 			
-		for s in lags[level]["sets"]:				
+		for s in lags[level]:				
 			node.appendChild(tree.FLRGTreeNode(s))
 			
 		for child in node.getChildren():
@@ -37,7 +46,10 @@ class IntervalFTS(hofts.HighOrderFTS):
 		
 		ret = []
 		
-		for k in np.arange(self.order+1,l):
+		for k in np.arange(self.order-1,l):
+			
+			flrs = []
+			mvs = []
 			
 			up = []
 			lo = []
@@ -45,60 +57,50 @@ class IntervalFTS(hofts.HighOrderFTS):
 			# Achar os conjuntos que tem pert > 0 para cada lag
 			count = 0
 			lags = {}
-			for instance in ndata[k-self.order : k]:
-				mb = common.fuzzyInstance(instance, self.sets)
-				tmp = np.argwhere( mb )
-				idx = np.ravel(tmp) #flatten 
-				
-				lag = {}
-				lag["id"] = count
-				lag["sets"] = idx
-				lag["memberships"] = [mb[ k ] for k in idx]
-				lag["count"] = len(idx)
-				lags[count] = lag
-				count = count + 1				
-				
-			# Constrói uma árvore com todos os caminhos possíveis
-			
-			root = tree.FLRGTreeNode(None)
-			
-			self.buildTree(root,lags,0)
-			
-			# Traça os possíveis caminhos e costróis as HOFLRG's
-			
-			print(root)
-			
-			# -------
-				
-			for p in root.paths():
-				path = list(reversed(list(filter(None.__ne__, p))))
-				print(path)
-				#for n in tree.flat(p):
-				#	print(n)
-				#print("--")
+			if self.order > 1:
+				for instance in ndata[k-self.order : k]:
+					mb = common.fuzzyInstance(instance, self.sets)
+					tmp = np.argwhere( mb )
+					idx = np.ravel(tmp) #flat the array
+					lags[count] = idx 
+					count = count + 1				
 					
-			return
+				# Constrói uma árvore com todos os caminhos possíveis
 				
-			# Achar a pert geral de cada FLRG
+				root = tree.FLRGTreeNode(None)
+				
+				self.buildTree(root,lags,0)
+				
+				# Traça os possíveis caminhos e costrói as HOFLRG's
+				
+				for p in root.paths():
+					path = list(reversed(list(filter(None.__ne__, p))))
+					flrg = hofts.HighOrderFLRG(self.order)
+					for kk in path: flrg.appendLHS(self.sets[ kk ])
+					
+					flrs.append(flrg)
+					
+					# Acha a pertinência geral de cada FLRG
+					mvs.append(min(self.getSequenceMembership(ndata[k-self.order : k], flrg.LHS)))
+			else:
+				
+				mv = common.fuzzyInstance(ndata[k],self.sets)
+				tmp = np.argwhere( mv )
+				idx = np.ravel(tmp)
+				for kk in idx:
+					flrg = hofts.HighOrderFLRG(self.order)
+					flrg.appendLHS(self.sets[ kk ])
+					flrs.append(flrg)
+					mvs.append(mv[kk])
 			
-			# achar o os bounds de cada FLRG
+			count = 0
+			for flrg in flrs:
+				# achar o os bounds de cada FLRG, ponderados pela pertinência
+				up.append( mvs[count] * self.getUpper(flrg) )
+				lo.append( mvs[count] * self.getLower(flrg) )
+				count = count + 1
 			
 			# gerar o intervalo
-			
-#			tmpdata = common.fuzzySeries(XX,self.sets)
-#			tmpflrg = HighOrderFLRG(self.order)
-		
-#			for s in tmpdata: tmpflrg.appendLHS(s)
-			
-#			if tmpflrg.strLHS() not in self.flrgs:
-#				ret.append(tmpdata[-1].centroid)
-#			else:
-#				flrg = self.flrgs[tmpflrg.strLHS()]
-#				mp = self.getMidpoints(flrg)
+			ret.append( [ sum(lo), sum(up) ] )
 				
-#				ret.append(sum(mp)/len(mp))
-			
-#		return ret
-		
-	
-		 
+		return ret

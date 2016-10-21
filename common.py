@@ -67,13 +67,17 @@ class FLR:
 def fuzzyInstance(inst, fuzzySets):
 	mv = np.array([ fs.membership(inst) for fs in fuzzySets])
 	return mv
+	
+	
+def getMaxMembershipFuzzySet(inst, fuzzySets):
+	mv = fuzzyInstance(inst,fuzzySets)
+	return fuzzySets[  np.argwhere(mv == max(mv) )[0,0] ]
 
 
 def fuzzySeries(data,fuzzySets):
 	fts = []
 	for item in data:
-		mv = fuzzyInstance(item,fuzzySets)
-		fts.append(fuzzySets[  np.argwhere(mv == max(mv) )[0,0] ])
+		fts.append(getMaxMembershipFuzzySet(item,fuzzySets))
 	return fts
 
 
