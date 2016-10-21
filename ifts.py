@@ -18,6 +18,16 @@ class IntervalFTS(hofts.HighOrderFTS):
 	def getSequenceMembership(self, data, fuzzySets):
 		mb = [ fuzzySets[k].membership( data[k] )  for k in np.arange(0,len(data))  ]
 		return mb
+		
+	def buildTree(self,node, lags, level):
+		if level >= self.order:
+			return
+			
+		for s in lags[level]["sets"]:				
+			node.appendChild(tree.FLRGTreeNode(s))
+			
+		for child in node.getChildren():
+			self.buildTree(child,lags,level+1)
     	
 	def forecast(self,data):
 		
@@ -35,7 +45,6 @@ class IntervalFTS(hofts.HighOrderFTS):
 			# Achar os conjuntos que tem pert > 0 para cada lag
 			count = 0
 			lags = {}
-			combinations = 1
 			for instance in ndata[k-self.order : k]:
 				mb = common.fuzzyInstance(instance, self.sets)
 				tmp = np.argwhere( mb )
@@ -47,37 +56,29 @@ class IntervalFTS(hofts.HighOrderFTS):
 				lag["memberships"] = [mb[ k ] for k in idx]
 				lag["count"] = len(idx)
 				lags[count] = lag
-				combinations = combinations * lag["count"]
 				count = count + 1				
 				
-				print(combinations)
-				
-				
-			# Build a tree exploring all possibilities
+			# Constrói uma árvore com todos os caminhos possíveis
 			
-			# Trace each path from leaf to roots and reverse path
+			root = tree.FLRGTreeNode(None)
+			
+			self.buildTree(root,lags,0)
+			
+			# Traça os possíveis caminhos e costróis as HOFLRG's
+			
+			print(root)
 			
 			# -------
 				
-			#return lags
-				
-			wflrgs = {}
-			
-			# Gerar as permutações possíveis e as FLRG's correspondentes
-			lag_inc = [0 for k in np.arange(0,self.order) ]
-			isComplete = False
-			while (isComplete):
-				flrg = hofts.HighOrderFLRG(self.order)
-				
-				flrg.appendLHS( self.sets[ lag_inc[0]  ] )
-				
-				for lag_count in np.arange(1,self.order):
-					if lag_count > 1: lag_inc[ lag_count - 1 ] = 0
+			for p in root.paths():
+				path = list(reversed(list(filter(None.__ne__, p))))
+				print(path)
+				#for n in tree.flat(p):
+				#	print(n)
+				#print("--")
 					
-#					for 
-					
-				#lag_count = lag_count + 1
-			
+			return
+				
 			# Achar a pert geral de cada FLRG
 			
 			# achar o os bounds de cada FLRG

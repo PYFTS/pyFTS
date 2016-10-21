@@ -16,15 +16,14 @@ class FLRGTreeNode:
 	def getChildren(self):
 		for child in self.children:
 			yield child
-		
-	def getPaths(self):
-		if len(self.children) > 0:
-			for child in self.children:
-				tmp = [self.value]
-				tmp.extend(child.getPaths())
-				yield tmp
-		else:
-			yield self.value
+					
+	def paths(self, acc=[]):
+		if len(self.children) == 0:
+			yield [self.value]+acc
+
+		for child in self.children:
+			for leaf_path in child.paths([self.value]+acc): # these two
+				yield leaf_path   
 			
 	def getStr(self,k):
 		if self.isRoot:
