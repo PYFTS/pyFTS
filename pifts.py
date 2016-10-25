@@ -1,45 +1,33 @@
 import numpy as np
 from pyFTS import *
 
-class ProbabilisticIntervalFLRG:
+class ProbabilisticIntervalFLRG(hofts.HighOrderFLRG):
 	def __init__(self,order):
-		self.LHS = []
-		self.RHS = []
-		self.RHSfreqs = {}
-		self.order = order
+		super(ProbabilisticIntervalFLRG, self).__init__(order)
+		self.RHS = {}
 		self.frequencyCount = 0
-		self.strlhs = ""
-
-	def appendRHS(self,c):
-		self.RHS.append(c)
-		self.frequencyCount = self.frequencyCount + 1
-		if c.name in self.RHSfreqs:
-			self.RHSfreqs[c.name] = self.RHSfreqs[c.name] + 1
-		else:
-			self.RHSfreqs[c.name] = 1
 		
-	def strLHS(self):
-		if len(self.strlhs) == 0:
-			for c in self.LHS:
-				if len(self.strlhs) > 0:
-					self.strlhs = self.strlhs + ","
-				self.strlhs = self.strlhs + c.name
-		return self.strlhs
-	
-	def appendLHS(self,c):
-		self.LHS.append(c)
-
+	def appendRHS(self,c):
+		self.frequencyCount = self.frequencyCount + 1
+		if c.name in self.RHS:
+			self.RHS[c.name] = self.RHS[c.name] + 1
+		else:
+			self.RHS[c.name] = 1
+			
+	def getProbability(self,c):
+		return self.RHS[c] / self.frequencyCount
+		
 	def __str__(self):
-		tmp = ""
-		for c in sorted(self.RHS, key=lambda s: s.name):
-			if len(tmp) > 0:
-				tmp = tmp + ","
-			tmp = tmp + c.name
-		return self.strLHS() + " -> " + tmp
+		tmp2 = ""
+		for c in sorted(self.RHS):
+			if len(tmp2) > 0:
+				tmp2 = tmp2 + ","
+			tmp2 = tmp2 + c + "(" + str(round(self.RHS[c]/self.frequencyCount,3)) + ")"
+		return self.strLHS() + " -> " + tmp2
 
 class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 	def __init__(self,name):
-		super(IntervalFTS, self).__init__(1,name)
+		super(ProbabilisticIntervalFTS, self).__init__(name)
 		self.flrgs = {}
 		self.globalFrequency = 0
 		
@@ -60,6 +48,25 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 				
 			self.globalFrequency = self.globalFrequency + 1
 		return (flrgs)
+		
+	def getProbability(self, flrg):
+		return flrg.frequencyCount / self.globalFrequency
+		
+	def getUpper(self,flrg):
+		if flrg.strLHS() in self.flrgs:
+			tmp = self.flrgs[ flrg.strLHS() ]
+			ret = sum(np.array([ tmp.getProbability(s) * self.setsDict[s].upper for s in tmp.RHS]))
+		else:
+			ret = flrg.LHS[-1].upper
+		return ret
+		
+	def getLower(self,flrg):
+		if flrg.strLHS() in self.flrgs:
+			tmp = self.flrgs[ flrg.strLHS() ]
+			ret = sum(np.array([ tmp.getProbability(s) * self.setsDict[s].lower for s in tmp.RHS]))
+		else:
+			ret = flrg.LHS[-1].lower
+		return ret
     	
 	def forecast(self,data):
 		
@@ -105,26 +112,27 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 					flrg = hofts.HighOrderFLRG(self.order)
 					for kk in path: flrg.appendLHS(self.sets[ kk ])
 					
-					flrs.append(flrg)
+					##
+					flrs.append( self.flrgs[ flrg.strLHS() ]  )
 					
 					# Acha a pertinência geral de cada FLRG
 					mvs.append(min(self.getSequenceMembership(subset, flrg.LHS)))
 			else:
 				
-				mv = common.fuzzyInstance(ndata[k],self.sets)
-				tmp = np.argwhere( mv )
-				idx = np.ravel(tmp)
+				mv = common.fuzzyInstance(ndata[k],self.sets) # get all membership values
+				tmp = np.argwhere( mv ) # get the indices of values > 0
+				idx = np.ravel(tmp) # flatten the array
 				for kk in idx:
 					flrg = hofts.HighOrderFLRG(self.order)
 					flrg.appendLHS(self.sets[ kk ])
-					flrs.append(flrg)
+					flrs.append( self.flrgs[ flrg.strLHS() ]  )
 					mvs.append(mv[kk])
 			
 			count = 0
 			for flrg in flrs:
 				# achar o os bounds de cada FLRG, ponderados pela pertinência
-				up.append( mvs[count] * self.getUpper(flrg) )
-				lo.append( mvs[count] * self.getLower(flrg) )
+				up.append( self.getProbability(flrg) * mvs[count] * self.getUpper(flrg) )
+				lo.append( self.getProbability(flrg) * mvs[count] * self.getLower(flrg) )
 				count = count + 1
 			
 			# gerar o intervalo

@@ -4,12 +4,13 @@ from pyFTS import *
 class HighOrderFLRG:
 	def __init__(self,order):
 		self.LHS = []
-		self.RHS = []
+		self.RHS = {}
 		self.order = order
 		self.strlhs = ""
 
 	def appendRHS(self,c):
-		self.RHS.append(c)
+		if c.name not in self.RHS:
+			self.RHS[c.name] = c
 		
 	def strLHS(self):
 		if len(self.strlhs) == 0:
@@ -24,16 +25,17 @@ class HighOrderFLRG:
 
 	def __str__(self):
 		tmp = ""
-		for c in sorted(self.RHS, key=lambda s: s.name):
+		for c in sorted(self.RHS):
 			if len(tmp) > 0:
 				tmp = tmp + ","
-			tmp = tmp + c.name
+			tmp = tmp + c
 		return self.strLHS() + " -> " + tmp
 		
 class HighOrderFTS(fts.FTS):
 	def __init__(self,name):
 		super(HighOrderFTS, self).__init__(1,name)
 		self.order = 1
+		self.setsDict = {}
 		
 	def generateFLRG(self, flrs):
 		flrgs = {}
@@ -54,9 +56,14 @@ class HighOrderFTS(fts.FTS):
 	def train(self, data, sets, order):
 		self.order = order
 		self.sets = sets
+		for s in self.sets:	self.setsDict[s.name] = s
 		tmpdata = common.fuzzySeries(data,sets)
 		flrs = common.generateRecurrentFLRs(tmpdata)
 		self.flrgs = self.generateFLRG(flrs)
+		
+	def getMidpoints(self,flrg):
+		ret = np.array([self.setsDict[s].centroid for s in flrg.RHS])
+		return ret
         
 	def forecast(self,data):
 		

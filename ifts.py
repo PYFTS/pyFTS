@@ -1,8 +1,6 @@
 import numpy as np
 from pyFTS import *
 
-
-
 class IntervalFTS(hofts.HighOrderFTS):
 	def __init__(self,name):
 		super(IntervalFTS, self).__init__(name)
@@ -11,7 +9,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 	def getUpper(self,flrg):
 		if flrg.strLHS() in self.flrgs:
 			tmp = self.flrgs[ flrg.strLHS() ]
-			ret = max(np.array([s.upper for s in tmp.RHS]))
+			ret = max(np.array([self.setsDict[s].upper for s in tmp.RHS]))
 		else:
 			ret = flrg.LHS[-1].upper
 		return ret
@@ -19,7 +17,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 	def getLower(self,flrg):
 		if flrg.strLHS() in self.flrgs:
 			tmp = self.flrgs[ flrg.strLHS() ]
-			ret = min(np.array([s.lower for s in tmp.RHS]))
+			ret = min(np.array([self.setsDict[s].lower for s in tmp.RHS]))
 		else:
 			ret = flrg.LHS[-1].lower
 		return ret
@@ -48,8 +46,6 @@ class IntervalFTS(hofts.HighOrderFTS):
 		
 		for k in np.arange(self.order,l):
 			
-			print(k)
-			
 			flrs = []
 			mvs = []
 			
@@ -61,7 +57,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 			lags = {}
 			if self.order > 1:
 				subset = ndata[k-self.order : k ]
-				print(subset)
+				
 				for instance in subset:
 					mb = common.fuzzyInstance(instance, self.sets)
 					tmp = np.argwhere( mb )
