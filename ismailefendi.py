@@ -29,7 +29,9 @@ class ImprovedWeightedFLRG:
 
 class ImprovedWeightedFTS(fts.FTS):
 	def __init__(self,name):
-		super(ImprovedWeightedFTS, self).__init__(1,name)
+		super(ImprovedWeightedFTS, self).__init__(1,"IWFTS")
+		self.name = "Improved Weighted FTS"
+		self.detail = "Ismail & Efendi"
 		self.setsDict = {}
 		
 	def generateFLRG(self, flrs):

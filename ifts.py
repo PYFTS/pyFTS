@@ -3,8 +3,11 @@ from pyFTS import *
 
 class IntervalFTS(hofts.HighOrderFTS):
 	def __init__(self,name):
-		super(IntervalFTS, self).__init__(name)
+		super(IntervalFTS, self).__init__("IFTS")
+		self.name = "Interval FTS"
+		self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
 		self.flrgs = {}
+		self.isInterval = True
     
 	def getUpper(self,flrg):
 		if flrg.strLHS() in self.flrgs:

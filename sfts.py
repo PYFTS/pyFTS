@@ -21,8 +21,11 @@ class SeasonalFLRG(fts.FTS):
 
 class SeasonalFTS(fts.FTS):
 	def __init__(self,name):
-		super(SeasonalFTS, self).__init__(1,name)
+		super(SeasonalFTS, self).__init__(1,"SFTS")
+		self.name = "Seasonal FTS"
+		self.detail = "Chen"
 		self.seasonality = 1
+		self.isSeasonal = True
         
         
 	def generateFLRG(self, flrs):

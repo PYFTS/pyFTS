@@ -6,7 +6,11 @@ class FTS:
 		self.sets = {}
 		self.flrgs = {}
 		self.order = order
+		self.shortname = name
 		self.name = name
+		self.detail = name
+		self.isSeasonal = False
+		self.isInterval = False
         
 	def fuzzy(self,data):
 		best = {"fuzzyset":"", "membership":0.0}

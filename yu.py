@@ -30,7 +30,10 @@ class WeightedFLRG(fts.FTS):
 
 class WeightedFTS(fts.FTS):
 	def __init__(self,name):
-		super(WeightedFTS, self).__init__(1,name)
+		super(WeightedFTS, self).__init__(1,"WFTS")
+		self.name = "Weighted FTS"
+		self.detail = "Yu"
+
 		
 	def generateFLRG(self, flrs):
 		flrgs = {}

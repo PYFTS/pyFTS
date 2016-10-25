@@ -27,9 +27,12 @@ class ProbabilisticIntervalFLRG(hofts.HighOrderFLRG):
 
 class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 	def __init__(self,name):
-		super(ProbabilisticIntervalFTS, self).__init__(name)
+		super(ProbabilisticIntervalFTS, self).__init__("PIFTS")
+		self.name = "Probabilistic Interval FTS"
+		self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
 		self.flrgs = {}
 		self.globalFrequency = 0
+		self.isInterval = True
 		
 	def generateFLRG(self, flrs):
 		flrgs = {}

@@ -21,7 +21,9 @@ class ConventionalFLRG:
 
 class ConventionalFTS(fts.FTS):
 	def __init__(self,name):
-		super(ConventionalFTS, self).__init__(1,name)
+		super(ConventionalFTS, self).__init__(1,"CFTS")
+		self.name = "Conventional FTS"
+		self.detail = "Chen"
 		self.flrgs = {}
     
 	def generateFLRG(self, flrs):
