@@ -13,18 +13,20 @@ def Teste(par):
 	plt.plot(x,y)
 
 # Erro quadrático médio
-def rmse(forecastions,targets):
-    return np.sqrt(np.mean((forecastions-targets)**2))
+def rmse(forecasts,targets):
+    return np.sqrt(np.nanmean((forecasts-targets)**2))
 
 # Erro Percentual médio
-def mape(forecastions,targets):
-    return np.mean(abs(forecastions-targets)/forecastions)
+def mape(forecasts,targets):
+    return np.mean(abs(forecasts-targets)/forecasts)
     
 def plotComparedSeries(original,fts,title):
 	fig = plt.figure(figsize=[20,6])
 	ax = fig.add_subplot(111)
-	forecasted = [fts.forecast(xx) for xx in original]
-	error = rmse(original,forecasted)
+	forecasted = fts.forecast(original)
+	#error = rmse(original[1:],forecasted[0:-1])
+	forecasted.insert(0,None)
+	#np.append(original,[None])
 	ax.plot(original,color='b',label="Original")
 	ax.plot(forecasted,color='r',label="Predicted")
 	handles0, labels0 = ax.get_legend_handles_labels()

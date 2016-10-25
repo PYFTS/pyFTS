@@ -61,7 +61,7 @@ class ExponentialyWeightedFTS(fts.FTS):
 		
 		ret = []
 		
-		for k in np.arange(1,l):
+		for k in np.arange(0,l):
 			
 			mv = common.fuzzyInstance(ndata[k], self.sets)
 		
