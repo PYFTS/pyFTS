@@ -46,7 +46,9 @@ class IntervalFTS(hofts.HighOrderFTS):
 		
 		ret = []
 		
-		for k in np.arange(self.order-1,l):
+		for k in np.arange(self.order,l):
+			
+			print(k)
 			
 			flrs = []
 			mvs = []
@@ -58,7 +60,9 @@ class IntervalFTS(hofts.HighOrderFTS):
 			count = 0
 			lags = {}
 			if self.order > 1:
-				for instance in ndata[k-self.order : k]:
+				subset = ndata[k-self.order : k ]
+				print(subset)
+				for instance in subset:
 					mb = common.fuzzyInstance(instance, self.sets)
 					tmp = np.argwhere( mb )
 					idx = np.ravel(tmp) #flat the array
@@ -81,7 +85,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 					flrs.append(flrg)
 					
 					# Acha a pertinência geral de cada FLRG
-					mvs.append(min(self.getSequenceMembership(ndata[k-self.order : k], flrg.LHS)))
+					mvs.append(min(self.getSequenceMembership(subset, flrg.LHS)))
 			else:
 				
 				mv = common.fuzzyInstance(ndata[k],self.sets)
