@@ -68,11 +68,15 @@ class IntervalFTS(hofts.HighOrderFTS):
 					lags[count] = idx 
 					count = count + 1				
 					
+				#print(lags)
+					
 				# Constrói uma árvore com todos os caminhos possíveis
 				
 				root = tree.FLRGTreeNode(None)
 				
 				self.buildTree(root,lags,0)
+				
+				#print(root)
 				
 				# Traça os possíveis caminhos e costrói as HOFLRG's
 				
@@ -104,6 +108,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 				count = count + 1
 			
 			# gerar o intervalo
-			ret.append( [ sum(lo), sum(up) ] )
+			norm = sum(mvs)
+			ret.append( [ sum(lo)/norm, sum(up)/norm ] )
 				
 		return ret

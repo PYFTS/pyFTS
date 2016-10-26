@@ -20,22 +20,34 @@ def rmse(forecasts,targets):
 def mape(forecasts,targets):
     return np.mean(abs(forecasts-targets)/forecasts)
     
-def plotComparedSeries(original,fts,title):
+def plotComparedSeries(original,fts,parameters):
 	fig = plt.figure(figsize=[20,6])
 	ax = fig.add_subplot(111)
 	forecasted = fts.forecast(original)
 	#error = rmse(original[1:],forecasted[0:-1])
-	forecasted.insert(0,None)
 	#np.append(original,[None])
 	ax.plot(original,color='b',label="Original")
-	ax.plot(forecasted,color='r',label="Predicted")
+	if fts.isInterval:
+		lower = [kk[0] for kk in forecasted]
+		upper = [kk[1] for kk in forecasted]
+		ax.set_ylim([min(lower),max(upper)])
+		for k in np.arange(0,fts.order):
+			lower.insert(0,None)
+			upper.insert(0,None)
+		ax.plot(lower,color='r',label="Predicted")
+		ax.plot(upper,color='r')
+		
+	else:
+		forecasted.insert(0,None)
+		ax.plot(forecasted,color='r',label="Predicted")
+		ax.set_ylim([np.nanmin(forecasted),np.nanmax(forecasted)])
 	handles0, labels0 = ax.get_legend_handles_labels()
 	ax.legend(handles0,labels0)
-	ax.set_title(title)
+	ax.set_title(fts.name)
 	ax.set_ylabel('F(T)')
 	ax.set_xlabel('T')
 	ax.set_xlim([0,len(original)])
-	ax.set_ylim([min(original),max(original)])
+	
 	
 def plotCompared(original,forecasted,labels,title):
 	fig = plt.figure(figsize=[13,6])
