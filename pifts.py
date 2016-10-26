@@ -56,7 +56,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		if flrg.strLHS() in self.flrgs:
 			return self.flrgs[ flrg.strLHS() ].frequencyCount / self.globalFrequency
 		else:
-			return 0
+			return 1/ self.globalFrequency
 		
 	def getUpper(self,flrg):
 		if flrg.strLHS() in self.flrgs:
