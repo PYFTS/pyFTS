@@ -1,9 +1,9 @@
 import numpy as np
 from pyFTS import *
 
-class ProbabilisticIntervalFLRG(hofts.HighOrderFLRG):
+class ProbabilisticFLRG(hofts.HighOrderFLRG):
 	def __init__(self,order):
-		super(ProbabilisticIntervalFLRG, self).__init__(order)
+		super(ProbabilisticFLRG, self).__init__(order)
 		self.RHS = {}
 		self.frequencyCount = 0
 		
@@ -21,7 +21,7 @@ class ProbabilisticIntervalFLRG(hofts.HighOrderFLRG):
 		tmp2 = ""
 		for c in sorted(self.RHS):
 			if len(tmp2) > 0:
-				tmp2 = tmp2 + ","
+				tmp2 = tmp2 + ", "
 			tmp2 = tmp2 + c + "(" + str(round(self.RHS[c]/self.frequencyCount,3)) + ")"
 		return self.strLHS() + " -> " + tmp2
 
@@ -38,7 +38,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		flrgs = {}
 		l = len(flrs)
 		for k in np.arange(self.order +1, l):
-			flrg = ProbabilisticIntervalFLRG(self.order)
+			flrg = ProbabilisticFLRG(self.order)
 			
 			for kk in np.arange(k - self.order, k):
 				flrg.appendLHS( flrs[kk].LHS )
@@ -53,7 +53,10 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		return (flrgs)
 		
 	def getProbability(self, flrg):
-		return flrg.frequencyCount / self.globalFrequency
+		if flrg.strLHS() in self.flrgs:
+			return self.flrgs[ flrg.strLHS() ].frequencyCount / self.globalFrequency
+		else:
+			return 0
 		
 	def getUpper(self,flrg):
 		if flrg.strLHS() in self.flrgs:
@@ -81,10 +84,9 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		
 		for k in np.arange(self.order,l):
 			
-			print(k)
-			
 			flrs = []
 			mvs = []
+			norms = []
 			
 			up = []
 			lo = []
@@ -94,7 +96,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			lags = {}
 			if self.order > 1:
 				subset = ndata[k-self.order : k ]
-				print(subset)
+				
 				for instance in subset:
 					mb = common.fuzzyInstance(instance, self.sets)
 					tmp = np.argwhere( mb )
@@ -108,7 +110,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 				
 				self.buildTree(root,lags,0)
 				
-				# Traça os possíveis caminhos e costrói as HOFLRG's
+				# Traça os possíveis caminhos e costrói as PFLRG's
 				
 				for p in root.paths():
 					path = list(reversed(list(filter(None.__ne__, p))))
@@ -116,7 +118,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 					for kk in path: flrg.appendLHS(self.sets[ kk ])
 					
 					##
-					flrs.append( self.flrgs[ flrg.strLHS() ]  )
+					flrs.append( flrg )
 					
 					# Acha a pertinência geral de cada FLRG
 					mvs.append(min(self.getSequenceMembership(subset, flrg.LHS)))
@@ -128,17 +130,27 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 				for kk in idx:
 					flrg = hofts.HighOrderFLRG(self.order)
 					flrg.appendLHS(self.sets[ kk ])
-					flrs.append( self.flrgs[ flrg.strLHS() ]  )
+					flrs.append( flrg  )
 					mvs.append(mv[kk])
 			
 			count = 0
 			for flrg in flrs:
 				# achar o os bounds de cada FLRG, ponderados pela pertinência
-				up.append( self.getProbability(flrg) * mvs[count] * self.getUpper(flrg) )
-				lo.append( self.getProbability(flrg) * mvs[count] * self.getLower(flrg) )
+				norm = self.getProbability(flrg) * mvs[count]
+				up.append( norm * self.getUpper(flrg) )
+				lo.append( norm * self.getLower(flrg) )
+				norms.append(norm)
 				count = count + 1
 			
 			# gerar o intervalo
-			ret.append( [ sum(lo), sum(up) ] )
+			norm = sum(norms)
+			ret.append( [ sum(lo)/norm, sum(up)/norm ] )
 				
 		return ret
+		
+	def __str__(self):
+		tmp = self.name + ":\n"
+		for r in sorted(self.flrgs):
+			p = round(self.flrgs[r].frequencyCount / self.globalFrequency,3)
+			tmp = tmp + "(" + str(p) + ") " + str(self.flrgs[r]) + "\n"
+		return tmp

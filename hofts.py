@@ -16,7 +16,7 @@ class HighOrderFLRG:
 		if len(self.strlhs) == 0:
 			for c in self.LHS:
 				if len(self.strlhs) > 0:
-					self.strlhs = self.strlhs + ","
+					self.strlhs = self.strlhs + ", "
 				self.strlhs = self.strlhs + c.name
 		return self.strlhs
 	
