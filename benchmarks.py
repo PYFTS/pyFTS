@@ -13,37 +13,87 @@ def Teste(par):
 	plt.plot(x,y)
 
 # Erro quadrático médio
-def rmse(forecasts,targets):
-    return np.sqrt(np.nanmean((forecasts-targets)**2))
+def rmse(targets, forecasts):
+	return np.sqrt(np.nanmean((forecasts-targets)**2))
+
+def rmse_interval(targets, forecasts):
+	fmean = [np.mean(i) for i in forecasts]
+	return np.sqrt(np.nanmean((fmean-targets)**2))
 
 # Erro Percentual médio
-def mape(forecasts,targets):
-    return np.mean(abs(forecasts-targets)/forecasts)
-    
-def plotComparedSeries(original,fts,parameters):
-	fig = plt.figure(figsize=[20,6])
+def mape(targets, forecasts):
+	return np.mean(abs(forecasts-targets)/forecasts)*100
+	
+def mape_interval(targets, forecasts):
+	fmean = [np.mean(i) for i in forecasts]
+	return np.mean(abs(fmean-targets)/fmean)*100
+
+#Sharpness - Mean size of the intervals
+def sharpness(forecasts):
+	tmp = [i[1] - i[0] for i in forecasts ]
+	return np.mean(tmp)
+
+#Resolution - Standard deviation of the intervals
+def resolution(forecasts):
+	shp = sharpness(forecasts)
+	tmp = [abs((i[1] - i[0]) - shp) for i in forecasts ]
+	return np.mean(tmp)
+
+# Percent of 
+def coverage(targets,forecasts):
+	preds = []
+	for i in np.arange(0,len(forecasts)):
+		if targets[i] >= forecasts[i][0] and targets[i] <= forecasts[i][1] :
+			preds.append(1)
+		else:
+			preds.append(1)
+	return np.mean(preds)
+
+def getIntervalStatistics(original,models):
+	ret = "Model		& RMSE		& MAPE		& Sharpness		& Resolution		& Coverage	\\ \n"
+	for fts in models:
+		forecasts = fts.forecast(original)
+		ret = ret + fts.shortname + "		& " 
+		ret = ret + str( round(rmse_interval(original[fts.order :],forecasts),2)) + "		& " 
+		ret = ret + str( round(mape_interval(original[fts.order :],forecasts),2)) + "		& " 
+		ret = ret + str( round(sharpness(forecasts),2)) + "		& " 
+		ret = ret + str( round(resolution(forecasts),2)) + "		& " 
+		ret = ret + str( round(coverage(original[fts.order :],forecasts),2)) + "	\\ \n"
+	return ret 
+
+def plotComparedSeries(original,models, colors):
+	fig = plt.figure(figsize=[25,10])
 	ax = fig.add_subplot(111)
-	forecasted = fts.forecast(original)
-	#error = rmse(original[1:],forecasted[0:-1])
-	#np.append(original,[None])
-	ax.plot(original,color='b',label="Original")
-	if fts.isInterval:
-		lower = [kk[0] for kk in forecasted]
-		upper = [kk[1] for kk in forecasted]
-		ax.set_ylim([min(lower),max(upper)])
-		for k in np.arange(0,fts.order):
-			lower.insert(0,None)
-			upper.insert(0,None)
-		ax.plot(lower,color='r',label="Predicted")
-		ax.plot(upper,color='r')
-		
-	else:
-		forecasted.insert(0,None)
-		ax.plot(forecasted,color='r',label="Predicted")
-		ax.set_ylim([np.nanmin(forecasted),np.nanmax(forecasted)])
-	handles0, labels0 = ax.get_legend_handles_labels()
-	ax.legend(handles0,labels0)
-	ax.set_title(fts.name)
+	
+	mi = []
+	ma = []
+	
+	ax.plot(original,color='black',label="Original")
+	count = 0
+	for fts in models:
+		forecasted = fts.forecast(original)
+		if fts.isInterval:
+			lower = [kk[0] for kk in forecasted]
+			upper = [kk[1] for kk in forecasted]
+			mi.append(min(lower))
+			ma.append(max(upper))
+			for k in np.arange(0,fts.order):
+				lower.insert(0,None)
+				upper.insert(0,None)
+			ax.plot(lower,color=colors[count],label=fts.shortname)
+			ax.plot(upper,color=colors[count])
+			
+		else:
+			mi.append(min(forecasted))
+			ma.append(max(forecasted))
+			forecasted.insert(0,None)
+			ax.plot(forecasted,color=colors[count],label=fts.shortname)
+			
+		handles0, labels0 = ax.get_legend_handles_labels()
+		ax.legend(handles0,labels0)
+		count = count + 1
+	#ax.set_title(fts.name)
+	ax.set_ylim([min(mi),max(ma)])
 	ax.set_ylabel('F(T)')
 	ax.set_xlabel('T')
 	ax.set_xlim([0,len(original)])

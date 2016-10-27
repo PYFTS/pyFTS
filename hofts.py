@@ -33,7 +33,7 @@ class HighOrderFLRG:
 		
 class HighOrderFTS(fts.FTS):
 	def __init__(self,name):
-		super(HighOrderFTS, self).__init__(1,"HOFTS")
+		super(HighOrderFTS, self).__init__(1,"HOFTS" + name)
 		self.name = "High Order FTS"
 		self.detail = "Chen"
 		self.order = 1

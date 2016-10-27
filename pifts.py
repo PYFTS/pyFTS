@@ -28,6 +28,7 @@ class ProbabilisticFLRG(hofts.HighOrderFLRG):
 class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 	def __init__(self,name):
 		super(ProbabilisticIntervalFTS, self).__init__("PIFTS")
+		self.shortname = "PIFTS " + name
 		self.name = "Probabilistic Interval FTS"
 		self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
 		self.flrgs = {}
@@ -84,8 +85,8 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		
 		for k in np.arange(self.order,l):
 			
-			flrs = []
-			mvs = []
+			affected_flrgs = []
+			affected_flrgs_memberships = []
 			norms = []
 			
 			up = []
@@ -118,10 +119,10 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 					for kk in path: flrg.appendLHS(self.sets[ kk ])
 					
 					##
-					flrs.append( flrg )
+					affected_flrgs.append( flrg )
 					
 					# Acha a pertinência geral de cada FLRG
-					mvs.append(min(self.getSequenceMembership(subset, flrg.LHS)))
+					affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
 			else:
 				
 				mv = common.fuzzyInstance(ndata[k],self.sets) # get all membership values
@@ -130,13 +131,13 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 				for kk in idx:
 					flrg = hofts.HighOrderFLRG(self.order)
 					flrg.appendLHS(self.sets[ kk ])
-					flrs.append( flrg  )
-					mvs.append(mv[kk])
+					affected_flrgs.append( flrg  )
+					affected_flrgs_memberships.append(mv[kk])
 			
 			count = 0
-			for flrg in flrs:
-				# achar o os bounds de cada FLRG, ponderados pela pertinência
-				norm = self.getProbability(flrg) * mvs[count]
+			for flrg in affected_flrgs:
+				# achar o os bounds de cada FLRG, ponderados pela probabilidade e pertinência
+				norm = self.getProbability(flrg) * affected_flrgs_memberships[count]
 				up.append( norm * self.getUpper(flrg) )
 				lo.append( norm * self.getLower(flrg) )
 				norms.append(norm)

@@ -3,7 +3,8 @@ from pyFTS import *
 
 class IntervalFTS(hofts.HighOrderFTS):
 	def __init__(self,name):
-		super(IntervalFTS, self).__init__("IFTS")
+		super(IntervalFTS, self).__init__("IFTS " + name)
+		self.shortname = "IFTS " + name
 		self.name = "Interval FTS"
 		self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
 		self.flrgs = {}
@@ -49,8 +50,8 @@ class IntervalFTS(hofts.HighOrderFTS):
 		
 		for k in np.arange(self.order,l):
 			
-			flrs = []
-			mvs = []
+			affected_flrgs = []
+			affected_flrgs_memberships = []
 			
 			up = []
 			lo = []
@@ -81,10 +82,10 @@ class IntervalFTS(hofts.HighOrderFTS):
 					flrg = hofts.HighOrderFLRG(self.order)
 					for kk in path: flrg.appendLHS(self.sets[ kk ])
 					
-					flrs.append(flrg)
+					affected_flrgs.append(flrg)
 					
 					# Acha a pertinência geral de cada FLRG
-					mvs.append(min(self.getSequenceMembership(subset, flrg.LHS)))
+					affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
 			else:
 				
 				mv = common.fuzzyInstance(ndata[k],self.sets)
@@ -93,18 +94,18 @@ class IntervalFTS(hofts.HighOrderFTS):
 				for kk in idx:
 					flrg = hofts.HighOrderFLRG(self.order)
 					flrg.appendLHS(self.sets[ kk ])
-					flrs.append(flrg)
-					mvs.append(mv[kk])
+					affected_flrgs.append(flrg)
+					affected_flrgs_memberships.append(mv[kk])
 			
 			count = 0
-			for flrg in flrs:
+			for flrg in affected_flrgs:
 				# achar o os bounds de cada FLRG, ponderados pela pertinência
-				up.append( mvs[count] * self.getUpper(flrg) )
-				lo.append( mvs[count] * self.getLower(flrg) )
+				up.append( affected_flrgs_memberships[count] * self.getUpper(flrg) )
+				lo.append( affected_flrgs_memberships[count] * self.getLower(flrg) )
 				count = count + 1
 			
 			# gerar o intervalo
-			norm = sum(mvs)
+			norm = sum(affected_flrgs_memberships)
 			ret.append( [ sum(lo)/norm, sum(up)/norm ] )
 				
 		return ret
