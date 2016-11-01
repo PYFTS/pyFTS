@@ -48,7 +48,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 		
 		ret = []
 		
-		for k in np.arange(self.order,l):
+		for k in np.arange(self.order-1,l):
 			
 			affected_flrgs = []
 			affected_flrgs_memberships = []
@@ -60,7 +60,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 			count = 0
 			lags = {}
 			if self.order > 1:
-				subset = ndata[k-self.order : k ]
+				subset = ndata[k-(self.order-1) : k+1 ]
 				
 				for instance in subset:
 					mb = common.fuzzyInstance(instance, self.sets)

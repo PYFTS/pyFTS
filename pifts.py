@@ -92,25 +92,34 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			up = []
 			lo = []
 			
-			# Achar os conjuntos que tem pert > 0 para cada lag
+			# Find the sets which membership > 0 for each lag
 			count = 0
 			lags = {}
 			if self.order > 1:
 				subset = ndata[k-(self.order-1) : k+1 ]
+				
 				for instance in subset:
 					mb = common.fuzzyInstance(instance, self.sets)
 					tmp = np.argwhere( mb )
-					idx = np.ravel(tmp) #flat the array
-					lags[count] = idx 
-					count = count + 1				
+					idx = np.ravel(tmp) #flatten the array
 					
-				# Constrói uma árvore com todos os caminhos possíveis
+					if idx.size == 0:	# the element is out of the bounds of the Universe of Discourse
+						if instance <= self.sets[0].lower:
+							idx = [0]
+						if instance >= self.sets[-1].upper:
+							idx = [len(self.sets)-1]
+						
+					lags[count] = idx 
+					count = count + 1
+					
+					
+				# Build the tree with all possible paths
 				
 				root = tree.FLRGTreeNode(None)
 				
 				self.buildTree(root,lags,0)
 				
-				# Traça os possíveis caminhos e costrói as PFLRG's
+				# Trace the possible paths and build the PFLRG's
 				
 				for p in root.paths():
 					path = list(reversed(list(filter(None.__ne__, p))))
@@ -120,7 +129,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 					##
 					affected_flrgs.append( flrg )
 					
-					# Acha a pertinência geral de cada FLRG
+					# Find the general membership of FLRG
 					affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
 			else:
 				
@@ -144,16 +153,22 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			
 			# gerar o intervalo
 			norm = sum(norms)
-			ret.append( [ sum(lo)/norm, sum(up)/norm ] )
+			if norm == 0:
+				ret.append( [ 0, 0 ] )
+			else:
+				ret.append( [ sum(lo)/norm, sum(up)/norm ] )
 				
 		return ret
-	
+		
 	def forecastAhead(self,data,steps):
 		ret = [[data[k],data[k]] for k in np.arange(len(data)-self.order,len(data))]
 		for k in np.arange(self.order,steps):
-			lower = self.forecast( [ret[x][0] for x in np.arange(k-self.order,k)] )
-			upper = self.forecast( [ret[x][1] for x in np.arange(k-self.order,k)] )
-			ret.append([np.min(lower),np.max(upper)])
+			if ret[-1][0] <= self.sets[0].lower and ret[-1][0] >= self.sets[-1].upper:
+				ret.append(ret[-1])
+			else:
+				lower = self.forecast( [ret[x][0] for x in np.arange(k-self.order,k)] )
+				upper = self.forecast( [ret[x][1] for x in np.arange(k-self.order,k)] )
+				ret.append([np.min(lower),np.max(upper)])
 			
 		return ret
 			

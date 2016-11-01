@@ -6,7 +6,9 @@ from pyFTS import *
 def GridPartitionerTrimf(data,npart,names = None,prefix = "A"):
 	sets = []
 	dmax = max(data)
+	dmax = dmax + dmax*0.10
 	dmin = min(data)
+	dmin = dmin - dmin*0.10
 	dlen = dmax - dmin
 	partlen = dlen / npart
 	partition = dmin
