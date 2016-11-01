@@ -83,7 +83,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		
 		ret = []
 		
-		for k in np.arange(self.order,l):
+		for k in np.arange(self.order-1,l):
 			
 			affected_flrgs = []
 			affected_flrgs_memberships = []
@@ -96,8 +96,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			count = 0
 			lags = {}
 			if self.order > 1:
-				subset = ndata[k-self.order : k ]
-				
+				subset = ndata[k-(self.order-1) : k+1 ]
 				for instance in subset:
 					mb = common.fuzzyInstance(instance, self.sets)
 					tmp = np.argwhere( mb )
@@ -148,7 +147,16 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			ret.append( [ sum(lo)/norm, sum(up)/norm ] )
 				
 		return ret
-		
+	
+	def forecastAhead(self,data,steps):
+		ret = [[data[k],data[k]] for k in np.arange(len(data)-self.order,len(data))]
+		for k in np.arange(self.order,steps):
+			lower = self.forecast( [ret[x][0] for x in np.arange(k-self.order,k)] )
+			upper = self.forecast( [ret[x][1] for x in np.arange(k-self.order,k)] )
+			ret.append([np.min(lower),np.max(upper)])
+			
+		return ret
+			
 	def __str__(self):
 		tmp = self.name + ":\n"
 		for r in sorted(self.flrgs):

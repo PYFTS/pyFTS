@@ -46,7 +46,7 @@ def coverage(targets,forecasts):
 		if targets[i] >= forecasts[i][0] and targets[i] <= forecasts[i][1] :
 			preds.append(1)
 		else:
-			preds.append(1)
+			preds.append(0)
 	return np.mean(preds)
 
 def getIntervalStatistics(original,models):
@@ -54,11 +54,11 @@ def getIntervalStatistics(original,models):
 	for fts in models:
 		forecasts = fts.forecast(original)
 		ret = ret + fts.shortname + "		& " 
-		ret = ret + str( round(rmse_interval(original[fts.order :],forecasts),2)) + "		& " 
-		ret = ret + str( round(mape_interval(original[fts.order :],forecasts),2)) + "		& " 
+		ret = ret + str( round(rmse_interval(original[fts.order-1 :],forecasts),2)) + "		& " 
+		ret = ret + str( round(mape_interval(original[fts.order-1 :],forecasts),2)) + "		& " 
 		ret = ret + str( round(sharpness(forecasts),2)) + "		& " 
 		ret = ret + str( round(resolution(forecasts),2)) + "		& " 
-		ret = ret + str( round(coverage(original[fts.order :],forecasts),2)) + "	\\ \n"
+		ret = ret + str( round(coverage(original[fts.order-1 :],forecasts),2)) + "	\\ \n"
 	return ret 
 
 def plotComparedSeries(original,models, colors):
@@ -97,9 +97,48 @@ def plotComparedSeries(original,models, colors):
 	ax.set_ylabel('F(T)')
 	ax.set_xlabel('T')
 	ax.set_xlim([0,len(original)])
+
+
+def plotComparedIntervalsAhead(original,models, colors, time_from, time_to):
+	fig = plt.figure(figsize=[25,10])
+	ax = fig.add_subplot(111)
 	
+	mi = []
+	ma = []
 	
-def plotCompared(original,forecasted,labels,title):
+	ax.plot(original,color='black',label="Original")
+	count = 0
+	for fts in models:
+		if fts.isInterval:
+			forecasted = fts.forecastAhead(original[:time_from],time_to)
+			lower = [kk[0] for kk in forecasted]
+			upper = [kk[1] for kk in forecasted]
+			mi.append(min(lower))
+			ma.append(max(upper))
+			for k in np.arange(0,time_from):
+				lower.insert(0,None)
+				upper.insert(0,None)
+			ax.plot(lower,color=colors[count],label=fts.shortname)
+			ax.plot(upper,color=colors[count])
+			
+		else:
+			forecasted = fts.forecast(original)
+			mi.append(min(forecasted))
+			ma.append(max(forecasted))
+			forecasted.insert(0,None)
+			ax.plot(forecasted,color=colors[count],label=fts.shortname)
+			
+		handles0, labels0 = ax.get_legend_handles_labels()
+		ax.legend(handles0,labels0)
+		count = count + 1
+	#ax.set_title(fts.name)
+	ax.set_ylim([min(mi),max(ma)])
+	ax.set_ylabel('F(T)')
+	ax.set_xlabel('T')
+	ax.set_xlim([0,len(original)])
+
+
+def plotCompared(original,forecasts,labels,title):
 	fig = plt.figure(figsize=[13,6])
 	ax = fig.add_subplot(111)
 	ax.plot(original,color='k',label="Original")
