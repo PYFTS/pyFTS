@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from pyFTS import *
 
 class ProbabilisticFLRG(hofts.HighOrderFLRG):
@@ -78,6 +79,8 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 	def forecast(self,data):
 		
 		ndata = np.array(data)
+		
+		#print(ndata)
 		
 		l = len(ndata)
 		
@@ -171,7 +174,46 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 				ret.append([np.min(lower),np.max(upper)])
 			
 		return ret
+		
+	def getGridClean(self,resolution):
+		grid = {}
+		for sbin in np.arange(self.sets[0].lower,self.sets[-1].upper,resolution):
+			grid[sbin] = 0
 			
+		return grid
+		
+	def gridCount(self, grid, resolution, interval):
+		for sbin in sorted(grid):
+			if sbin >= interval[0] and (sbin + resolution) <= interval[1]:
+				grid[sbin] = grid[sbin] + 1
+		return grid
+		
+	def forecastDistributionAhead(self,data,steps,resolution):
+		
+		ret = []
+		
+		intervals = self.forecastAhead(data,steps)
+		
+		for k in np.arange(self.order,steps):
+			
+			grid = self.getGridClean(resolution)
+			
+			qt1st = self.forecast([intervals[x][0] + (intervals[x][1]-intervals[x][0])/4 for x in np.arange(k-self.order,k)] )
+			qt2nd = self.forecast([intervals[x][0] + (intervals[x][1]-intervals[x][0])/2 for x in np.arange(k-self.order,k)] )
+			qt3rd = self.forecast([intervals[x][1] - (intervals[x][1]-intervals[x][0])/4 for x in np.arange(k-self.order,k)] )
+			grid = self.gridCount(grid,resolution, intervals[k])
+			grid = self.gridCount(grid,resolution, np.ravel(qt1st))
+			grid = self.gridCount(grid,resolution, np.ravel(qt2nd))
+			grid = self.gridCount(grid,resolution, np.ravel(qt3rd))
+			
+			tmp = np.array([ grid[k] for k in sorted(grid) ])
+			
+			ret.append( tmp/sum(tmp) )
+			
+		grid = self.getGridClean(resolution)
+		df = pd.DataFrame(ret, columns=sorted(grid))
+		return df
+		
 	def __str__(self):
 		tmp = self.name + ":\n"
 		for r in sorted(self.flrgs):

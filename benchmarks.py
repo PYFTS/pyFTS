@@ -59,7 +59,14 @@ def getIntervalStatistics(original,models):
 		ret = ret + str( round(sharpness(forecasts),2)) + "		& " 
 		ret = ret + str( round(resolution(forecasts),2)) + "		& " 
 		ret = ret + str( round(coverage(original[fts.order-1 :],forecasts),2)) + "	\\ \n"
-	return ret 
+	return ret
+	
+def plotDistribution(dist):
+	for k in dist.index:
+		alpha = np.array([dist[x][k] for x in dist])*100
+		x = [k for x in np.arange(0,len(alpha))]
+		y = dist.columns
+		plt.scatter(x,y,c=alpha,marker='s',linewidths=0,cmap='Reds',edgecolors=None)
 
 def plotComparedSeries(original,models, colors):
 	fig = plt.figure(figsize=[25,10])
