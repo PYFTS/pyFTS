@@ -166,7 +166,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 	def forecastAhead(self,data,steps):
 		ret = [[data[k],data[k]] for k in np.arange(len(data)-self.order,len(data))]
 		for k in np.arange(self.order,steps):
-			if ret[-1][0] <= self.sets[0].lower and ret[-1][0] >= self.sets[-1].upper:
+			if ret[-1][0] <= self.sets[0].lower and ret[-1][1] >= self.sets[-1].upper:
 				ret.append(ret[-1])
 			else:
 				lower = self.forecast( [ret[x][0] for x in np.arange(k-self.order,k)] )
@@ -197,14 +197,16 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		for k in np.arange(self.order,steps):
 			
 			grid = self.getGridClean(resolution)
-			
-			qt1st = self.forecast([intervals[x][0] + (intervals[x][1]-intervals[x][0])/4 for x in np.arange(k-self.order,k)] )
-			qt2nd = self.forecast([intervals[x][0] + (intervals[x][1]-intervals[x][0])/2 for x in np.arange(k-self.order,k)] )
-			qt3rd = self.forecast([intervals[x][1] - (intervals[x][1]-intervals[x][0])/4 for x in np.arange(k-self.order,k)] )
 			grid = self.gridCount(grid,resolution, intervals[k])
-			grid = self.gridCount(grid,resolution, np.ravel(qt1st))
-			grid = self.gridCount(grid,resolution, np.ravel(qt2nd))
-			grid = self.gridCount(grid,resolution, np.ravel(qt3rd))
+			
+			for qt in np.arange(1,50,2):
+				#print(qt)
+				qtle_lower = self.forecast([intervals[x][0] + qt*(intervals[x][1]-intervals[x][0])/100 for x in np.arange(k-self.order,k)] )
+				grid = self.gridCount(grid,resolution, np.ravel(qtle_lower))
+				qtle_upper = self.forecast([intervals[x][1] - qt*(intervals[x][1]-intervals[x][0])/100 for x in np.arange(k-self.order,k)] )
+				grid = self.gridCount(grid,resolution, np.ravel(qtle_upper))
+			qtle_mid = self.forecast([intervals[x][0] + (intervals[x][1]-intervals[x][0])/2 for x in np.arange(k-self.order,k)] )
+			grid = self.gridCount(grid,resolution, np.ravel(qtle_mid))
 			
 			tmp = np.array([ grid[k] for k in sorted(grid) ])
 			
