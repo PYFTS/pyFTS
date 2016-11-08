@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import math
 from pyFTS import *
 
 class ProbabilisticFLRG(hofts.HighOrderFLRG):
@@ -35,6 +36,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		self.flrgs = {}
 		self.globalFrequency = 0
 		self.isInterval = True
+		self.isDensity = True
 		
 	def generateFLRG(self, flrs):
 		flrgs = {}
@@ -58,14 +60,16 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		if flrg.strLHS() in self.flrgs:
 			return self.flrgs[ flrg.strLHS() ].frequencyCount / self.globalFrequency
 		else:
-			return 1/ self.globalFrequency
+			return 1.0 / self.globalFrequency
 		
 	def getUpper(self,flrg):
 		if flrg.strLHS() in self.flrgs:
 			tmp = self.flrgs[ flrg.strLHS() ]
 			ret = sum(np.array([ tmp.getProbability(s) * self.setsDict[s].upper for s in tmp.RHS]))
 		else:
-			ret = flrg.LHS[-1].upper
+			#print("hit" + flrg.strLHS())
+			#ret = flrg.LHS[-1].upper
+			ret = sum(np.array([ 0.33 * s.upper for s in flrg.LHS]))
 		return ret
 		
 	def getLower(self,flrg):
@@ -73,7 +77,9 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			tmp = self.flrgs[ flrg.strLHS() ]
 			ret = sum(np.array([ tmp.getProbability(s) * self.setsDict[s].lower for s in tmp.RHS]))
 		else:
-			ret = flrg.LHS[-1].lower
+			#print("hit" + flrg.strLHS())
+			#ret = flrg.LHS[-1].lower
+			ret = sum(np.array([ 0.33 * s.lower for s in flrg.LHS]))
 		return ret
     	
 	def forecast(self,data):
@@ -87,6 +93,8 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		ret = []
 		
 		for k in np.arange(self.order-1,l):
+			
+			#print(k)
 			
 			affected_flrgs = []
 			affected_flrgs_memberships = []
@@ -107,14 +115,17 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 					idx = np.ravel(tmp) #flatten the array
 					
 					if idx.size == 0:	# the element is out of the bounds of the Universe of Discourse
-						if instance <= self.sets[0].lower:
+						#print("high order - idx.size == 0 - " + str(instance))
+						if math.ceil(instance) <= self.sets[0].lower:
 							idx = [0]
-						if instance >= self.sets[-1].upper:
+						elif math.ceil(instance) >= self.sets[-1].upper:
 							idx = [len(self.sets)-1]
-						
+							#print(idx)
+						else:
+							raise Exception( instance )
+					#print(idx)
 					lags[count] = idx 
 					count = count + 1
-					
 					
 				# Build the tree with all possible paths
 				
@@ -129,26 +140,43 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 					flrg = hofts.HighOrderFLRG(self.order)
 					for kk in path: flrg.appendLHS(self.sets[ kk ])
 					
+					assert len(flrg.LHS) == subset.size, str(subset) + " -> " + str([s.name for s in flrg.LHS])
+					
 					##
 					affected_flrgs.append( flrg )
 					
 					# Find the general membership of FLRG
 					affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
+					#print(self.getSequenceMembership(subset, flrg.LHS))
 			else:
 				
 				mv = common.fuzzyInstance(ndata[k],self.sets) # get all membership values
 				tmp = np.argwhere( mv ) # get the indices of values > 0
 				idx = np.ravel(tmp) # flatten the array
+				
+				if idx.size == 0:	# the element is out of the bounds of the Universe of Discourse
+					#print("idx.size == 0")
+					if math.ceil(ndata[k]) <= self.sets[0].lower:
+						idx = [0]
+					elif math.ceil(ndata[k]) >= self.sets[-1].upper:
+						idx = [len(self.sets)-1]
+						#print(idx)
+					else:
+						raise Exception( ndata[k] )
+				#print(idx)
 				for kk in idx:
 					flrg = hofts.HighOrderFLRG(self.order)
 					flrg.appendLHS(self.sets[ kk ])
 					affected_flrgs.append( flrg  )
+					#print(mv[kk])
 					affected_flrgs_memberships.append(mv[kk])
 			
 			count = 0
 			for flrg in affected_flrgs:
 				# achar o os bounds de cada FLRG, ponderados pela probabilidade e pertinência
 				norm = self.getProbability(flrg) * affected_flrgs_memberships[count]
+				if norm == 0:
+					norm = self.getProbability(flrg) # * 0.001
 				up.append( norm * self.getUpper(flrg) )
 				lo.append( norm * self.getLower(flrg) )
 				norms.append(norm)
@@ -158,6 +186,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			norm = sum(norms)
 			if norm == 0:
 				ret.append( [ 0, 0 ] )
+				print("disparou")
 			else:
 				ret.append( [ sum(lo)/norm, sum(up)/norm ] )
 				
@@ -165,12 +194,16 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		
 	def forecastAhead(self,data,steps):
 		ret = [[data[k],data[k]] for k in np.arange(len(data)-self.order,len(data))]
-		for k in np.arange(self.order,steps):
+		#print(ret)
+		for k in np.arange(self.order-1,steps):
+			
 			if ret[-1][0] <= self.sets[0].lower and ret[-1][1] >= self.sets[-1].upper:
 				ret.append(ret[-1])
+				#print("disparou")
 			else:
 				lower = self.forecast( [ret[x][0] for x in np.arange(k-self.order,k)] )
 				upper = self.forecast( [ret[x][1] for x in np.arange(k-self.order,k)] )
+				
 				ret.append([np.min(lower),np.max(upper)])
 			
 		return ret
@@ -187,6 +220,53 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			if sbin >= interval[0] and (sbin + resolution) <= interval[1]:
 				grid[sbin] = grid[sbin] + 1
 		return grid
+	
+	def forecastDistributionAhead2(self,data,steps,resolution):
+		
+		ret = []
+		
+		intervals = self.forecastAhead(data,steps)
+		
+		for k in np.arange(self.order,steps):
+			
+			grid = self.getGridClean(resolution)
+			grid = self.gridCount(grid,resolution, intervals[k])
+			
+			lags = {}
+			
+			cc = 0
+			for x in np.arange(k-self.order,k):
+				tmp = []
+				for qt in np.arange(0,100,5):				
+					tmp.append(intervals[x][0] + qt*(intervals[x][1]-intervals[x][0])/100)
+					tmp.append(intervals[x][1] - qt*(intervals[x][1]-intervals[x][0])/100)
+				tmp.append(intervals[x][0] + (intervals[x][1]-intervals[x][0])/2)
+				
+				lags[cc] = tmp
+				
+				cc = cc + 1
+			# Build the tree with all possible paths
+				
+			root = tree.FLRGTreeNode(None)
+			
+			self.buildTree(root,lags,0)
+			
+			# Trace the possible paths and build the PFLRG's
+			
+			for p in root.paths():
+				path = list(reversed(list(filter(None.__ne__, p))))
+				
+				subset = [kk for kk in path]
+				
+				qtle = self.forecast(subset)
+				grid = self.gridCount(grid,resolution, np.ravel(qtle))
+				
+			tmp = np.array([ grid[k] for k in sorted(grid) ])
+			ret.append( tmp/sum(tmp) )
+			
+		grid = self.getGridClean(resolution)
+		df = pd.DataFrame(ret, columns=sorted(grid))
+		return df
 		
 	def forecastDistributionAhead(self,data,steps,resolution):
 		

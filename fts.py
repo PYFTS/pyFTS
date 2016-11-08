@@ -11,6 +11,7 @@ class FTS:
 		self.detail = name
 		self.isSeasonal = False
 		self.isInterval = False
+		self.isDensity = False
         
 	def fuzzy(self,data):
 		best = {"fuzzyset":"", "membership":0.0}

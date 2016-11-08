@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib as plt
+import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cross_validation import KFold
@@ -66,7 +67,7 @@ def plotDistribution(dist):
 		alpha = np.array([dist[x][k] for x in dist])*100
 		x = [k for x in np.arange(0,len(alpha))]
 		y = dist.columns
-		plt.scatter(x,y,c=alpha,marker='s',linewidths=0,cmap='Reds',edgecolors=None)
+		plt.scatter(x,y,c=alpha,marker='s',linewidths=0,cmap='Oranges',norm=pltcolors.Normalize(vmin=0,vmax=1),vmin=0,vmax=1,edgecolors=None)
 
 def plotComparedSeries(original,models, colors):
 	fig = plt.figure(figsize=[25,10])
@@ -79,6 +80,7 @@ def plotComparedSeries(original,models, colors):
 	count = 0
 	for fts in models:
 		forecasted = fts.forecast(original)
+		
 		if fts.isInterval:
 			lower = [kk[0] for kk in forecasted]
 			upper = [kk[1] for kk in forecasted]
@@ -106,20 +108,28 @@ def plotComparedSeries(original,models, colors):
 	ax.set_xlim([0,len(original)])
 
 
-def plotComparedIntervalsAhead(original,models, colors, time_from, time_to):
+def plotComparedIntervalsAhead(original,models, colors, distributions, time_from, time_to):
 	fig = plt.figure(figsize=[25,10])
 	ax = fig.add_subplot(111)
 	
 	mi = []
 	ma = []
 	
-	ax.plot(original,color='black',label="Original")
 	count = 0
 	for fts in models:
+		if fts.isDensity and distributions[count]:
+			density = fts.forecastDistributionAhead(original[:time_from],time_to,25)
+			for k in density.index:
+				alpha = np.array([density[x][k] for x in density])*100
+				x = [time_from + fts.order + k for x in np.arange(0,len(alpha))]
+				y = density.columns
+				ax.scatter(x,y,c=alpha,marker='s',linewidths=0,cmap='Oranges',
+					norm=pltcolors.Normalize(vmin=0,vmax=1),vmin=0,vmax=1,edgecolors=None)
+		
 		if fts.isInterval:
-			forecasted = fts.forecastAhead(original[:time_from],time_to)
-			lower = [kk[0] for kk in forecasted]
-			upper = [kk[1] for kk in forecasted]
+			forecasts = fts.forecastAhead(original[:time_from],time_to)
+			lower = [kk[0] for kk in forecasts]
+			upper = [kk[1] for kk in forecasts]
 			mi.append(min(lower))
 			ma.append(max(upper))
 			for k in np.arange(0,time_from):
@@ -129,15 +139,17 @@ def plotComparedIntervalsAhead(original,models, colors, time_from, time_to):
 			ax.plot(upper,color=colors[count])
 			
 		else:
-			forecasted = fts.forecast(original)
-			mi.append(min(forecasted))
-			ma.append(max(forecasted))
-			forecasted.insert(0,None)
-			ax.plot(forecasted,color=colors[count],label=fts.shortname)
+			forecasts = fts.forecast(original)
+			mi.append(min(forecasts))
+			ma.append(max(forecasts))
+			for k in np.arange(0,time_from):
+				forecasts.insert(0,None)
+			ax.plot(forecasts,color=colors[count],label=fts.shortname)
 			
 		handles0, labels0 = ax.get_legend_handles_labels()
 		ax.legend(handles0,labels0)
 		count = count + 1
+	ax.plot(original,color='black',label="Original")
 	#ax.set_title(fts.name)
 	ax.set_ylim([min(mi),max(ma)])
 	ax.set_ylabel('F(T)')

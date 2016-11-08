@@ -8,12 +8,13 @@ def differential(original):
     return np.array(diff)
 
 def trimf(x,parameters):
-	if(x < parameters[0]):
+	xx = round(x,3)
+	if(xx < parameters[0]):
 		return 0
-	elif(x >= parameters[0] and x < parameters[1]):
+	elif(xx >= parameters[0] and xx < parameters[1]):
 		return (x-parameters[0])/(parameters[1]-parameters[0])
-	elif(x >= parameters[1] and x <= parameters[2]):
-		return (parameters[2]-x)/(parameters[2]-parameters[1])
+	elif(xx >= parameters[1] and xx <= parameters[2]):
+		return (parameters[2]-xx)/(parameters[2]-parameters[1])
 	else: 
 		return 0
 
