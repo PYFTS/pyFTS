@@ -67,8 +67,6 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			tmp = self.flrgs[ flrg.strLHS() ]
 			ret = sum(np.array([ tmp.getProbability(s) * self.setsDict[s].upper for s in tmp.RHS]))
 		else:
-			#print("hit" + flrg.strLHS())
-			#ret = flrg.LHS[-1].upper
 			ret = sum(np.array([ 0.33 * s.upper for s in flrg.LHS]))
 		return ret
 		
@@ -77,17 +75,13 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			tmp = self.flrgs[ flrg.strLHS() ]
 			ret = sum(np.array([ tmp.getProbability(s) * self.setsDict[s].lower for s in tmp.RHS]))
 		else:
-			#print("hit" + flrg.strLHS())
-			#ret = flrg.LHS[-1].lower
 			ret = sum(np.array([ 0.33 * s.lower for s in flrg.LHS]))
 		return ret
     	
 	def forecast(self,data):
 		
 		ndata = np.array(data)
-		
-		#print(ndata)
-		
+
 		l = len(ndata)
 		
 		ret = []
@@ -115,16 +109,14 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 					idx = np.ravel(tmp) #flatten the array
 					
 					if idx.size == 0:	# the element is out of the bounds of the Universe of Discourse
-						#print("high order - idx.size == 0 - " + str(instance))
 						if math.ceil(instance) <= self.sets[0].lower:
 							idx = [0]
 						elif math.ceil(instance) >= self.sets[-1].upper:
 							idx = [len(self.sets)-1]
-							#print(idx)
 						else:
 							raise Exception( instance )
-					#print(idx)
-					lags[count] = idx 
+
+					lags[count] = idx
 					count = count + 1
 					
 				# Build the tree with all possible paths
@@ -147,7 +139,7 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 					
 					# Find the general membership of FLRG
 					affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
-					#print(self.getSequenceMembership(subset, flrg.LHS))
+
 			else:
 				
 				mv = common.fuzzyInstance(ndata[k],self.sets) # get all membership values
@@ -155,20 +147,17 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 				idx = np.ravel(tmp) # flatten the array
 				
 				if idx.size == 0:	# the element is out of the bounds of the Universe of Discourse
-					#print("idx.size == 0")
 					if math.ceil(ndata[k]) <= self.sets[0].lower:
 						idx = [0]
 					elif math.ceil(ndata[k]) >= self.sets[-1].upper:
 						idx = [len(self.sets)-1]
-						#print(idx)
 					else:
 						raise Exception( ndata[k] )
-				#print(idx)
+
 				for kk in idx:
 					flrg = hofts.HighOrderFLRG(self.order)
 					flrg.appendLHS(self.sets[ kk ])
 					affected_flrgs.append( flrg  )
-					#print(mv[kk])
 					affected_flrgs_memberships.append(mv[kk])
 			
 			count = 0
@@ -186,7 +175,6 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 			norm = sum(norms)
 			if norm == 0:
 				ret.append( [ 0, 0 ] )
-				print("disparou")
 			else:
 				ret.append( [ sum(lo)/norm, sum(up)/norm ] )
 				
@@ -194,12 +182,11 @@ class ProbabilisticIntervalFTS(ifts.IntervalFTS):
 		
 	def forecastAhead(self,data,steps):
 		ret = [[data[k],data[k]] for k in np.arange(len(data)-self.order,len(data))]
-		#print(ret)
+
 		for k in np.arange(self.order-1,steps):
 			
 			if ret[-1][0] <= self.sets[0].lower and ret[-1][1] >= self.sets[-1].upper:
 				ret.append(ret[-1])
-				#print("disparou")
 			else:
 				lower = self.forecast( [ret[x][0] for x in np.arange(k-self.order,k)] )
 				upper = self.forecast( [ret[x][1] for x in np.arange(k-self.order,k)] )

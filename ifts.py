@@ -27,8 +27,6 @@ class IntervalFTS(hofts.HighOrderFTS):
 		return ret
 		
 	def getSequenceMembership(self, data, fuzzySets):
-		#print(data)
-		#print(fuzzySets)
 		mb = [ fuzzySets[k].membership( data[k] )  for k in np.arange(0,len(data))  ]
 		return mb
 		
