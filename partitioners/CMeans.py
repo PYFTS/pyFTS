@@ -73,3 +73,18 @@ def c_means(k, dados, tam):
         iteracoes = iteracoes + 1
 
     return centroides
+
+def CMeansPartitionerTrimf(data,npart,names = None,prefix = "A"):
+    sets = []
+    dmax = max(data)
+    dmax = dmax + dmax*0.10
+    dmin = min(data)
+    dmin = dmin - dmin*0.10
+    centroides = c_means(npart, data, 1)
+    centroides.append(dmax)
+    centroides.append(dmin)
+    centroides.sort()
+    for c in np.arange(1,len(centroides)-1):
+        sets.append(common.FuzzySet(prefix+str(c),common.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
+
+    return sets
