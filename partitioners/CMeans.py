@@ -83,6 +83,7 @@ def CMeansPartitionerTrimf(data,npart,names = None,prefix = "A"):
     centroides = c_means(npart, data, 1)
     centroides.append(dmax)
     centroides.append(dmin)
+    centroides = list(set(centroides))
     centroides.sort()
     for c in np.arange(1,len(centroides)-1):
         sets.append(common.FuzzySet(prefix+str(c),common.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
