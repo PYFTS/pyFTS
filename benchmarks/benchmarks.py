@@ -5,61 +5,25 @@ import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cross_validation import KFold
-
-from pyFTS import *
+import Measures
+from pyFTS.partitioners import Grid
 
 def Teste(par):
 	x = np.arange(1,par)
 	y = [ yy**yy for yyy in x]
 	plt.plot(x,y)
 
-# Erro quadrático médio
-def rmse(targets, forecasts):
-	return np.sqrt(np.nanmean((forecasts-targets)**2))
-
-def rmse_interval(targets, forecasts):
-	fmean = [np.mean(i) for i in forecasts]
-	return np.sqrt(np.nanmean((fmean-targets)**2))
-
-# Erro Percentual médio
-def mape(targets, forecasts):
-	return np.mean(abs(forecasts-targets)/forecasts)*100
-	
-def mape_interval(targets, forecasts):
-	fmean = [np.mean(i) for i in forecasts]
-	return np.mean(abs(fmean-targets)/fmean)*100
-
-#Sharpness - Mean size of the intervals
-def sharpness(forecasts):
-	tmp = [i[1] - i[0] for i in forecasts ]
-	return np.mean(tmp)
-
-#Resolution - Standard deviation of the intervals
-def resolution(forecasts):
-	shp = sharpness(forecasts)
-	tmp = [abs((i[1] - i[0]) - shp) for i in forecasts ]
-	return np.mean(tmp)
-
-# Percent of 
-def coverage(targets,forecasts):
-	preds = []
-	for i in np.arange(0,len(forecasts)):
-		if targets[i] >= forecasts[i][0] and targets[i] <= forecasts[i][1] :
-			preds.append(1)
-		else:
-			preds.append(0)
-	return np.mean(preds)
 
 def getIntervalStatistics(original,models):
 	ret = "Model		& RMSE		& MAPE		& Sharpness		& Resolution		& Coverage	\\ \n"
 	for fts in models:
 		forecasts = fts.forecast(original)
 		ret = ret + fts.shortname + "		& " 
-		ret = ret + str( round(rmse_interval(original[fts.order-1 :],forecasts),2)) + "		& " 
-		ret = ret + str( round(mape_interval(original[fts.order-1 :],forecasts),2)) + "		& " 
-		ret = ret + str( round(sharpness(forecasts),2)) + "		& " 
-		ret = ret + str( round(resolution(forecasts),2)) + "		& " 
-		ret = ret + str( round(coverage(original[fts.order-1 :],forecasts),2)) + "	\\ \n"
+		ret = ret + str( round(Measures.rmse_interval(original[fts.order-1 :],forecasts),2)) + "		& "
+		ret = ret + str( round(Measures.mape_interval(original[fts.order-1 :],forecasts),2)) + "		& "
+		ret = ret + str( round(Measures.sharpness(forecasts),2)) + "		& "
+		ret = ret + str( round(Measures.resolution(forecasts),2)) + "		& "
+		ret = ret + str( round(Measures.coverage(original[fts.order-1 :],forecasts),2)) + "	\\ \n"
 	return ret
 	
 def plotDistribution(dist):
@@ -199,11 +163,11 @@ def SelecaoKFold_MenorRMSE(original,parameters,modelo):
 		errors_fold = []
 		pc = 0 #Parameter count
 		for p in parameters:
-			sets = partitioner.GridPartitionerTrimf(train,p)
+			sets = Grid.GridPartitionerTrimf(train,p)
 			fts = modelo(str(p)+ " particoes")
 			fts.train(train,sets)
 			forecasted = [fts.forecast(xx) for xx in test]
-			error = rmse(np.array(forecasted),np.array(test))
+			error = Measures.rmse(np.array(forecasted),np.array(test))
 			errors_fold.append(error)
 			print(fc, p, error)
 			errors[fc,pc] = error
@@ -258,11 +222,11 @@ def SelecaoKFold_MenorRMSE(original,parameters,modelo):
 		errors_fold = []
 		pc = 0
 		for p in parameters:
-			sets = partitioner.GridPartitionerTrimf(train,p)
+			sets = Grid.GridPartitionerTrimf(train,p)
 			fts = modelo(str(p)+ " particoes")
 			fts.train(train,sets)
 			forecasted = [fts.forecastDiff(test,xx) for xx in np.arange(len(test))]
-			error = rmse(np.array(forecasted),np.array(test))
+			error = Measures.rmse(np.array(forecasted),np.array(test))
 			print(fc, p,error)
 			errors[fc,pc] = error
 			errors_fold.append(error)
@@ -308,7 +272,7 @@ def SelecaoSimples_MenorRMSE(original,parameters,modelo):
 	min_rmse = 100000.0
 	best = None
 	for p in parameters:
-		sets = partitioner.GridPartitionerTrimf(original,p)
+		sets = Grid.GridPartitionerTrimf(original,p)
 		fts = modelo(str(p)+ " particoes")
 		fts.train(original,sets)
 		#print(original)
@@ -316,7 +280,7 @@ def SelecaoSimples_MenorRMSE(original,parameters,modelo):
 		forecasted.insert(0,original[0])
 		#print(forecasted)
 		ax0.plot(forecasted,label=fts.name)
-		error = rmse(np.array(forecasted),np.array(original))
+		error = Measures.rmse(np.array(forecasted),np.array(original))
 		print(p,error)
 		errors.append(error)
 		if error < min_rmse:
@@ -348,13 +312,13 @@ def SelecaoSimples_MenorRMSE(original,parameters,modelo):
 	min_rmse = 100000.0
 	bestd = None
 	for p in parameters:
-		sets = partitioner.GridPartitionerTrimf(difffts,p)
+		sets = Grid.GridPartitionerTrimf(difffts,p)
 		fts = modelo(str(p)+ " particoes")
 		fts.train(difffts,sets)
 		forecasted = fts.forecast(difffts)
 		forecasted.insert(0,difffts[0])
 		ax2.plot(forecasted,label=fts.name)
-		error = rmse(np.array(forecasted),np.array(difffts))
+		error = Measures.rmse(np.array(forecasted),np.array(difffts))
 		print(p,error)
 		errors.append(error)
 		if error < min_rmse:
@@ -394,13 +358,13 @@ def compareModelsTable(original,models_fo,models_ho):
     rows = []
     for model in models_fo:
         fts = model["model"]
-        error_r = rmse(model["forecasted"],original)
-        error_m = round(mape(model["forecasted"],original)*100,2)
+        error_r = Measures.rmse(model["forecasted"],original)
+        error_m = round(Measures.mape(model["forecasted"],original)*100,2)
         rows.append([model["name"],fts.order,len(fts.sets),error_r,error_m])
     for model in models_ho:
         fts = model["model"]
-        error_r = rmse(model["forecasted"][fts.order:],original[fts.order:])
-        error_m = round(mape(model["forecasted"][fts.order:],original[fts.order:])*100,2)
+        error_r = Measures.rmse(model["forecasted"][fts.order:],original[fts.order:])
+        error_m = round(Measures.mape(model["forecasted"][fts.order:],original[fts.order:])*100,2)
         rows.append([model["name"],fts.order,len(fts.sets),error_r,error_m])
     ax1 = fig.add_axes([0, 0, 1, 1]) #left, bottom, width, height
     ax1.set_xticks([])
@@ -455,11 +419,11 @@ def HOSelecaoSimples_MenorRMSE(original,parameters,orders):
 	for p in parameters:
 		oc = 0
 		for o in orders:
-			sets = partitioner.GridPartitionerTrimf(original,p)
+			sets = Grid.GridPartitionerTrimf(original,p)
 			fts = hwang.HighOrderFTS(o,"k = " + str(p)+ " w = " + str(o))
 			fts.train(original,sets)
 			forecasted = [fts.forecast(original, xx) for xx in range(o,len(original))]
-			error = rmse(np.array(forecasted),np.array(original[o:]))
+			error = Measures.rmse(np.array(forecasted),np.array(original[o:]))
 			for kk in range(o):
 				forecasted.insert(0,None)
 			ax0.plot(forecasted,label=fts.name)
@@ -501,11 +465,11 @@ def HOSelecaoSimples_MenorRMSE(original,parameters,orders):
 	for p in parameters:
 		oc = 0
 		for o in orders:
-			sets = partitioner.GridPartitionerTrimf(common.differential(original),p)
+			sets = Grid.GridPartitionerTrimf(common.differential(original),p)
 			fts = hwang.HighOrderFTS(o,"k = " + str(p)+ " w = " + str(o))
 			fts.train(original,sets)
 			forecasted = [fts.forecastDiff(original, xx) for xx in range(o,len(original))]
-			error = rmse(np.array(forecasted),np.array(original[o:]))
+			error = Measures.rmse(np.array(forecasted),np.array(original[o:]))
 			for kk in range(o):
 				forecasted.insert(0,None)
 			ax2.plot(forecasted,label=fts.name)
