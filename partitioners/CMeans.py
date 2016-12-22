@@ -2,7 +2,7 @@ import numpy as np
 import math
 import random as rnd
 import functools,operator
-from pyFTS import *
+from pyFTS.common import FuzzySet,Membership
 
 def distancia(x,y):
     if isinstance(x, list):
@@ -86,6 +86,6 @@ def CMeansPartitionerTrimf(data,npart,names = None,prefix = "A"):
     centroides = list(set(centroides))
     centroides.sort()
     for c in np.arange(1,len(centroides)-1):
-        sets.append(common.FuzzySet(prefix+str(c),common.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
+        sets.append(FuzzySet(prefix+str(c),Membership.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
 
     return sets

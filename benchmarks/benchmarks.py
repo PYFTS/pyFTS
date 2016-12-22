@@ -7,6 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cross_validation import KFold
 import Measures
 from pyFTS.partitioners import Grid
+from pyFTS.common import Membership,FuzzySet,FLR,Transformations
 
 def Teste(par):
 	x = np.arange(1,par)
@@ -211,7 +212,7 @@ def SelecaoKFold_MenorRMSE(original,parameters,modelo):
 	min_rmse_fold = 100000.0
 	bestd = None
 	fc = 0
-	diff = common.differential(original)       
+	diff = Transformations.differential(original)
 	kf = KFold(len(original), n_folds=nfolds)
 	for train_ix, test_ix in kf:
 		train = diff[train_ix]
@@ -299,7 +300,7 @@ def SelecaoSimples_MenorRMSE(original,parameters,modelo):
 	ret.append(forecasted_best)
     # Modelo diferencial
 	print("\nSérie Diferencial")
-	difffts = common.differential(original)
+	difffts = Transformations.differential(original)
 	errors = []
 	forecastedd_best = []
 	ax2 = fig.add_axes([0, 0, 0.65, 0.45]) #left, bottom, width, height
@@ -465,7 +466,7 @@ def HOSelecaoSimples_MenorRMSE(original,parameters,orders):
 	for p in parameters:
 		oc = 0
 		for o in orders:
-			sets = Grid.GridPartitionerTrimf(common.differential(original),p)
+			sets = Grid.GridPartitionerTrimf(Transformations.differential(original),p)
 			fts = hwang.HighOrderFTS(o,"k = " + str(p)+ " w = " + str(o))
 			fts.train(original,sets)
 			forecasted = [fts.forecastDiff(original, xx) for xx in range(o,len(original))]
