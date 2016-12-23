@@ -9,12 +9,6 @@ import Measures
 from pyFTS.partitioners import Grid
 from pyFTS.common import Membership,FuzzySet,FLR,Transformations
 
-def Teste(par):
-	x = np.arange(1,par)
-	y = [ yy**yy for yyy in x]
-	plt.plot(x,y)
-
-
 def getIntervalStatistics(original,models):
 	ret = "Model		& RMSE		& MAPE		& Sharpness		& Resolution		& Coverage	\\ \n"
 	for fts in models:
@@ -126,8 +120,8 @@ def plotCompared(original,forecasts,labels,title):
 	fig = plt.figure(figsize=[13,6])
 	ax = fig.add_subplot(111)
 	ax.plot(original,color='k',label="Original")
-	for c in range(0,len(forecasted)):
-		ax.plot(forecasted[c],label=labels[c])
+	for c in range(0,len(forecasts)):
+		ax.plot(forecasts[c],label=labels[c])
 	handles0, labels0 = ax.get_legend_handles_labels()
 	ax.legend(handles0,labels0)
 	ax.set_title(title)
