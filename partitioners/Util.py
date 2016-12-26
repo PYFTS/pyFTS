@@ -4,17 +4,18 @@ import matplotlib as plt
 import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-
 from pyFTS.common import Membership
 
-def plotSets(data, sets):
+
+def plotSets(data, sets, titles):
     num = len(sets)
-    fig = plt.figure(figsize=[20, 10])
+    fig = plt.figure(figsize=[12, 10])
     maxx = max(data)
     minx = min(data)
     h = 1/num
     for k in range(num):
-        ax0 = fig.add_axes([0, (k+1)*h, 0.65, h])  # left, bottom, width, height
+        ax0 = fig.add_axes([0, (k+1)*h, 0.65, h*0.7])  # left, bottom, width, height
+        ax0.set_title(titles[k])
         ax0.set_ylim([0, 1])
         ax0.set_xlim([minx, maxx])
         for s in sets[k]:
