@@ -29,7 +29,7 @@ def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
     tam_dados = len(dados)
 
     # Inicializa as centróides escolhendo elementos aleatórios dos conjuntos
-    centroides = [dados[rnd.randint(0, tam_dados)] for kk in range(0, k)]
+    centroides = [dados[rnd.randint(0, tam_dados-1)] for kk in range(0, k)]
 
     # Tabela de pertinência das instâncias aos grupos
     grupos = [[0 for kk in range(0, k)] for xx in range(0, tam_dados)]

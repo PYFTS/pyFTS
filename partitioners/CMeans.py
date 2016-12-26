@@ -15,7 +15,7 @@ def distancia(x, y):
 
 def c_means(k, dados, tam):
     # Inicializa as centróides escolhendo elementos aleatórios dos conjuntos
-    centroides = [dados[rnd.randint(0, len(dados))] for kk in range(0, k)]
+    centroides = [dados[rnd.randint(0, len(dados)-1)] for kk in range(0, k)]
 
     grupos = [-1 for x in range(0, len(dados))]
 
