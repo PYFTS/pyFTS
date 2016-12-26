@@ -19,3 +19,9 @@ def plotSets(data, sets,num):
         for s in sets[k]:
             if s.mf == Membership.trimf:
                 ax0.plot([s.parameters[0],s.parameters[1],s.parameters[2]],[0,1,0])
+            elif s.mf == Membership.gaussmf:
+                print( s.parameters )
+                print([s.lower, s.upper])
+                tmpx = [ kk for kk in np.arange(s.lower, s.upper)]
+                tmpy = [s.membership(kk) for kk in np.arange(s.lower, s.upper)]
+                ax0.plot(tmpx, tmpy)
