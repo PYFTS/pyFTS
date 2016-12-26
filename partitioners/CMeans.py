@@ -1,19 +1,19 @@
 import numpy as np
 import math
 import random as rnd
-import functools,operator
-from pyFTS.common import FuzzySet,Membership
+import functools, operator
+from pyFTS.common import FuzzySet, Membership
 
-def distancia(x,y):
+
+def distancia(x, y):
     if isinstance(x, list):
-        tmp = functools.reduce(operator.add, [(x[k] - y[k])**2 for k in range(0,len(x))])
+        tmp = functools.reduce(operator.add, [(x[k] - y[k]) ** 2 for k in range(0, len(x))])
     else:
         tmp = (x - y) ** 2
     return math.sqrt(tmp)
 
 
 def c_means(k, dados, tam):
-
     # Inicializa as centróides escolhendo elementos aleatórios dos conjuntos
     centroides = [dados[rnd.randint(0, len(dados))] for kk in range(0, k)]
 
@@ -62,11 +62,12 @@ def c_means(k, dados, tam):
                 if tam > 1:
                     for count in range(0, tam):
                         soma = functools.reduce(operator.add,
-                                      [dados[kk][count] for kk in range(0, len(dados)) if grupos[kk] == grupo_count])
+                                                [dados[kk][count] for kk in range(0, len(dados)) if
+                                                 grupos[kk] == grupo_count])
                         centroides[grupo_count][count] = soma / total_inst
                 else:
                     soma = functools.reduce(operator.add,
-                                [dados[kk] for kk in range(0, len(dados)) if grupos[kk] == grupo_count])
+                                            [dados[kk] for kk in range(0, len(dados)) if grupos[kk] == grupo_count])
                     centroides[grupo_count] = soma / total_inst
             grupo_count = grupo_count + 1
 
@@ -74,18 +75,21 @@ def c_means(k, dados, tam):
 
     return centroides
 
-def CMeansPartitionerTrimf(data,npart,names = None,prefix = "A"):
+
+def CMeansPartitionerTrimf(data, npart, names=None, prefix="A"):
     sets = []
     dmax = max(data)
-    dmax = dmax + dmax*0.10
+    dmax += dmax * 0.10
     dmin = min(data)
-    dmin = dmin - dmin*0.10
+    dmin -= dmin * 0.10
     centroides = c_means(npart, data, 1)
     centroides.append(dmax)
     centroides.append(dmin)
     centroides = list(set(centroides))
     centroides.sort()
-    for c in np.arange(1,len(centroides)-1):
-        sets.append(FuzzySet(prefix+str(c),Membership.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
+    for c in np.arange(1, len(centroides) - 1):
+        sets.append(FuzzySet.FuzzySet(prefix + str(c), Membership.trimf,
+                             [round(centroides[c - 1], 3), round(centroides[c], 3), round(centroides[c + 1], 3)],
+                             round(centroides[c], 3)))
 
     return sets

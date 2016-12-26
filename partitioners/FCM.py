@@ -5,6 +5,8 @@ import functools,operator
 from pyFTS.common import FuzzySet,Membership
 #import CMeans
 
+# S. T. Li, Y. C. Cheng, and S. Y. Lin, “A FCM-based deterministic forecasting model for fuzzy time series,”
+# Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j.camwa.2008.07.033.
 
 def distancia(x,y):
     if isinstance(x, list):
@@ -108,6 +110,6 @@ def FCMPartitionerTrimf(data,npart,names = None,prefix = "A"):
     centroides = list(set(centroides))
     centroides.sort()
     for c in np.arange(1,len(centroides)-1):
-        sets.append(FuzzySet(prefix+str(c),Membership.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
+        sets.append(FuzzySet.FuzzySet(prefix+str(c),Membership.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
 
     return sets
