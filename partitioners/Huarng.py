@@ -12,8 +12,6 @@ def GridPartitionerTrimf(data, prefix="A"):
     data2 = Transformations.differential(data)
     davg = np.abs( np.mean(data2) / 2 )
 
-    print(davg)
-
     if davg <= 1.0:
         base = 0.1
     elif 1 < davg <= 10:

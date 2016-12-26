@@ -29,7 +29,8 @@ def trapmf(x, parameters):
 
 
 def gaussmf(x, parameters):
-    return math.exp(-0.5 * ((x - parameters[0]) / parameters[1]) ** 2)
+    return math.exp((-(x - parameters[0])**2)/(2 * parameters[1]**2))
+    #return math.exp(-0.5 * ((x - parameters[0]) / parameters[1]) ** 2)
 
 
 def bellmf(x, parameters):

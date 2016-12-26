@@ -23,3 +23,21 @@ def GridPartitionerTrimf(data, npart, names=None, prefix="A"):
         partition += partlen
 
     return sets
+
+
+def GridPartitionerGaussmf(data, npart, names=None, prefix="A"):
+    sets = []
+    dmax = max(data)
+    dmax += dmax * 0.10
+    dmin = min(data)
+    dmin -= dmin * 0.10
+    dlen = dmax - dmin
+    partlen = math.ceil(dlen / npart)
+    partition = math.ceil(dmin)
+    for c in range(npart):
+        sets.append(
+            FuzzySet.FuzzySet(prefix + str(c), Membership.gaussmf, [partition, partlen/3],
+                     partition))
+        partition += partlen
+
+    return sets
