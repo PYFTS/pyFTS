@@ -10,9 +10,11 @@ class FTS:
         self.shortname = name
         self.name = name
         self.detail = name
-        self.isSeasonal = False
-        self.isInterval = False
-        self.isDensity = False
+        self.hasSeasonality = False
+        self.hasPointForecasting = True
+        self.hasIntervalForecasting = False
+        self.hasDistributionForecasting = False
+        self.dump = False
 
     def fuzzy(self, data):
         best = {"fuzzyset": "", "membership": 0.0}
@@ -26,6 +28,21 @@ class FTS:
         return best
 
     def forecast(self, data):
+        pass
+
+    def forecastInterval(self, data):
+        pass
+
+    def forecastDistribution(self, data):
+        pass
+
+    def forecastAhead(self, data, steps):
+        pass
+
+    def forecastAheadInterval(self, data, steps):
+        pass
+
+    def forecastAheadDistribution(self, data, steps):
         pass
 
     def train(self, data, sets):

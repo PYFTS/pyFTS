@@ -20,7 +20,7 @@ class FuzzySet:
         return self.mf(x, self.parameters)
 
     def __str__(self):
-        return self.name + ": " + str(self.mf) + "(" + str(self.parameters) + ")"
+        return self.name + ": " + str(self.mf.__name__) + "(" + str(self.parameters) + ")"
 
 
 def fuzzyInstance(inst, fuzzySets):

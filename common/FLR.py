@@ -1,10 +1,14 @@
+import numpy as np
+
+
 class FLR:
     def __init__(self, LHS, RHS):
         self.LHS = LHS
         self.RHS = RHS
 
     def __str__(self):
-        return str(self.LHS) + " -> " + str(self.RHS)
+        return self.LHS.name + " -> " + self.RHS.name
+
 
 def generateNonRecurrentFLRs(fuzzyData):
     flrs = {}

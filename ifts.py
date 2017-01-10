@@ -1,6 +1,6 @@
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-import hofts, fts, tree
+from pyFTS import hofts, fts, tree
 
 
 class IntervalFTS(hofts.HighOrderFTS):
@@ -10,7 +10,8 @@ class IntervalFTS(hofts.HighOrderFTS):
         self.name = "Interval FTS"
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H. (2016)"
         self.flrgs = {}
-        self.isInterval = True
+        self.hasPointForecasting = False
+        self.hasIntervalForecasting = True
 
     def getUpper(self, flrg):
         if flrg.strLHS() in self.flrgs:

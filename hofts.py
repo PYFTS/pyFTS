@@ -1,6 +1,6 @@
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-import fts
+from pyFTS import fts
 
 
 class HighOrderFLRG:
@@ -18,7 +18,7 @@ class HighOrderFLRG:
         if len(self.strlhs) == 0:
             for c in self.LHS:
                 if len(self.strlhs) > 0:
-                    self.strlhs = self.strlhs + ", "
+                    self.strlhs += ", "
                 self.strlhs = self.strlhs + c.name
         return self.strlhs
 
@@ -63,7 +63,7 @@ class HighOrderFTS(fts.FTS):
         self.sets = sets
         for s in self.sets:    self.setsDict[s.name] = s
         tmpdata = FuzzySet.fuzzySeries(data, sets)
-        flrs = FuzzySet.generateRecurrentFLRs(tmpdata)
+        flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
     def getMidpoints(self, flrg):

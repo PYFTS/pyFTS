@@ -1,6 +1,6 @@
 import numpy as np
 from pyFTS.common import FuzzySet,FLR,Transformations
-import fts
+from pyFTS import fts
 
 
 class HighOrderFTS(fts.FTS):

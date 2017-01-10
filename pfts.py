@@ -2,21 +2,21 @@ import numpy as np
 import pandas as pd
 import math
 from pyFTS.common import FuzzySet, FLR
-import hofts, ifts, tree
+from pyFTS import hofts, ifts, tree
 
 
 class ProbabilisticFLRG(hofts.HighOrderFLRG):
     def __init__(self, order):
         super(ProbabilisticFLRG, self).__init__(order)
         self.RHS = {}
-        self.frequencyCount = 0
+        self.frequencyCount = 0.0
 
     def appendRHS(self, c):
-        self.frequencyCount = self.frequencyCount + 1
+        self.frequencyCount += 1
         if c.name in self.RHS:
-            self.RHS[c.name] = self.RHS[c.name] + 1
+            self.RHS[c.name] += 1
         else:
-            self.RHS[c.name] = 1
+            self.RHS[c.name] = 1.0
 
     def getProbability(self, c):
         return self.RHS[c] / self.frequencyCount
@@ -38,23 +38,27 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
         self.flrgs = {}
         self.globalFrequency = 0
-        self.isInterval = True
-        self.isDensity = True
+        self.hasPointForecasting = True
+        self.hasIntervalForecasting = True
+        self.hasDistributionForecasting = True
 
     def generateFLRG(self, flrs):
         flrgs = {}
         l = len(flrs)
-        for k in np.arange(self.order + 1, l):
+        for k in np.arange(self.order, l+1):
+            if self.dump: print("FLR: " + str(k))
             flrg = ProbabilisticFLRG(self.order)
 
             for kk in np.arange(k - self.order, k):
                 flrg.appendLHS(flrs[kk].LHS)
+                if self.dump: print("LHS: " + str(flrs[kk]))
 
             if flrg.strLHS() in flrgs:
-                flrgs[flrg.strLHS()].appendRHS(flrs[k].RHS)
+                flrgs[flrg.strLHS()].appendRHS(flrs[k-1].RHS)
             else:
                 flrgs[flrg.strLHS()] = flrg;
-                flrgs[flrg.strLHS()].appendRHS(flrs[k].RHS)
+                flrgs[flrg.strLHS()].appendRHS(flrs[k-1].RHS)
+            if self.dump: print("RHS: " + str(flrs[k-1]))
 
             self.globalFrequency = self.globalFrequency + 1
         return (flrgs)
@@ -68,9 +72,9 @@ class ProbabilisticFTS(ifts.IntervalFTS):
     def getMidpoints(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
-            ret = sum(np.array([tmp.getProbability(s) * self.setsDict[s].midpoint for s in tmp.RHS]))
+            ret = sum(np.array([tmp.getProbability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
         else:
-            ret = sum(np.array([0.33 * s.midpoint for s in flrg.LHS]))
+            ret = sum(np.array([0.33 * s.centroid for s in flrg.LHS]))
         return ret
 
     def getUpper(self, flrg):

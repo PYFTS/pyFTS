@@ -27,7 +27,7 @@ class SeasonalFTS(fts.FTS):
         self.name = "Seasonal FTS"
         self.detail = "Chen"
         self.seasonality = 1
-        self.isSeasonal = True
+        self.hasSeasonality = True
 
     def generateFLRG(self, flrs):
         flrgs = []
