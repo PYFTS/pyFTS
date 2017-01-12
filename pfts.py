@@ -12,9 +12,9 @@ class ProbabilisticFLRG(hofts.HighOrderFLRG):
         self.frequencyCount = 0.0
 
     def appendRHS(self, c):
-        self.frequencyCount += 1
+        self.frequencyCount += 1.0
         if c.name in self.RHS:
-            self.RHS[c.name] += 1
+            self.RHS[c.name] += 1.0
         else:
             self.RHS[c.name] = 1.0
 
@@ -26,7 +26,7 @@ class ProbabilisticFLRG(hofts.HighOrderFLRG):
         for c in sorted(self.RHS):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ", "
-            tmp2 = tmp2 + c + "(" + str(round(self.RHS[c] / self.frequencyCount, 3)) + ")"
+            tmp2 = tmp2 + "(" + str(round(self.RHS[c] / self.frequencyCount, 3)) + ")" + c
         return self.strLHS() + " -> " + tmp2
 
 
@@ -60,21 +60,31 @@ class ProbabilisticFTS(ifts.IntervalFTS):
                 flrgs[flrg.strLHS()].appendRHS(flrs[k-1].RHS)
             if self.dump: print("RHS: " + str(flrs[k-1]))
 
-            self.globalFrequency = self.globalFrequency + 1
+            self.globalFrequency += 1
         return (flrgs)
+
+    def addNewPFLGR(self,flrg):
+        if flrg.strLHS() not in self.flrgs:
+            tmp = ProbabilisticFLRG(self.order)
+            for fs in flrg.LHS: tmp.appendLHS(fs)
+            tmp.appendRHS(flrg.LHS[-1])
+            self.flrgs[tmp.strLHS()] = tmp;
+            self.globalFrequency += 1
 
     def getProbability(self, flrg):
         if flrg.strLHS() in self.flrgs:
             return self.flrgs[flrg.strLHS()].frequencyCount / self.globalFrequency
         else:
-            return 1.0 / self.globalFrequency
+            self.addNewPFLGR(flrg)
+            return self.getProbability(flrg)
 
     def getMidpoints(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
             ret = sum(np.array([tmp.getProbability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
         else:
-            ret = sum(np.array([0.33 * s.centroid for s in flrg.LHS]))
+            pi = 1 / len(flrg.LHS)
+            ret = sum(np.array([pi * s.centroid for s in flrg.LHS]))
         return ret
 
     def getUpper(self, flrg):
@@ -82,7 +92,8 @@ class ProbabilisticFTS(ifts.IntervalFTS):
             tmp = self.flrgs[flrg.strLHS()]
             ret = sum(np.array([tmp.getProbability(s) * self.setsDict[s].upper for s in tmp.RHS]))
         else:
-            ret = sum(np.array([0.33 * s.upper for s in flrg.LHS]))
+            pi = 1 / len(flrg.LHS)
+            ret = sum(np.array([pi * s.upper for s in flrg.LHS]))
         return ret
 
     def getLower(self, flrg):
@@ -90,7 +101,8 @@ class ProbabilisticFTS(ifts.IntervalFTS):
             tmp = self.flrgs[flrg.strLHS()]
             ret = sum(np.array([tmp.getProbability(s) * self.setsDict[s].lower for s in tmp.RHS]))
         else:
-            ret = sum(np.array([0.33 * s.lower for s in flrg.LHS]))
+            pi = 1 / len(flrg.LHS)
+            ret = sum(np.array([pi * s.lower for s in flrg.LHS]))
         return ret
 
     def forecast(self, data):
@@ -224,9 +236,9 @@ class ProbabilisticFTS(ifts.IntervalFTS):
                     idx = np.ravel(tmp)  # flatten the array
 
                     if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                        if math.ceil(instance) <= self.sets[0].lower:
+                        if instance <= self.sets[0].lower:
                             idx = [0]
-                        elif math.ceil(instance) >= self.sets[-1].upper:
+                        elif instance >= self.sets[-1].upper:
                             idx = [len(self.sets) - 1]
                         else:
                             raise Exception(instance)
@@ -262,9 +274,9 @@ class ProbabilisticFTS(ifts.IntervalFTS):
                 idx = np.ravel(tmp)  # flatten the array
 
                 if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                    if math.ceil(ndata[k]) <= self.sets[0].lower:
+                    if ndata[k] <= self.sets[0].lower:
                         idx = [0]
-                    elif math.ceil(ndata[k]) >= self.sets[-1].upper:
+                    elif ndata[k] >= self.sets[-1].upper:
                         idx = [len(self.sets) - 1]
                     else:
                         raise Exception(ndata[k])
@@ -312,7 +324,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
     def forecastAheadInterval(self, data, steps):
         ret = [[data[k], data[k]] for k in np.arange(len(data) - self.order, len(data))]
 
-        for k in np.arange(self.order - 1, steps):
+        for k in np.arange(self.order, steps+self.order):
 
             if ret[-1][0] <= self.sets[0].lower and ret[-1][1] >= self.sets[-1].upper:
                 ret.append(ret[-1])
@@ -390,7 +402,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
         intervals = self.forecastAheadInterval(data, steps)
 
-        for k in np.arange(self.order, steps):
+        for k in np.arange(self.order, steps+self.order):
 
             grid = self.getGridClean(resolution)
             grid = self.gridCount(grid, resolution, intervals[k])

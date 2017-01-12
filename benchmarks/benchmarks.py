@@ -32,8 +32,8 @@ def plotDistribution(dist):
                     vmin=0, vmax=1, edgecolors=None)
 
 
-def plotComparedSeries(original, models, colors):
-    fig = plt.figure(figsize=[15, 5])
+def plotComparedSeries(original, models, colors, typeonlegend=False, save=False, file=None,tam=[20, 5]):
+    fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
 
     mi = []
@@ -48,7 +48,9 @@ def plotComparedSeries(original, models, colors):
             ma.append(max(forecasted))
             for k in np.arange(0, fts.order):
                 forecasted.insert(0, None)
-            ax.plot(forecasted, color=colors[count], label=fts.shortname, ls="-")
+            lbl = fts.shortname
+            if typeonlegend: lbl += " (Point)"
+            ax.plot(forecasted, color=colors[count], label=lbl, ls="-")
 
         if fts.hasIntervalForecasting:
             forecasted = fts.forecastInterval(original)
@@ -59,7 +61,9 @@ def plotComparedSeries(original, models, colors):
             for k in np.arange(0, fts.order):
                 lower.insert(0, None)
                 upper.insert(0, None)
-            ax.plot(lower, color=colors[count], label=fts.shortname,ls="--")
+            lbl = fts.shortname
+            if typeonlegend: lbl += " (Interval)"
+            ax.plot(lower, color=colors[count], label=lbl,ls="--")
             ax.plot(upper, color=colors[count],ls="--")
 
         handles0, labels0 = ax.get_legend_handles_labels()
@@ -71,10 +75,16 @@ def plotComparedSeries(original, models, colors):
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
+    if save:
+        fig.savefig(file)
+        plt.close(fig)
 
-def plotComparedIntervalsAhead(original, models, colors, distributions, time_from, time_to):
-    fig = plt.figure(figsize=[25, 10])
+
+def plotComparedIntervalsAhead(original, models, colors, distributions, time_from, time_to, interpol=False, save=False, file=None,tam=[20, 5]):
+    fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
+
+    percentile = (max(original) - min(original))/100
 
     mi = []
     ma = []
@@ -82,21 +92,41 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     count = 0
     for fts in models:
         if fts.hasDistributionForecasting and distributions[count]:
-            density = fts.forecastDistributionAhead(original[:time_from], time_to, 25)
+            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to, percentile)
+
+            y = density.columns
+            t = len(y)
+
+            # interpol between time_from and time_from+1
+            if interpol:
+                diffs = [density[q][0] / 50 for q in density]
+                for p in np.arange(0, 50):
+                    xx = [(time_from - 1) + 0.02 * p for q in np.arange(0, t)]
+                    alpha2 = np.array([diffs[q] * p for q in np.arange(0, t)]) * 100
+                    ax.scatter(xx, y, c=alpha2, marker='s', linewidths=0, cmap='Oranges',
+                               norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
             for k in density.index:
-                alpha = np.array([density[x][k] for x in density]) * 100
-                x = [time_from + fts.order + k for x in np.arange(0, len(alpha))]
-                y = density.columns
+                alpha = np.array([density[q][k] for q in density]) * 100
+
+                x = [time_from  + k for x in np.arange(0, t)]
+
                 ax.scatter(x, y, c=alpha, marker='s', linewidths=0, cmap='Oranges',
                            norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
+                if interpol and k < max(density.index):
+                    diffs = [(density[q][k + 1] - density[q][k])/50 for q in density]
+                    for p in np.arange(0,50):
+                        xx = [time_from + k + 0.02*p for q in np.arange(0, t)]
+                        alpha2 = np.array([density[density.columns[q]][k] + diffs[q]*p for q in np.arange(0, t)]) * 100
+                        ax.scatter(xx, y, c=alpha2, marker='s', linewidths=0, cmap='Oranges',
+                                   norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
 
         if fts.hasIntervalForecasting:
-            forecasts = fts.forecastAhead(original[:time_from], time_to)
+            forecasts = fts.forecastAheadInterval(original[time_from - fts.order:time_from], time_to)
             lower = [kk[0] for kk in forecasts]
             upper = [kk[1] for kk in forecasts]
             mi.append(min(lower))
             ma.append(max(upper))
-            for k in np.arange(0, time_from):
+            for k in np.arange(0, time_from-fts.order):
                 lower.insert(0, None)
                 upper.insert(0, None)
             ax.plot(lower, color=colors[count], label=fts.shortname)
@@ -110,15 +140,19 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
                 forecasts.insert(0, None)
             ax.plot(forecasts, color=colors[count], label=fts.shortname)
 
-        handles0, labels0 = ax.get_legend_handles_labels()
-        ax.legend(handles0, labels0)
         count = count + 1
     ax.plot(original, color='black', label="Original")
+    handles0, labels0 = ax.get_legend_handles_labels()
+    ax.legend(handles0, labels0, loc=2)
     # ax.set_title(fts.name)
     ax.set_ylim([min(mi), max(ma)])
     ax.set_ylabel('F(T)')
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
+
+    if save:
+        fig.savefig(file)
+        plt.close(fig)
 
 
 def plotCompared(original, forecasts, labels, title):
