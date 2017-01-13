@@ -1,14 +1,19 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+
 import numpy as np
 import pandas as pd
 import matplotlib as plt
 import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from sklearn.cross_validation import KFold
+#from sklearn.cross_validation import KFold
 from pyFTS.benchmarks import Measures
 from pyFTS.partitioners import Grid
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations
+import time
 
+current_milli_time = lambda: int(round(time.time() * 1000))
 
 def getIntervalStatistics(original, models):
     ret = "Model		& RMSE		& MAPE		& Sharpness		& Resolution		& Coverage	\\ \n"
@@ -30,6 +35,15 @@ def plotDistribution(dist):
         y = dist.columns
         plt.scatter(x, y, c=alpha, marker='s', linewidths=0, cmap='Oranges', norm=pltcolors.Normalize(vmin=0, vmax=1),
                     vmin=0, vmax=1, edgecolors=None)
+
+
+def uniquefilename(name):
+    if '.' in name:
+        tmp = name.split('.')
+        return  tmp[0] + str(current_milli_time()) + '.' + tmp[1]
+    else:
+        return name + str(current_milli_time())
+
 
 
 def plotComparedSeries(original, models, colors, typeonlegend=False, save=False, file=None,tam=[20, 5]):
@@ -76,15 +90,17 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
     ax.set_xlim([0, len(original)])
 
     if save:
-        fig.savefig(file)
+        plt.show()
+        fig.savefig(uniquefilename(file))
         plt.close(fig)
 
 
-def plotComparedIntervalsAhead(original, models, colors, distributions, time_from, time_to, interpol=False, save=False, file=None,tam=[20, 5]):
+def plotComparedIntervalsAhead(original, models, colors, distributions, time_from, time_to,
+                               interpol=False, save=False, file=None,tam=[20, 5], resolution=None):
     fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
 
-    percentile = (max(original) - min(original))/100
+    if resolution is None: resolution = (max(original) - min(original))/100
 
     mi = []
     ma = []
@@ -92,26 +108,27 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     count = 0
     for fts in models:
         if fts.hasDistributionForecasting and distributions[count]:
-            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to, percentile)
+            density = fts.forecastAheadDistribution2(original[time_from - fts.order:time_from], time_to, resolution)
 
             y = density.columns
             t = len(y)
 
             # interpol between time_from and time_from+1
-            if interpol:
-                diffs = [density[q][0] / 50 for q in density]
-                for p in np.arange(0, 50):
-                    xx = [(time_from - 1) + 0.02 * p for q in np.arange(0, t)]
-                    alpha2 = np.array([diffs[q] * p for q in np.arange(0, t)]) * 100
-                    ax.scatter(xx, y, c=alpha2, marker='s', linewidths=0, cmap='Oranges',
-                               norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
+            #if interpol:
+            #    diffs = [density[q][0] / 50 for q in density]
+            #    for p in np.arange(0, 50):
+            #        xx = [(time_from - 1) + 0.02 * p for q in np.arange(0, t)]
+            #        alpha2 = np.array([diffs[q] * p for q in np.arange(0, t)]) * 100
+            #        ax.scatter(xx, y, c=alpha2, marker='s', linewidths=0, cmap='Oranges',
+            #                   norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
             for k in density.index:
                 alpha = np.array([density[q][k] for q in density]) * 100
 
                 x = [time_from  + k for x in np.arange(0, t)]
 
-                ax.scatter(x, y, c=alpha, marker='s', linewidths=0, cmap='Oranges',
-                           norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
+                for cc in np.arange(0,resolution,5):
+                    ax.scatter(x, y+cc, c=alpha, marker='s', linewidths=0, cmap='Oranges',
+                               norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
                 if interpol and k < max(density.index):
                     diffs = [(density[q][k + 1] - density[q][k])/50 for q in density]
                     for p in np.arange(0,50):
@@ -151,7 +168,8 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     ax.set_xlim([0, len(original)])
 
     if save:
-        fig.savefig(file)
+        plt.show()
+        fig.savefig(uniquefilename(file))
         plt.close(fig)
 
 

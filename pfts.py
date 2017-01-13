@@ -1,8 +1,13 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+
 import numpy as np
 import pandas as pd
 import math
-from pyFTS.common import FuzzySet, FLR
+from operator import itemgetter
+from pyFTS.common import FuzzySet, FLR, SortedCollection
 from pyFTS import hofts, ifts, tree
+
 
 
 class ProbabilisticFLRG(hofts.HighOrderFLRG):
@@ -173,9 +178,9 @@ class ProbabilisticFTS(ifts.IntervalFTS):
                 idx = np.ravel(tmp)  # flatten the array
 
                 if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                    if math.ceil(ndata[k]) <= self.sets[0].lower:
+                    if ndata[k] <= self.sets[0].lower:
                         idx = [0]
-                    elif math.ceil(ndata[k]) >= self.sets[-1].upper:
+                    elif ndata[k] >= self.sets[-1].upper:
                         idx = [len(self.sets) - 1]
                     else:
                         raise Exception(ndata[k])
@@ -349,52 +354,110 @@ class ProbabilisticFTS(ifts.IntervalFTS):
                 grid[sbin] = grid[sbin] + 1
         return grid
 
-    def forecastDistributionAhead2(self, data, steps, resolution):
+    def gridCountIndexed(self, grid, resolution, index, interval):
+        #print(interval)
+        for k in index.inside(interval[0],interval[1]):
+            #print(k)
+            grid[k] += 1
+        return grid
+
+    def buildTreeWithoutOrder(self, node, lags, level):
+
+        if level not in lags:
+            return
+
+        for s in lags[level]:
+            node.appendChild(tree.FLRGTreeNode(s))
+
+        for child in node.getChildren():
+            self.buildTreeWithoutOrder(child, lags, level + 1)
+
+    def forecastAheadDistribution2(self, data, steps, resolution):
 
         ret = []
 
-        intervals = self.forecastAhead(data, steps)
+        intervals = self.forecastAheadInterval(data, steps)
 
-        for k in np.arange(self.order, steps):
+        lags = {}
 
-            grid = self.getGridClean(resolution)
-            grid = self.gridCount(grid, resolution, intervals[k])
+        cc = 0
 
-            lags = {}
+        for i in intervals:
+            nq = 2 * cc
+            if nq == 0: nq = 1
+            if nq > 50: nq = 50
+            st = 50 / nq
 
-            cc = 0
-            for x in np.arange(k - self.order, k):
-                tmp = []
-                for qt in np.arange(0, 100, 5):
-                    tmp.append(intervals[x][0] + qt * (intervals[x][1] - intervals[x][0]) / 100)
-                    tmp.append(intervals[x][1] - qt * (intervals[x][1] - intervals[x][0]) / 100)
-                tmp.append(intervals[x][0] + (intervals[x][1] - intervals[x][0]) / 2)
+            quantiles = []
 
-                lags[cc] = tmp
+            for qt in np.arange(0, 50, st):
+                quantiles.append(i[0] + qt * ((i[1] - i[0]) / 100))
+                quantiles.append(i[0] - qt * ((i[1] - i[0]) / 100))
+            quantiles.append(i[0] + ((i[1] - i[0]) / 2))
 
-                cc = cc + 1
-            # Build the tree with all possible paths
+            quantiles = list(set(quantiles))
 
-            root = tree.FLRGTreeNode(None)
+            quantiles.sort()
 
-            self.buildTree(root, lags, 0)
+            #print(quantiles)
 
-            # Trace the possible paths and build the PFLRG's
+            lags[cc] = quantiles
 
-            for p in root.paths():
-                path = list(reversed(list(filter(None.__ne__, p))))
+            cc += 1
 
-                subset = [kk for kk in path]
+        # Build the tree with all possible paths
 
-                qtle = self.forecast(subset)
-                grid = self.gridCount(grid, resolution, np.ravel(qtle))
+        root = tree.FLRGTreeNode(None)
 
-            tmp = np.array([grid[k] for k in sorted(grid)])
+        self.buildTreeWithoutOrder(root, lags, 0)
+
+        #print(root)
+
+        #return
+
+        # Trace the possible paths and build the PFLRG's
+
+        grid = self.getGridClean(resolution)
+
+        ##index = SortedCollection.SortedCollection(key=lambda (k,v): itemgetter(1)(v))
+
+        index = SortedCollection.SortedCollection(iterable=grid.keys())
+
+        grids = []
+        for k in np.arange(0, steps):
+            grids.append(self.getGridClean(resolution))
+
+        for p in root.paths():
+            path = list(reversed(list(filter(None.__ne__, p))))
+
+            #print(path)
+
+            for k in np.arange(self.order, steps + self.order):
+
+                sample = path[k - self.order : k]
+
+                #print(sample)
+
+                qtle = self.forecastInterval(sample)
+
+                #grids[k - self.order] = self.gridCountPoints(grids[k - self.order], resolution, np.ravel(qtle))
+
+                # grids[k - self.order] = self.gridCount(grids[k - self.order], resolution, np.ravel(qtle))
+
+                grids[k - self.order] = self.gridCountIndexed(grids[k - self.order], resolution, index, np.ravel(qtle))
+
+                #return
+
+                #print(grid)
+
+        for k in np.arange(0, steps):
+            tmp = np.array([grids[k][q] for q in sorted(grids[k])])
             ret.append(tmp / sum(tmp))
 
         grid = self.getGridClean(resolution)
         df = pd.DataFrame(ret, columns=sorted(grid))
         return df
+
 
     def forecastAheadDistribution(self, data, steps, resolution):
 
@@ -407,14 +470,18 @@ class ProbabilisticFTS(ifts.IntervalFTS):
             grid = self.getGridClean(resolution)
             grid = self.gridCount(grid, resolution, intervals[k])
 
-            for qt in np.arange(1, 50, 2):
+            nq = 2 * k
+            if nq > 50: nq = 50
+            st = 50 / nq
+
+            for qt in np.arange(0, 50, st):
                 # print(qt)
                 qtle_lower = self.forecastInterval(
-                    [intervals[x][0] + qt * (intervals[x][1] - intervals[x][0]) / 100 for x in
+                    [intervals[x][0] + qt * ((intervals[x][1] - intervals[x][0]) / 100 ) for x in
                      np.arange(k - self.order, k)])
                 grid = self.gridCount(grid, resolution, np.ravel(qtle_lower))
                 qtle_upper = self.forecastInterval(
-                    [intervals[x][1] - qt * (intervals[x][1] - intervals[x][0]) / 100 for x in
+                    [intervals[x][1] - qt * ((intervals[x][1] - intervals[x][0]) / 100 ) for x in
                      np.arange(k - self.order, k)])
                 grid = self.gridCount(grid, resolution, np.ravel(qtle_upper))
             qtle_mid = self.forecastInterval(

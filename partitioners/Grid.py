@@ -11,10 +11,8 @@ def GridPartitionerTrimf(data, npart, names=None, prefix="A"):
     sets = []
     dmax = max(data)
     dmax += dmax * 0.1
-    print(dmax)
     dmin = min(data)
     dmin -= dmin * 0.1
-    print(dmin)
     dlen = dmax - dmin
     partlen = math.ceil(dlen / npart)
     #p2 = partlen / 2
