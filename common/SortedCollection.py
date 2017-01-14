@@ -201,11 +201,17 @@ class SortedCollection(object):
         l = bisect_right(self._keys, le)
         if g != len(self) and l != len(self):
             return self._items[g : l]
-        raise ValueError('No item found with key at or above: %r' % (k,))
+        raise ValueError('No item found between keys : %r,%r' % (ge,le))
 
     def inside(self, ge, le):
         g = bisect_right(self._keys, ge)
         l = bisect_left(self._keys, le)
         if g != len(self) and l != len(self):
             return self._items[g : l]
-        raise ValueError('No item found with key at or above: %r' % (k,))
+        elif g != len(self):
+            return self._items[g-1: l]
+        elif l != len(self):
+            return self._items[g: l-1]
+        else:
+            return self._items[g - 1: l - 1]
+        raise ValueError('No item found inside keys: %r,%r' % (ge,le))

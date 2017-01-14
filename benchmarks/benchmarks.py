@@ -108,7 +108,7 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     count = 0
     for fts in models:
         if fts.hasDistributionForecasting and distributions[count]:
-            density = fts.forecastAheadDistribution2(original[time_from - fts.order:time_from], time_to, resolution)
+            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to, resolution)
 
             y = density.columns
             t = len(y)
