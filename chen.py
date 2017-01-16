@@ -1,6 +1,6 @@
 import numpy as np
 from pyFTS.common import FuzzySet, FLR
-import fts
+from  pyFTS import fts
 
 
 class ConventionalFLRG:

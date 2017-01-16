@@ -140,9 +140,9 @@ class ProbabilisticFTS(ifts.IntervalFTS):
                     idx = np.ravel(tmp)  # flatten the array
 
                     if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                        if math.ceil(instance) <= self.sets[0].lower:
+                        if instance <= self.sets[0].lower:
                             idx = [0]
-                        elif math.ceil(instance) >= self.sets[-1].upper:
+                        elif instance >= self.sets[-1].upper:
                             idx = [len(self.sets) - 1]
                         else:
                             raise Exception(instance)
@@ -348,17 +348,17 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
         return grid
 
-    def gridCount(self, grid, resolution, interval):
-        for sbin in sorted(grid):
-            if sbin >= interval[0] and (sbin + resolution) <= interval[1]:
-                grid[sbin] = grid[sbin] + 1
-        return grid
-
-    def gridCountIndexed(self, grid, resolution, index, interval):
+    def gridCount(self, grid, resolution, index, interval):
         #print(interval)
         for k in index.inside(interval[0],interval[1]):
             #print(k)
             grid[k] += 1
+        return grid
+
+    def gridCountPoint(self, grid, resolution, index, point):
+        k = index.find_ge(point)
+        # print(k)
+        grid[k] += 1
         return grid
 
     def buildTreeWithoutOrder(self, node, lags, level):
@@ -372,8 +372,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         for child in node.getChildren():
             self.buildTreeWithoutOrder(child, lags, level + 1)
 
-
-    def forecastAheadDistribution(self, data, steps, resolution):
+    def forecastAheadDistribution(self, data, steps, resolution,parameters=None):
 
         ret = []
 
@@ -383,8 +382,6 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
         index = SortedCollection.SortedCollection(iterable=grid.keys())
 
-        #print (index)
-
         grids = []
         for k in np.arange(0, steps):
             grids.append(self.getGridClean(resolution))
@@ -393,24 +390,13 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
             lags = {}
 
-            #print(k)
-
             cc = 0
 
             for i in intervals[k - self.order : k]:
 
-                #print(i)
-
-                nq =  3 * k
-                if nq == 0: nq = 1
-                if nq > 50: nq = 50
-                st = 50 / nq
-
-                #print(st)
-
                 quantiles = []
 
-                for qt in np.arange(0, 50, st):
+                for qt in np.arange(0, 50, 2):
                     quantiles.append(i[0] + qt * ((i[1] - i[0]) / 100))
                     quantiles.append(i[1] - qt * ((i[1] - i[0]) / 100))
                 quantiles.append(i[0] + ((i[1] - i[0]) / 2))
@@ -419,12 +405,9 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
                 quantiles.sort()
 
-                #print(quantiles)
-
                 lags[cc] = quantiles
 
                 cc += 1
-
 
             # Build the tree with all possible paths
 
@@ -432,18 +415,17 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
             self.buildTreeWithoutOrder(root, lags, 0)
 
-            #print(root)
-
             # Trace the possible paths
 
             for p in root.paths():
                 path = list(reversed(list(filter(None.__ne__, p))))
 
-                #print(path)
-
-                qtle = self.forecastInterval(path)
-
-                grids[k - self.order] = self.gridCountIndexed(grids[k - self.order], resolution, index, np.ravel(qtle))
+                if parameters is None:
+                    qtle = self.forecastInterval(path)
+                    grids[k - self.order] = self.gridCount(grids[k - self.order], resolution, index, np.ravel(qtle))
+                else:
+                    qtle = self.forecast(path)
+                    grids[k - self.order] = self.gridCountPoint(grids[k - self.order], resolution, index, np.ravel(qtle))
 
         for k in np.arange(0, steps):
             tmp = np.array([grids[k][q] for q in sorted(grids[k])])

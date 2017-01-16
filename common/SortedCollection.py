@@ -215,3 +215,10 @@ class SortedCollection(object):
         else:
             return self._items[g - 1: l - 1]
         raise ValueError('No item found inside keys: %r,%r' % (ge,le))
+
+    def around(self, k):
+        g = bisect_right(self._keys, k)
+        l = bisect_left(self._keys, k)
+        if g != len(self) and l != len(self):
+            return self._items[g : l]
+        raise ValueError('No item found around key : %r' % (k,))

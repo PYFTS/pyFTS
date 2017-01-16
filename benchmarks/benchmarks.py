@@ -108,27 +108,18 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     count = 0
     for fts in models:
         if fts.hasDistributionForecasting and distributions[count]:
-            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to, resolution)
+            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to, resolution, parameters=None)
 
             y = density.columns
             t = len(y)
 
-            # interpol between time_from and time_from+1
-            #if interpol:
-            #    diffs = [density[q][0] / 50 for q in density]
-            #    for p in np.arange(0, 50):
-            #        xx = [(time_from - 1) + 0.02 * p for q in np.arange(0, t)]
-            #        alpha2 = np.array([diffs[q] * p for q in np.arange(0, t)]) * 100
-            #        ax.scatter(xx, y, c=alpha2, marker='s', linewidths=0, cmap='Oranges',
-            #                   norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
             for k in density.index:
                 alpha = np.array([density[q][k] for q in density]) * 100
 
                 x = [time_from  + k for x in np.arange(0, t)]
 
                 for cc in np.arange(0,resolution,5):
-                    ax.scatter(x, y+cc, c=alpha, marker='s', linewidths=0, cmap='Oranges',
-                               norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
+                    ax.scatter(x, y+cc, c=alpha, marker='s', linewidths=0, cmap='Oranges', edgecolors=None)
                 if interpol and k < max(density.index):
                     diffs = [(density[q][k + 1] - density[q][k])/50 for q in density]
                     for p in np.arange(0,50):
