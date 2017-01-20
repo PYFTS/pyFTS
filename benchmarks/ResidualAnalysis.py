@@ -5,14 +5,14 @@ import numpy as np
 import pandas as pd
 import matplotlib as plt
 import matplotlib.pyplot as plt
-from pyFTS.common import Transformations
+from pyFTS.common import Transformations,Util
 
 
 def residuals(targets, forecasts, order=1):
     return np.array(targets[order:]) - np.array(forecasts[:-order])
 
 
-def plotResiduals(targets, forecasts, order=1, tam=[8, 8]):
+def plotResiduals(targets, forecasts, order=1, tam=[8, 8], save=False, file=None):
     res = residuals(targets,forecasts,order)
     fig = plt.figure(figsize=tam)
     ax1 = fig.add_axes([0, 1, 0.9, 0.3])  # left, bottom, width, height
@@ -21,4 +21,6 @@ def plotResiduals(targets, forecasts, order=1, tam=[8, 8]):
     ax2.acorr(res)
     ax3 = fig.add_axes([0, 0.3, 0.9, 0.3])
     ax3.hist(res)
+
+    Util.showAndSaveImage(fig, file, save)
 
