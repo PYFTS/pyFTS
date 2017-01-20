@@ -10,10 +10,8 @@ from mpl_toolkits.mplot3d import Axes3D
 #from sklearn.cross_validation import KFold
 from pyFTS.benchmarks import Measures
 from pyFTS.partitioners import Grid
-from pyFTS.common import Membership, FuzzySet, FLR, Transformations
-import time
+from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 
-current_milli_time = lambda: int(round(time.time() * 1000))
 
 def getIntervalStatistics(original, models):
     ret = "Model		& RMSE		& MAPE		& Sharpness		& Resolution		& Coverage	\\ \n"
@@ -35,15 +33,6 @@ def plotDistribution(dist):
         y = dist.columns
         plt.scatter(x, y, c=alpha, marker='s', linewidths=0, cmap='Oranges', norm=pltcolors.Normalize(vmin=0, vmax=1),
                     vmin=0, vmax=1, edgecolors=None)
-
-
-def uniquefilename(name):
-    if '.' in name:
-        tmp = name.split('.')
-        return  tmp[0] + str(current_milli_time()) + '.' + tmp[1]
-    else:
-        return name + str(current_milli_time())
-
 
 
 def plotComparedSeries(original, models, colors, typeonlegend=False, save=False, file=None,tam=[20, 5]):
@@ -89,10 +78,9 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
-    if save:
-        plt.show()
-        fig.savefig(uniquefilename(file))
-        plt.close(fig)
+    Util.showAndSaveImage(fig,file,save)
+
+
 
 
 def plotComparedIntervalsAhead(original, models, colors, distributions, time_from, time_to,
@@ -158,10 +146,7 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
-    if save:
-        plt.show()
-        fig.savefig(uniquefilename(file))
-        plt.close(fig)
+    Util.showAndSaveImage(fig, file, save)
 
 
 def plotCompared(original, forecasts, labels, title):

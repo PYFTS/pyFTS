@@ -17,3 +17,10 @@ def boxcox(original, plambda):
     else:
         modified = [math.log(original[t]) for t in np.arange(0, n)]
     return np.array(modified)
+
+
+def Z(original):
+    mu = np.mean(original)
+    sigma = np.std(original)
+    z = [(k - mu)/sigma for k in original]
+    return z

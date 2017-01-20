@@ -4,12 +4,12 @@ import matplotlib as plt
 import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from pyFTS.common import Membership
+from pyFTS.common import Membership, Util
 
 
-def plotSets(data, sets, titles):
+def plotSets(data, sets, titles, tam=[12, 10], save=False, file=None):
     num = len(sets)
-    fig = plt.figure(figsize=[12, 10])
+    fig = plt.figure(figsize=tam)
     maxx = max(data)
     minx = min(data)
     h = 1/num
@@ -25,3 +25,5 @@ def plotSets(data, sets, titles):
                 tmpx = [ kk for kk in np.arange(s.lower, s.upper)]
                 tmpy = [s.membership(kk) for kk in np.arange(s.lower, s.upper)]
                 ax0.plot(tmpx, tmpy)
+
+    Util.showAndSaveImage(fig, file, save)

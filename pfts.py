@@ -204,7 +204,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
             # gerar o intervalo
             norm = sum(norms)
             if norm == 0:
-                ret.append([0, 0])
+                ret.append(0)
             else:
                 ret.append(sum(mp) / norm)
 
