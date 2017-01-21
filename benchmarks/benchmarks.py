@@ -35,32 +35,32 @@ def plotDistribution(dist):
                     vmin=0, vmax=1, edgecolors=None)
 
 
-def plotComparedSeries(original, models, colors, typeonlegend=False, save=False, file=None,tam=[20, 5]):
+def plotComparedSeries(original, models, colors, typeonlegend=False, save=False, file=None,tam=[20, 5],intervals=True):
     fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
 
     mi = []
     ma = []
 
-    ax.plot(original, color='black', label="Original")
+    ax.plot(original, color='black', label="Original",linewidth=1.5)
     count = 0
     for fts in models:
         if fts.hasPointForecasting:
             forecasted = fts.forecast(original)
-            mi.append(min(forecasted))
-            ma.append(max(forecasted))
+            mi.append(min(forecasted)*0.95)
+            ma.append(max(forecasted)*1.05)
             for k in np.arange(0, fts.order):
                 forecasted.insert(0, None)
             lbl = fts.shortname
             if typeonlegend: lbl += " (Point)"
             ax.plot(forecasted, color=colors[count], label=lbl, ls="-")
 
-        if fts.hasIntervalForecasting:
+        if fts.hasIntervalForecasting and intervals:
             forecasted = fts.forecastInterval(original)
             lower = [kk[0] for kk in forecasted]
             upper = [kk[1] for kk in forecasted]
-            mi.append(min(lower))
-            ma.append(max(upper))
+            mi.append(min(lower)*0.95)
+            ma.append(max(upper)*1.05)
             for k in np.arange(0, fts.order):
                 lower.insert(0, None)
                 upper.insert(0, None)
@@ -430,101 +430,61 @@ def compareModelsTable(original, models_fo, models_ho):
     return sup + header + body + "\\end{tabular}"
 
 
-from pyFTS import hwang
-
-
-def HOSelecaoSimples_MenorRMSE(original, parameters, orders):
+def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None,tam=[10, 15],plotforecasts=False,elev=30, azim=144):
     ret = []
-    errors = np.array([[0 for k in range(len(parameters))] for kk in range(len(orders))])
+    errors = np.array([[0 for k in range(len(partitions))] for kk in range(len(orders))])
     forecasted_best = []
-    print("Série Original")
-    fig = plt.figure(figsize=[20, 12])
-    fig.suptitle("Comparação de modelos ")
-    ax0 = fig.add_axes([0, 0.5, 0.6, 0.45])  # left, bottom, width, height
-    ax0.set_xlim([0, len(original)])
-    ax0.set_ylim([min(original), max(original)])
-    ax0.set_title('Série Temporal')
-    ax0.set_ylabel('F(T)')
-    ax0.set_xlabel('T')
-    ax0.plot(original, label="Original")
-    min_rmse = 100000.0
+    fig = plt.figure(figsize=tam)
+    #fig.suptitle("Comparação de modelos ")
+    if plotforecasts:
+        ax0 = fig.add_axes([0, 0.5, 0.9, 0.45])  # left, bottom, width, height
+        ax0.set_xlim([0, len(original)])
+        ax0.set_ylim([min(original)*0.9, max(original)*1.1])
+        ax0.set_title('Forecasts')
+        ax0.set_ylabel('F(T)')
+        ax0.set_xlabel('T')
+    min_rmse = 1000000.0
     best = None
     pc = 0
-    for p in parameters:
+    for p in partitions:
         oc = 0
         for o in orders:
             sets = Grid.GridPartitionerTrimf(original, p)
-            fts = hwang.HighOrderFTS(o, "k = " + str(p) + " w = " + str(o))
-            fts.train(original, sets)
-            forecasted = [fts.forecast(original, xx) for xx in range(o, len(original))]
-            error = Measures.rmse(np.array(forecasted), np.array(original[o:]))
+            fts = model("q = " + str(p) + " n = " + str(o))
+            fts.train(original, sets, o)
+            forecasted = fts.forecast(original)
+            error = Measures.rmse(np.array(original[o:]),np.array(forecasted[:-1]))
+            mape = Measures.mape(np.array(original[o:]), np.array(forecasted[:-1]))
+            #print(original[o:])
+            #print(forecasted[-1])
             for kk in range(o):
                 forecasted.insert(0, None)
-            ax0.plot(forecasted, label=fts.name)
-            print(o, p, error)
+                if plotforecasts: ax0.plot(forecasted, label=fts.name)
+            #print(o, p, mape)
             errors[oc, pc] = error
             if error < min_rmse:
                 min_rmse = error
                 best = fts
                 forecasted_best = forecasted
-            oc = oc + 1
-        pc = pc + 1
-        handles0, labels0 = ax0.get_legend_handles_labels()
-    ax0.legend(handles0, labels0)
-    ax1 = Axes3D(fig, rect=[0.6, 0.5, 0.45, 0.45], elev=30, azim=144)
+            oc += 1
+        pc += 1
+    #print(min_rmse)
+    if plotforecasts:
+        #handles0, labels0 = ax0.get_legend_handles_labels()
+        #ax0.legend(handles0, labels0)
+        ax0.plot(original, label="Original", linewidth=3.0, color="black")
+        ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.45], elev=elev, azim=azim)
+    if not plotforecasts: ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
     # ax1 = fig.add_axes([0.6, 0.5, 0.45, 0.45], projection='3d')
-    ax1.set_title('Comparação dos Erros Quadráticos Médios por tamanho da janela')
-    ax1.set_ylabel('RMSE')
-    ax1.set_xlabel('Quantidade de Partições')
-    ax1.set_zlabel('W')
-    X, Y = np.meshgrid(parameters, orders)
+    ax1.set_title('Error Surface')
+    ax1.set_ylabel('Model order')
+    ax1.set_xlabel('Number of partitions')
+    ax1.set_zlabel('RMSE')
+    X, Y = np.meshgrid(partitions, orders)
     surf = ax1.plot_surface(X, Y, errors, rstride=1, cstride=1, antialiased=True)
     ret.append(best)
     ret.append(forecasted_best)
 
-    # Modelo diferencial
-    print("\nSérie Diferencial")
-    errors = np.array([[0 for k in range(len(parameters))] for kk in range(len(orders))])
-    forecastedd_best = []
-    ax2 = fig.add_axes([0, 0, 0.6, 0.45])  # left, bottom, width, height
-    ax2.set_xlim([0, len(original)])
-    ax2.set_ylim([min(original), max(original)])
-    ax2.set_title('Série Temporal')
-    ax2.set_ylabel('F(T)')
-    ax2.set_xlabel('T')
-    ax2.plot(original, label="Original")
-    min_rmse = 100000.0
-    bestd = None
-    pc = 0
-    for p in parameters:
-        oc = 0
-        for o in orders:
-            sets = Grid.GridPartitionerTrimf(Transformations.differential(original), p)
-            fts = hwang.HighOrderFTS(o, "k = " + str(p) + " w = " + str(o))
-            fts.train(original, sets)
-            forecasted = [fts.forecastDiff(original, xx) for xx in range(o, len(original))]
-            error = Measures.rmse(np.array(forecasted), np.array(original[o:]))
-            for kk in range(o):
-                forecasted.insert(0, None)
-            ax2.plot(forecasted, label=fts.name)
-            print(o, p, error)
-            errors[oc, pc] = error
-            if error < min_rmse:
-                min_rmse = error
-                bestd = fts
-                forecastedd_best = forecasted
-            oc = oc + 1
-        pc = pc + 1
-    handles0, labels0 = ax2.get_legend_handles_labels()
-    ax2.legend(handles0, labels0)
-    ax3 = Axes3D(fig, rect=[0.6, 0.0, 0.45, 0.45], elev=30, azim=144)
-    # ax3 = fig.add_axes([0.6, 0.0, 0.45, 0.45], projection='3d')
-    ax3.set_title('Comparação dos Erros Quadráticos Médios')
-    ax3.set_ylabel('RMSE')
-    ax3.set_xlabel('Quantidade de Partições')
-    ax3.set_zlabel('W')
-    X, Y = np.meshgrid(parameters, orders)
-    surf = ax3.plot_surface(X, Y, errors, rstride=1, cstride=1, antialiased=True)
-    ret.append(bestd)
-    ret.append(forecastedd_best)
+    Util.showAndSaveImage(fig,file,save)
+
     return ret

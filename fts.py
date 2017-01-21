@@ -45,7 +45,7 @@ class FTS:
     def forecastAheadDistribution(self, data, steps):
         pass
 
-    def train(self, data, sets):
+    def train(self, data, sets, order=1):
         pass
 
     def getMidpoints(self, flrg):
