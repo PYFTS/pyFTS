@@ -7,10 +7,11 @@ import matplotlib as plt
 import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-#from sklearn.cross_validation import KFold
+# from sklearn.cross_validation import KFold
 from pyFTS.benchmarks import Measures
 from pyFTS.partitioners import Grid
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
+from pyFTS import pfts
 
 
 def getIntervalStatistics(original, models):
@@ -35,20 +36,21 @@ def plotDistribution(dist):
                     vmin=0, vmax=1, edgecolors=None)
 
 
-def plotComparedSeries(original, models, colors, typeonlegend=False, save=False, file=None,tam=[20, 5],intervals=True):
+def plotComparedSeries(original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5],
+                       intervals=True):
     fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
 
     mi = []
     ma = []
 
-    ax.plot(original, color='black', label="Original",linewidth=1.5)
+    ax.plot(original, color='black', label="Original", linewidth=1.5)
     count = 0
     for fts in models:
         if fts.hasPointForecasting:
             forecasted = fts.forecast(original)
-            mi.append(min(forecasted)*0.95)
-            ma.append(max(forecasted)*1.05)
+            mi.append(min(forecasted) * 0.95)
+            ma.append(max(forecasted) * 1.05)
             for k in np.arange(0, fts.order):
                 forecasted.insert(0, None)
             lbl = fts.shortname
@@ -59,15 +61,15 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
             forecasted = fts.forecastInterval(original)
             lower = [kk[0] for kk in forecasted]
             upper = [kk[1] for kk in forecasted]
-            mi.append(min(lower)*0.95)
-            ma.append(max(upper)*1.05)
+            mi.append(min(lower) * 0.95)
+            ma.append(max(upper) * 1.05)
             for k in np.arange(0, fts.order):
                 lower.insert(0, None)
                 upper.insert(0, None)
             lbl = fts.shortname
             if typeonlegend: lbl += " (Interval)"
-            ax.plot(lower, color=colors[count], label=lbl,ls="--")
-            ax.plot(upper, color=colors[count],ls="--")
+            ax.plot(lower, color=colors[count], label=lbl, ls="--")
+            ax.plot(upper, color=colors[count], ls="--")
 
         handles0, labels0 = ax.get_legend_handles_labels()
         ax.legend(handles0, labels0, loc=2)
@@ -78,17 +80,15 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
-    Util.showAndSaveImage(fig,file,save)
-
-
+    Util.showAndSaveImage(fig, file, save)
 
 
 def plotComparedIntervalsAhead(original, models, colors, distributions, time_from, time_to,
-                               interpol=False, save=False, file=None,tam=[20, 5], resolution=None):
+                               interpol=False, save=False, file=None, tam=[20, 5], resolution=None):
     fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
 
-    if resolution is None: resolution = (max(original) - min(original))/100
+    if resolution is None: resolution = (max(original) - min(original)) / 100
 
     mi = []
     ma = []
@@ -96,7 +96,8 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     count = 0
     for fts in models:
         if fts.hasDistributionForecasting and distributions[count]:
-            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to, resolution, parameters=None)
+            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to, resolution,
+                                                    parameters=None)
 
             y = density.columns
             t = len(y)
@@ -104,15 +105,16 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
             for k in density.index:
                 alpha = np.array([density[q][k] for q in density]) * 100
 
-                x = [time_from  + k for x in np.arange(0, t)]
+                x = [time_from + k for x in np.arange(0, t)]
 
-                for cc in np.arange(0,resolution,5):
-                    ax.scatter(x, y+cc, c=alpha, marker='s', linewidths=0, cmap='Oranges', edgecolors=None)
+                for cc in np.arange(0, resolution, 5):
+                    ax.scatter(x, y + cc, c=alpha, marker='s', linewidths=0, cmap='Oranges', edgecolors=None)
                 if interpol and k < max(density.index):
-                    diffs = [(density[q][k + 1] - density[q][k])/50 for q in density]
-                    for p in np.arange(0,50):
-                        xx = [time_from + k + 0.02*p for q in np.arange(0, t)]
-                        alpha2 = np.array([density[density.columns[q]][k] + diffs[q]*p for q in np.arange(0, t)]) * 100
+                    diffs = [(density[q][k + 1] - density[q][k]) / 50 for q in density]
+                    for p in np.arange(0, 50):
+                        xx = [time_from + k + 0.02 * p for q in np.arange(0, t)]
+                        alpha2 = np.array(
+                            [density[density.columns[q]][k] + diffs[q] * p for q in np.arange(0, t)]) * 100
                         ax.scatter(xx, y, c=alpha2, marker='s', linewidths=0, cmap='Oranges',
                                    norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
 
@@ -122,7 +124,7 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
             upper = [kk[1] for kk in forecasts]
             mi.append(min(lower))
             ma.append(max(upper))
-            for k in np.arange(0, time_from-fts.order):
+            for k in np.arange(0, time_from - fts.order):
                 lower.insert(0, None)
                 upper.insert(0, None)
             ax.plot(lower, color=colors[count], label=fts.shortname)
@@ -430,16 +432,17 @@ def compareModelsTable(original, models_fo, models_ho):
     return sup + header + body + "\\end{tabular}"
 
 
-def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None,tam=[10, 15],plotforecasts=False,elev=30, azim=144):
+def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None, tam=[10, 15], plotforecasts=False,
+                      elev=30, azim=144):
     ret = []
     errors = np.array([[0 for k in range(len(partitions))] for kk in range(len(orders))])
     forecasted_best = []
     fig = plt.figure(figsize=tam)
-    #fig.suptitle("Comparação de modelos ")
+    # fig.suptitle("Comparação de modelos ")
     if plotforecasts:
-        ax0 = fig.add_axes([0, 0.5, 0.9, 0.45])  # left, bottom, width, height
+        ax0 = fig.add_axes([0, 0.4, 0.9, 0.5])  # left, bottom, width, height
         ax0.set_xlim([0, len(original)])
-        ax0.set_ylim([min(original)*0.9, max(original)*1.1])
+        ax0.set_ylim([min(original) * 0.9, max(original) * 1.1])
         ax0.set_title('Forecasts')
         ax0.set_ylabel('F(T)')
         ax0.set_xlabel('T')
@@ -453,14 +456,14 @@ def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None
             fts = model("q = " + str(p) + " n = " + str(o))
             fts.train(original, sets, o)
             forecasted = fts.forecast(original)
-            error = Measures.rmse(np.array(original[o:]),np.array(forecasted[:-1]))
+            error = Measures.rmse(np.array(original[o:]), np.array(forecasted[:-1]))
             mape = Measures.mape(np.array(original[o:]), np.array(forecasted[:-1]))
-            #print(original[o:])
-            #print(forecasted[-1])
+            # print(original[o:])
+            # print(forecasted[-1])
             for kk in range(o):
                 forecasted.insert(0, None)
                 if plotforecasts: ax0.plot(forecasted, label=fts.name)
-            #print(o, p, mape)
+            # print(o, p, mape)
             errors[oc, pc] = error
             if error < min_rmse:
                 min_rmse = error
@@ -468,12 +471,12 @@ def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None
                 forecasted_best = forecasted
             oc += 1
         pc += 1
-    #print(min_rmse)
+    # print(min_rmse)
     if plotforecasts:
-        #handles0, labels0 = ax0.get_legend_handles_labels()
-        #ax0.legend(handles0, labels0)
+        # handles0, labels0 = ax0.get_legend_handles_labels()
+        # ax0.legend(handles0, labels0)
         ax0.plot(original, label="Original", linewidth=3.0, color="black")
-        ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.45], elev=elev, azim=azim)
+        ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
     if not plotforecasts: ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
     # ax1 = fig.add_axes([0.6, 0.5, 0.45, 0.45], projection='3d')
     ax1.set_title('Error Surface')
@@ -485,6 +488,70 @@ def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None
     ret.append(best)
     ret.append(forecasted_best)
 
-    Util.showAndSaveImage(fig,file,save)
+    # plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)
 
     return ret
+
+
+def pftsExploreOrderAndPartitions(data,save=False, file=None):
+    fig, axes = plt.subplots(nrows=4, ncols=1, figsize=[6, 8])
+    data_fs1 = Grid.GridPartitionerTrimf(data, 10)
+    mi = []
+    ma = []
+
+    axes[0].set_title('Point Forecasts by Order')
+    axes[2].set_title('Interval Forecasts by Order')
+
+    for order in np.arange(1, 6):
+        fts = pfts.ProbabilisticFTS("")
+        fts.shortname = "n = " + str(order)
+        fts.train(data, data_fs1, order=order)
+        point_forecasts = fts.forecast(data)
+        interval_forecasts = fts.forecastInterval(data)
+        lower = [kk[0] for kk in interval_forecasts]
+        upper = [kk[1] for kk in interval_forecasts]
+        mi.append(min(lower) * 0.95)
+        ma.append(max(upper) * 1.05)
+        for k in np.arange(0, order):
+            point_forecasts.insert(0, None)
+            lower.insert(0, None)
+            upper.insert(0, None)
+        axes[0].plot(point_forecasts, label=fts.shortname)
+        axes[2].plot(lower, label=fts.shortname)
+        axes[2].plot(upper)
+
+    axes[1].set_title('Point Forecasts by Number of Partitions')
+    axes[3].set_title('Interval Forecasts by Number of Partitions')
+
+    for partitions in np.arange(5, 11):
+        data_fs = Grid.GridPartitionerTrimf(data, partitions)
+        fts = pfts.ProbabilisticFTS("")
+        fts.shortname = "q = " + str(partitions)
+        fts.train(data, data_fs, 1)
+        point_forecasts = fts.forecast(data)
+        interval_forecasts = fts.forecastInterval(data)
+        lower = [kk[0] for kk in interval_forecasts]
+        upper = [kk[1] for kk in interval_forecasts]
+        mi.append(min(lower) * 0.95)
+        ma.append(max(upper) * 1.05)
+        point_forecasts.insert(0, None)
+        lower.insert(0, None)
+        upper.insert(0, None)
+        axes[1].plot(point_forecasts, label=fts.shortname)
+        axes[3].plot(lower, label=fts.shortname)
+        axes[3].plot(upper)
+
+    for ax in axes:
+        ax.set_ylabel('F(T)')
+        ax.set_xlabel('T')
+        ax.plot(data, label="Original", color="black", linewidth=1.5)
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles, labels, loc=2, bbox_to_anchor=(1, 1))
+        ax.set_ylim([min(mi), max(ma)])
+        ax.set_xlim([0, len(data)])
+
+    plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)

@@ -24,6 +24,18 @@ def mape_interval(targets, forecasts):
     return np.mean(abs(fmean - targets) / fmean) * 100
 
 
+# Theil's U Statistic
+def U(targets, forecasts):
+    #forecasts.insert(0,None)
+    l = len(targets)
+    naive = []
+    y = []
+    for k in np.arange(0,l-1):
+        y.append(((targets[k+1]-forecasts[k])/targets[k]) ** 2)
+        naive.append(((targets[k + 1] - targets[k]) / targets[k]) ** 2)
+    return np.sqrt(sum(y)/sum(naive))
+
+
 # Sharpness - Mean size of the intervals
 def sharpness(forecasts):
     tmp = [i[1] - i[0] for i in forecasts]
