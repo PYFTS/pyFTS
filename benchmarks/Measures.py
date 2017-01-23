@@ -26,12 +26,11 @@ def mape_interval(targets, forecasts):
 
 # Theil's U Statistic
 def U(targets, forecasts):
-    #forecasts.insert(0,None)
     l = len(targets)
     naive = []
     y = []
     for k in np.arange(0,l-1):
-        y.append(((targets[k+1]-forecasts[k])/targets[k]) ** 2)
+        y.append(((forecasts[k] - targets[k+1])/targets[k]) ** 2)
         naive.append(((targets[k + 1] - targets[k]) / targets[k]) ** 2)
     return np.sqrt(sum(y)/sum(naive))
 
