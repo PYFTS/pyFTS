@@ -15,6 +15,7 @@ class IntervalFTS(hofts.HighOrderFTS):
         self.flrgs = {}
         self.hasPointForecasting = False
         self.hasIntervalForecasting = True
+        self.isHighOrder = True
 
     def getUpper(self, flrg):
         if flrg.strLHS() in self.flrgs:

@@ -44,9 +44,9 @@ class SeasonalFTS(fts.FTS):
 
         return (flrgs)
 
-    def train(self, data, sets, seasonality):
+    def train(self, data, sets, order=1,parameters=12):
         self.sets = sets
-        self.seasonality = seasonality
+        self.seasonality = parameters
         tmpdata = FuzzySet.fuzzySeries(data, sets)
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)

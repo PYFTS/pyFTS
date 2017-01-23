@@ -41,6 +41,7 @@ class HighOrderFTS(fts.FTS):
         self.detail = "Chen"
         self.order = 1
         self.setsDict = {}
+        self.isHighOrder = True
 
     def generateFLRG(self, flrs):
         flrgs = {}
@@ -58,7 +59,7 @@ class HighOrderFTS(fts.FTS):
                 flrgs[flrg.strLHS()].appendRHS(flrs[k].RHS)
         return (flrgs)
 
-    def train(self, data, sets, order):
+    def train(self, data, sets, order=1,parameters=None):
         self.order = order
         self.sets = sets
         for s in self.sets:    self.setsDict[s.name] = s

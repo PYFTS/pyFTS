@@ -1,6 +1,6 @@
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-import fts
+from pyFTS import fts
 
 class ExponentialyWeightedFLRG:
     def __init__(self, LHS, c):
@@ -49,8 +49,8 @@ class ExponentialyWeightedFTS(fts.FTS):
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 
-    def train(self, data, sets, c):
-        self.c = c
+    def train(self, data, sets,order=1,parameters=2):
+        self.c = parameters
         self.sets = sets
         tmpdata = FuzzySet.fuzzySeries(data, sets)
         flrs = FLR.generateRecurrentFLRs(tmpdata)

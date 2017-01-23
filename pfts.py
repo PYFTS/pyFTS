@@ -46,6 +46,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         self.hasPointForecasting = True
         self.hasIntervalForecasting = True
         self.hasDistributionForecasting = True
+        self.isHighOrder = True
 
     def generateFLRG(self, flrs):
         flrgs = {}

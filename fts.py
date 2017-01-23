@@ -10,6 +10,7 @@ class FTS:
         self.shortname = name
         self.name = name
         self.detail = name
+        self.isHighOrder = False
         self.hasSeasonality = False
         self.hasPointForecasting = True
         self.hasIntervalForecasting = False
@@ -45,7 +46,7 @@ class FTS:
     def forecastAheadDistribution(self, data, steps):
         pass
 
-    def train(self, data, sets, order=1):
+    def train(self, data, sets,order=1, parameters=None):
         pass
 
     def getMidpoints(self, flrg):

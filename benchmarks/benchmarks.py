@@ -11,19 +11,58 @@ from mpl_toolkits.mplot3d import Axes3D
 from pyFTS.benchmarks import Measures
 from pyFTS.partitioners import Grid
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
-from pyFTS import pfts
+from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang, pfts, ifts
+
+
+def allPointForecasters(data_train, data_test, partitions, max_order=2,save=False, file=None, tam=[20, 5]):
+    models = [chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS, sadaei.ExponentialyWeightedFTS,
+              hwang.HighOrderFTS, hofts.HighOrderFTS, pfts.ProbabilisticFTS ]
+
+    objects = []
+
+    data_train_fs = Grid.GridPartitionerTrimf(data_train,partitions)
+
+    for model in models:
+        fts = model("")
+        if not fts.isHighOrder:
+            fts.train(data_train, data_train_fs)
+            objects.append(fts)
+        else:
+            for order in np.arange(1,max_order+1):
+                fts.train(data_train, data_train_fs, order=order)
+                fts.shortname += str(order)
+                objects.append(fts)
+
+    print(getPointStatistics(data_test, objects))
+
+
+def getPointStatistics(original, models, externalmodels = None, externalforecasts = None):
+    ret = "Model		& RMSE		& MAPE			\\ \n"
+    for fts in models:
+        forecasts = fts.forecast(original)
+        ret += fts.shortname + "		& "
+        ret += str(round(Measures.rmse(original[fts.order:], forecasts[:-1]), 2)) + "		& "
+        ret += str(round(Measures.mape(original[fts.order:], forecasts[:-1]), 2)) + "		& "
+        ret += "	\\ \n"
+    l = len(externalmodels)
+    for k in np.arange(0,l):
+        ret += externalmodels[k] + "		& "
+        ret += str(round(Measures.rmse(original[fts.order:], externalforecasts[k][:-1]), 2)) + "		& "
+        ret += str(round(Measures.mape(original[fts.order:], externalforecasts[k][:-1]), 2)) + "		& "
+        ret += "	\\ \n"
+    return ret
 
 
 def getIntervalStatistics(original, models):
     ret = "Model		& RMSE		& MAPE		& Sharpness		& Resolution		& Coverage	\\ \n"
     for fts in models:
-        forecasts = fts.forecast(original)
-        ret = ret + fts.shortname + "		& "
-        ret = ret + str(round(Measures.rmse_interval(original[fts.order - 1:], forecasts), 2)) + "		& "
-        ret = ret + str(round(Measures.mape_interval(original[fts.order - 1:], forecasts), 2)) + "		& "
-        ret = ret + str(round(Measures.sharpness(forecasts), 2)) + "		& "
-        ret = ret + str(round(Measures.resolution(forecasts), 2)) + "		& "
-        ret = ret + str(round(Measures.coverage(original[fts.order - 1:], forecasts), 2)) + "	\\ \n"
+        forecasts = fts.forecastInterval(original)
+        ret += fts.shortname + "		& "
+        ret += str(round(Measures.rmse_interval(original[fts.order:], forecasts[:-1]), 2)) + "		& "
+        ret += str(round(Measures.mape_interval(original[fts.order:], forecasts[:-1]), 2)) + "		& "
+        ret += str(round(Measures.sharpness(forecasts), 2)) + "		& "
+        ret += str(round(Measures.resolution(forecasts), 2)) + "		& "
+        ret += str(round(Measures.coverage(original[fts.order:], forecasts[:-1]), 2)) + "	\\ \n"
     return ret
 
 

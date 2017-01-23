@@ -1,6 +1,6 @@
 import numpy as np
 from pyFTS.common import FuzzySet, FLR
-from  pyFTS import fts
+from pyFTS import fts
 
 
 class ConventionalFLRG:
@@ -38,7 +38,7 @@ class ConventionalFTS(fts.FTS):
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 
-    def train(self, data, sets):
+    def train(self, data, sets,order=1,parameters=None):
         self.sets = sets
         tmpdata = FuzzySet.fuzzySeries(data, sets)
         flrs = FLR.generateNonRecurrentFLRs(tmpdata)
