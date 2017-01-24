@@ -38,6 +38,7 @@ class HighOrderFTS(fts.FTS):
     def __init__(self, name):
         super(HighOrderFTS, self).__init__(1, "HOFTS" + name)
         self.name = "High Order FTS"
+        self.shortname = "HOFTS" + name
         self.detail = "Chen"
         self.order = 1
         self.setsDict = {}
@@ -80,7 +81,7 @@ class HighOrderFTS(fts.FTS):
         if l <= self.order:
             return data
 
-        for k in np.arange(self.order, l):
+        for k in np.arange(self.order, l+1):
             tmpdata = FuzzySet.fuzzySeries(data[k - self.order: k], self.sets)
             tmpflrg = HighOrderFLRG(self.order)
 

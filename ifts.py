@@ -47,7 +47,7 @@ class IntervalFTS(hofts.HighOrderFTS):
         for child in node.getChildren():
             self.buildTree(child, lags, level + 1)
 
-    def forecast(self, data):
+    def forecastInterval(self, data):
 
         ndata = np.array(data)
 

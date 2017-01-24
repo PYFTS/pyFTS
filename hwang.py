@@ -4,9 +4,12 @@ from pyFTS import fts
 
 
 class HighOrderFTS(fts.FTS):
-    def __init__(self, order, name):
-        super(HighOrderFTS, self).__init__(order, name)
+    def __init__(self, name):
+        super(HighOrderFTS, self).__init__(1, name)
         self.isHighOrder = True
+        self.name = "Hwang High Order FTS"
+        self.shortname = "Hwang" + name
+        self.detail = "Hwang"
 
     def forecast(self, data):
         cn = np.array([0.0 for k in range(len(self.sets))])
@@ -16,7 +19,7 @@ class HighOrderFTS(fts.FTS):
 
         ret = []
 
-        for t in np.arange(self.order, len(data)):
+        for t in np.arange(self.order-1, len(data)):
 
             for s in range(len(self.sets)):
                 cn[s] = self.sets[s].membership(data[t])
@@ -30,11 +33,11 @@ class HighOrderFTS(fts.FTS):
             for s in range(len(self.sets)):
                 if ft[s] == mft:
                     out = out + self.sets[s].centroid
-                    count = count + 1.0
+                    count += 1.0
             ret.append(out / count)
 
         return ret
 
-    def train(self, data, sets, order=2, parameters=None):
+    def train(self, data, sets, order=1, parameters=None):
         self.sets = sets
         self.order = order

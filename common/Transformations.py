@@ -6,7 +6,7 @@ from pyFTS import *
 def differential(original, lags=1):
     n = len(original)
     diff = [original[t - lags] - original[t] for t in np.arange(lags, n)]
-    for t in np.arange(0, lags): diff.insert(0, None)
+    for t in np.arange(0, lags): diff.insert(0, 0)
     return np.array(diff)
 
 

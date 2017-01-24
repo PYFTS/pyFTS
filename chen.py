@@ -3,7 +3,7 @@ from pyFTS.common import FuzzySet, FLR
 from pyFTS import fts
 
 
-class ConventionalFLRG:
+class ConventionalFLRG(object):
     def __init__(self, LHS):
         self.LHS = LHS
         self.RHS = set()

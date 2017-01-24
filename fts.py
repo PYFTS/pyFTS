@@ -2,7 +2,7 @@ import numpy as np
 from pyFTS import *
 
 
-class FTS:
+class FTS(object):
     def __init__(self, order, name):
         self.sets = {}
         self.flrgs = {}

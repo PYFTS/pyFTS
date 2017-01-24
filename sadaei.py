@@ -16,7 +16,7 @@ class ExponentialyWeightedFLRG:
     def weights(self):
         wei = [self.c ** k for k in np.arange(0.0, self.count, 1.0)]
         tot = sum(wei)
-        return np.iarray([k / tot for k in wei])
+        return np.array([k / tot for k in wei])
 
     def __str__(self):
         tmp = self.LHS.name + " -> "
@@ -54,7 +54,7 @@ class ExponentialyWeightedFTS(fts.FTS):
         self.sets = sets
         tmpdata = FuzzySet.fuzzySeries(data, sets)
         flrs = FLR.generateRecurrentFLRs(tmpdata)
-        self.flrgs = self.generateFLRG(flrs, c)
+        self.flrgs = self.generateFLRG(flrs, self.c)
 
     def forecast(self, data):
         l = 1

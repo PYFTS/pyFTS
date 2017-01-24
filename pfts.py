@@ -5,9 +5,8 @@ import numpy as np
 import pandas as pd
 import math
 from operator import itemgetter
-from pyFTS.common import FuzzySet, FLR, SortedCollection
+from pyFTS.common import FuzzySet, SortedCollection
 from pyFTS import hofts, ifts, tree
-
 
 
 class ProbabilisticFLRG(hofts.HighOrderFLRG):

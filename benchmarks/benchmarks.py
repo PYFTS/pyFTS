@@ -14,52 +14,100 @@ from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang, pfts, ifts
 
 
-def allPointForecasters(data_train, data_test, partitions, max_order=2,save=False, file=None, tam=[20, 5]):
-    models = [chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS, sadaei.ExponentialyWeightedFTS,
-              hwang.HighOrderFTS, hofts.HighOrderFTS, pfts.ProbabilisticFTS ]
+def allPointForecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5]):
+    models = [chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+              sadaei.ExponentialyWeightedFTS, hwang.HighOrderFTS, hofts.HighOrderFTS,
+              pfts.ProbabilisticFTS]
 
-    objects = []
+    objs = []
+
+    all_colors = [clr for clr in pltcolors.cnames.keys()  ]
 
     data_train_fs = Grid.GridPartitionerTrimf(data_train,partitions)
 
+    count = 1
+
+    colors = []
+
     for model in models:
-        fts = model("")
-        if not fts.isHighOrder:
-            fts.train(data_train, data_train_fs)
-            objects.append(fts)
+        #print(model)
+        mfts = model("")
+        if not mfts.isHighOrder:
+            mfts.train(data_train, data_train_fs)
+            objs.append(mfts)
+            colors.append( all_colors[count] )
         else:
             for order in np.arange(1,max_order+1):
-                fts.train(data_train, data_train_fs, order=order)
-                fts.shortname += str(order)
-                objects.append(fts)
+                mfts = model(" n = " + str(order))
+                mfts.train(data_train, data_train_fs, order=order)
+                objs.append(mfts)
+                colors.append(all_colors[count])
+        count += 5
 
-    print(getPointStatistics(data_test, objects))
+    print(getPointStatistics(data_test, objs))
+
+    plotComparedSeries(data_test, objs, colors, typeonlegend=False, save=save, file=file, tam=tam,  intervals=False)
 
 
-def getPointStatistics(original, models, externalmodels = None, externalforecasts = None):
-    ret = "Model		& RMSE		& MAPE			\\ \n"
+def getPointStatistics(data, models, externalmodels = None, externalforecasts = None):
+    ret = "Model		& Order     & RMSE		& MAPE			\\\\ \n"
     for fts in models:
-        forecasts = fts.forecast(original)
+        forecasts = fts.forecast(data)
         ret += fts.shortname + "		& "
-        ret += str(round(Measures.rmse(original[fts.order:], forecasts[:-1]), 2)) + "		& "
-        ret += str(round(Measures.mape(original[fts.order:], forecasts[:-1]), 2)) + "		& "
-        ret += "	\\ \n"
-    l = len(externalmodels)
-    for k in np.arange(0,l):
-        ret += externalmodels[k] + "		& "
-        ret += str(round(Measures.rmse(original[fts.order:], externalforecasts[k][:-1]), 2)) + "		& "
-        ret += str(round(Measures.mape(original[fts.order:], externalforecasts[k][:-1]), 2)) + "		& "
-        ret += "	\\ \n"
+        ret += str(fts.order) + "		& "
+        ret += str(round(Measures.rmse(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2)) + "		& "
+        ret += str(round(Measures.mape(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))
+        ret += "	\\\\ \n"
+    if externalmodels is not None:
+        l = len(externalmodels)
+        for k in np.arange(0,l):
+            ret += externalmodels[k] + "		& "
+            ret += " 1		& "
+            ret += str(round(Measures.rmse(data[fts.order:], externalforecasts[k][:-1]), 2)) + "		& "
+            ret += str(round(Measures.mape(data[fts.order:], externalforecasts[k][:-1]), 2))
+            ret += "	\\\\ \n"
     return ret
 
 
+def allIntervalForecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5]):
+    models = [ifts.IntervalFTS, pfts.ProbabilisticFTS]
+
+    objs = []
+
+    all_colors = [clr for clr in pltcolors.cnames.keys()  ]
+
+    data_train_fs = Grid.GridPartitionerTrimf(data_train,partitions)
+
+    count = 1
+
+    colors = []
+
+    for model in models:
+        #print(model)
+        mfts = model("")
+        if not mfts.isHighOrder:
+            mfts.train(data_train, data_train_fs)
+            objs.append(mfts)
+            colors.append( all_colors[count] )
+        else:
+            for order in np.arange(1,max_order+1):
+                mfts = model(" n = " + str(order))
+                mfts.train(data_train, data_train_fs, order=order)
+                objs.append(mfts)
+                colors.append(all_colors[count])
+        count += 5
+
+    print(getIntervalStatistics(data_test, objs))
+
+    plotComparedSeries(data_test, objs, colors, typeonlegend=False, save=save, file=file, tam=tam,  intervals=True)
+
+
 def getIntervalStatistics(original, models):
-    ret = "Model		& RMSE		& MAPE		& Sharpness		& Resolution		& Coverage	\\ \n"
+    ret = "Model	& Order     & Sharpness		& Resolution		& Coverage	\\ \n"
     for fts in models:
         forecasts = fts.forecastInterval(original)
         ret += fts.shortname + "		& "
-        ret += str(round(Measures.rmse_interval(original[fts.order:], forecasts[:-1]), 2)) + "		& "
-        ret += str(round(Measures.mape_interval(original[fts.order:], forecasts[:-1]), 2)) + "		& "
+        ret += str(fts.order) + "		& "
         ret += str(round(Measures.sharpness(forecasts), 2)) + "		& "
         ret += str(round(Measures.resolution(forecasts), 2)) + "		& "
         ret += str(round(Measures.coverage(original[fts.order:], forecasts[:-1]), 2)) + "	\\ \n"
@@ -86,7 +134,7 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
     ax.plot(original, color='black', label="Original", linewidth=1.5)
     count = 0
     for fts in models:
-        if fts.hasPointForecasting:
+        if fts.hasPointForecasting and not intervals:
             forecasted = fts.forecast(original)
             mi.append(min(forecasted) * 0.95)
             ma.append(max(forecasted) * 1.05)
@@ -107,8 +155,8 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
                 upper.insert(0, None)
             lbl = fts.shortname
             if typeonlegend: lbl += " (Interval)"
-            ax.plot(lower, color=colors[count], label=lbl, ls="--")
-            ax.plot(upper, color=colors[count], ls="--")
+            ax.plot(lower, color=colors[count], label=lbl, ls="-")
+            ax.plot(upper, color=colors[count], ls="-")
 
         handles0, labels0 = ax.get_legend_handles_labels()
         ax.legend(handles0, labels0, loc=2)
