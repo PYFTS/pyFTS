@@ -11,4 +11,4 @@ class Naive(fts.FTS):
         self.detail = "Naïve Model"
 
     def forecast(self, data):
-        return data
+        return [k for k in data]

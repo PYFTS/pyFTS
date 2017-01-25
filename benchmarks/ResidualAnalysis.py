@@ -6,21 +6,68 @@ import pandas as pd
 import matplotlib as plt
 import matplotlib.pyplot as plt
 from pyFTS.common import Transformations,Util
+from pyFTS.benchmarks import Measures
+from scipy import stats
 
 
 def residuals(targets, forecasts, order=1):
-    return np.array(targets[order:]) - np.array(forecasts[:-order])
+    return np.array(targets[order:]) - np.array(forecasts[:-1])
 
 
-def plotResiduals(targets, forecasts, order=1, tam=[8, 8], save=False, file=None):
-    res = residuals(targets,forecasts,order)
-    fig = plt.figure(figsize=tam)
-    ax1 = fig.add_axes([0, 1, 0.9, 0.3])  # left, bottom, width, height
-    ax1.plot(res)
-    ax2 = fig.add_axes([0, 0.65, 0.9, 0.3])
-    ax2.acorr(res)
-    ax3 = fig.add_axes([0, 0.3, 0.9, 0.3])
-    ax3.hist(res)
+def ChiSquared(q,h):
+    p = stats.chi2.sf(q, h)
+    return p
+
+
+
+def compareResiduals(data, models):
+    ret = "Model		& Order     & Mean      & STD       & Box-Pierce    & Box-Ljung & P-value \\\\ \n"
+    for mfts in models:
+        forecasts = mfts.forecast(data)
+        res = residuals(data, forecasts, mfts.order)
+        mu = np.mean(res)
+        sig = np.std(res)
+        ret += mfts.shortname + "		& "
+        ret += str(mfts.order) + "		& "
+        ret += str(mu) + "		& "
+        ret += str(sig) + "		& "
+        q1 = Measures.BoxPierceStatistic(res, 10)
+        ret += str(q1) + "		& "
+        q2 = Measures.BoxLjungStatistic(res, 10)
+        ret += str(q2) + "		& "
+        ret += str(ChiSquared(q2, 10))
+        ret += "	\\\\ \n"
+    return ret
+
+
+def plotResiduals(targets, models, tam=[8, 8], save=False, file=None):
+
+    fig, axes = plt.subplots(nrows=len(models), ncols=3, figsize=tam)
+    c = 0
+    for mfts in models:
+        forecasts = mfts.forecast(targets)
+        res = residuals(targets,forecasts,mfts.order)
+        mu = np.mean(res)
+        sig = np.std(res)
+
+        axes[c][0].set_title("Residuals Mean=" + str(mu) + " STD = " + str(sig))
+        axes[c][0].set_ylabel('E')
+        axes[c][0].set_xlabel('T')
+        axes[c][0].plot(res)
+
+        axes[c][1].set_title("Residuals Autocorrelation")
+        axes[c][1].set_ylabel('ACS')
+        axes[c][1].set_xlabel('Lag')
+        axes[c][1].acorr(res)
+
+        axes[c][2].set_title("Residuals Histogram")
+        axes[c][2].set_ylabel('Freq')
+        axes[c][2].set_xlabel('Bins')
+        axes[c][2].hist(res)
+
+        c += 1
+
+    plt.tight_layout()
 
     Util.showAndSaveImage(fig, file, save)
 

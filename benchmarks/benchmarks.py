@@ -8,16 +8,15 @@ import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 # from sklearn.cross_validation import KFold
-from pyFTS.benchmarks import Measures
+from pyFTS.benchmarks import Measures, naive, ResidualAnalysis
 from pyFTS.partitioners import Grid
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang, pfts, ifts
 
 
 def allPointForecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5]):
-    models = [chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-              sadaei.ExponentialyWeightedFTS, hwang.HighOrderFTS, hofts.HighOrderFTS,
-              pfts.ProbabilisticFTS]
+    models = [naive.Naive, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+              sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS,  pfts.ProbabilisticFTS]
 
     objs = []
 
@@ -38,25 +37,31 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3,save=Fals
             colors.append( all_colors[count] )
         else:
             for order in np.arange(1,max_order+1):
-                mfts = model(" n = " + str(order))
-                mfts.train(data_train, data_train_fs, order=order)
-                objs.append(mfts)
-                colors.append(all_colors[count])
-        count += 5
+                if order >= mfts.minOrder:
+                    mfts = model(" n = " + str(order))
+                    mfts.train(data_train, data_train_fs, order=order)
+                    objs.append(mfts)
+                    colors.append(all_colors[count])
+        count += 10
 
     print(getPointStatistics(data_test, objs))
 
+    print(ResidualAnalysis.compareResiduals(data_test, objs))
+
     plotComparedSeries(data_test, objs, colors, typeonlegend=False, save=save, file=file, tam=tam,  intervals=False)
+
+    ResidualAnalysis.plotResiduals(data_test, objs, save=save, file=file, tam=[tam[0],5*tam[1]])
 
 
 def getPointStatistics(data, models, externalmodels = None, externalforecasts = None):
-    ret = "Model		& Order     & RMSE		& MAPE			\\\\ \n"
+    ret = "Model		& Order     & RMSE		& MAPE      & Theil's U			\\\\ \n"
     for fts in models:
         forecasts = fts.forecast(data)
         ret += fts.shortname + "		& "
         ret += str(fts.order) + "		& "
         ret += str(round(Measures.rmse(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2)) + "		& "
-        ret += str(round(Measures.mape(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))
+        ret += str(round(Measures.mape(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))+ "		& "
+        ret += str(round(Measures.UStatistic(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))
         ret += "	\\\\ \n"
     if externalmodels is not None:
         l = len(externalmodels)
@@ -64,7 +69,8 @@ def getPointStatistics(data, models, externalmodels = None, externalforecasts = 
             ret += externalmodels[k] + "		& "
             ret += " 1		& "
             ret += str(round(Measures.rmse(data[fts.order:], externalforecasts[k][:-1]), 2)) + "		& "
-            ret += str(round(Measures.mape(data[fts.order:], externalforecasts[k][:-1]), 2))
+            ret += str(round(Measures.mape(data[fts.order:], externalforecasts[k][:-1]), 2))+ "		& "
+            ret += str(round(Measures.UStatistic(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))
             ret += "	\\\\ \n"
     return ret
 
@@ -91,10 +97,11 @@ def allIntervalForecasters(data_train, data_test, partitions, max_order=3,save=F
             colors.append( all_colors[count] )
         else:
             for order in np.arange(1,max_order+1):
-                mfts = model(" n = " + str(order))
-                mfts.train(data_train, data_train_fs, order=order)
-                objs.append(mfts)
-                colors.append(all_colors[count])
+                if order >= mfts.minOrder:
+                    mfts = model(" n = " + str(order))
+                    mfts.train(data_train, data_train_fs, order=order)
+                    objs.append(mfts)
+                    colors.append(all_colors[count])
         count += 5
 
     print(getIntervalStatistics(data_test, objs))

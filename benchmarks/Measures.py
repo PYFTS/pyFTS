@@ -1,8 +1,20 @@
-#!/usr/bin/python
 # -*- coding: utf8 -*-
 
 import numpy as np
 import pandas as pd
+
+
+# Autocorrelation function estimative
+def acf(data, k):
+    mu = np.mean(data)
+    sigma = np.var(data)
+    n = len(data)
+    s = 0
+    for t in np.arange(0,n-k):
+        s += (data[t]-mu) * (data[t+k] - mu)
+
+    return 1/((n-k)*sigma)*s
+
 
 # Erro quadrático médio
 def rmse(targets, forecasts):
@@ -25,14 +37,34 @@ def mape_interval(targets, forecasts):
 
 
 # Theil's U Statistic
-def U(targets, forecasts):
+def UStatistic(targets, forecasts):
     l = len(targets)
     naive = []
     y = []
     for k in np.arange(0,l-1):
-        y.append(((forecasts[k] - targets[k+1])/targets[k]) ** 2)
+        y.append(((forecasts[k+1] - targets[k+1])/targets[k]) ** 2)
         naive.append(((targets[k + 1] - targets[k]) / targets[k]) ** 2)
     return np.sqrt(sum(y)/sum(naive))
+
+
+# Q Statistic for Box-Pierce test
+def BoxPierceStatistic(data, h):
+    n = len(data)
+    s = 0
+    for k in np.arange(1,h+1):
+        r = acf(data, k)
+        s += r**2
+    return n*s
+
+
+# Q Statistic for Ljung–Box test
+def BoxLjungStatistic(data, h):
+    n = len(data)
+    s = 0
+    for k in np.arange(1,h+1):
+        r = acf(data, k)
+        s += r**2 / (n -k)
+    return n*(n-2)*s
 
 
 # Sharpness - Mean size of the intervals
@@ -57,3 +89,4 @@ def coverage(targets, forecasts):
         else:
             preds.append(0)
     return np.mean(preds)
+

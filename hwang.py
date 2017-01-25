@@ -7,6 +7,7 @@ class HighOrderFTS(fts.FTS):
     def __init__(self, name):
         super(HighOrderFTS, self).__init__(1, name)
         self.isHighOrder = True
+        self.minOrder = 2
         self.name = "Hwang High Order FTS"
         self.shortname = "Hwang" + name
         self.detail = "Hwang"

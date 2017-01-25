@@ -33,3 +33,9 @@ def roi(original):
     for t in np.arange(0, n-1):
         roi.append( (original[t+1] - original[t])/original[t]  )
     return roi
+
+def smoothing(original, lags):
+    pass
+
+def aggregate(original, operation):
+    pass

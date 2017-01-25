@@ -11,6 +11,7 @@ class FTS(object):
         self.name = name
         self.detail = name
         self.isHighOrder = False
+        self.minOrder = 1
         self.hasSeasonality = False
         self.hasPointForecasting = True
         self.hasIntervalForecasting = False
