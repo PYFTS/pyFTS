@@ -3,11 +3,40 @@ import math
 from pyFTS import *
 
 
-def differential(original, lags=1):
-    n = len(original)
-    diff = [original[t - lags] - original[t] for t in np.arange(lags, n)]
-    for t in np.arange(0, lags): diff.insert(0, 0)
-    return np.array(diff)
+class Transformation(object):
+
+    def __init__(self, parameters):
+        self.isInversible = True
+        self.parameters = parameters
+
+    def apply(self,data,param):
+        pass
+
+    def inverse(self,data, param):
+        pass
+
+    def __str__(self):
+        return self.__class__.__name__ + '(' + str(self.parameters) + ')'
+
+
+class Differential(Transformation):
+
+    def __init__(self, parameters):
+        super(Differential, self).__init__(parameters)
+        self.lag = parameters
+
+    def apply(self, data, param=None):
+        if param is not None:
+            self.lag = param
+        n = len(data)
+        diff = [data[t - self.lag] - data[t] for t in np.arange(self.lag, n)]
+        for t in np.arange(0, self.lag): diff.insert(0, 0)
+        return np.array(diff)
+
+    def inverse(self,data, param):
+        n = len(data)
+        inc = [data[t] + param[t] for t in np.arange(1, n)]
+        return np.array(inc)
 
 
 def boxcox(original, plambda):

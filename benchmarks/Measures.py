@@ -42,9 +42,19 @@ def UStatistic(targets, forecasts):
     naive = []
     y = []
     for k in np.arange(0,l-1):
-        y.append(((forecasts[k+1] - targets[k+1])/targets[k]) ** 2)
-        naive.append(((targets[k + 1] - targets[k]) / targets[k]) ** 2)
-    return np.sqrt(sum(y)/sum(naive))
+        y.append((forecasts[k ] - targets[k ]) ** 2)
+        naive.append((targets[k + 1] - targets[k]) ** 2)
+    return np.sqrt(sum(y) / sum(naive))
+
+
+# Theil’s Inequality Coefficient
+def TheilsInequality(targets, forecasts):
+    res = targets - forecasts
+    t = len(res)
+    us = np.sqrt(sum([u**2 for u in res]))
+    ys = np.sqrt(sum([y**2 for y in targets]))
+    fs = np.sqrt(sum([f**2 for f in forecasts]))
+    return  us / (ys + fs)
 
 
 # Q Statistic for Box-Pierce test

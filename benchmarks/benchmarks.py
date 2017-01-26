@@ -14,7 +14,8 @@ from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang, pfts, ifts
 
 
-def allPointForecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5]):
+def allPointForecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True, series=True,
+                        save=False, file=None, tam=[20, 5]):
     models = [naive.Naive, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
               sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS,  pfts.ProbabilisticFTS]
 
@@ -44,24 +45,27 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3,save=Fals
                     colors.append(all_colors[count])
         count += 10
 
-    print(getPointStatistics(data_test, objs))
+    if statistics:
+        print(getPointStatistics(data_test, objs))
 
-    print(ResidualAnalysis.compareResiduals(data_test, objs))
+    if residuals:
+        print(ResidualAnalysis.compareResiduals(data_test, objs))
+        ResidualAnalysis.plotResiduals(data_test, objs, save=save, file=file, tam=[tam[0], 5 * tam[1]])
 
-    plotComparedSeries(data_test, objs, colors, typeonlegend=False, save=save, file=file, tam=tam,  intervals=False)
-
-    ResidualAnalysis.plotResiduals(data_test, objs, save=save, file=file, tam=[tam[0],5*tam[1]])
+    if series:
+        plotComparedSeries(data_test, objs, colors, typeonlegend=False, save=save, file=file, tam=tam,  intervals=False)
 
 
 def getPointStatistics(data, models, externalmodels = None, externalforecasts = None):
-    ret = "Model		& Order     & RMSE		& MAPE      & Theil's U			\\\\ \n"
+    ret = "Model		& Order     & RMSE		& MAPE      & Theil's U		& Theil's I	\\\\ \n"
     for fts in models:
         forecasts = fts.forecast(data)
         ret += fts.shortname + "		& "
         ret += str(fts.order) + "		& "
         ret += str(round(Measures.rmse(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2)) + "		& "
         ret += str(round(Measures.mape(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))+ "		& "
-        ret += str(round(Measures.UStatistic(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))
+        ret += str(round(Measures.UStatistic(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))+ "		& "
+        ret += str(round(Measures.TheilsInequality(np.array(data[fts.order:]), np.array(forecasts[:-1])), 4))
         ret += "	\\\\ \n"
     if externalmodels is not None:
         l = len(externalmodels)

@@ -17,6 +17,8 @@ class FTS(object):
         self.hasIntervalForecasting = False
         self.hasDistributionForecasting = False
         self.dump = False
+        self.transformations = []
+        self.transformations_param = []
 
     def fuzzy(self, data):
         best = {"fuzzyset": "", "membership": 0.0}
@@ -53,6 +55,31 @@ class FTS(object):
     def getMidpoints(self, flrg):
         ret = np.array([s.centroid for s in flrg.RHS])
         return ret
+
+    def appendTransformation(self, transformation):
+        self.transformations.append(transformation)
+
+    def doTransformations(self,data,params=None):
+        ndata = data
+        if params is None:
+            params = [ None for k in self.transformations]
+        c = 0
+        for t in self.transformations:
+            ndata = t.apply(ndata,params[c])
+            c += 1
+
+        return ndata
+
+    def doInverseTransformations(self,data,params=None):
+        ndata = data
+        if params is None:
+            params = [None for k in self.transformations]
+        c = 0
+        for t in reversed(self.transformations):
+            ndata = t.inverse(ndata, params[c])
+            c += 1
+
+        return ndata
 
     def __str__(self):
         tmp = self.name + ":\n"

@@ -19,7 +19,6 @@ def ChiSquared(q,h):
     return p
 
 
-
 def compareResiduals(data, models):
     ret = "Model		& Order     & Mean      & STD       & Box-Pierce    & Box-Ljung & P-value \\\\ \n"
     for mfts in models:
@@ -29,12 +28,12 @@ def compareResiduals(data, models):
         sig = np.std(res)
         ret += mfts.shortname + "		& "
         ret += str(mfts.order) + "		& "
-        ret += str(mu) + "		& "
-        ret += str(sig) + "		& "
+        ret += str(round(mu,2)) + "		& "
+        ret += str(round(sig,2)) + "		& "
         q1 = Measures.BoxPierceStatistic(res, 10)
-        ret += str(q1) + "		& "
+        ret += str(round(q1,2)) + "		& "
         q2 = Measures.BoxLjungStatistic(res, 10)
-        ret += str(q2) + "		& "
+        ret += str(round(q2,2)) + "		& "
         ret += str(ChiSquared(q2, 10))
         ret += "	\\\\ \n"
     return ret

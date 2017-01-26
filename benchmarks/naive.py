@@ -12,3 +12,4 @@ class Naive(fts.FTS):
 
     def forecast(self, data):
         return [k for k in data]
+
