@@ -18,7 +18,7 @@ def acf(data, k):
 
 # Erro quadrático médio
 def rmse(targets, forecasts):
-    return np.sqrt(np.nanmean((forecasts - targets) ** 2))
+    return np.sqrt(np.nanmean((targets - forecasts) ** 2))
 
 
 def rmse_interval(targets, forecasts):
@@ -28,7 +28,16 @@ def rmse_interval(targets, forecasts):
 
 # Erro Percentual médio
 def mape(targets, forecasts):
-    return np.mean(abs(forecasts - targets) / forecasts) * 100
+    return np.mean(np.abs(targets - forecasts) / targets) * 100
+
+
+def smape(targets, forecasts, type=2):
+    if type == 1:
+        return np.mean(np.abs(forecasts - targets) / ((forecasts + targets)/2))
+    elif type == 2:
+        return np.mean(np.abs(forecasts - targets) / (abs(forecasts) + abs(targets)) )*100
+    else:
+        return sum(np.abs(forecasts - targets)) / sum(forecasts + targets)
 
 
 def mape_interval(targets, forecasts):

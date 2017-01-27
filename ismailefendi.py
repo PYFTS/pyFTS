@@ -51,7 +51,9 @@ class ImprovedWeightedFTS(fts.FTS):
 
         for s in self.sets:    self.setsDict[s.name] = s
 
-        tmpdata = FuzzySet.fuzzySeries(data, self.sets)
+        ndata = self.doTransformations(data)
+
+        tmpdata = FuzzySet.fuzzySeries(ndata, self.sets)
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
@@ -62,7 +64,8 @@ class ImprovedWeightedFTS(fts.FTS):
     def forecast(self, data):
         l = 1
 
-        ndata = np.array(data)
+        data = np.array(data)
+        ndata = self.doTransformations(data)
 
         l = len(ndata)
 
@@ -81,5 +84,7 @@ class ImprovedWeightedFTS(fts.FTS):
                 mp = self.getMidpoints(flrg)
 
                 ret.append(mp.dot(flrg.weights()))
+
+        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
         return ret

@@ -47,13 +47,16 @@ class SeasonalFTS(fts.FTS):
     def train(self, data, sets, order=1,parameters=12):
         self.sets = sets
         self.seasonality = parameters
-        tmpdata = FuzzySet.fuzzySeries(data, sets)
+        ndata = self.doTransformations(data)
+        tmpdata = FuzzySet.fuzzySeries(ndata, sets)
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
     def forecast(self, data):
 
-        ndata = np.array(data)
+        data = np.array(data)
+
+        ndata = self.doTransformations(data)
 
         l = len(ndata)
 
@@ -65,5 +68,7 @@ class SeasonalFTS(fts.FTS):
             mp = self.getMidpoints(flrg)
 
             ret.append(sum(mp) / len(mp))
+
+        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
         return ret

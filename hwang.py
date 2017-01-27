@@ -13,6 +13,9 @@ class HighOrderFTS(fts.FTS):
         self.detail = "Hwang"
 
     def forecast(self, data):
+
+        ndata = self.doTransformations(data)
+
         cn = np.array([0.0 for k in range(len(self.sets))])
         ow = np.array([[0.0 for k in range(len(self.sets))] for z in range(self.order - 1)])
         rn = np.array([[0.0 for k in range(len(self.sets))] for z in range(self.order - 1)])
@@ -20,12 +23,12 @@ class HighOrderFTS(fts.FTS):
 
         ret = []
 
-        for t in np.arange(self.order-1, len(data)):
+        for t in np.arange(self.order-1, len(ndata)):
 
             for s in range(len(self.sets)):
-                cn[s] = self.sets[s].membership(data[t])
+                cn[s] = self.sets[s].membership(ndata[t])
                 for w in range(self.order - 1):
-                    ow[w, s] = self.sets[s].membership(data[t - w])
+                    ow[w, s] = self.sets[s].membership(ndata[t - w])
                     rn[w, s] = ow[w, s] * cn[s]
                     ft[s] = max(ft[s], rn[w, s])
             mft = max(ft)
@@ -36,6 +39,8 @@ class HighOrderFTS(fts.FTS):
                     out = out + self.sets[s].centroid
                     count += 1.0
             ret.append(out / count)
+
+        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
         return ret
 

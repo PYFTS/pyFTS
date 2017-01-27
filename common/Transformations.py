@@ -8,6 +8,7 @@ class Transformation(object):
     def __init__(self, parameters):
         self.isInversible = True
         self.parameters = parameters
+        self.minimalLength = 1
 
     def apply(self,data,param):
         pass
@@ -24,6 +25,7 @@ class Differential(Transformation):
     def __init__(self, parameters):
         super(Differential, self).__init__(parameters)
         self.lag = parameters
+        self.minimalLength = 2
 
     def apply(self, data, param=None):
         if param is not None:
@@ -31,12 +33,12 @@ class Differential(Transformation):
         n = len(data)
         diff = [data[t - self.lag] - data[t] for t in np.arange(self.lag, n)]
         for t in np.arange(0, self.lag): diff.insert(0, 0)
-        return np.array(diff)
+        return diff
 
     def inverse(self,data, param):
         n = len(data)
         inc = [data[t] + param[t] for t in np.arange(1, n)]
-        return np.array(inc)
+        return inc
 
 
 def boxcox(original, plambda):

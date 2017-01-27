@@ -13,59 +13,74 @@ from pyFTS.partitioners import Grid
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang, pfts, ifts
 
+colors = ['grey', 'rosybrown', 'maroon', 'red','orange', 'yellow', 'olive', 'green',
+          'cyan', 'blue', 'darkblue', 'purple', 'darkviolet']
 
-def allPointForecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True, series=True,
-                        save=False, file=None, tam=[20, 5]):
-    models = [naive.Naive, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-              sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS,  pfts.ProbabilisticFTS]
+ncol = len(colors)
+
+styles = ['-','--','-.',':','.']
+
+nsty = len(styles)
+
+def allPointForecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True,
+                        series=True, save=False, file=None, tam=[20, 5], models=None, transformation=None):
+
+    if models is None:
+        models = [naive.Naive, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+                  sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS,  pfts.ProbabilisticFTS]
 
     objs = []
 
-    all_colors = [clr for clr in pltcolors.cnames.keys()  ]
-
-    data_train_fs = Grid.GridPartitionerTrimf(data_train,partitions)
+    if transformation is not None:
+        data_train_fs = Grid.GridPartitionerTrimf(transformation.apply(data_train),partitions)
+    else:
+        data_train_fs = Grid.GridPartitionerTrimf(data_train, partitions)
 
     count = 1
 
-    colors = []
+    lcolors = []
 
-    for model in models:
+    for count, model in enumerate(models, start=0):
         #print(model)
         mfts = model("")
         if not mfts.isHighOrder:
+            if transformation is not None:
+                mfts.appendTransformation(transformation)
             mfts.train(data_train, data_train_fs)
             objs.append(mfts)
-            colors.append( all_colors[count] )
+            lcolors.append( colors[count % ncol] )
         else:
             for order in np.arange(1,max_order+1):
                 if order >= mfts.minOrder:
                     mfts = model(" n = " + str(order))
+                    if transformation is not None:
+                        mfts.appendTransformation(transformation)
                     mfts.train(data_train, data_train_fs, order=order)
                     objs.append(mfts)
-                    colors.append(all_colors[count])
-        count += 10
+                    lcolors.append(colors[count % ncol])
 
     if statistics:
         print(getPointStatistics(data_test, objs))
 
     if residuals:
         print(ResidualAnalysis.compareResiduals(data_test, objs))
-        ResidualAnalysis.plotResiduals(data_test, objs, save=save, file=file, tam=[tam[0], 5 * tam[1]])
+        ResidualAnalysis.plotResiduals2(data_test, objs, save=save, file=file, tam=tam)
 
     if series:
-        plotComparedSeries(data_test, objs, colors, typeonlegend=False, save=save, file=file, tam=tam,  intervals=False)
+        plotComparedSeries(data_test, objs, lcolors, typeonlegend=False, save=save, file=file, tam=tam,
+                           intervals=False)
 
 
 def getPointStatistics(data, models, externalmodels = None, externalforecasts = None):
-    ret = "Model		& Order     & RMSE		& MAPE      & Theil's U		& Theil's I	\\\\ \n"
+    ret = "Model		& Order     & RMSE		& MAPE      & Theil's U		\\\\ \n"
     for fts in models:
         forecasts = fts.forecast(data)
         ret += fts.shortname + "		& "
         ret += str(fts.order) + "		& "
         ret += str(round(Measures.rmse(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2)) + "		& "
-        ret += str(round(Measures.mape(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))+ "		& "
-        ret += str(round(Measures.UStatistic(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))+ "		& "
-        ret += str(round(Measures.TheilsInequality(np.array(data[fts.order:]), np.array(forecasts[:-1])), 4))
+        ret += str(round(Measures.smape(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))+ "		& "
+        ret += str(round(Measures.UStatistic(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))
+        #ret += str(round(Measures.TheilsInequality(np.array(data[fts.order:]), np.array(forecasts[:-1])), 4))
         ret += "	\\\\ \n"
     if externalmodels is not None:
         l = len(externalmodels)
@@ -73,44 +88,48 @@ def getPointStatistics(data, models, externalmodels = None, externalforecasts = 
             ret += externalmodels[k] + "		& "
             ret += " 1		& "
             ret += str(round(Measures.rmse(data[fts.order:], externalforecasts[k][:-1]), 2)) + "		& "
-            ret += str(round(Measures.mape(data[fts.order:], externalforecasts[k][:-1]), 2))+ "		& "
+            ret += str(round(Measures.smape(data[fts.order:], externalforecasts[k][:-1]), 2))+ "		& "
             ret += str(round(Measures.UStatistic(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))
             ret += "	\\\\ \n"
     return ret
 
 
-def allIntervalForecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5]):
-    models = [ifts.IntervalFTS, pfts.ProbabilisticFTS]
+def allIntervalForecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5],
+                           models=None, transformation=None):
+    if models is None:
+        models = [ifts.IntervalFTS, pfts.ProbabilisticFTS]
 
     objs = []
 
-    all_colors = [clr for clr in pltcolors.cnames.keys()  ]
+    if transformation is not None:
+        data_train_fs = Grid.GridPartitionerTrimf(transformation.apply(data_train),partitions)
+    else:
+        data_train_fs = Grid.GridPartitionerTrimf(data_train, partitions)
 
-    data_train_fs = Grid.GridPartitionerTrimf(data_train,partitions)
+    lcolors = []
 
-    count = 1
-
-    colors = []
-
-    for model in models:
-        #print(model)
+    for count, model in enumerate(models, start=0):
         mfts = model("")
         if not mfts.isHighOrder:
+            if transformation is not None:
+                mfts.appendTransformation(transformation)
             mfts.train(data_train, data_train_fs)
             objs.append(mfts)
-            colors.append( all_colors[count] )
+            lcolors.append( colors[count % ncol] )
         else:
             for order in np.arange(1,max_order+1):
                 if order >= mfts.minOrder:
                     mfts = model(" n = " + str(order))
+                    if transformation is not None:
+                        mfts.appendTransformation(transformation)
                     mfts.train(data_train, data_train_fs, order=order)
                     objs.append(mfts)
-                    colors.append(all_colors[count])
-        count += 5
+                    lcolors.append(colors[count % ncol])
+
 
     print(getIntervalStatistics(data_test, objs))
 
-    plotComparedSeries(data_test, objs, colors, typeonlegend=False, save=save, file=file, tam=tam,  intervals=True)
+    plotComparedSeries(data_test, objs, lcolors, typeonlegend=False, save=save, file=file, tam=tam,  intervals=True)
 
 
 def getIntervalStatistics(original, models):
@@ -142,9 +161,11 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
     mi = []
     ma = []
 
+    legends = []
+
     ax.plot(original, color='black', label="Original", linewidth=1.5)
-    count = 0
-    for fts in models:
+
+    for count, fts in enumerate(models, start=0):
         if fts.hasPointForecasting and not intervals:
             forecasted = fts.forecast(original)
             mi.append(min(forecasted) * 0.95)
@@ -170,15 +191,16 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
             ax.plot(upper, color=colors[count], ls="-")
 
         handles0, labels0 = ax.get_legend_handles_labels()
-        ax.legend(handles0, labels0, loc=2)
-        count = count + 1
+        lgd = ax.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
+        legends.append(lgd)
+
     # ax.set_title(fts.name)
     ax.set_ylim([min(mi), max(ma)])
     ax.set_ylabel('F(T)')
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.showAndSaveImage(fig, file, save, lgd=legends)
 
 
 def plotComparedIntervalsAhead(original, models, colors, distributions, time_from, time_to,
@@ -530,7 +552,7 @@ def compareModelsTable(original, models_fo, models_ho):
     return sup + header + body + "\\end{tabular}"
 
 
-def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None, tam=[10, 15], plotforecasts=False,
+def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=None, tam=[10, 15], plotforecasts=False,
                       elev=30, azim=144):
     ret = []
     errors = np.array([[0 for k in range(len(partitions))] for kk in range(len(orders))])
@@ -539,8 +561,8 @@ def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None
     # fig.suptitle("Comparação de modelos ")
     if plotforecasts:
         ax0 = fig.add_axes([0, 0.4, 0.9, 0.5])  # left, bottom, width, height
-        ax0.set_xlim([0, len(original)])
-        ax0.set_ylim([min(original) * 0.9, max(original) * 1.1])
+        ax0.set_xlim([0, len(train)])
+        ax0.set_ylim([min(train) * 0.9, max(train) * 1.1])
         ax0.set_title('Forecasts')
         ax0.set_ylabel('F(T)')
         ax0.set_xlabel('T')
@@ -550,13 +572,13 @@ def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None
     for p in partitions:
         oc = 0
         for o in orders:
-            sets = Grid.GridPartitionerTrimf(original, p)
+            sets = Grid.GridPartitionerTrimf(train, p)
             fts = model("q = " + str(p) + " n = " + str(o))
-            fts.train(original, sets, o)
-            forecasted = fts.forecast(original)
-            error = Measures.rmse(np.array(original[o:]), np.array(forecasted[:-1]))
-            mape = Measures.mape(np.array(original[o:]), np.array(forecasted[:-1]))
-            # print(original[o:])
+            fts.train(train, sets, o)
+            forecasted = fts.forecast(test)
+            error = Measures.rmse(np.array(test[o:]), np.array(forecasted[:-1]))
+            mape = Measures.mape(np.array(test[o:]), np.array(forecasted[:-1]))
+            # print(train[o:])
             # print(forecasted[-1])
             for kk in range(o):
                 forecasted.insert(0, None)
@@ -573,7 +595,7 @@ def simpleSearch_RMSE(original, model, partitions, orders, save=False, file=None
     if plotforecasts:
         # handles0, labels0 = ax0.get_legend_handles_labels()
         # ax0.legend(handles0, labels0)
-        ax0.plot(original, label="Original", linewidth=3.0, color="black")
+        ax0.plot(test, label="Original", linewidth=3.0, color="black")
         ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
     if not plotforecasts: ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
     # ax1 = fig.add_axes([0.6, 0.5, 0.45, 0.45], projection='3d')

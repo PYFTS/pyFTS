@@ -61,6 +61,9 @@ class HighOrderFTS(fts.FTS):
         return (flrgs)
 
     def train(self, data, sets, order=1,parameters=None):
+
+        data = self.doTransformations(data)
+
         self.order = order
         self.sets = sets
         for s in self.sets:    self.setsDict[s.name] = s
@@ -81,8 +84,10 @@ class HighOrderFTS(fts.FTS):
         if l <= self.order:
             return data
 
+        ndata = self.doTransformations(data)
+
         for k in np.arange(self.order, l+1):
-            tmpdata = FuzzySet.fuzzySeries(data[k - self.order: k], self.sets)
+            tmpdata = FuzzySet.fuzzySeries(ndata[k - self.order: k], self.sets)
             tmpflrg = HighOrderFLRG(self.order)
 
             for s in tmpdata: tmpflrg.appendLHS(s)
@@ -94,5 +99,7 @@ class HighOrderFTS(fts.FTS):
                 mp = self.getMidpoints(flrg)
 
                 ret.append(sum(mp) / len(mp))
+
+        ret = self.doInverseTransformations(ret, params=[data[self.order-1:]])
 
         return ret

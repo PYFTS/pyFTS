@@ -112,7 +112,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
     def forecast(self, data):
 
-        ndata = np.array(data)
+        ndata = np.array(self.doTransformations(data))
 
         l = len(ndata)
 
@@ -208,11 +208,15 @@ class ProbabilisticFTS(ifts.IntervalFTS):
             else:
                 ret.append(sum(mp) / norm)
 
+        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+
         return ret
 
     def forecastInterval(self, data):
 
-        ndata = np.array(data)
+        data = np.array(data)
+
+        ndata = self.doTransformations(data)
 
         l = len(ndata)
 
@@ -308,7 +312,9 @@ class ProbabilisticFTS(ifts.IntervalFTS):
             if norm == 0:
                 ret.append([0, 0])
             else:
-                ret.append([sum(lo) / norm, sum(up) / norm])
+                lo_ = self.doInverseTransformations(sum(lo) / norm, params=[data[k - (self.order - 1): k + 1]])
+                up_ = self.doInverseTransformations(sum(up) / norm, params=[data[k - (self.order - 1): k + 1]])
+                ret.append([lo_, up_])
 
         return ret
 

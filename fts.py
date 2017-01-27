@@ -61,23 +61,23 @@ class FTS(object):
 
     def doTransformations(self,data,params=None):
         ndata = data
-        if params is None:
-            params = [ None for k in self.transformations]
-        c = 0
-        for t in self.transformations:
-            ndata = t.apply(ndata,params[c])
-            c += 1
+        if len(self.transformations) > 0:
+            if params is None:
+                params = [ None for k in self.transformations]
+
+            for c, t in enumerate(self.transformations, start=0):
+                ndata = t.apply(ndata,params[c])
 
         return ndata
 
-    def doInverseTransformations(self,data,params=None):
+    def doInverseTransformations(self, data, params=None):
         ndata = data
-        if params is None:
-            params = [None for k in self.transformations]
-        c = 0
-        for t in reversed(self.transformations):
-            ndata = t.inverse(ndata, params[c])
-            c += 1
+        if len(self.transformations) > 0:
+            if params is None:
+                params = [None for k in self.transformations]
+
+            for c, t in enumerate(reversed(self.transformations), start=0):
+                ndata = t.inverse(ndata, params[c])
 
         return ndata
 

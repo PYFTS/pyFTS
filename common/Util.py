@@ -13,8 +13,11 @@ def uniquefilename(name):
         return name + str(current_milli_time())
 
 
-def showAndSaveImage(fig,file,flag):
+def showAndSaveImage(fig,file,flag,lgd=None):
     if flag:
         plt.show()
-        fig.savefig(uniquefilename(file))
+        if lgd is not None:
+            fig.savefig(uniquefilename(file), additional_artists=lgd,bbox_inches='tight')  #bbox_extra_artists=(lgd,), )
+        else:
+            fig.savefig(uniquefilename(file))
         plt.close(fig)
