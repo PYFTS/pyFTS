@@ -108,7 +108,7 @@ def allIntervalForecasters(data_train, data_test, partitions, max_order=3,save=F
 
     lcolors = []
 
-    for count, model in enumerate(models, start=0):
+    for count, model in Util.enumerate2(models, start=0, step=2):
         mfts = model("")
         if not mfts.isHighOrder:
             if transformation is not None:
@@ -126,21 +126,20 @@ def allIntervalForecasters(data_train, data_test, partitions, max_order=3,save=F
                     objs.append(mfts)
                     lcolors.append(colors[count % ncol])
 
-
     print(getIntervalStatistics(data_test, objs))
 
     plotComparedSeries(data_test, objs, lcolors, typeonlegend=False, save=save, file=file, tam=tam,  intervals=True)
 
 
 def getIntervalStatistics(original, models):
-    ret = "Model	& Order     & Sharpness		& Resolution		& Coverage	\\ \n"
+    ret = "Model	& Order     & Sharpness		& Resolution		& Coverage	\\\\ \n"
     for fts in models:
         forecasts = fts.forecastInterval(original)
         ret += fts.shortname + "		& "
         ret += str(fts.order) + "		& "
         ret += str(round(Measures.sharpness(forecasts), 2)) + "		& "
         ret += str(round(Measures.resolution(forecasts), 2)) + "		& "
-        ret += str(round(Measures.coverage(original[fts.order:], forecasts[:-1]), 2)) + "	\\ \n"
+        ret += str(round(Measures.coverage(original[fts.order:], forecasts[:-1]), 2)) + "	\\\\ \n"
     return ret
 
 
@@ -213,11 +212,10 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     mi = []
     ma = []
 
-    count = 0
-    for fts in models:
+    for count, fts in enumerate(models, start=0):
         if fts.hasDistributionForecasting and distributions[count]:
-            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to, resolution,
-                                                    parameters=None)
+            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from],
+                                                    time_to, resolution, parameters=True)
 
             y = density.columns
             t = len(y)
@@ -258,12 +256,22 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
                 forecasts.insert(0, None)
             ax.plot(forecasts, color=colors[count], label=fts.shortname)
 
-        count = count + 1
     ax.plot(original, color='black', label="Original")
     handles0, labels0 = ax.get_legend_handles_labels()
     ax.legend(handles0, labels0, loc=2)
     # ax.set_title(fts.name)
-    ax.set_ylim([min(mi), max(ma)])
+    _mi = min(mi)
+    if _mi < 0:
+        _mi *= 1.1
+    else:
+        _mi *= 0.9
+    _ma = max(ma)
+    if _ma < 0:
+        _ma *= 0.9
+    else:
+        _ma *= 1.1
+
+    ax.set_ylim([_mi, _ma])
     ax.set_ylabel('F(T)')
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
@@ -552,8 +560,8 @@ def compareModelsTable(original, models_fo, models_ho):
     return sup + header + body + "\\end{tabular}"
 
 
-def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=None, tam=[10, 15], plotforecasts=False,
-                      elev=30, azim=144):
+def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=None, tam=[10, 15],
+                      plotforecasts=False, elev=30, azim=144, intervals=False):
     ret = []
     errors = np.array([[0 for k in range(len(partitions))] for kk in range(len(orders))])
     forecasted_best = []
@@ -568,29 +576,28 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
         ax0.set_xlabel('T')
     min_rmse = 1000000.0
     best = None
-    pc = 0
-    for p in partitions:
-        oc = 0
-        for o in orders:
-            sets = Grid.GridPartitionerTrimf(train, p)
+
+    for pc, p in enumerate(partitions, start=0):
+
+        sets = Grid.GridPartitionerTrimf(train, p)
+        for oc, o in enumerate(orders, start=0):
             fts = model("q = " + str(p) + " n = " + str(o))
             fts.train(train, sets, o)
-            forecasted = fts.forecast(test)
-            error = Measures.rmse(np.array(test[o:]), np.array(forecasted[:-1]))
-            mape = Measures.mape(np.array(test[o:]), np.array(forecasted[:-1]))
-            # print(train[o:])
-            # print(forecasted[-1])
-            for kk in range(o):
-                forecasted.insert(0, None)
-                if plotforecasts: ax0.plot(forecasted, label=fts.name)
-            # print(o, p, mape)
+            if not intervals:
+                forecasted = fts.forecast(test)
+                error = Measures.rmse(np.array(test[o:]), np.array(forecasted[:-1]))
+                for kk in range(o):
+                    forecasted.insert(0, None)
+                    if plotforecasts: ax0.plot(forecasted, label=fts.name)
+            else:
+                forecasted = fts.forecastInterval(test)
+                error = 1.0 - Measures.rmse_interval(np.array(test[o:]), np.array(forecasted[:-1]))
             errors[oc, pc] = error
             if error < min_rmse:
                 min_rmse = error
                 best = fts
                 forecasted_best = forecasted
-            oc += 1
-        pc += 1
+
     # print(min_rmse)
     if plotforecasts:
         # handles0, labels0 = ax0.get_legend_handles_labels()

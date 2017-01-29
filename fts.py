@@ -19,6 +19,8 @@ class FTS(object):
         self.dump = False
         self.transformations = []
         self.transformations_param = []
+        self.original_max = 0
+        self.original_min = 0
 
     def fuzzy(self, data):
         best = {"fuzzyset": "", "membership": 0.0}
@@ -59,8 +61,20 @@ class FTS(object):
     def appendTransformation(self, transformation):
         self.transformations.append(transformation)
 
-    def doTransformations(self,data,params=None):
+    def doTransformations(self,data,params=None,updateUoD=False):
         ndata = data
+
+        if updateUoD:
+            if min(data) < 0:
+                self.original_min = min(data) * 1.1
+            else:
+                self.original_min = min(data) * 0.9
+
+            if max(data) > 0:
+                self.original_max = max(data) * 1.1
+            else:
+                self.original_max = max(data) * 0.9
+
         if len(self.transformations) > 0:
             if params is None:
                 params = [ None for k in self.transformations]

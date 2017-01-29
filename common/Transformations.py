@@ -30,15 +30,34 @@ class Differential(Transformation):
     def apply(self, data, param=None):
         if param is not None:
             self.lag = param
+
+        if not isinstance(data, (list, np.ndarray, np.generic)):
+            data = [data]
+
+        if isinstance(data, (np.ndarray, np.generic)):
+            data = data.tolist()
+
         n = len(data)
         diff = [data[t - self.lag] - data[t] for t in np.arange(self.lag, n)]
         for t in np.arange(0, self.lag): diff.insert(0, 0)
         return diff
 
     def inverse(self,data, param):
+
+        if isinstance(data, (np.ndarray, np.generic)):
+            data = data.tolist()
+
+        if not isinstance(data, list):
+            data = [data]
+
         n = len(data)
-        inc = [data[t] + param[t] for t in np.arange(1, n)]
-        return inc
+
+        inc = [data[t] + param[t] for t in np.arange(0, n)]
+
+        if n == 1:
+            return inc[0]
+        else:
+            return inc
 
 
 def boxcox(original, plambda):

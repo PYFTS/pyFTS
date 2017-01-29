@@ -214,9 +214,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
     def forecastInterval(self, data):
 
-        data = np.array(data)
-
-        ndata = self.doTransformations(data)
+        ndata = np.array(self.doTransformations(data))
 
         l = len(ndata)
 
@@ -349,7 +347,15 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
     def getGridClean(self, resolution):
         grid = {}
-        for sbin in np.arange(self.sets[0].lower, self.sets[-1].upper, resolution):
+
+        if len(self.transformations) == 0:
+            _min = self.sets[0].lower
+            _max = self.sets[-1].upper
+        else:
+            _min = self.original_min
+            _max = self.original_max
+
+        for sbin in np.arange(_min,_max, resolution):
             grid[sbin] = 0
 
         return grid
@@ -378,7 +384,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         for child in node.getChildren():
             self.buildTreeWithoutOrder(child, lags, level + 1)
 
-    def forecastAheadDistribution(self, data, steps, resolution,parameters=None):
+    def forecastAheadDistribution(self, data, steps, resolution, parameters=None):
 
         ret = []
 
@@ -388,58 +394,89 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
         index = SortedCollection.SortedCollection(iterable=grid.keys())
 
-        grids = []
-        for k in np.arange(0, steps):
-            grids.append(self.getGridClean(resolution))
+        if parameters is None:
 
-        for k in np.arange(self.order, steps + self.order):
+            grids = []
+            for k in np.arange(0, steps):
+                grids.append(self.getGridClean(resolution))
 
-            lags = {}
+            for k in np.arange(self.order, steps + self.order):
 
-            cc = 0
+                lags = {}
 
-            for i in intervals[k - self.order : k]:
+                cc = 0
 
-                quantiles = []
+                for i in intervals[k - self.order : k]:
 
-                for qt in np.arange(0, 50, 2):
-                    quantiles.append(i[0] + qt * ((i[1] - i[0]) / 100))
-                    quantiles.append(i[1] - qt * ((i[1] - i[0]) / 100))
-                quantiles.append(i[0] + ((i[1] - i[0]) / 2))
+                    quantiles = []
 
-                quantiles = list(set(quantiles))
+                    for qt in np.arange(0, 50, 2):
+                        quantiles.append(i[0] + qt * ((i[1] - i[0]) / 100))
+                        quantiles.append(i[1] - qt * ((i[1] - i[0]) / 100))
+                    quantiles.append(i[0] + ((i[1] - i[0]) / 2))
 
-                quantiles.sort()
+                    quantiles = list(set(quantiles))
 
-                lags[cc] = quantiles
+                    quantiles.sort()
 
-                cc += 1
+                    lags[cc] = quantiles
 
-            # Build the tree with all possible paths
+                    cc += 1
 
-            root = tree.FLRGTreeNode(None)
+                # Build the tree with all possible paths
 
-            self.buildTreeWithoutOrder(root, lags, 0)
+                root = tree.FLRGTreeNode(None)
 
-            # Trace the possible paths
+                self.buildTreeWithoutOrder(root, lags, 0)
 
-            for p in root.paths():
-                path = list(reversed(list(filter(None.__ne__, p))))
+                # Trace the possible paths
 
-                if parameters is None:
+                for p in root.paths():
+                    path = list(reversed(list(filter(None.__ne__, p))))
+
                     qtle = self.forecastInterval(path)
+
                     grids[k - self.order] = self.gridCount(grids[k - self.order], resolution, index, np.ravel(qtle))
-                else:
-                    qtle = self.forecast(path)
-                    grids[k - self.order] = self.gridCountPoint(grids[k - self.order], resolution, index, np.ravel(qtle))
 
-        for k in np.arange(0, steps):
-            tmp = np.array([grids[k][q] for q in sorted(grids[k])])
-            ret.append(tmp / sum(tmp))
+            for k in np.arange(0, steps):
+                tmp = np.array([grids[k][q] for q in sorted(grids[k])])
+                ret.append(tmp / sum(tmp))
 
-        grid = self.getGridClean(resolution)
-        df = pd.DataFrame(ret, columns=sorted(grid))
-        return df
+            grid = self.getGridClean(resolution)
+            df = pd.DataFrame(ret, columns=sorted(grid))
+            return df
+        else:
+
+            print("novo")
+
+            ret = []
+
+            for k in np.arange(self.order, steps + self.order):
+
+                grid = self.getGridClean(resolution)
+                grid = self.gridCount(grid, resolution, index, intervals[k])
+
+                for qt in np.arange(0, 50, 1):
+                    # print(qt)
+                    qtle_lower = self.forecastInterval(
+                        [intervals[x][0] + qt * ((intervals[x][1] - intervals[x][0]) / 100) for x in
+                         np.arange(k - self.order, k)])
+                    grid = self.gridCount(grid, resolution, index, np.ravel(qtle_lower))
+                    qtle_upper = self.forecastInterval(
+                        [intervals[x][1] - qt * ((intervals[x][1] - intervals[x][0]) / 100) for x in
+                         np.arange(k - self.order, k)])
+                    grid = self.gridCount(grid, resolution, index, np.ravel(qtle_upper))
+                qtle_mid = self.forecastInterval(
+                    [intervals[x][0] + (intervals[x][1] - intervals[x][0]) / 2 for x in np.arange(k - self.order, k)])
+                grid = self.gridCount(grid, resolution, index, np.ravel(qtle_mid))
+
+                tmp = np.array([grid[k] for k in sorted(grid)])
+
+                ret.append(tmp / sum(tmp))
+
+            grid = self.getGridClean(resolution)
+            df = pd.DataFrame(ret, columns=sorted(grid))
+            return df
 
 
     def __str__(self):

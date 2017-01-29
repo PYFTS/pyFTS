@@ -49,9 +49,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 
     def forecastInterval(self, data):
 
-        data = np.array(data)
-
-        ndata = self.doTransformations(data)
+        ndata = np.array(self.doTransformations(data))
 
         l = len(ndata)
 
@@ -115,8 +113,8 @@ class IntervalFTS(hofts.HighOrderFTS):
 
             # gerar o intervalo
             norm = sum(affected_flrgs_memberships)
-            lo_ = self.doInverseTransformations(sum(lo) / norm, param=[data[k - (self.order - 1): k + 1]])
-            up_ = self.doInverseTransformations(sum(up) / norm, param=[data[k - (self.order - 1): k + 1]])
+            lo_ = self.doInverseTransformations(sum(lo) / norm, params=[data[k - (self.order - 1): k + 1]])
+            up_ = self.doInverseTransformations(sum(up) / norm, params=[data[k - (self.order - 1): k + 1]])
             ret.append([lo_, up_])
 
         return ret

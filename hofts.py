@@ -62,7 +62,7 @@ class HighOrderFTS(fts.FTS):
 
     def train(self, data, sets, order=1,parameters=None):
 
-        data = self.doTransformations(data)
+        data = self.doTransformations(data, updateUoD=True)
 
         self.order = order
         self.sets = sets

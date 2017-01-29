@@ -21,3 +21,9 @@ def showAndSaveImage(fig,file,flag,lgd=None):
         else:
             fig.savefig(uniquefilename(file))
         plt.close(fig)
+
+
+def enumerate2(xs, start=0, step=1):
+    for x in xs:
+        yield (start, x)
+        start += step
