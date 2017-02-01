@@ -9,18 +9,20 @@ from pyFTS.common import FuzzySet, Membership
 
 def GridPartitionerTrimf(data, npart, names=None, prefix="A"):
     sets = []
-    if min(data) < 0:
-        dmin = min(data) * 1.1
+    _min = min(data)
+    if _min < 0:
+        dmin = _min * 1.1
     else:
-        dmin = min(data) * 0.9
+        dmin = _min * 0.9
 
-    if max(data) > 0:
-        dmax = max(data) * 1.1
+    _max = max(data)
+    if _max > 0:
+        dmax = _max * 1.1
     else:
-        dmax = max(data) * 0.9
+        dmax = _max * 0.9
 
     dlen = dmax - dmin
-    partlen = math.ceil(dlen / npart)
+    partlen = dlen / npart
 
     count = 0
     for c in np.arange(dmin, dmax, partlen):

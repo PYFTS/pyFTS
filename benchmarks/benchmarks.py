@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import matplotlib as plt
 import matplotlib.colors as pltcolors
+import matplotlib.cm as cmx
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 # from sklearn.cross_validation import KFold
@@ -201,11 +202,70 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
 
     Util.showAndSaveImage(fig, file, save, lgd=legends)
 
+def allAheadForecasters(data_train, data_test, partitions, start, steps, resolution = None, max_order=3,save=False, file=None, tam=[20, 5],
+                           models=None, transformation=None, option=2):
+    if models is None:
+        models = [pfts.ProbabilisticFTS]
+
+    if resolution is None: resolution = (max(data_train) - min(data_train)) / 100
+
+    objs = []
+
+    if transformation is not None:
+        data_train_fs = Grid.GridPartitionerTrimf(transformation.apply(data_train),partitions)
+    else:
+        data_train_fs = Grid.GridPartitionerTrimf(data_train, partitions)
+
+    lcolors = []
+
+    for count, model in Util.enumerate2(models, start=0, step=2):
+        mfts = model("")
+        if not mfts.isHighOrder:
+            if transformation is not None:
+                mfts.appendTransformation(transformation)
+            mfts.train(data_train, data_train_fs)
+            objs.append(mfts)
+            lcolors.append( colors[count % ncol] )
+        else:
+            for order in np.arange(1,max_order+1):
+                if order >= mfts.minOrder:
+                    mfts = model(" n = " + str(order))
+                    if transformation is not None:
+                        mfts.appendTransformation(transformation)
+                    mfts.train(data_train, data_train_fs, order=order)
+                    objs.append(mfts)
+                    lcolors.append(colors[count % ncol])
+
+    distributions = [False for k in objs]
+
+    distributions[0] = True
+
+    print(getDistributionStatistics(data_test[start:], objs, steps, resolution))
+
+    #plotComparedIntervalsAhead(data_test, objs, lcolors, distributions=, save=save, file=file, tam=tam,  intervals=True)
+
+
+def getDistributionStatistics(original, models, steps, resolution):
+    ret = "Model	& Order     &  Interval & Distribution	\\\\ \n"
+    for fts in models:
+        densities1 = fts.forecastAheadDistribution(original,steps,resolution, parameters=3)
+        densities2 = fts.forecastAheadDistribution(original, steps, resolution, parameters=2)
+        ret += fts.shortname + "		& "
+        ret += str(fts.order) + "		& "
+        ret += str(round(Measures.crps(original, densities1), 3)) + "		& "
+        ret += str(round(Measures.crps(original, densities2), 3)) + "	\\\\ \n"
+    return ret
+
 
 def plotComparedIntervalsAhead(original, models, colors, distributions, time_from, time_to,
-                               interpol=False, save=False, file=None, tam=[20, 5], resolution=None):
+                               interpol=False, save=False, file=None, tam=[20, 5], resolution=None,
+                               cmap='Blues',option=2):
     fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
+
+    cm = plt.get_cmap(cmap)
+    cNorm = pltcolors.Normalize(vmin=0, vmax=1)
+    scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=cm)
 
     if resolution is None: resolution = (max(original) - min(original)) / 100
 
@@ -215,26 +275,44 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     for count, fts in enumerate(models, start=0):
         if fts.hasDistributionForecasting and distributions[count]:
             density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from],
-                                                    time_to, resolution, parameters=True)
+                                                    time_to, resolution, parameters=option)
 
+            Y = []
+            X = []
+            C = []
+            S = []
             y = density.columns
             t = len(y)
 
+            ss = time_to ** 2
+
             for k in density.index:
-                alpha = np.array([density[q][k] for q in density]) * 100
+                #alpha = [scalarMap.to_rgba(density[col][k]) for col in density.columns]
+                col = [density[col][k]*5 for col in density.columns]
 
                 x = [time_from + k for x in np.arange(0, t)]
 
-                for cc in np.arange(0, resolution, 5):
-                    ax.scatter(x, y + cc, c=alpha, marker='s', linewidths=0, cmap='Oranges', edgecolors=None)
-                if interpol and k < max(density.index):
-                    diffs = [(density[q][k + 1] - density[q][k]) / 50 for q in density]
-                    for p in np.arange(0, 50):
-                        xx = [time_from + k + 0.02 * p for q in np.arange(0, t)]
-                        alpha2 = np.array(
-                            [density[density.columns[q]][k] + diffs[q] * p for q in np.arange(0, t)]) * 100
-                        ax.scatter(xx, y, c=alpha2, marker='s', linewidths=0, cmap='Oranges',
-                                   norm=pltcolors.Normalize(vmin=0, vmax=1), vmin=0, vmax=1, edgecolors=None)
+                s = [ss for x in np.arange(0, t)]
+
+                ic = resolution/10
+
+                for cc in np.arange(0, resolution, ic):
+                    Y.append(y + cc)
+                    X.append(x)
+                    C.append(col)
+                    S.append(s)
+
+            Y = np.hstack(Y)
+            X = np.hstack(X)
+            C = np.hstack(C)
+            S = np.hstack(S)
+
+            s = ax.scatter(X, Y, c=C, marker='s',s=S, linewidths=0, edgecolors=None, cmap=cmap)
+            s.set_clim([0, 1])
+            cb = fig.colorbar(s)
+
+            cb.set_label('Density')
+
 
         if fts.hasIntervalForecasting:
             forecasts = fts.forecastAheadInterval(original[time_from - fts.order:time_from], time_to)
@@ -275,6 +353,8 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     ax.set_ylabel('F(T)')
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
+
+    #plt.colorbar()
 
     Util.showAndSaveImage(fig, file, save)
 

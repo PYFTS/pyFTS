@@ -243,15 +243,15 @@ class ProbabilisticFTS(ifts.IntervalFTS):
                     idx = np.ravel(tmp)  # flatten the array
 
                     if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                        if instance <= self.sets[0].lower:
+                        if instance <= np.ceil(self.sets[0].lower):
                             idx = [0]
-                        elif instance >= self.sets[-1].upper:
+                        elif instance >= np.floor(self.sets[-1].upper):
                             idx = [len(self.sets) - 1]
                         else:
                             raise Exception(instance)
 
                     lags[count] = idx
-                    count = count + 1
+                    count += 1
 
                 # Build the tree with all possible paths
 
@@ -331,11 +331,16 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         return ret
 
     def forecastAheadInterval(self, data, steps):
-        ret = [[data[k], data[k]] for k in np.arange(len(data) - self.order, len(data))]
+
+        l = len(data)
+
+        ret = [[data[k], data[k]] for k in np.arange(l - self.order, l)]
 
         for k in np.arange(self.order, steps+self.order):
 
-            if ret[-1][0] <= self.sets[0].lower and ret[-1][1] >= self.sets[-1].upper:
+            if (len(self.transformations) > 0 and ret[-1][0] <= self.sets[0].lower and ret[-1][1] >= self.sets[
+                -1].upper) or (len(self.transformations) == 0 and ret[-1][0] <= self.original_min and ret[-1][
+                1] >= self.original_max):
                 ret.append(ret[-1])
             else:
                 lower = self.forecastInterval([ret[x][0] for x in np.arange(k - self.order, k)])
@@ -384,7 +389,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         for child in node.getChildren():
             self.buildTreeWithoutOrder(child, lags, level + 1)
 
-    def forecastAheadDistribution(self, data, steps, resolution, parameters=None):
+    def forecastAheadDistribution(self, data, steps, resolution, parameters=2):
 
         ret = []
 
@@ -394,7 +399,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
         index = SortedCollection.SortedCollection(iterable=grid.keys())
 
-        if parameters is None:
+        if parameters == 1:
 
             grids = []
             for k in np.arange(0, steps):
@@ -442,12 +447,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
                 tmp = np.array([grids[k][q] for q in sorted(grids[k])])
                 ret.append(tmp / sum(tmp))
 
-            grid = self.getGridClean(resolution)
-            df = pd.DataFrame(ret, columns=sorted(grid))
-            return df
-        else:
-
-            print("novo")
+        elif parameters == 2:
 
             ret = []
 
@@ -474,9 +474,20 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
                 ret.append(tmp / sum(tmp))
 
-            grid = self.getGridClean(resolution)
-            df = pd.DataFrame(ret, columns=sorted(grid))
-            return df
+        else:
+            ret = []
+
+            for k in np.arange(self.order, steps + self.order):
+                grid = self.getGridClean(resolution)
+                grid = self.gridCount(grid, resolution, index, intervals[k])
+
+                tmp = np.array([grid[k] for k in sorted(grid)])
+
+                ret.append(tmp / sum(tmp))
+
+        grid = self.getGridClean(resolution)
+        df = pd.DataFrame(ret, columns=sorted(grid))
+        return df
 
 
     def __str__(self):

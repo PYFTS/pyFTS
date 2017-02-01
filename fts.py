@@ -63,7 +63,6 @@ class FTS(object):
 
     def doTransformations(self,data,params=None,updateUoD=False):
         ndata = data
-
         if updateUoD:
             if min(data) < 0:
                 self.original_min = min(data) * 1.1
