@@ -641,7 +641,8 @@ def compareModelsTable(original, models_fo, models_ho):
 
 
 def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=None, tam=[10, 15],
-                      plotforecasts=False, elev=30, azim=144, intervals=False):
+                      plotforecasts=False, elev=30, azim=144, intervals=False,parameters=None):
+    _3d = len(orders) > 1
     ret = []
     errors = np.array([[0 for k in range(len(partitions))] for kk in range(len(orders))])
     forecasted_best = []
@@ -662,13 +663,16 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
         sets = Grid.GridPartitionerTrimf(train, p)
         for oc, o in enumerate(orders, start=0):
             fts = model("q = " + str(p) + " n = " + str(o))
-            fts.train(train, sets, o)
+            fts.train(train, sets, o,parameters=parameters)
             if not intervals:
                 forecasted = fts.forecast(test)
-                error = Measures.rmse(np.array(test[o:]), np.array(forecasted[:-1]))
+                if not fts.hasSeasonality:
+                    error = Measures.rmse(np.array(test[o:]), np.array(forecasted[:-1]))
+                else:
+                    error = Measures.rmse(np.array(test[o:]), np.array(forecasted))
                 for kk in range(o):
                     forecasted.insert(0, None)
-                    if plotforecasts: ax0.plot(forecasted, label=fts.name)
+                if plotforecasts: ax0.plot(forecasted, label=fts.name)
             else:
                 forecasted = fts.forecastInterval(test)
                 error = 1.0 - Measures.rmse_interval(np.array(test[o:]), np.array(forecasted[:-1]))
@@ -683,15 +687,22 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
         # handles0, labels0 = ax0.get_legend_handles_labels()
         # ax0.legend(handles0, labels0)
         ax0.plot(test, label="Original", linewidth=3.0, color="black")
-        ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
+        if _3d: ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
     if not plotforecasts: ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
     # ax1 = fig.add_axes([0.6, 0.5, 0.45, 0.45], projection='3d')
-    ax1.set_title('Error Surface')
-    ax1.set_ylabel('Model order')
-    ax1.set_xlabel('Number of partitions')
-    ax1.set_zlabel('RMSE')
-    X, Y = np.meshgrid(partitions, orders)
-    surf = ax1.plot_surface(X, Y, errors, rstride=1, cstride=1, antialiased=True)
+    if _3d:
+        ax1.set_title('Error Surface')
+        ax1.set_ylabel('Model order')
+        ax1.set_xlabel('Number of partitions')
+        ax1.set_zlabel('RMSE')
+        X, Y = np.meshgrid(partitions, orders)
+        surf = ax1.plot_surface(X, Y, errors, rstride=1, cstride=1, antialiased=True)
+    else:
+        ax1 = fig.add_axes([0, 1, 0.9, 0.9])
+        ax1.set_title('Error Curve')
+        ax1.set_ylabel('Number of partitions')
+        ax1.set_xlabel('RMSE')
+        ax0.plot(errors,partitions)
     ret.append(best)
     ret.append(forecasted_best)
 

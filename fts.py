@@ -16,6 +16,7 @@ class FTS(object):
         self.hasPointForecasting = True
         self.hasIntervalForecasting = False
         self.hasDistributionForecasting = False
+        self.isMultivariate = False
         self.dump = False
         self.transformations = []
         self.transformations_param = []
