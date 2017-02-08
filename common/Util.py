@@ -1,5 +1,6 @@
 import time
 import matplotlib.pyplot as plt
+import dill
 
 
 current_milli_time = lambda: int(round(time.time() * 1000))
@@ -27,3 +28,19 @@ def enumerate2(xs, start=0, step=1):
     for x in xs:
         yield (start, x)
         start += step
+
+
+def persist_obj(obj, file):
+    with open(file, 'wb') as _file:
+        dill.dump(obj, _file)
+
+def load_obj(file):
+    with open(file, 'rb') as _file:
+        obj = dill.load(_file)
+    return obj
+
+def persist_env(file):
+    dill.dump_session(file)
+
+def load_env(file):
+    dill.load_session(file)

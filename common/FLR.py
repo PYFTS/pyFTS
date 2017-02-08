@@ -40,9 +40,9 @@ def generateIndexedFLRs(sets, indexer, data):
     flrs = []
     index = indexer.get_season_of_data(data)
     ndata = indexer.get_data(data)
-    for k in np.arange(0,len(data)-1):
-        lhs = FuzzySet.getMaxMembershipFuzzySet(ndata[k],sets)
-        rhs = FuzzySet.getMaxMembershipFuzzySet(ndata[k+1], sets)
+    for k in np.arange(1,len(data)):
+        lhs = FuzzySet.getMaxMembershipFuzzySet(ndata[k-1],sets)
+        rhs = FuzzySet.getMaxMembershipFuzzySet(ndata[k], sets)
         season = index[k]
         flr = IndexedFLR(season,lhs,rhs)
         flrs.append(flr)
