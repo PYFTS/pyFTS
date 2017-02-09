@@ -1,13 +1,34 @@
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts, sfts
+from pyFTS import fts, sfts, chen
 
 
-class MultiSeasonalFTS(sfts.SeasonalFTS):
+class ContextualSeasonalFLRG(object):
+    def __init__(self, seasonality):
+        super(ContextualSeasonalFLRG, self).__init__(None,None)
+        self.season = seasonality
+        self.flrgs = {}
+
+    def append(self, flr):
+        if flr.LHS.name in self.flrgs:
+            self.flrgs[flr.LHS.name].append(flr.RHS)
+        else:
+            self.flrgs[flr.LHS.name] = chen.ConventionalFLRG(flr.LHS)
+            self.flrgs[flr.LHS.name].append(flr.RHS)
+
+    def __str__(self):
+        tmp = str(self.season) + ": \n "
+        tmp2 = "\t"
+        for r in sorted(self.flrgs):
+            tmp2 += str(self.flrgs[r]) + "\n\t"
+        return tmp + tmp2 + "\n"
+
+
+class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
     def __init__(self, name, indexer):
-        super(MultiSeasonalFTS, self).__init__("MSFTS")
-        self.name = "Multi Seasonal FTS"
-        self.shortname = "MSFTS " + name
+        super(ContextualMultiSeasonalFTS, self).__init__("CMSFTS")
+        self.name = "Contextual Multi Seasonal FTS"
+        self.shortname = "CMSFTS " + name
         self.detail = ""
         self.seasonality = 1
         self.hasSeasonality = True
@@ -23,18 +44,21 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
         for flr in flrs:
 
             if str(flr.index) not in self.flrgs:
-                flrgs[str(flr.index)] = sfts.SeasonalFLRG(flr.index)
+                flrgs[str(flr.index)] = ContextualSeasonalFLRG(flr.index)
 
-            flrgs[str(flr.index)].append(flr.RHS)
+            flrgs[str(flr.index)].append(flr)
 
         return (flrgs)
 
     def train(self, data, sets, order=1, parameters=None):
         self.sets = sets
         self.seasonality = parameters
-        #ndata = self.indexer.set_data(data,self.doTransformations(self.indexer.get_data(data)))
         flrs = FLR.generateIndexedFLRs(self.sets, self.indexer, data)
         self.flrgs = self.generateFLRG(flrs)
+
+    def getMidpoints(self, flrg, data):
+        ret = np.array([s.centroid for s in flrg.flrgs[data].RHS])
+        return ret
 
     def forecast(self, data):
 
@@ -47,7 +71,9 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
 
             flrg = self.flrgs[str(index[k])]
 
-            mp = self.getMidpoints(flrg)
+            d = FuzzySet.getMaxMembershipFuzzySet(ndata[k], self.sets)
+
+            mp = self.getMidpoints(flrg, d)
 
             ret.append(sum(mp) / len(mp))
 

@@ -72,15 +72,23 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3, statisti
                            intervals=False)
 
 
-def getPointStatistics(data, models, externalmodels = None, externalforecasts = None):
-    ret = "Model		& Order     & RMSE		& MAPE      & Theil's U		\\\\ \n"
-    for fts in models:
-        forecasts = fts.forecast(data)
-        ret += fts.shortname + "		& "
-        ret += str(fts.order) + "		& "
-        ret += str(round(Measures.rmse(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2)) + "		& "
-        ret += str(round(Measures.smape(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))+ "		& "
-        ret += str(round(Measures.UStatistic(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))
+def getPointStatistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
+    ret = "Model		& Order     & RMSE		& SMAPE      & Theil's U		\\\\ \n"
+    for count,model in enumerate(models,start=0):
+        if indexers is not None:
+            ndata = np.array(indexers[count].get_data(data[model.order:]))
+        else:
+            ndata = np.array(data[model.order:])
+        forecasts = model.forecast(data)
+        if model.hasSeasonality:
+            nforecasts = np.array(forecasts)
+        else:
+            nforecasts = np.array(forecasts[:-1])
+        ret += model.shortname + "		& "
+        ret += str(model.order) + "		& "
+        ret += str(round(Measures.rmse(ndata, nforecasts), 2)) + "		& "
+        ret += str(round(Measures.smape(ndata, nforecasts), 2))+ "		& "
+        ret += str(round(Measures.UStatistic(ndata, nforecasts), 2))
         #ret += str(round(Measures.TheilsInequality(np.array(data[fts.order:]), np.array(forecasts[:-1])), 4))
         ret += "	\\\\ \n"
     if externalmodels is not None:
@@ -88,9 +96,9 @@ def getPointStatistics(data, models, externalmodels = None, externalforecasts = 
         for k in np.arange(0,l):
             ret += externalmodels[k] + "		& "
             ret += " 1		& "
-            ret += str(round(Measures.rmse(data[fts.order:], externalforecasts[k][:-1]), 2)) + "		& "
-            ret += str(round(Measures.smape(data[fts.order:], externalforecasts[k][:-1]), 2))+ "		& "
-            ret += str(round(Measures.UStatistic(np.array(data[fts.order:]), np.array(forecasts[:-1])), 2))
+            ret += str(round(Measures.rmse(data, externalforecasts[k][:-1]), 2)) + "		& "
+            ret += str(round(Measures.smape(data, externalforecasts[k][:-1]), 2))+ "		& "
+            ret += str(round(Measures.UStatistic(np.array(data), np.array(forecasts[:-1])), 2))
             ret += "	\\\\ \n"
     return ret
 

@@ -34,7 +34,7 @@ class ConventionalFTS(fts.FTS):
             if flr.LHS.name in flrgs:
                 flrgs[flr.LHS.name].append(flr.RHS)
             else:
-                flrgs[flr.LHS.name] = ConventionalFLRG(flr.LHS);
+                flrgs[flr.LHS.name] = ConventionalFLRG(flr.LHS)
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 

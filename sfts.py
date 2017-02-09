@@ -2,8 +2,10 @@ import numpy as np
 from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts
 
-class SeasonalFLRG(fts.FTS):
+
+class SeasonalFLRG(FLR.FLR):
     def __init__(self, seasonality):
+        super(SeasonalFLRG, self).__init__(None,None)
         self.LHS = seasonality
         self.RHS = []
 
