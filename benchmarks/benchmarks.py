@@ -75,11 +75,16 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3, statisti
 def getPointStatistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
     ret = "Model		& Order     & RMSE		& SMAPE      & Theil's U		\\\\ \n"
     for count,model in enumerate(models,start=0):
-        if indexers is not None:
+        if indexers is not None and indexers[count] is not None:
             ndata = np.array(indexers[count].get_data(data[model.order:]))
         else:
             ndata = np.array(data[model.order:])
-        forecasts = model.forecast(data)
+
+        if model.isMultivariate or indexers is None:
+            forecasts = model.forecast(data)
+        elif not model.isMultivariate and indexers is not None:
+            forecasts = model.forecast( indexers[count].get_data(data) )
+
         if model.hasSeasonality:
             nforecasts = np.array(forecasts)
         else:

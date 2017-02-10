@@ -5,7 +5,6 @@ from pyFTS import fts, sfts, chen
 
 class ContextualSeasonalFLRG(object):
     def __init__(self, seasonality):
-        super(ContextualSeasonalFLRG, self).__init__(None,None)
         self.season = seasonality
         self.flrgs = {}
 
@@ -43,7 +42,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
 
         for flr in flrs:
 
-            if str(flr.index) not in self.flrgs:
+            if str(flr.index) not in flrgs:
                 flrgs[str(flr.index)] = ContextualSeasonalFLRG(flr.index)
 
             flrgs[str(flr.index)].append(flr)
@@ -57,8 +56,11 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
         self.flrgs = self.generateFLRG(flrs)
 
     def getMidpoints(self, flrg, data):
-        ret = np.array([s.centroid for s in flrg.flrgs[data].RHS])
-        return ret
+        if data.name in flrg.flrgs:
+            ret = np.array([s.centroid for s in flrg.flrgs[data.name].RHS])
+            return ret
+        else:
+            return  np.array([data.centroid])
 
     def forecast(self, data):
 
