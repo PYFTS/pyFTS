@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+from pyFTS.common import FuzzySet,SortedCollection
 
 
 # Autocorrelation function estimative
@@ -144,3 +145,44 @@ def crps(targets, densities):
         _crps += sum([ (Ff[col][k]-Fa[col][k])**2 for col in densities.columns])
 
     return _crps / float(l * n)
+
+
+def pdf(data, bins=100):
+    _mx = max(data)
+    _mn = min(data)
+    _pdf = {}
+    percentiles = np.linspace(_mn, _mx, bins).tolist()
+
+    print (percentiles)
+
+    index_percentiles = SortedCollection.SortedCollection(iterable=percentiles)
+
+    for k in percentiles: _pdf[k] = 0
+
+    for k in data:
+        v = index_percentiles.find_ge(k)
+        _pdf[v] += 1
+
+    norm = sum(list(_pdf.values()))
+    for k in _pdf: _pdf[k] /= norm
+
+    return _pdf
+
+
+def pdf_fuzzysets(data,sets):
+    _pdf = {}
+    for k in sets: _pdf[k.name] = 0
+    for k in data:
+        memberships = FuzzySet.fuzzyInstance(k, sets)
+        for c, fs in enumerate(sets, start=0):
+            _pdf[fs.name] += memberships[c]
+
+    norm = sum(list(_pdf.values()))
+    for k in _pdf: _pdf[k] /= norm
+
+    return _pdf
+
+
+def entropy(pdf):
+    h = -sum([pdf[k] * np.log(pdf[k]) for k in pdf])
+    return h

@@ -378,17 +378,6 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         grid[k] += 1
         return grid
 
-    def buildTreeWithoutOrder(self, node, lags, level):
-
-        if level not in lags:
-            return
-
-        for s in lags[level]:
-            node.appendChild(tree.FLRGTreeNode(s))
-
-        for child in node.getChildren():
-            self.buildTreeWithoutOrder(child, lags, level + 1)
-
     def forecastAheadDistribution(self, data, steps, resolution, parameters=2):
 
         ret = []

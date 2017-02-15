@@ -32,6 +32,10 @@ def getMaxMembershipFuzzySet(inst, fuzzySets):
     mv = fuzzyInstance(inst, fuzzySets)
     return fuzzySets[np.argwhere(mv == max(mv))[0, 0]]
 
+def getMaxMembershipFuzzySetIndex(inst, fuzzySets):
+    mv = fuzzyInstance(inst, fuzzySets)
+    return np.argwhere(mv == max(mv))[0, 0]
+
 
 def fuzzySeries(data, fuzzySets):
     fts = []

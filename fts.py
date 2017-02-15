@@ -1,5 +1,8 @@
 import numpy as np
-from pyFTS import *
+import pandas as pd
+from pyFTS import tree
+from pyFTS.common import FuzzySet, SortedCollection
+from pyFTS.benchmarks import Measures
 
 
 class FTS(object):
@@ -100,3 +103,78 @@ class FTS(object):
         for r in sorted(self.flrgs):
             tmp = tmp + str(self.flrgs[r]) + "\n"
         return tmp
+
+    def buildTreeWithoutOrder(self, node, lags, level):
+
+        if level not in lags:
+            return
+
+        for s in lags[level]:
+            node.appendChild(tree.FLRGTreeNode(s))
+
+        for child in node.getChildren():
+            self.buildTreeWithoutOrder(child, lags, level + 1)
+
+    def generate_data(self,bins=100):
+
+        dim_uod = tuple([bins for k in range(0,self.order)])
+
+        dim_fs = tuple([ len(self.sets) for k in range(0, self.order)])
+
+        simulation_uod = np.zeros(shape=dim_uod, dtype=float)
+
+        simulation_fs = np.zeros(shape=dim_fs, dtype=float)
+
+        percentiles = np.linspace(self.sets[0].lower, self.sets[-1].upper, bins).tolist()
+
+        pdf_uod = {}
+
+        for k in percentiles:
+            pdf_uod[k] = 0
+
+        pdf_fs = {}
+        for k in self.sets:
+            pdf_fs[k.name] = 0
+
+        index_percentiles = SortedCollection.SortedCollection(iterable=percentiles)
+
+        lags = {}
+
+        for o in np.arange(0, self.order):
+            lags[o] = percentiles
+
+            # Build the tree with all possible paths
+
+        root = tree.FLRGTreeNode(None)
+
+        self.buildTreeWithoutOrder(root, lags, 0)
+
+        # Trace the possible paths
+
+
+        for p in root.paths():
+            path = list(reversed(list(filter(None.__ne__, p))))
+
+            index_uod = tuple([percentiles.index(k) for k in path])
+
+            index_fs = tuple([ FuzzySet.getMaxMembershipFuzzySetIndex(k, self.sets) for k in path])
+
+            forecast = self.forecast(path)[0]
+
+            simulation_uod[index_uod] = forecast
+
+            simulation_fs[index_fs] = forecast
+
+
+        pdf_fs = Measures.pdf_fuzzysets(np.ravel(simulation_fs),self.sets)
+
+        pdf_uod = Measures.pdf(np.ravel(simulation_fs), bins=bins)
+
+        #tmp_pdf_fs = pd.DataFrame( [[pdf_fs[k] for k in sorted(pdf_fs)]], columns=[k for k in sorted(pdf_fs)])
+        #tmp_pdf_uod = pd.DataFrame([[pdf_uod[k] for k in sorted(pdf_uod)]], columns=[k for k in sorted(pdf_uod)])
+
+        return [pdf_fs, pdf_uod, simulation_fs, simulation_uod ]
+
+
+
+
