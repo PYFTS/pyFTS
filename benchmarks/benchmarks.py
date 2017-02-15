@@ -9,7 +9,7 @@ import matplotlib.cm as cmx
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 # from sklearn.cross_validation import KFold
-from pyFTS.benchmarks import Measures, naive, ResidualAnalysis
+from pyFTS.benchmarks import Measures, naive, ResidualAnalysis, ProbabilityDistribution
 from pyFTS.partitioners import Grid
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang, pfts, ifts
@@ -24,7 +24,8 @@ styles = ['-','--','-.',':','.']
 nsty = len(styles)
 
 def allPointForecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True,
-                        series=True, save=False, file=None, tam=[20, 5], models=None, transformation=None):
+                        series=True, save=False, file=None, tam=[20, 5], models=None, transformation=None,
+                        distributions=False):
 
     if models is None:
         models = [naive.Naive, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
@@ -58,7 +59,7 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3, statisti
                         mfts.appendTransformation(transformation)
                     mfts.train(data_train, data_train_fs, order=order)
                     objs.append(mfts)
-                    lcolors.append(colors[count % ncol])
+                    lcolors.append(colors[(count + order) % ncol])
 
     if statistics:
         print(getPointStatistics(data_test, objs))
@@ -70,6 +71,21 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3, statisti
     if series:
         plotComparedSeries(data_test, objs, lcolors, typeonlegend=False, save=save, file=file, tam=tam,
                            intervals=False)
+
+    if distributions:
+        lcolors.insert(0,'black')
+        pmfs = []
+        pmfs.append(
+            ProbabilityDistribution.ProbabilityDistribution("Original", 100, [min(data_train), max(data_train)], data=data_train) )
+
+        for m in objs:
+            forecasts = m.forecast(data_train)
+            pmfs.append(
+                ProbabilityDistribution.ProbabilityDistribution(m.shortname, 100, [min(data_train), max(data_train)],
+                                                                data=forecasts))
+        print(getProbabilityDistributionStatistics(pmfs,data_train))
+
+        plotProbabilityDistributions(pmfs, lcolors)
 
 
 def getPointStatistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
@@ -105,6 +121,17 @@ def getPointStatistics(data, models, externalmodels = None, externalforecasts = 
             ret += str(round(Measures.smape(data, externalforecasts[k][:-1]), 2))+ "		& "
             ret += str(round(Measures.UStatistic(np.array(data), np.array(forecasts[:-1])), 2))
             ret += "	\\\\ \n"
+    return ret
+
+
+def getProbabilityDistributionStatistics(pmfs, data):
+    ret = "Model		& Entropy     & Empirical Likelihood		&  Pseudo Likelihood		\\\\ \n"
+    for k in pmfs:
+        ret += k.name + "		& "
+        ret += str(k.entropy()) + "		& "
+        ret += str(k.empiricalloglikelihood())+ "		& "
+        ret += str(k.pseudologlikelihood(data))
+        ret += "	\\\\ \n"
     return ret
 
 
@@ -214,6 +241,18 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
     ax.set_xlim([0, len(original)])
 
     Util.showAndSaveImage(fig, file, save, lgd=legends)
+
+
+def plotProbabilityDistributions(pmfs,lcolors):
+    fig = plt.figure(figsize=[15, 7])
+    ax = fig.add_subplot(111)
+
+    for k,m in enumerate(pmfs,start=0):
+        m.plot(ax, color=lcolors[k])
+
+    handles0, labels0 = ax.get_legend_handles_labels()
+    ax.legend(handles0, labels0)
+
 
 def allAheadForecasters(data_train, data_test, partitions, start, steps, resolution = None, max_order=3,save=False, file=None, tam=[20, 5],
                            models=None, transformation=None, option=2):
@@ -786,3 +825,4 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
     plt.tight_layout()
 
     Util.showAndSaveImage(fig, file, save)
+

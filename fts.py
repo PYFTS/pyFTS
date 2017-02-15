@@ -115,7 +115,7 @@ class FTS(object):
         for child in node.getChildren():
             self.buildTreeWithoutOrder(child, lags, level + 1)
 
-    def generate_data(self,bins=100):
+    def inputoutputmapping(self,bins=100):
 
         dim_uod = tuple([bins for k in range(0,self.order)])
 
@@ -135,8 +135,6 @@ class FTS(object):
         pdf_fs = {}
         for k in self.sets:
             pdf_fs[k.name] = 0
-
-        index_percentiles = SortedCollection.SortedCollection(iterable=percentiles)
 
         lags = {}
 
@@ -165,15 +163,7 @@ class FTS(object):
 
             simulation_fs[index_fs] = forecast
 
-
-        pdf_fs = Measures.pdf_fuzzysets(np.ravel(simulation_fs),self.sets)
-
-        pdf_uod = Measures.pdf(np.ravel(simulation_fs), bins=bins)
-
-        #tmp_pdf_fs = pd.DataFrame( [[pdf_fs[k] for k in sorted(pdf_fs)]], columns=[k for k in sorted(pdf_fs)])
-        #tmp_pdf_uod = pd.DataFrame([[pdf_uod[k] for k in sorted(pdf_uod)]], columns=[k for k in sorted(pdf_uod)])
-
-        return [pdf_fs, pdf_uod, simulation_fs, simulation_uod ]
+        return [simulation_fs, simulation_uod ]
 
 
 

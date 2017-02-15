@@ -39,12 +39,12 @@ fs = Grid.GridPartitionerTrimf(gauss_treino,10)
 
 #tmp = chen.ConventionalFTS("")
 
-pfts1 = pfts.ProbabilisticFTS("1")
+#pfts1 = pfts.ProbabilisticFTS("1")
 #pfts1.appendTransformation(diff)
-pfts1.train(gauss_treino,fs,2)
-#pfts2 = pfts.ProbabilisticFTS("n = 2")
+pfts1.train(gauss_treino,fs,1)
+pfts2 = pfts.ProbabilisticFTS("n = 2")
 #pfts2.appendTransformation(diff)
-#pfts2.train(gauss_treino,fs,2)
+pfts2.train(gauss_treino,fs,2)
 
 #pfts3 = pfts.ProbabilisticFTS("n = 3")
 #pfts3.appendTransformation(diff)
@@ -53,20 +53,6 @@ pfts1.train(gauss_treino,fs,2)
 #densities1 = pfts1.forecastAheadDistribution(gauss_teste[:50],2,1.50, parameters=2)
 
 #print(bchmk.getDistributionStatistics(gauss_teste[:50], [pfts1,pfts2,pfts3], 20, 1.50))
-
-sim_fs, sim_uod  =pfts1.generate_data(bins=10)
-
-#print(pdf_fs)
-
-#print(sim_fs)
-
-print(sim_uod)
-
-print(np.ravel(sim_uod))
-
-#print(sim_uod)
-
-#print (Measures.pdf(gauss_treino,bins=10))
 
 
 
