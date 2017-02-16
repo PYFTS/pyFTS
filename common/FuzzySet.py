@@ -28,6 +28,14 @@ def fuzzyInstance(inst, fuzzySets):
     return mv
 
 
+def fuzzyInstances(data, fuzzySets):
+    ret = []
+    for inst in data:
+        mv = np.array([fs.membership(inst) for fs in fuzzySets])
+        ret.append(mv)
+    return ret
+
+
 def getMaxMembershipFuzzySet(inst, fuzzySets):
     mv = fuzzyInstance(inst, fuzzySets)
     return fuzzySets[np.argwhere(mv == max(mv))[0, 0]]

@@ -71,3 +71,12 @@ class ProbabilityDistribution(object):
 
         axis.set_xlabel('Universe of Discourse')
         axis.set_ylabel('Probability')
+
+
+    def __str__(self):
+        head = '|'
+        body = '|'
+        for k in sorted(self.distribution.keys()):
+            head += str(round(k,2)) + '\t|'
+            body += str(round(self.distribution[k]  / self.count,3)) + '\t|'
+        return head + '\n' + body

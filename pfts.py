@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import math
 from operator import itemgetter
-from pyFTS.common import FuzzySet, SortedCollection
+from pyFTS.common import FLR, FuzzySet, SortedCollection
 from pyFTS import hofts, ifts, tree
 
 
@@ -21,6 +21,13 @@ class ProbabilisticFLRG(hofts.HighOrderFLRG):
             self.RHS[c.name] += 1.0
         else:
             self.RHS[c.name] = 1.0
+
+    def appendRHSFuzzy(self, c, mv):
+        self.frequencyCount += mv
+        if c.name in self.RHS:
+            self.RHS[c.name] += mv
+        else:
+            self.RHS[c.name] = mv
 
     def getProbability(self, c):
         return self.RHS[c] / self.frequencyCount
@@ -46,6 +53,63 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         self.hasIntervalForecasting = True
         self.hasDistributionForecasting = True
         self.isHighOrder = True
+
+    def train(self, data, sets, order=1,parameters=None):
+
+        data = self.doTransformations(data, updateUoD=True)
+
+        self.order = order
+        self.sets = sets
+        for s in self.sets:    self.setsDict[s.name] = s
+        tmpdata = FuzzySet.fuzzySeries(data, sets)
+        flrs = FLR.generateRecurrentFLRs(tmpdata)
+        self.flrgs = self.generateFLRG(flrs)
+        #self.flrgs = self.generateFLRG2(data)
+
+    def generateFLRG2(self, data):
+        flrgs = {}
+        l = len(data)
+        for k in np.arange(self.order, l):
+            if self.dump: print("FLR: " + str(k))
+            flrg = ProbabilisticFLRG(self.order)
+
+            sample = data[k - self.order: k]
+
+            mvs = FuzzySet.fuzzyInstances(sample, self.sets)
+            lags = {}
+
+            for o in np.arange(0, self.order):
+                _sets = [self.sets[kk] for kk in np.arange(0, len(self.sets)) if mvs[o][kk] > 0]
+
+                lags[o] = _sets
+
+            root = tree.FLRGTreeNode(None)
+
+            self.buildTreeWithoutOrder(root, lags, 0)
+
+            # Trace the possible paths
+            for p in root.paths():
+                path = list(reversed(list(filter(None.__ne__, p))))
+
+                lhs_mv = []
+                for c, e in enumerate(path, start=0):
+                    lhs_mv.append(  e.membership( sample[c] )  )
+                    flrg.appendLHS(e)
+
+                if flrg.strLHS() not in flrgs:
+                    flrgs[flrg.strLHS()] = flrg;
+
+                mv = FuzzySet.fuzzyInstance(data[k], self.sets)
+
+                rhs_mv = [mv[kk] for kk in np.arange(0, len(self.sets)) if mv[kk] > 0]
+                _sets = [self.sets[kk] for kk in np.arange(0, len(self.sets)) if mv[kk] > 0]
+
+                for c, e in enumerate(_sets, start=0):
+                    flrgs[flrg.strLHS()].appendRHSFuzzy(e,rhs_mv[c]*max(lhs_mv))
+
+                self.globalFrequency += max(lhs_mv)
+
+        return (flrgs)
 
     def generateFLRG(self, flrs):
         flrgs = {}
