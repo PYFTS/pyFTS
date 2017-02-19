@@ -47,9 +47,21 @@ from pyFTS.benchmarks import ProbabilityDistribution as dist
 
 forecasts = pfts1.forecast(taiex_treino)
 
-pmf1 = dist.ProbabilityDistribution("Original",10,[min(taiex_treino),max(taiex_treino)],data=forecasts)
+pmf1 = dist.ProbabilityDistribution("Original",100,[min(taiex_treino),max(taiex_treino)],data=taiex_treino)
 
-print(pmf1)
+#print(pmf1.entropy())
+
+pmf2 = dist.ProbabilityDistribution("Original",100,[min(taiex_treino),max(taiex_treino)],data=forecasts)
+
+#print(pmf2.entropy())
+
+#print(pmf2.kullbackleiblerdivergence(pmf1))
+
+#print(pmf2.crossentropy(pmf1))
+
+print(pmf1.averageloglikelihood(taiex_treino))
+
+print(pmf2.averageloglikelihood(taiex_treino))
 
 #pfts2 = pfts.ProbabilisticFTS("n = 2")
 #pfts2.appendTransformation(diff)

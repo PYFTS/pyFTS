@@ -43,6 +43,16 @@ class ProbabilityDistribution(object):
                   for k in self.bins])
         return h
 
+    def crossentropy(self,q):
+        h = -sum([self.distribution[k] * np.log(q.distribution[k]) if self.distribution[k] > 0 else 0
+                  for k in self.bins])
+        return h
+
+    def kullbackleiblerdivergence(self,q):
+        h = sum([self.distribution[k] * np.log(self.distribution[k]/q.distribution[k]) if self.distribution[k] > 0 else 0
+                  for k in self.bins])
+        return h
+
     def empiricalloglikelihood(self):
         _s = 0
         for k in self.bins:
@@ -59,6 +69,16 @@ class ProbabilityDistribution(object):
             if k > 0:
                 _s += np.log(k)
         return _s
+
+    def averageloglikelihood(self, data):
+
+        densities = self.density(data)
+
+        _s = 0
+        for k in densities:
+            if k > 0:
+                _s += np.log(k)
+        return _s / len(data)
 
     def plot(self,axis=None,color="black",tam=[10, 6]):
         if axis is None:

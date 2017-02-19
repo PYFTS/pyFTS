@@ -119,7 +119,7 @@ def getPointStatistics(data, models, externalmodels = None, externalforecasts = 
             ret += " 1		& "
             ret += str(round(Measures.rmse(data, externalforecasts[k][:-1]), 2)) + "		& "
             ret += str(round(Measures.smape(data, externalforecasts[k][:-1]), 2))+ "		& "
-            ret += str(round(Measures.UStatistic(np.array(data), np.array(forecasts[:-1])), 2))
+            ret += str(round(Measures.UStatistic(data, externalforecasts[k][:-1]), 2))
             ret += "	\\\\ \n"
     return ret
 
