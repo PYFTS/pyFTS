@@ -12,7 +12,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from pyFTS.benchmarks import Measures, naive, ResidualAnalysis, ProbabilityDistribution
 from pyFTS.partitioners import Grid
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
-from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang, pfts, ifts
+from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang, pwfts, ifts
 
 colors = ['grey', 'rosybrown', 'maroon', 'red','orange', 'yellow', 'olive', 'green',
           'cyan', 'blue', 'darkblue', 'purple', 'darkviolet']
@@ -29,7 +29,7 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3, statisti
 
     if models is None:
         models = [naive.Naive, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-                  sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS,  pfts.ProbabilisticFTS]
+                  sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]
 
     objs = []
 
@@ -76,16 +76,16 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3, statisti
         lcolors.insert(0,'black')
         pmfs = []
         pmfs.append(
-            ProbabilityDistribution.ProbabilityDistribution("Original", 100, [min(data_train), max(data_train)], data=data_train) )
+            ProbabilityDistribution.ProbabilityDistribution("Original", 100, [min(data_test), max(data_test)], data=data_test) )
 
         for m in objs:
-            forecasts = m.forecast(data_train)
+            forecasts = m.forecast(data_test)
             pmfs.append(
-                ProbabilityDistribution.ProbabilityDistribution(m.shortname, 100, [min(data_train), max(data_train)],
+                ProbabilityDistribution.ProbabilityDistribution(m.shortname, 100, [min(data_test), max(data_test)],
                                                                 data=forecasts))
-        print(getProbabilityDistributionStatistics(pmfs,data_train))
+        print(getProbabilityDistributionStatistics(pmfs,data_test))
 
-        plotProbabilityDistributions(pmfs, lcolors)
+        plotProbabilityDistributions(pmfs, lcolors,tam=tam)
 
 
 def getPointStatistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
@@ -138,7 +138,7 @@ def getProbabilityDistributionStatistics(pmfs, data):
 def allIntervalForecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5],
                            models=None, transformation=None):
     if models is None:
-        models = [ifts.IntervalFTS, pfts.ProbabilisticFTS]
+        models = [ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS]
 
     objs = []
 
@@ -243,8 +243,8 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
     Util.showAndSaveImage(fig, file, save, lgd=legends)
 
 
-def plotProbabilityDistributions(pmfs,lcolors):
-    fig = plt.figure(figsize=[15, 7])
+def plotProbabilityDistributions(pmfs,lcolors,tam=[15, 7]):
+    fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
 
     for k,m in enumerate(pmfs,start=0):
@@ -257,7 +257,7 @@ def plotProbabilityDistributions(pmfs,lcolors):
 def allAheadForecasters(data_train, data_test, partitions, start, steps, resolution = None, max_order=3,save=False, file=None, tam=[20, 5],
                            models=None, transformation=None, option=2):
     if models is None:
-        models = [pfts.ProbabilisticFTS]
+        models = [pwfts.ProbabilisticWeightedFTS]
 
     if resolution is None: resolution = (max(data_train) - min(data_train)) / 100
 
@@ -775,7 +775,7 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
     axes[2].set_title('Interval Forecasts by Order')
 
     for order in np.arange(1, 6):
-        fts = pfts.ProbabilisticFTS("")
+        fts = pwfts.ProbabilisticWeightedFTS("")
         fts.shortname = "n = " + str(order)
         fts.train(data, data_fs1, order=order)
         point_forecasts = fts.forecast(data)
@@ -797,7 +797,7 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
 
     for partitions in np.arange(5, 11):
         data_fs = Grid.GridPartitionerTrimf(data, partitions)
-        fts = pfts.ProbabilisticFTS("")
+        fts = pwfts.ProbabilisticWeightedFTS("")
         fts.shortname = "q = " + str(partitions)
         fts.train(data, data_fs, 1)
         point_forecasts = fts.forecast(data)

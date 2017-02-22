@@ -9,9 +9,9 @@ from pyFTS.common import FLR, FuzzySet, SortedCollection
 from pyFTS import hofts, ifts, tree
 
 
-class ProbabilisticFLRG(hofts.HighOrderFLRG):
+class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
     def __init__(self, order):
-        super(ProbabilisticFLRG, self).__init__(order)
+        super(ProbabilisticWeightedFLRG, self).__init__(order)
         self.RHS = {}
         self.frequencyCount = 0.0
 
@@ -41,9 +41,9 @@ class ProbabilisticFLRG(hofts.HighOrderFLRG):
         return self.strLHS() + " -> " + tmp2
 
 
-class ProbabilisticFTS(ifts.IntervalFTS):
+class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def __init__(self, name):
-        super(ProbabilisticFTS, self).__init__("PFTS")
+        super(ProbabilisticWeightedFTS, self).__init__("PFTS")
         self.shortname = "PFTS " + name
         self.name = "Probabilistic FTS"
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
@@ -71,7 +71,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         l = len(data)
         for k in np.arange(self.order, l):
             if self.dump: print("FLR: " + str(k))
-            flrg = ProbabilisticFLRG(self.order)
+            flrg = ProbabilisticWeightedFLRG(self.order)
 
             sample = data[k - self.order: k]
 
@@ -116,7 +116,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
         l = len(flrs)
         for k in np.arange(self.order, l+1):
             if self.dump: print("FLR: " + str(k))
-            flrg = ProbabilisticFLRG(self.order)
+            flrg = ProbabilisticWeightedFLRG(self.order)
 
             for kk in np.arange(k - self.order, k):
                 flrg.appendLHS(flrs[kk].LHS)
@@ -134,7 +134,7 @@ class ProbabilisticFTS(ifts.IntervalFTS):
 
     def addNewPFLGR(self,flrg):
         if flrg.strLHS() not in self.flrgs:
-            tmp = ProbabilisticFLRG(self.order)
+            tmp = ProbabilisticWeightedFLRG(self.order)
             for fs in flrg.LHS: tmp.appendLHS(fs)
             tmp.appendRHS(flrg.LHS[-1])
             self.flrgs[tmp.strLHS()] = tmp;

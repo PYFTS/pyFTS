@@ -11,7 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
 from pyFTS.partitioners import Grid
 from pyFTS.common import FLR,FuzzySet,Membership,Transformations
-from pyFTS import fts,hofts,ifts,pfts,tree, chen
+from pyFTS import fts,hofts,ifts,pwfts,tree, chen
 from pyFTS.benchmarks import benchmarks as bchmk
 from pyFTS.benchmarks import Measures
 from numpy import random
@@ -39,7 +39,7 @@ fs = Grid.GridPartitionerTrimf(taiex_treino,10)
 
 #tmp = chen.ConventionalFTS("")
 
-pfts1 = pfts.ProbabilisticFTS("1")
+pfts1 = pwfts.ProbabilisticWeightedFTS("1")
 #pfts1.appendTransformation(diff)
 pfts1.train(taiex_treino,fs,1)
 
@@ -63,11 +63,11 @@ print(pmf1.averageloglikelihood(taiex_treino))
 
 print(pmf2.averageloglikelihood(taiex_treino))
 
-#pfts2 = pfts.ProbabilisticFTS("n = 2")
+#pfts2 = pfts.ProbabilisticWeightedFTS("n = 2")
 #pfts2.appendTransformation(diff)
 #pfts2.train(gauss_treino,fs,2)
 
-#pfts3 = pfts.ProbabilisticFTS("n = 3")
+#pfts3 = pfts.ProbabilisticWeightedFTS("n = 3")
 #pfts3.appendTransformation(diff)
 #pfts3.train(gauss_treino,fs,3)
 
