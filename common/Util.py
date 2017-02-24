@@ -1,6 +1,7 @@
 import time
 import matplotlib.pyplot as plt
 import dill
+import numpy as np
 
 
 current_milli_time = lambda: int(round(time.time() * 1000))
@@ -28,6 +29,12 @@ def enumerate2(xs, start=0, step=1):
     for x in xs:
         yield (start, x)
         start += step
+
+def sliding_window(data, windowsize, train=0.8):
+    l = len(data)
+    ttrain = int(round(windowsize * train, 0))
+    for count in np.arange(0,l,windowsize):
+        yield ( data[count : count + ttrain], data[count + ttrain : count + windowsize]  )
 
 
 def persist_obj(obj, file):

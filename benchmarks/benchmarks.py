@@ -23,13 +23,106 @@ styles = ['-','--','-.',':','.']
 
 nsty = len(styles)
 
+def get_point_methods():
+    return [naive.Naive, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+                  sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]
+
+
+def sliding_window(data, windowsize, train=0.8,models=None,partitioners=[Grid.GridPartitioner],
+                   partitions=[10], max_order=3,transformation=None,indexer=None):
+    if models is None:
+        models = get_point_methods()
+
+    objs = {}
+    lcolors = {}
+    rmse = {}
+    smape = {}
+    u = {}
+
+    for train,test in Util.sliding_window(data, windowsize, train):
+        for partition in partitions:
+            for partitioner in partitioners:
+                pttr = str(partitioner.__module__).split('.')[-1]
+                if transformation is not None:
+                    data_train_fs = partitioner(transformation.apply(train), partition)
+                else:
+                    data_train_fs = partitioner(train, partition)
+
+                for count, model in enumerate(models, start=0):
+
+                    mfts = model("")
+                    _key = mfts.shortname + " " + pttr+ " q = " +str(partition)
+
+                    mfts.partitioner = data_train_fs
+                    if not mfts.isHighOrder:
+
+                        if _key not in objs:
+                            objs[_key] = mfts
+                            lcolors[_key] = colors[count % ncol]
+                            rmse[_key] = []
+                            smape[_key] = []
+                            u[_key] = []
+
+                        if transformation is not None:
+                            mfts.appendTransformation(transformation)
+
+                        mfts.train(train, data_train_fs.sets)
+
+                        _rmse, _smape, _u = get_point_statistics(test, mfts, indexer)
+                        rmse[_key].append(_rmse)
+                        smape[_key].append(_smape)
+                        u[_key].append(_u)
+
+                    else:
+                        for order in np.arange(1, max_order + 1):
+                            if order >= mfts.minOrder:
+                                mfts = model("")
+                                _key = mfts.shortname + " n = " + str(order) + " " + pttr + " q = " + str(partition)
+                                mfts.partitioner = data_train_fs
+
+                                if _key not in objs:
+                                    objs[_key] = mfts
+                                    lcolors[_key] = colors[count % ncol]
+                                    rmse[_key] = []
+                                    smape[_key] = []
+                                    u[_key] = []
+
+                                if transformation is not None:
+                                    mfts.appendTransformation(transformation)
+
+                                mfts.train(train, data_train_fs.sets, order=order)
+
+                                _rmse, _smape, _u = get_point_statistics(test, mfts, indexer)
+                                rmse[_key].append(_rmse)
+                                smape[_key].append(_smape)
+                                u[_key].append(_u)
+
+    ret =  "Model\t&Order\t&Scheme\t&Partitions\t&RMSE AVG\t&RMSE STD\t& SMAPE AVG\t& SMAPE STD\t& U AVG\t& U	STD	\\\\ \n"
+    for k in sorted(objs.keys()):
+        mfts = objs[k]
+        ret +=   mfts.shortname + "\t &"
+        ret += str( mfts.order ) + "\t &"
+        ret += mfts.partitioner.name + "\t &"
+        ret += str(mfts.partitioner.partitions) + "\t &"
+        ret += str(round(np.mean(rmse[k]),2)) + "\t &"
+        ret += str(round(np.std(rmse[k]), 2)) + "\t &"
+        ret += str(round(np.mean(smape[k]), 2)) + "\t &"
+        ret += str(round(np.std(smape[k]), 2)) + "\t &"
+        ret += str(round(np.mean(u[k]), 2)) + "\t &"
+        ret += str(round(np.std(u[k]), 2)) + "\t &"
+        ret += str(len(mfts)) + "\\\\ \n"
+
+    print(ret)
+
+
+
+
 def allPointForecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True,
                         series=True, save=False, file=None, tam=[20, 5], models=None, transformation=None,
                         distributions=False):
 
     if models is None:
-        models = [naive.Naive, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-                  sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]
+        models = get_point_methods()
 
     objs = []
 
@@ -62,7 +155,7 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3, statisti
                     lcolors.append(colors[(count + order) % ncol])
 
     if statistics:
-        print(getPointStatistics(data_test, objs))
+        print(print_point_statistics(data_test, objs))
 
     if residuals:
         print(ResidualAnalysis.compareResiduals(data_test, objs))
@@ -87,29 +180,38 @@ def allPointForecasters(data_train, data_test, partitions, max_order=3, statisti
 
         plotProbabilityDistributions(pmfs, lcolors,tam=tam)
 
+def get_point_statistics(data, model, indexer=None):
+    if indexer is not None:
+        ndata = np.array(indexer.get_data(data[model.order:]))
+    else:
+        ndata = np.array(data[model.order:])
 
-def getPointStatistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
+    if model.isMultivariate or indexer is None:
+        forecasts = model.forecast(data)
+    elif not model.isMultivariate and indexer is not None:
+        forecasts = model.forecast(indexer.get_data(data))
+
+    if model.hasSeasonality:
+        nforecasts = np.array(forecasts)
+    else:
+        nforecasts = np.array(forecasts[:-1])
+    ret = list()
+    ret.append(np.round(Measures.rmse(ndata, nforecasts), 2))
+    ret.append(np.round(Measures.smape(ndata, nforecasts), 2))
+    ret.append(np.round(Measures.UStatistic(ndata, nforecasts), 2))
+
+    return ret
+
+
+def print_point_statistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
     ret = "Model		& Order     & RMSE		& SMAPE      & Theil's U		\\\\ \n"
     for count,model in enumerate(models,start=0):
-        if indexers is not None and indexers[count] is not None:
-            ndata = np.array(indexers[count].get_data(data[model.order:]))
-        else:
-            ndata = np.array(data[model.order:])
-
-        if model.isMultivariate or indexers is None:
-            forecasts = model.forecast(data)
-        elif not model.isMultivariate and indexers is not None:
-            forecasts = model.forecast( indexers[count].get_data(data) )
-
-        if model.hasSeasonality:
-            nforecasts = np.array(forecasts)
-        else:
-            nforecasts = np.array(forecasts[:-1])
+        _rmse, _smape, _u = get_point_statistics(data, model, indexers[count])
         ret += model.shortname + "		& "
         ret += str(model.order) + "		& "
-        ret += str(round(Measures.rmse(ndata, nforecasts), 2)) + "		& "
-        ret += str(round(Measures.smape(ndata, nforecasts), 2))+ "		& "
-        ret += str(round(Measures.UStatistic(ndata, nforecasts), 2))
+        ret += str(_rmse) + "		& "
+        ret += str(_smape)+ "		& "
+        ret += str(_u)
         #ret += str(round(Measures.TheilsInequality(np.array(data[fts.order:]), np.array(forecasts[:-1])), 4))
         ret += "	\\\\ \n"
     if externalmodels is not None:
@@ -194,7 +296,7 @@ def plotDistribution(dist):
 
 
 def plotComparedSeries(original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5],
-                       intervals=True):
+                       points=True, intervals=True, linewidth=1.5):
     fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
 
@@ -203,10 +305,10 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
 
     legends = []
 
-    ax.plot(original, color='black', label="Original", linewidth=1.5)
+    ax.plot(original, color='black', label="Original", linewidth=linewidth*1.5)
 
     for count, fts in enumerate(models, start=0):
-        if fts.hasPointForecasting and not intervals:
+        if fts.hasPointForecasting and points:
             forecasted = fts.forecast(original)
             mi.append(min(forecasted) * 0.95)
             ma.append(max(forecasted) * 1.05)
@@ -214,7 +316,7 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
                 forecasted.insert(0, None)
             lbl = fts.shortname
             if typeonlegend: lbl += " (Point)"
-            ax.plot(forecasted, color=colors[count], label=lbl, ls="-")
+            ax.plot(forecasted, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
 
         if fts.hasIntervalForecasting and intervals:
             forecasted = fts.forecastInterval(original)
@@ -227,8 +329,8 @@ def plotComparedSeries(original, models, colors, typeonlegend=False, save=False,
                 upper.insert(0, None)
             lbl = fts.shortname
             if typeonlegend: lbl += " (Interval)"
-            ax.plot(lower, color=colors[count], label=lbl, ls="-")
-            ax.plot(upper, color=colors[count], ls="-")
+            ax.plot(lower, color=colors[count], label=lbl, ls="--",linewidth=linewidth)
+            ax.plot(upper, color=colors[count], ls="--",linewidth=linewidth)
 
         handles0, labels0 = ax.get_legend_handles_labels()
         lgd = ax.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))

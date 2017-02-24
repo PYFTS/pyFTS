@@ -20,10 +20,13 @@ class ConventionalFLRG(object):
             tmp2 = tmp2 + c.name
         return tmp + tmp2
 
+    def __len__(self):
+        return len(self.RHS)
+
 
 class ConventionalFTS(fts.FTS):
     def __init__(self, name):
-        super(ConventionalFTS, self).__init__(1, "CFTS")
+        super(ConventionalFTS, self).__init__(1, "CFTS " + name)
         self.name = "Conventional FTS"
         self.detail = "Chen"
         self.flrgs = {}

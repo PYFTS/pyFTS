@@ -61,4 +61,4 @@ for max_part in [10, 20, 30, 40, 50]:
             models.append(model)
             ixs.append(ix)
 
-print(bchmk.getPointStatistics(sample, models, indexers=ixs))
+print(bchmk.print_point_statistics(sample, models, indexers=ixs))

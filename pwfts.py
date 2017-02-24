@@ -43,8 +43,8 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
 class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def __init__(self, name):
-        super(ProbabilisticWeightedFTS, self).__init__("PFTS")
-        self.shortname = "PFTS " + name
+        super(ProbabilisticWeightedFTS, self).__init__("PWFTS")
+        self.shortname = "PWFTS " + name
         self.name = "Probabilistic FTS"
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
         self.flrgs = {}

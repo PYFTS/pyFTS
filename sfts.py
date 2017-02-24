@@ -21,6 +21,9 @@ class SeasonalFLRG(FLR.FLR):
             tmp2 = tmp2 + c.name
         return tmp + tmp2
 
+    def __len__(self):
+        return len(self.RHS)
+
 
 class SeasonalFTS(fts.FTS):
     def __init__(self, name):

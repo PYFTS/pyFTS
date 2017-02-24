@@ -6,7 +6,7 @@ from pyFTS import fts
 
 class Naive(fts.FTS):
     def __init__(self, name):
-        super(Naive, self).__init__(1, "Naïve" + name)
+        super(Naive, self).__init__(1, "Naïve " + name)
         self.name = "Naïve Model"
         self.detail = "Naïve Model"
 

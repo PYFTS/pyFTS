@@ -3,7 +3,7 @@ from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts
 
 
-class HighOrderFLRG:
+class HighOrderFLRG(object):
     def __init__(self, order):
         self.LHS = []
         self.RHS = {}
@@ -32,6 +32,10 @@ class HighOrderFLRG:
                 tmp = tmp + ","
             tmp = tmp + c
         return self.strLHS() + " -> " + tmp
+
+
+    def __len__(self):
+        return len(self.RHS)
 
 
 class HighOrderFTS(fts.FTS):

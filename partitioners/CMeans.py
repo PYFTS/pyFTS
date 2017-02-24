@@ -3,6 +3,7 @@ import math
 import random as rnd
 import functools, operator
 from pyFTS.common import FuzzySet, Membership
+from pyFTS.partitioners import partitioner
 
 
 def distancia(x, y):
@@ -75,21 +76,24 @@ def c_means(k, dados, tam):
 
     return centroides
 
+class CMeansPartitioner(partitioner.Partitioner):
+    def __init__(self, npart,data,func = Membership.trimf):
+        super(CMeansPartitioner, self).__init__("CMeans ",data,npart,func)
 
-def CMeansPartitionerTrimf(data, npart, names=None, prefix="A"):
-    sets = []
-    dmax = max(data)
-    dmax += dmax * 0.10
-    dmin = min(data)
-    dmin -= dmin * 0.10
-    centroides = c_means(npart, data, 1)
-    centroides.append(dmax)
-    centroides.append(dmin)
-    centroides = list(set(centroides))
-    centroides.sort()
-    for c in np.arange(1, len(centroides) - 1):
-        sets.append(FuzzySet.FuzzySet(prefix + str(c), Membership.trimf,
-                             [round(centroides[c - 1], 3), round(centroides[c], 3), round(centroides[c + 1], 3)],
-                             round(centroides[c], 3)))
+    def build(self, data):
+        sets = []
+        dmax = max(data)
+        dmax += dmax * 0.10
+        dmin = min(data)
+        dmin -= dmin * 0.10
+        centroides = c_means(self.partitions, data, 1)
+        centroides.append(dmax)
+        centroides.append(dmin)
+        centroides = list(set(centroides))
+        centroides.sort()
+        for c in np.arange(1, len(centroides) - 1):
+            sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf,
+                                 [round(centroides[c - 1], 3), round(centroides[c], 3), round(centroides[c + 1], 3)],
+                                 round(centroides[c], 3)))
 
-    return sets
+        return sets

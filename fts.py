@@ -25,6 +25,7 @@ class FTS(object):
         self.transformations_param = []
         self.original_max = 0
         self.original_min = 0
+        self.partitioner = None
 
     def fuzzy(self, data):
         best = {"fuzzyset": "", "membership": 0.0}
@@ -55,7 +56,7 @@ class FTS(object):
     def forecastAheadDistribution(self, data, steps):
         pass
 
-    def train(self, data, sets,order=1, parameters=None):
+    def train(self, data, sets, order=1, parameters=None):
         pass
 
     def getMidpoints(self, flrg):
@@ -103,6 +104,12 @@ class FTS(object):
         for r in sorted(self.flrgs):
             tmp = tmp + str(self.flrgs[r]) + "\n"
         return tmp
+
+    def __len__(self):
+       return len(self.flrgs)
+
+    def len_total(self):
+        return sum([len(k) for k in self.flrgs])
 
     def buildTreeWithoutOrder(self, node, lags, level):
 
@@ -164,6 +171,7 @@ class FTS(object):
             simulation_fs[index_fs] = forecast
 
         return [simulation_fs, simulation_uod ]
+
 
 
 

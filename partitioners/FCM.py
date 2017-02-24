@@ -3,19 +3,20 @@ import math
 import random as rnd
 import functools,operator
 from pyFTS.common import FuzzySet,Membership
+from pyFTS.partitioners import partitioner
 #import CMeans
 
 # S. T. Li, Y. C. Cheng, and S. Y. Lin, “A FCM-based deterministic forecasting model for fuzzy time series,”
 # Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j.camwa.2008.07.033.
 
-def distancia(x,y):
+def fuzzy_distance(x, y):
     if isinstance(x, list):
         tmp = functools.reduce(operator.add, [(x[k] - y[k])**2 for k in range(0,len(x))])
     else:
         tmp = (x - y) ** 2
     return math.sqrt(tmp)
 
-def pert(val, vals):
+def membership(val, vals):
     soma = 0
     for k in vals:
         if k == 0:
@@ -55,7 +56,7 @@ def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
 
             grupo_count = 0
             for grupo in centroides:
-                dist_grupos[grupo_count] = distancia(grupo, instancia)
+                dist_grupos[grupo_count] = fuzzy_distance(grupo, instancia)
                 grupo_count = grupo_count + 1
 
             dist_grupos_total = functools.reduce(operator.add, [xk for xk in dist_grupos])
@@ -64,7 +65,7 @@ def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
                 if dist_grupos[grp] == 0:
                     grupos[inst_count][grp] = 1
                 else:
-                    grupos[inst_count][grp] = 1 / pert(dist_grupos[grp], dist_grupos)
+                    grupos[inst_count][grp] = 1 / membership(dist_grupos[grp], dist_grupos)
                     # grupos[inst_count][grp] = 1/(dist_grupos[grp] / dist_grupos_total)
                     # grupos[inst_count][grp] = (1/(dist_grupos[grp]**2))**m_exp / (1/(dist_grupos_total**2))**m_exp
 
@@ -90,7 +91,7 @@ def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
                 norm = functools.reduce(operator.add, [grupos[xk][grupo_count] for xk in range(0, tam_dados)])
                 centroides[grupo_count] = soma / norm
 
-            alteracaomedia = alteracaomedia + distancia(oldgrp, grupo)
+            alteracaomedia = alteracaomedia + fuzzy_distance(oldgrp, grupo)
             grupo_count = grupo_count + 1
 
         alteracaomedia = alteracaomedia / k
@@ -98,18 +99,23 @@ def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
 
     return centroides
 
-def FCMPartitionerTrimf(data,npart,names = None,prefix = "A"):
-    sets = []
-    dmax = max(data)
-    dmax = dmax + dmax*0.10
-    dmin = min(data)
-    dmin = dmin - dmin*0.10
-    centroides = fuzzy_cmeans(npart, data, 1, 2)
-    centroides.append(dmax)
-    centroides.append(dmin)
-    centroides = list(set(centroides))
-    centroides.sort()
-    for c in np.arange(1,len(centroides)-1):
-        sets.append(FuzzySet.FuzzySet(prefix+str(c),Membership.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
 
-    return sets
+class FCMPartitioner(partitioner.Partitioner):
+    def __init__(self, data,npart,func = Membership.trimf):
+        super(FCMPartitioner, self).__init__("FCM ",data,npart,func)
+
+    def build(self,data):
+        sets = []
+        dmax = max(data)
+        dmax = dmax + dmax*0.10
+        dmin = min(data)
+        dmin = dmin - dmin*0.10
+        centroides = fuzzy_cmeans(self.partitions, data, 1, 2)
+        centroides.append(dmax)
+        centroides.append(dmin)
+        centroides = list(set(centroides))
+        centroides.sort()
+        for c in np.arange(1,len(centroides)-1):
+            sets.append(FuzzySet.FuzzySet(self.prefix+str(c),Membership.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
+
+        return sets

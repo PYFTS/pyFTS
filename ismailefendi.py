@@ -3,7 +3,7 @@ from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts
 
 
-class ImprovedWeightedFLRG:
+class ImprovedWeightedFLRG(object):
     def __init__(self, LHS):
         self.LHS = LHS
         self.RHS = {}
@@ -28,10 +28,13 @@ class ImprovedWeightedFLRG:
             tmp2 = tmp2 + c + "(" + str(round(self.RHS[c] / self.count, 3)) + ")"
         return tmp + tmp2
 
+    def __len__(self):
+        return len(self.RHS)
+
 
 class ImprovedWeightedFTS(fts.FTS):
     def __init__(self, name):
-        super(ImprovedWeightedFTS, self).__init__(1, "IWFTS")
+        super(ImprovedWeightedFTS, self).__init__(1, "IWFTS " + name)
         self.name = "Improved Weighted FTS"
         self.detail = "Ismail & Efendi"
         self.setsDict = {}

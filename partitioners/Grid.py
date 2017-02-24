@@ -3,49 +3,39 @@ import math
 import random as rnd
 import functools, operator
 from pyFTS.common import FuzzySet, Membership
+from pyFTS.partitioners import partitioner
 
 
-# print(common.__dict__)
+class GridPartitioner(partitioner.Partitioner):
+    def __init__(self, data,npart,func = Membership.trimf):
+        super(GridPartitioner, self).__init__("Grid",data,npart,func)
 
-def GridPartitionerTrimf(data, npart, names=None, prefix="A"):
-    sets = []
-    _min = min(data)
-    if _min < 0:
-        dmin = _min * 1.1
-    else:
-        dmin = _min * 0.9
+    def build(self, data):
+        sets = []
+        _min = min(data)
+        if _min < 0:
+            dmin = _min * 1.1
+        else:
+            dmin = _min * 0.9
 
-    _max = max(data)
-    if _max > 0:
-        dmax = _max * 1.1
-    else:
-        dmax = _max * 0.9
+        _max = max(data)
+        if _max > 0:
+            dmax = _max * 1.1
+        else:
+            dmax = _max * 0.9
 
-    dlen = dmax - dmin
-    partlen = dlen / npart
+        dlen = dmax - dmin
+        partlen = dlen / self.partitions
 
-    count = 0
-    for c in np.arange(dmin, dmax, partlen):
-        sets.append(
-            FuzzySet.FuzzySet(prefix + str(count), Membership.trimf, [c - partlen, c, c + partlen],c))
-        count += 1
+        count = 0
+        for c in np.arange(dmin, dmax, partlen):
+            if self.membership_function == Membership.trimf:
+                sets.append(
+                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.trimf, [c - partlen, c, c + partlen],c))
+            elif self.membership_function == Membership.gaussmf:
+                sets.append(
+                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.gaussmf, [c, partlen / 3], c))
+            count += 1
 
-    return sets
 
-
-def GridPartitionerGaussmf(data, npart, names=None, prefix="A"):
-    sets = []
-    dmax = max(data)
-    dmax += dmax * 0.10
-    dmin = min(data)
-    dmin -= dmin * 0.10
-    dlen = dmax - dmin
-    partlen = math.ceil(dlen / npart)
-    partition = math.ceil(dmin)
-    for c in range(npart):
-        sets.append(
-            FuzzySet.FuzzySet(prefix + str(c), Membership.gaussmf, [partition, partlen/3],
-                     partition))
-        partition += partlen
-
-    return sets
+        return sets

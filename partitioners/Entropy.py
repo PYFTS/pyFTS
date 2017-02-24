@@ -3,7 +3,7 @@ import math
 import random as rnd
 import functools, operator
 from pyFTS.common import FuzzySet, Membership
-
+from pyFTS.partitioners import partitioner
 
 # C. H. Cheng, R. J. Chang, and C. A. Yeh, “Entropy-based and trapezoidal fuzzification-based fuzzy time series approach for forecasting IT project cost,”
 # Technol. Forecast. Social Change, vol. 73, no. 5, pp. 524–542, Jun. 2006.
@@ -76,21 +76,24 @@ def bestSplit(data, npart):
     else:
         return [threshold]
 
+class EntropyPartitioner(partitioner.Partitioner):
+    def __init__(self, data,npart,func = Membership.trimf):
+        super(EntropyPartitioner, self).__init__("Entropy" ,data,npart,func)
 
-def EntropyPartitionerTrimf(data, npart, prefix="A"):
-    sets = []
-    dmax = max(data)
-    dmax += dmax * 0.10
-    dmin = min(data)
-    dmin -= dmin * 0.10
+    def build(self, data):
+        sets = []
+        dmax = max(data)
+        dmax += dmax * 0.10
+        dmin = min(data)
+        dmin -= dmin * 0.10
 
-    partitions = bestSplit(data, npart)
-    partitions.append(dmin)
-    partitions.append(dmax)
-    partitions = list(set(partitions))
-    partitions.sort()
-    for c in np.arange(1, len(partitions) - 1):
-        sets.append(FuzzySet.FuzzySet(prefix + str(c), Membership.trimf,
-                                      [partitions[c - 1], partitions[c], partitions[c + 1]],partitions[c]))
+        partitions = bestSplit(data, self.partitions)
+        partitions.append(dmin)
+        partitions.append(dmax)
+        partitions = list(set(partitions))
+        partitions.sort()
+        for c in np.arange(1, len(partitions) - 1):
+            sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf,
+                                          [partitions[c - 1], partitions[c], partitions[c + 1]],partitions[c]))
 
-    return sets
+        return sets
