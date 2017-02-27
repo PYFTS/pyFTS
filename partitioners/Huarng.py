@@ -11,11 +11,12 @@ from pyFTS.partitioners import partitioner
 
 
 class HuarngPartitioner(partitioner.Partitioner):
-    def __init__(self, npart,data,func = Membership.trimf):
-        super(HuarngPartitioner, self).__init__("Huarng",data,npart,func)
+    def __init__(self, data,npart,func = Membership.trimf, transformation=None):
+        super(HuarngPartitioner, self).__init__("Huarng", data, npart, func=func, transformation=transformation)
 
     def build(self, data):
-        data2 = Transformations.differential(data)
+        diff = Transformations.Differential(1)
+        data2 = diff.apply(data)
         davg = np.abs( np.mean(data2) / 2 )
 
         if davg <= 1.0:
@@ -28,13 +29,10 @@ class HuarngPartitioner(partitioner.Partitioner):
             base = 100
 
         sets = []
-        dmax = max(data)
-        dmax += dmax * 0.10
-        dmin = min(data)
-        dmin -= dmin * 0.10
-        dlen = dmax - dmin
+
+        dlen = self.max - self.min
         npart = math.ceil(dlen / base)
-        partition = math.ceil(dmin)
+        partition = math.ceil(self.min)
         for c in range(npart):
             sets.append(
                 FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf, [partition - base, partition, partition + base], partition))

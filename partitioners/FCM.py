@@ -101,18 +101,15 @@ def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
 
 
 class FCMPartitioner(partitioner.Partitioner):
-    def __init__(self, data,npart,func = Membership.trimf):
-        super(FCMPartitioner, self).__init__("FCM ",data,npart,func)
+    def __init__(self, data,npart,func = Membership.trimf, transformation=None):
+        super(FCMPartitioner, self).__init__("FCM", data, npart, func=func, transformation=transformation)
 
     def build(self,data):
         sets = []
-        dmax = max(data)
-        dmax = dmax + dmax*0.10
-        dmin = min(data)
-        dmin = dmin - dmin*0.10
+
         centroides = fuzzy_cmeans(self.partitions, data, 1, 2)
-        centroides.append(dmax)
-        centroides.append(dmin)
+        centroides.append(self.max)
+        centroides.append(self.min)
         centroides = list(set(centroides))
         centroides.sort()
         for c in np.arange(1,len(centroides)-1):

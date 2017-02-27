@@ -77,19 +77,15 @@ def bestSplit(data, npart):
         return [threshold]
 
 class EntropyPartitioner(partitioner.Partitioner):
-    def __init__(self, data,npart,func = Membership.trimf):
-        super(EntropyPartitioner, self).__init__("Entropy" ,data,npart,func)
+    def __init__(self, data, npart, func = Membership.trimf, transformation=None):
+        super(EntropyPartitioner, self).__init__("Entropy", data, npart, func=func, transformation=transformation)
 
     def build(self, data):
         sets = []
-        dmax = max(data)
-        dmax += dmax * 0.10
-        dmin = min(data)
-        dmin -= dmin * 0.10
 
         partitions = bestSplit(data, self.partitions)
-        partitions.append(dmin)
-        partitions.append(dmax)
+        partitions.append(self.min)
+        partitions.append(self.max)
         partitions = list(set(partitions))
         partitions.sort()
         for c in np.arange(1, len(partitions) - 1):

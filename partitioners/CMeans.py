@@ -77,18 +77,14 @@ def c_means(k, dados, tam):
     return centroides
 
 class CMeansPartitioner(partitioner.Partitioner):
-    def __init__(self, npart,data,func = Membership.trimf):
-        super(CMeansPartitioner, self).__init__("CMeans ",data,npart,func)
+    def __init__(self, data, npart, func = Membership.trimf, transformation=None):
+        super(CMeansPartitioner, self).__init__("CMeans", data, npart, func=func, transformation=transformation)
 
     def build(self, data):
         sets = []
-        dmax = max(data)
-        dmax += dmax * 0.10
-        dmin = min(data)
-        dmin -= dmin * 0.10
         centroides = c_means(self.partitions, data, 1)
-        centroides.append(dmax)
-        centroides.append(dmin)
+        centroides.append(self.max)
+        centroides.append(self.min)
         centroides = list(set(centroides))
         centroides.sort()
         for c in np.arange(1, len(centroides) - 1):

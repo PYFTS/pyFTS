@@ -30,11 +30,16 @@ def enumerate2(xs, start=0, step=1):
         yield (start, x)
         start += step
 
-def sliding_window(data, windowsize, train=0.8):
+def sliding_window(data, windowsize, train=0.8, inc=0.1):
     l = len(data)
     ttrain = int(round(windowsize * train, 0))
-    for count in np.arange(0,l,windowsize):
-        yield ( data[count : count + ttrain], data[count + ttrain : count + windowsize]  )
+    ic = int(round(windowsize * inc, 0))
+    for count in np.arange(0,l-windowsize+ic,ic):
+        if count + windowsize > l:
+            _end = l
+        else:
+            _end = count + windowsize
+        yield (count,  data[count : count + ttrain], data[count + ttrain : _end]  )
 
 
 def persist_obj(obj, file):
