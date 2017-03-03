@@ -29,7 +29,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
         else:
             self.RHS[c.name] = mv
 
-    def getProbability(self, c):
+    def get_probability(self, c):
         return self.RHS[c] / self.frequencyCount
 
     def __str__(self):
@@ -42,7 +42,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
 
 class ProbabilisticWeightedFTS(ifts.IntervalFTS):
-    def __init__(self, name):
+    def __init__(self, name, update=True):
         super(ProbabilisticWeightedFTS, self).__init__("PWFTS")
         self.shortname = "PWFTS " + name
         self.name = "Probabilistic FTS"
@@ -53,6 +53,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         self.hasIntervalForecasting = True
         self.hasDistributionForecasting = True
         self.isHighOrder = True
+        self.auto_update = update
 
     def train(self, data, sets, order=1,parameters=None):
 
@@ -125,14 +126,30 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             if flrg.strLHS() in flrgs:
                 flrgs[flrg.strLHS()].appendRHS(flrs[k-1].RHS)
             else:
-                flrgs[flrg.strLHS()] = flrg;
+                flrgs[flrg.strLHS()] = flrg
                 flrgs[flrg.strLHS()].appendRHS(flrs[k-1].RHS)
             if self.dump: print("RHS: " + str(flrs[k-1]))
 
             self.globalFrequency += 1
         return (flrgs)
 
-    def addNewPFLGR(self,flrg):
+    def update_model(self,data):
+
+        fzzy = FuzzySet.fuzzySeries(data, self.sets)
+
+        flrg = ProbabilisticWeightedFLRG(self.order)
+
+        for k in np.arange(0, self.order): flrg.appendLHS(fzzy[k])
+
+        if flrg.strLHS() in self.flrgs:
+            self.flrgs[flrg.strLHS()].appendRHS(fzzy[self.order])
+        else:
+            self.flrgs[flrg.strLHS()] = flrg
+            self.flrgs[flrg.strLHS()].appendRHS(fzzy[self.order])
+
+        self.globalFrequency += 1
+
+    def add_new_PWFLGR(self, flrg):
         if flrg.strLHS() not in self.flrgs:
             tmp = ProbabilisticWeightedFLRG(self.order)
             for fs in flrg.LHS: tmp.appendLHS(fs)
@@ -140,17 +157,17 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             self.flrgs[tmp.strLHS()] = tmp;
             self.globalFrequency += 1
 
-    def getProbability(self, flrg):
+    def get_probability(self, flrg):
         if flrg.strLHS() in self.flrgs:
             return self.flrgs[flrg.strLHS()].frequencyCount / self.globalFrequency
         else:
-            self.addNewPFLGR(flrg)
-            return self.getProbability(flrg)
+            self.add_new_PWFLGR(flrg)
+            return self.get_probability(flrg)
 
     def getMidpoints(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
-            ret = sum(np.array([tmp.getProbability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
+            ret = sum(np.array([tmp.get_probability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
         else:
             pi = 1 / len(flrg.LHS)
             ret = sum(np.array([pi * s.centroid for s in flrg.LHS]))
@@ -159,7 +176,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def getUpper(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
-            ret = sum(np.array([tmp.getProbability(s) * self.setsDict[s].upper for s in tmp.RHS]))
+            ret = sum(np.array([tmp.get_probability(s) * self.setsDict[s].upper for s in tmp.RHS]))
         else:
             pi = 1 / len(flrg.LHS)
             ret = sum(np.array([pi * s.upper for s in flrg.LHS]))
@@ -168,7 +185,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def getLower(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
-            ret = sum(np.array([tmp.getProbability(s) * self.setsDict[s].lower for s in tmp.RHS]))
+            ret = sum(np.array([tmp.get_probability(s) * self.setsDict[s].lower for s in tmp.RHS]))
         else:
             pi = 1 / len(flrg.LHS)
             ret = sum(np.array([pi * s.lower for s in flrg.LHS]))
@@ -187,6 +204,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             # print(k)
 
             affected_flrgs = []
+            affected_rhs = []
             affected_flrgs_memberships = []
             norms = []
 
@@ -258,9 +276,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             count = 0
             for flrg in affected_flrgs:
                 # achar o os bounds de cada FLRG, ponderados pela probabilidade e pertinência
-                norm = self.getProbability(flrg) * affected_flrgs_memberships[count]
+                norm = self.get_probability(flrg) * affected_flrgs_memberships[count]
                 if norm == 0:
-                    norm = self.getProbability(flrg)  # * 0.001
+                    norm = self.get_probability(flrg)  # * 0.001
                 mp.append(norm * self.getMidpoints(flrg))
                 norms.append(norm)
                 count = count + 1
@@ -271,6 +289,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 ret.append(0)
             else:
                 ret.append(sum(mp) / norm)
+
+        if self.auto_update and k > self.order+1: self.update_model(ndata[k - self.order - 1 : k])
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
@@ -361,9 +381,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             count = 0
             for flrg in affected_flrgs:
                 # achar o os bounds de cada FLRG, ponderados pela probabilidade e pertinência
-                norm = self.getProbability(flrg) * affected_flrgs_memberships[count]
+                norm = self.get_probability(flrg) * affected_flrgs_memberships[count]
                 if norm == 0:
-                    norm = self.getProbability(flrg)  # * 0.001
+                    norm = self.get_probability(flrg)  # * 0.001
                 up.append(norm * self.getUpper(flrg))
                 lo.append(norm * self.getLower(flrg))
                 norms.append(norm)

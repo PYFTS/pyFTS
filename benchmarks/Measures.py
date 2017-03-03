@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+from pyFTS.common import FuzzySet,SortedCollection
 
 
 # Autocorrelation function estimative
@@ -32,7 +33,6 @@ def mape(targets, forecasts):
 
 
 def smape(targets, forecasts, type=2):
-    return mape(targets, forecasts)
     if type == 1:
         return np.mean(np.abs(forecasts - targets) / ((forecasts + targets)/2))
     elif type == 2:
@@ -52,10 +52,8 @@ def UStatistic(targets, forecasts):
     naive = []
     y = []
     for k in np.arange(0,l-1):
-        #y.append((forecasts[k ] - targets[k ]) ** 2)
-        y.append(((forecasts[k + 1] - targets[k + 1]) / targets[k]) ** 2)
-        #naive.append((targets[k + 1] - targets[k]) ** 2)
-        naive.append(((targets[k + 1] - targets[k]) / targets[k]) ** 2)
+        y.append((forecasts[k ] - targets[k ]) ** 2)
+        naive.append((targets[k + 1] - targets[k]) ** 2)
     return np.sqrt(sum(y) / sum(naive))
 
 
@@ -111,3 +109,39 @@ def coverage(targets, forecasts):
         else:
             preds.append(0)
     return np.mean(preds)
+
+
+def pmf_to_cdf(density):
+    ret = []
+    for row in density.index:
+        tmp = []
+        prev = 0
+        for col in density.columns:
+            prev += density[col][row]
+            tmp.append( prev )
+        ret.append(tmp)
+    df = pd.DataFrame(ret, columns=density.columns)
+    return df
+
+
+def heavyside_cdf(bins, targets):
+    ret = []
+    for t in targets:
+        result = [1 if b >= t else 0 for b in bins]
+        ret.append(result)
+    df = pd.DataFrame(ret, columns=bins)
+    return df
+
+
+# Continuous Ranked Probability Score
+def crps(targets, densities):
+    l = len(densities.columns)
+    n = len(densities.index)
+    Ff = pmf_to_cdf(densities)
+    Fa = heavyside_cdf(densities.columns, targets)
+
+    _crps = float(0.0)
+    for k in densities.index:
+        _crps += sum([ (Ff[col][k]-Fa[col][k])**2 for col in densities.columns])
+
+    return _crps / float(l * n)

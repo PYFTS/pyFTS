@@ -26,6 +26,8 @@ class FTS(object):
         self.original_max = 0
         self.original_min = 0
         self.partitioner = None
+        self.auto_update = False
+        self.benchmark_only = False
 
     def fuzzy(self, data):
         best = {"fuzzyset": "", "membership": 0.0}

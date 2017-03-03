@@ -71,7 +71,7 @@ def plotResiduals(targets, models, tam=[8, 8], save=False, file=None):
     Util.showAndSaveImage(fig, file, save)
 
 
-def plotResiduals2(targets, models, tam=[8, 8], save=False, file=None):
+def plot_residuals(targets, models, tam=[8, 8], save=False, file=None):
     fig, axes = plt.subplots(nrows=len(models), ncols=3, figsize=tam)
 
     for c, mfts in enumerate(models, start=0):

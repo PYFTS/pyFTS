@@ -7,7 +7,7 @@ from pyFTS.partitioners import partitioner
 
 
 class GridPartitioner(partitioner.Partitioner):
-    def __init__(self, data,npart,func = Membership.trimf, transformation=None):
+    def __init__(self, data, npart, func = Membership.trimf, transformation=None):
         super(GridPartitioner, self).__init__("Grid", data, npart, func=func, transformation=transformation)
 
     def build(self, data):

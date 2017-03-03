@@ -38,6 +38,12 @@ class ProbabilityDistribution(object):
             ret.append(self.distribution[v] / self.count)
         return ret
 
+    def cummulative(self, values):
+        pass
+
+    def quantile(self, qt):
+        pass
+
     def entropy(self):
         h = -sum([self.distribution[k] * np.log(self.distribution[k]) if self.distribution[k] > 0 else 0
                   for k in self.bins])
