@@ -117,7 +117,7 @@ def pmf_to_cdf(density):
         tmp = []
         prev = 0
         for col in density.columns:
-            prev += density[col][row]
+            prev += density[col][row] if not np.isnan(density[col][row]) else 0
             tmp.append( prev )
         ret.append(tmp)
     df = pd.DataFrame(ret, columns=density.columns)

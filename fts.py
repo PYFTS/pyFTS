@@ -66,7 +66,8 @@ class FTS(object):
         return ret
 
     def appendTransformation(self, transformation):
-        self.transformations.append(transformation)
+        if transformation is not None:
+            self.transformations.append(transformation)
 
     def doTransformations(self,data,params=None,updateUoD=False):
         ndata = data

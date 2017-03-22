@@ -206,8 +206,10 @@ class SortedCollection(object):
     def inside(self, ge, le):
         g = bisect_right(self._keys, ge)
         l = bisect_left(self._keys, le)
-        if g != len(self) and l != len(self):
+        if g != len(self) and l != len(self) and g != l:
             return self._items[g : l]
+        elif g != len(self) and l != len(self) and g == l:
+            return [ self._items[g] ]
         elif g != len(self):
             return self._items[g-1: l]
         elif l != len(self):

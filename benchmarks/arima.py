@@ -43,6 +43,8 @@ class ARIMA(fts.FTS):
         self.trained_data = data #.tolist()
 
     def forecast(self, data):
+        if self.model_fit is None:
+            return np.nan
         ret = []
         for t in data:
             output = self.model_fit.forecast()

@@ -41,30 +41,38 @@ nasdaq = np.array(nasdaqpd["avg"][:5000])
 
 #, ,
 
-#diff = Transformations.Differential(1)
+diff = Transformations.Differential(1)
 
 
-bchmk.external_point_sliding_window([naive.Naive, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA],
-                                    [None, (1,0,0),(1,1,0),(2,0,0), (2,1,0), (1,1,1), (1,0,1)],
-                                    nasdaq,2000,train=0.8, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
-                                    dump=True, save=True, file="experiments/arima_nasdaq.csv")
+#bchmk.external_point_sliding_window([naive.Naive, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA],
+#                                    [None, (1,0,0),(1,1,0),(2,0,0), (2,1,0), (1,1,1), (1,0,1)],
+#                                    gauss,2000,train=0.8, dump=True, save=True, file="experiments/arima_gauss.csv")
 
 
-#bchmk.point_sliding_window(taiex,2000,train=0.8, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
-#                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-#                     partitions= [45,55, 65, 75, 85, 95,105,115,125,135, 150], #np.arange(5,150,step=10), #
-#                     dump=True, save=True, file="experiments/taiex_point_new.csv")
+bchmk.interval_sliding_window(nasdaq,2000,train=0.8, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
+                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+                     partitions= np.arange(10,200,step=5), #
+                     dump=True, save=True, file="experiments/nasdaq_interval.csv")
+
+#3bchmk.ahead_sliding_window(taiex,2000,train=0.8, steps=20, resolution=250, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
+#                    partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+#                    partitions= np.arange(10,200,step=10), #
+#                     dump=True, save=True, file="experiments/taiex_ahead.csv")
 
 
 #bchmk.allPointForecasters(taiex_treino, taiex_treino, 95, #transformation=diff,
 #                          models=[ naive.Naive, pfts.ProbabilisticFTS, pwfts.ProbabilisticWeightedFTS],
 #                         statistics=True, residuals=False, series=False)
 
-#data_train_fs = Grid.GridPartitioner(taiex_treino, 10, transformation=diff).sets
+#data_train_fs = Grid.GridPartitioner(nasdaq[:1600], 95).sets
 
-#fts1 = pfts.ProbabilisticFTS("")
+#fts1 = pwfts.ProbabilisticWeightedFTS("")
 #fts1.appendTransformation(diff)
-#fts1.train(taiex_treino, data_train_fs, order=1)
+#fts1.train(nasdaq[:1600], data_train_fs, order=1)
+
+#_crps1, _crps2, _t1, _t2 = bchmk.get_distribution_statistics(nasdaq[1600:2000], fts1, steps=20, resolution=200)
+
+#print(_crps1, _crps2, _t1, _t2)
 
 #print(fts1.forecast([5000, 5000]))
 

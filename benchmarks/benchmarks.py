@@ -10,8 +10,8 @@ import matplotlib.cm as cmx
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 # from sklearn.cross_validation import KFold
+from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution
-from pyFTS.partitioners import Grid
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts
 
@@ -62,32 +62,41 @@ def external_point_sliding_window(models, parameters, data, windowsize,train=0.8
                 u[_key] = []
                 times[_key] = []
 
+            _tdiff = _end - _start
 
-            times[_key].append(_end - _start)
-
-            _start = time.time()
-            _rmse, _smape, _u = get_point_statistics(test, model, None)
-            _end = time.time()
-            rmse[_key].append(_rmse)
-            smape[_key].append(_smape)
-            u[_key].append(_u)
-            times[_key].append(_end - _start)
-
-            if dump: print(_rmse, _smape, _u)
+            try:
+                _start = time.time()
+                _rmse, _smape, _u = get_point_statistics(test, model, None)
+                _end = time.time()
+                rmse[_key].append(_rmse)
+                smape[_key].append(_smape)
+                u[_key].append(_u)
+                _tdiff += _end - _start
+                times[_key].append(_tdiff)
+                if dump: print(_rmse, _smape, _u, _tdiff)
+            except:
+                rmse[_key].append(np.nan)
+                smape[_key].append(np.nan)
+                u[_key].append(np.nan)
+                times[_key].append(np.nan)
 
     ret = []
     for k in sorted(objs.keys()):
-        mod = []
-        mfts = objs[k]
-        mod.append(mfts.shortname)
-        mod.append(round(np.nanmean(rmse[k]), 2))
-        mod.append(round(np.nanstd(rmse[k]), 2))
-        mod.append(round(np.nanmean(smape[k]), 2))
-        mod.append(round(np.nanstd(smape[k]), 2))
-        mod.append(round(np.nanmean(u[k]), 2))
-        mod.append(round(np.nanstd(u[k]), 2))
-        mod.append(round(np.nanmean(times[k]), 4))
-        ret.append(mod)
+        try:
+            mod = []
+            mfts = objs[k]
+            mod.append(mfts.shortname)
+            mod.append(np.round(np.nanmean(rmse[k]), 2))
+            mod.append(np.round(np.nanstd(rmse[k]), 2))
+            mod.append(np.round(np.nanmean(smape[k]), 2))
+            mod.append(np.round(np.nanstd(smape[k]), 2))
+            mod.append(np.round(np.nanmean(u[k]), 2))
+            mod.append(np.round(np.nanstd(u[k]), 2))
+            mod.append(np.round(np.nanmean(times[k]), 4))
+            ret.append(mod)
+        except Exception as ex:
+            print("Erro ao salvar ",k)
+            print("Exceção ", ex)
 
     columns = ["Model", "RMSEAVG", "RMSESTD", "SMAPEAVG", "SMAPESTD", "UAVG", "USTD", "TIMEAVG"]
 
@@ -154,6 +163,9 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
                         smape[_key].append(_smape)
                         u[_key].append(_u)
                         times[_key].append(_end - _start)
+
+                        if dump: print(_rmse, _smape, _u)
+
                     else:
                         for order in np.arange(1, max_order + 1):
                             if order >= mfts.minOrder:
@@ -176,37 +188,52 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
                                 if transformation is not None:
                                     mfts.appendTransformation(transformation)
 
-                                _start = time.time()
-                                mfts.train(train, data_train_fs.sets, order=order)
-                                _end = time.time()
-                                times[_key].append(_end - _start)
+                                try:
+                                    _start = time.time()
+                                    mfts.train(train, data_train_fs.sets, order=order)
+                                    _end = time.time()
+                                    times[_key].append(_end - _start)
 
-                                _start = time.time()
-                                _rmse, _smape, _u = get_point_statistics(test, mfts, indexer)
-                                _end = time.time()
-                                rmse[_key].append(_rmse)
-                                smape[_key].append(_smape)
-                                u[_key].append(_u)
-                                times[_key].append(_end - _start)
+                                    _start = time.time()
+                                    _rmse, _smape, _u = get_point_statistics(test, mfts, indexer)
+                                    _end = time.time()
+                                    rmse[_key].append(_rmse)
+                                    smape[_key].append(_smape)
+                                    u[_key].append(_u)
+                                    times[_key].append(_end - _start)
+
+                                    if dump: print(_rmse, _smape, _u)
+
+                                except Exception as e:
+                                    print(e)
+                                    rmse[_key].append(np.nan)
+                                    smape[_key].append(np.nan)
+                                    u[_key].append(np.nan)
+                                    times[_key].append(np.nan)
     ret = []
     for k in sorted(objs.keys()):
-        mod = []
-        mfts = objs[k]
-        mod.append(mfts.shortname)
-        mod.append(mfts.order )
-        mod.append(mfts.partitioner.name)
-        mod.append(mfts.partitioner.partitions)
-        mod.append(round(np.nanmean(rmse[k]),2))
-        mod.append(round(np.nanstd(rmse[k]), 2))
-        mod.append(round(np.nanmean(smape[k]), 2))
-        mod.append(round(np.nanstd(smape[k]), 2))
-        mod.append(round(np.nanmean(u[k]), 2))
-        mod.append(round(np.nanstd(u[k]), 2))
-        mod.append(len(mfts))
-        mod.append(round(np.nanmean(times[k]),4))
-        ret.append(mod)
+        try:
+            mod = []
+            tmp = objs[k]
+            mod.append(tmp.shortname)
+            mod.append(tmp.order )
+            mod.append(tmp.partitioner.name)
+            mod.append(tmp.partitioner.partitions)
+            mod.append(np.round(np.nanmean(rmse[k]),2))
+            mod.append(np.round(np.nanstd(rmse[k]), 2))
+            mod.append(np.round(np.nanmean(smape[k]), 2))
+            mod.append(np.round(np.nanstd(smape[k]), 2))
+            mod.append(np.round(np.nanmean(u[k]), 2))
+            mod.append(np.round(np.nanstd(u[k]), 2))
+            mod.append(np.round(np.nanmean(times[k]), 4))
+            mod.append(np.round(np.nanstd(times[k]), 4))
+            mod.append(len(tmp))
+            ret.append(mod)
+        except Exception as ex:
+            print("Erro ao salvar ",k)
+            print("Exceção ", ex)
 
-    columns = ["Model","Order","Scheme","Partitions","RMSEAVG","RMSESTD","SMAPEAVG","SMAPESTD","UAVG","USTD","SIZE","TIMEAVG"]
+    columns = ["Model","Order","Scheme","Partitions","RMSEAVG","RMSESTD","SMAPEAVG","SMAPESTD","UAVG","USTD","TIMEAVG","TIMESTD","SIZE"]
 
     dat = pd.DataFrame(ret,columns=columns)
 
@@ -355,12 +382,13 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
     sharpness = {}
     resolution = {}
     coverage = {}
+    times = {}
 
-    for ct, train,test in Util.sliding_window(data, windowsize, train):
+    for ct, training,test in Util.sliding_window(data, windowsize, train):
         for partition in partitions:
             for partitioner in partitioners:
                 pttr = str(partitioner.__module__).split('.')[-1]
-                data_train_fs = partitioner(train, partition, transformation=transformation)
+                data_train_fs = partitioner(training, partition, transformation=transformation)
 
                 for count, model in enumerate(models, start=0):
 
@@ -378,16 +406,24 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
                             sharpness[_key] = []
                             resolution[_key] = []
                             coverage[_key] = []
+                            times[_key] = []
 
                         if transformation is not None:
                             mfts.appendTransformation(transformation)
 
-                        mfts.train(train, data_train_fs.sets)
+                        _start = time.time()
+                        mfts.train(training, data_train_fs.sets)
+                        _end = time.time()
+                        _tdiff = _end - _start
 
+                        _start = time.time()
                         _sharp, _res, _cov = get_interval_statistics(test, mfts)
+                        _end = time.time()
+                        _tdiff += _end - _start
                         sharpness[_key].append(_sharp)
                         resolution[_key].append(_res)
                         coverage[_key].append(_cov)
+                        times[_key].append(_tdiff)
 
                     else:
                         for order in np.arange(1, max_order + 1):
@@ -404,16 +440,25 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
                                     sharpness[_key] = []
                                     resolution[_key] = []
                                     coverage[_key] = []
+                                    times[_key] = []
 
                                 if transformation is not None:
                                     mfts.appendTransformation(transformation)
 
-                                mfts.train(train, data_train_fs.sets, order=order)
+                                _start = time.time()
+                                mfts.train(training, data_train_fs.sets, order=order)
+                                _end = time.time()
 
+                                _tdiff = _end - _start
+
+                                _start = time.time()
                                 _sharp, _res, _cov = get_interval_statistics(test, mfts)
+                                _end = time.time()
+                                _tdiff += _end - _start
                                 sharpness[_key].append(_sharp)
                                 resolution[_key].append(_res)
                                 coverage[_key].append(_cov)
+                                times[_key].append(_tdiff)
 
     ret = []
     for k in sorted(objs.keys()):
@@ -429,10 +474,12 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
         mod.append(round(np.nanstd(resolution[k]), 2))
         mod.append(round(np.nanmean(coverage[k]), 2))
         mod.append(round(np.nanstd(coverage[k]), 2))
+        mod.append(round(np.nanmean(times[k]), 2))
+        mod.append(round(np.nanstd(times[k]), 2))
         mod.append(len(mfts))
         ret.append(mod)
 
-    columns = ["Model","Order","Scheme","Partitions","SHARPAVG","SHARPSTD","RESAVG","RESSTD","COVAVG","COVSTD","SIZE"]
+    columns = ["Model","Order","Scheme","Partitions","SHARPAVG","SHARPSTD","RESAVG","RESSTD","COVAVG","COVSTD","TIMEAVG","TIMESTD","SIZE"]
 
     dat = pd.DataFrame(ret,columns=columns)
 
@@ -566,7 +613,7 @@ def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
     ax.legend(handles0, labels0)
 
 
-def ahead_sliding_window(data, windowsize, train=0.9,models=None, resolution = None, partitioners=[Grid.GridPartitioner],
+def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution = None, partitioners=[Grid.GridPartitioner],
                    partitions=[10], max_order=3,transformation=None,indexer=None,dump=False,
                    save=False, file=None):
     if models is None:
@@ -576,8 +623,8 @@ def ahead_sliding_window(data, windowsize, train=0.9,models=None, resolution = N
     lcolors = {}
     crps_interval = {}
     crps_distr = {}
-
-    steps = int(round(windowsize*(1.0-train),0))
+    times1 = {}
+    times2 = {}
 
     for ct, train,test in Util.sliding_window(data, windowsize, train):
         for partition in partitions:
@@ -600,15 +647,26 @@ def ahead_sliding_window(data, windowsize, train=0.9,models=None, resolution = N
                             lcolors[_key] = colors[count % ncol]
                             crps_interval[_key] = []
                             crps_distr[_key] = []
+                            times1[_key] = []
+                            times2[_key] = []
 
                         if transformation is not None:
                             mfts.appendTransformation(transformation)
 
+                        _start = time.time()
                         mfts.train(train, data_train_fs.sets)
+                        _end = time.time()
 
-                        _crps1, _crps2 = get_distribution_statistics(test,mfts,steps=steps,resolution=resolution)
+                        _tdiff = _end - _start
+
+                        _crps1, _crps2, _t1, _t2 = get_distribution_statistics(test,mfts,steps=steps,resolution=resolution)
+
                         crps_interval[_key].append(_crps1)
                         crps_distr[_key].append(_crps2)
+                        times1[_key] = _tdiff + _t1
+                        times2[_key] = _tdiff + _t2
+
+                        if dump: print(_crps1, _crps2, _tdiff, _t1, _t2)
 
                     else:
                         for order in np.arange(1, max_order + 1):
@@ -624,32 +682,49 @@ def ahead_sliding_window(data, windowsize, train=0.9,models=None, resolution = N
                                     lcolors[_key] = colors[count % ncol]
                                     crps_interval[_key] = []
                                     crps_distr[_key] = []
+                                    times1[_key] = []
+                                    times2[_key] = []
 
                                 if transformation is not None:
                                     mfts.appendTransformation(transformation)
 
+                                _start = time.time()
                                 mfts.train(train, data_train_fs.sets, order=order)
+                                _end = time.time()
 
-                                _crps1, _crps2 = get_distribution_statistics(test,mfts,steps=steps,resolution=resolution)
+                                _tdiff = _end - _start
+
+                                _crps1, _crps2, _t1, _t2 = get_distribution_statistics(test, mfts, steps=steps,
+                                                                                       resolution=resolution)
+
                                 crps_interval[_key].append(_crps1)
                                 crps_distr[_key].append(_crps2)
+                                times1[_key] = _tdiff + _t1
+                                times2[_key] = _tdiff + _t2
+
+                                if dump: print(_crps1, _crps2, _tdiff, _t1, _t2)
 
     ret = []
     for k in sorted(objs.keys()):
-        mod = []
-        mfts = objs[k]
-        mod.append(mfts.shortname)
-        mod.append(mfts.order )
-        mod.append(mfts.partitioner.name)
-        mod.append(mfts.partitioner.partitions)
-        mod.append(round(np.nanmean(crps_interval[k]),2))
-        mod.append(round(np.nanstd(crps_interval[k]), 2))
-        mod.append(round(np.nanmean(crps_distr[k]), 2))
-        mod.append(round(np.nanstd(crps_distr[k]), 2))
-        mod.append(len(mfts))
-        ret.append(mod)
+        try:
+            mod = []
+            mfts = objs[k]
+            mod.append(mfts.shortname)
+            mod.append(mfts.order )
+            mod.append(mfts.partitioner.name)
+            mod.append(mfts.partitioner.partitions)
+            mod.append(np.round(np.nanmean(crps_interval[k]),2))
+            mod.append(np.round(np.nanstd(crps_interval[k]), 2))
+            mod.append(np.round(np.nanmean(crps_distr[k]), 2))
+            mod.append(np.round(np.nanstd(crps_distr[k]), 2))
+            mod.append(len(mfts))
+            mod.append(np.round(np.nanmean(times1[k]), 4))
+            mod.append(np.round(np.nanmean(times2[k]), 4))
+            ret.append(mod)
+        except Exception as e:
+            print ('Erro: %s'  % e)
 
-    columns = ["Model","Order","Scheme","Partitions","CRPS1AVG","CRPS1STD","CRPS2AVG","CRPS2STD","SIZE"]
+    columns = ["Model","Order","Scheme","Partitions","CRPS1AVG","CRPS1STD","CRPS2AVG","CRPS2STD","SIZE","TIME1AVG","TIME2AVG"]
 
     dat = pd.DataFrame(ret,columns=columns)
 
@@ -694,20 +769,40 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
 
     print_distribution_statistics(data_test[start:], objs, steps, resolution)
 
-    #plotComparedIntervalsAhead(data_test, objs, lcolors, distributions=, save=save, file=file, tam=tam,  intervals=True)
+    plotComparedIntervalsAhead(data_test, objs, lcolors, distributions=distributions, time_from=start, time_to=steps,
+                               interpol=False, save=save, file=file, tam=tam, resolution=resolution, option=option)
+
 
 def get_distribution_statistics(original, model, steps, resolution):
     ret = list()
-    densities1 = model.forecastAheadDistribution(original,steps,resolution, parameters=3)
-    densities2 = model.forecastAheadDistribution(original, steps, resolution, parameters=2)
-    ret.append( round(Measures.crps(original, densities1), 3))
-    ret.append( round(Measures.crps(original, densities2), 3))
+    try:
+        _s1 = time.time()
+        densities1 = model.forecastAheadDistribution(original,steps,resolution, parameters=3)
+        _e1 = time.time()
+        ret.append(round(Measures.crps(original, densities1), 3))
+        ret.append(round(_e1 - _s1, 3))
+    except Exception as e:
+        print('Erro: ', e)
+        ret.append(np.nan)
+        ret.append(np.nan)
+
+    try:
+        _s2 = time.time()
+        densities2 = model.forecastAheadDistribution(original, steps, resolution, parameters=2)
+        _e2 = time.time()
+        ret.append( round(Measures.crps(original, densities2), 3))
+        ret.append(round(_e2 - _s2, 3))
+    except:
+        ret.append(np.nan)
+        ret.append(np.nan)
+
     return ret
+
 
 def print_distribution_statistics(original, models, steps, resolution):
     ret = "Model	& Order     &  Interval & Distribution	\\\\ \n"
     for fts in models:
-        _crps1, _crps2 = get_distribution_statistics(original, fts, steps, resolution)
+        _crps1, _crps2, _t1, _t2 = get_distribution_statistics(original, fts, steps, resolution)
         ret += fts.shortname + "		& "
         ret += str(fts.order) + "		& "
         ret += str(_crps1) + "		& "
@@ -977,7 +1072,8 @@ def compareModelsTable(original, models_fo, models_ho):
 
 
 def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=None, tam=[10, 15],
-                      plotforecasts=False, elev=30, azim=144, intervals=False,parameters=None):
+                      plotforecasts=False, elev=30, azim=144, intervals=False,parameters=None,
+                      partitioner=Grid.GridPartitioner,transformation=None,indexer=None):
     _3d = len(orders) > 1
     ret = []
     errors = np.array([[0 for k in range(len(partitions))] for kk in range(len(orders))])
@@ -996,10 +1092,11 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
 
     for pc, p in enumerate(partitions, start=0):
 
-        sets = Grid.GridPartitioner(train, p).sets
+        sets = partitioner(train, p, transformation=transformation).sets
         for oc, o in enumerate(orders, start=0):
             fts = model("q = " + str(p) + " n = " + str(o))
-            fts.train(train, sets, o,parameters=parameters)
+            fts.appendTransformation(transformation)
+            fts.train(train, sets, o, parameters=parameters)
             if not intervals:
                 forecasted = fts.forecast(test)
                 if not fts.hasSeasonality:
@@ -1041,6 +1138,7 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
         ax0.plot(errors,partitions)
     ret.append(best)
     ret.append(forecasted_best)
+    ret.append(min_rmse)
 
     # plt.tight_layout()
 

@@ -327,12 +327,13 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                     idx = np.ravel(tmp)  # flatten the array
 
                     if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                        if instance <= np.ceil(self.sets[0].lower):
+                        if math.isclose(instance, self.sets[0].lower) or instance < self.sets[0].lower:
                             idx = [0]
-                        elif instance >= np.floor(self.sets[-1].upper):
+                        elif math.isclose(instance, self.sets[-1].upper) or instance > self.sets[-1].upper:
                             idx = [len(self.sets) - 1]
                         else:
-                            raise Exception(instance)
+                            raise Exception("Data exceed the known bounds [%s, %s] of universe of discourse: %s" %
+                                            (self.sets[0].lower, self.sets[-1].upper, instance))
 
                     lags[count] = idx
                     count += 1
@@ -365,12 +366,13 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 idx = np.ravel(tmp)  # flatten the array
 
                 if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                    if ndata[k] <= self.sets[0].lower:
+                    if math.isclose(ndata[k], self.sets[0].lower) or ndata[k] < self.sets[0].lower:
                         idx = [0]
-                    elif ndata[k] >= self.sets[-1].upper:
+                    elif math.isclose(ndata[k], self.sets[-1].upper) or ndata[k] > self.sets[-1].upper:
                         idx = [len(self.sets) - 1]
                     else:
-                        raise Exception(ndata[k])
+                        raise Exception("Data exceed the known bounds [%s, %s] of universe of discourse: %s" %
+                                        (self.sets[0].lower, self.sets[-1].upper, ndata[k]))
 
                 for kk in idx:
                     flrg = hofts.HighOrderFLRG(self.order)

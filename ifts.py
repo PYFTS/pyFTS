@@ -73,6 +73,16 @@ class IntervalFTS(hofts.HighOrderFTS):
                     mb = FuzzySet.fuzzyInstance(instance, self.sets)
                     tmp = np.argwhere(mb)
                     idx = np.ravel(tmp)  # flat the array
+
+                    if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
+                        if instance <= self.sets[0].lower:
+                            idx = [0]
+                        elif instance >= self.sets[-1].upper:
+                            idx = [len(self.sets) - 1]
+                        else:
+                            raise Exception(instance)
+
+
                     lags[count] = idx
                     count = count + 1
 
@@ -98,6 +108,15 @@ class IntervalFTS(hofts.HighOrderFTS):
                 mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)
                 tmp = np.argwhere(mv)
                 idx = np.ravel(tmp)
+
+                if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
+                    if ndata[k] <= self.sets[0].lower:
+                        idx = [0]
+                    elif ndata[k] >= self.sets[-1].upper:
+                        idx = [len(self.sets) - 1]
+                    else:
+                        raise Exception(ndata[k])
+
                 for kk in idx:
                     flrg = hofts.HighOrderFLRG(self.order)
                     flrg.appendLHS(self.sets[kk])
