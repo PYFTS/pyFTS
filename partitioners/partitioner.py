@@ -1,6 +1,7 @@
 from pyFTS.common import FuzzySet, Membership
 import  numpy as np
 
+
 class Partitioner(object):
     def __init__(self,name,data,npart,func = Membership.trimf, names=None, prefix="A", transformation=None):
         self.name = name

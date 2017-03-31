@@ -76,6 +76,7 @@ def bestSplit(data, npart):
     else:
         return [threshold]
 
+
 class EntropyPartitioner(partitioner.Partitioner):
     def __init__(self, data, npart, func = Membership.trimf, transformation=None):
         super(EntropyPartitioner, self).__init__("Entropy", data, npart, func=func, transformation=transformation)
@@ -89,7 +90,15 @@ class EntropyPartitioner(partitioner.Partitioner):
         partitions = list(set(partitions))
         partitions.sort()
         for c in np.arange(1, len(partitions) - 1):
-            sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf,
-                                          [partitions[c - 1], partitions[c], partitions[c + 1]],partitions[c]))
+            if self.membership_function == Membership.trimf:
+                sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf,
+                                              [partitions[c - 1], partitions[c], partitions[c + 1]],partitions[c]))
+            elif self.membership_function == Membership.trapmf:
+                b1 = (partitions[c] - partitions[c - 1])/2
+                b2 = (partitions[c + 1] - partitions[c]) / 2
+                sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trapmf,
+                                              [partitions[c - 1], partitions[c] - b1,
+                                               partitions[c] - b2, partitions[c + 1]],
+                                              partitions[c]))
 
         return sets

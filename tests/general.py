@@ -23,13 +23,17 @@ from numpy import random
 #gauss_teste = random.normal(0,1.0,400)
 
 
-os.chdir("/home/petronio/dados/Dropbox/Doutorado/Disciplinas/AdvancedFuzzyTimeSeriesModels/")
+os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
-#taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-#taiex = np.array(taiexpd["avg"][:5000])
+taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
+taiex = np.array(taiexpd["avg"][:5000])
 
-nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
-nasdaq = np.array(nasdaqpd["avg"][:5000])
+from pyFTS.partitioners import parallel_util
+
+parallel_util.explore_partitioners(taiex,20)
+
+#nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
+#nasdaq = np.array(nasdaqpd["avg"][:5000])
 
 #taiex = pd.read_csv("DataSets/TAIEX.csv", sep=",")
 #taiex_treino = np.array(taiex["avg"][2500:3900])
@@ -49,10 +53,10 @@ diff = Transformations.Differential(1)
 #                                    gauss,2000,train=0.8, dump=True, save=True, file="experiments/arima_gauss.csv")
 
 
-bchmk.interval_sliding_window(nasdaq,2000,train=0.8, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
-                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-                     partitions= np.arange(10,200,step=5), #
-                     dump=True, save=True, file="experiments/nasdaq_interval.csv")
+#bchmk.interval_sliding_window(nasdaq,2000,train=0.8, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
+#                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+#                     partitions= np.arange(10,200,step=5), #
+#                     dump=True, save=True, file="experiments/nasdaq_interval.csv")
 
 #3bchmk.ahead_sliding_window(taiex,2000,train=0.8, steps=20, resolution=250, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
 #                    partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],

@@ -24,6 +24,10 @@ class GridPartitioner(partitioner.Partitioner):
             elif self.membership_function == Membership.gaussmf:
                 sets.append(
                     FuzzySet.FuzzySet(self.prefix + str(count), Membership.gaussmf, [c, partlen / 3], c))
+            elif self.membership_function == Membership.trapmf:
+                q = partlen / 2
+                sets.append(
+                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.trapmf, [c - partlen, c - q, c + q, c + partlen], c))
             count += 1
 
 
