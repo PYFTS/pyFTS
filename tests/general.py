@@ -28,9 +28,14 @@ os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
 taiex = np.array(taiexpd["avg"][:5000])
 
-from pyFTS.partitioners import parallel_util
+from pyFTS.benchmarks import parallel_benchmarks as bchmk
 
-parallel_util.explore_partitioners(taiex,20)
+bchmk.point_sliding_window(taiex,2000,train=0.8, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
+                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+                     partitions= np.arange(10,200,step=5), #
+                     dump=True, save=True, file="experiments/nasdaq_point_paralllel.csv")
+
+#parallel_util.explore_partitioners(taiex,20)
 
 #nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
 #nasdaq = np.array(nasdaqpd["avg"][:5000])
