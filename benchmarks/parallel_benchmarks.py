@@ -5,6 +5,7 @@ import multiprocessing
 import numpy as np
 import pandas as pd
 import time
+import datetime
 import matplotlib as plt
 import matplotlib.colors as pltcolors
 import matplotlib.cm as cmx
@@ -17,25 +18,17 @@ from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts
 from pyFTS.benchmarks import  benchmarks
 
-def get_first_order_models():
-    return [chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-                  sadaei.ExponentialyWeightedFTS]
 
-def get_high_order_models():
-    return [hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]
-
-
-def run_first_order(method, partitioner, train_data, test_data, transformation = None, indexer=None ):
-    mfts = method("")
+def run_point(mfts, partitioner, train_data, test_data, transformation=None, indexer=None):
     pttr = str(partitioner.__module__).split('.')[-1]
-    _key = mfts.shortname + " " + pttr + " q = " + str(partitioner.partitions)
+    _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
     mfts.partitioner = partitioner
     if transformation is not None:
         mfts.appendTransformation(transformation)
 
     try:
         _start = time.time()
-        mfts.train(train_data, partitioner.sets)
+        mfts.train(train_data, partitioner.sets, order=mfts.order)
         _end = time.time()
         times = _end - _start
 
@@ -46,57 +39,27 @@ def run_first_order(method, partitioner, train_data, test_data, transformation =
     except Exception as e:
         print(e)
         _rmse = np.nan
-        _smape= np.nan
+        _smape = np.nan
         _u = np.nan
         times = np.nan
 
-    ret = {'key':_key, 'obj': mfts,  'rmse': _rmse, 'smape': _smape, 'u': _u, 'time': times }
+    ret = {'key': _key, 'obj': mfts, 'rmse': _rmse, 'smape': _smape, 'u': _u, 'time': times}
 
     print(ret)
 
     return ret
 
 
-def run_high_order(method, order, partitioner, train_data, test_data, transformation=None, indexer=None):
-    mfts = method("")
-    if order >= mfts.minOrder:
-        pttr = str(partitioner.__module__).split('.')[-1]
-        _key = mfts.shortname + " n = " + str(order) + " " + pttr + " q = " + str(partitioner.partitions)
-        mfts.partitioner = partitioner
-        if transformation is not None:
-            mfts.appendTransformation(transformation)
+def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
+                         partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
+                         save=False, file=None, sintetic=False):
+    _process_start = time.time()
 
-        try:
-            _start = time.time()
-            mfts.train(train_data, partitioner.sets, order=order)
-            _end = time.time()
-            times = _end - _start
-
-            _start = time.time()
-            _rmse, _smape, _u = benchmarks.get_point_statistics(test_data, mfts, indexer)
-            _end = time.time()
-            times += _end - _start
-        except Exception as e:
-            print(e)
-            _rmse = np.nan
-            _smape = np.nan
-            _u = np.nan
-            times = np.nan
-
-        ret = {'key': _key, 'obj': mfts, 'rmse': _rmse, 'smape': _smape, 'u': _u, 'time': times}
-
-        print(ret)
-
-        return ret
-
-    return {'key': None, 'obj': mfts, 'rmse': np.nan, 'smape': np.nan, 'u': np.nan, 'time': np.nan}
-
-
-def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[Grid.GridPartitioner],
-                   partitions=[10], max_order=3,transformation=None,indexer=None,dump=False,
-                   save=False, file=None):
+    print("Process Start: {0: %H:%M:%S}".format(datetime.datetime.now()))
 
     num_cores = multiprocessing.cpu_count()
+
+    pool = []
 
     objs = {}
     rmse = {}
@@ -104,15 +67,34 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
     u = {}
     times = {}
 
-    for ct, train,test in Util.sliding_window(data, windowsize, train):
-        mocks = {}
+    for model in benchmarks.get_point_methods():
+        mfts = model("")
+
+        if mfts.isHighOrder:
+            for order in np.arange(1, max_order + 1):
+                if order >= mfts.minOrder:
+                    mfts = model("")
+                    mfts.order = order
+                    pool.append(mfts)
+        else:
+            pool.append(mfts)
+
+    experiments = 0
+    for ct, train, test in Util.sliding_window(data, windowsize, train):
+        experiments += 1
+
+        if dump: print('\nWindow: {0}\n'.format(ct))
+
         for partition in partitions:
+
             for partitioner in partitioners:
-                pttr = str(partitioner.__module__).split('.')[-1]
+
                 data_train_fs = partitioner(train, partition, transformation=transformation)
 
-                results = Parallel(n_jobs=num_cores)(delayed(run_first_order)(m, deepcopy(data_train_fs), deepcopy(train), deepcopy(test), transformation)
-                                                 for m in get_first_order_models())
+                results = Parallel(n_jobs=num_cores)(
+                    delayed(run_point)(deepcopy(m), deepcopy(data_train_fs), deepcopy(train), deepcopy(test),
+                                       transformation)
+                    for m in pool)
 
                 for tmp in results:
                     if tmp['key'] not in objs:
@@ -126,56 +108,208 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
                     u[tmp['key']].append(tmp['u'])
                     times[tmp['key']].append(tmp['time'])
 
-                for count, model in enumerate(get_high_order_models(), start=0):
+    _process_end = time.time()
 
-                    results = Parallel(n_jobs=num_cores)(
-                        delayed(run_high_order)(model, order, deepcopy(data_train_fs), deepcopy(train), deepcopy(test),
-                                                 transformation)
-                                                for order in np.arange(1, max_order + 1))
+    print("Process End: {0: %H:%M:%S}".format(datetime.datetime.now()))
 
-                    for tmp in results:
-                        if tmp['key'] not in objs:
-                            objs[tmp['key']] = tmp['obj']
-                            rmse[tmp['key']] = []
-                            smape[tmp['key']] = []
-                            u[tmp['key']] = []
-                            times[tmp['key']] = []
-                        rmse[tmp['key']].append(tmp['rmse'])
-                        smape[tmp['key']].append(tmp['smape'])
-                        u[tmp['key']].append(tmp['u'])
-                        times[tmp['key']].append(tmp['time'])
-    ret = []
-    for k in sorted(objs.keys()):
-        try:
-            mod = []
-            tmp = objs[k]
-            mod.append(tmp.shortname)
-            mod.append(tmp.order )
-            mod.append(tmp.partitioner.name)
-            mod.append(tmp.partitioner.partitions)
-            mod.append(np.round(np.nanmean(rmse[k]),2))
-            mod.append(np.round(np.nanstd(rmse[k]), 2))
-            mod.append(np.round(np.nanmean(smape[k]), 2))
-            mod.append(np.round(np.nanstd(smape[k]), 2))
-            mod.append(np.round(np.nanmean(u[k]), 2))
-            mod.append(np.round(np.nanstd(u[k]), 2))
-            mod.append(np.round(np.nanmean(times[k]), 4))
-            mod.append(np.round(np.nanstd(times[k]), 4))
-            mod.append(len(tmp))
-            ret.append(mod)
-        except Exception as ex:
-            print("Erro ao salvar ",k)
-            print("Exceção ", ex)
+    print("Process Duration: {0}".format(_process_end - _process_start))
 
-    columns = ["Model","Order","Scheme","Partitions","RMSEAVG","RMSESTD","SMAPEAVG","SMAPESTD","UAVG","USTD","TIMEAVG","TIMESTD","SIZE"]
-
-    dat = pd.DataFrame(ret,columns=columns)
-
-    if save: dat.to_csv(Util.uniquefilename(file),sep=";")
-
-    return dat
+    return benchmarks.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
 
 
+def run_interval(mfts, partitioner, train_data, test_data, transformation=None, indexer=None):
+    pttr = str(partitioner.__module__).split('.')[-1]
+    _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
+    mfts.partitioner = partitioner
+    if transformation is not None:
+        mfts.appendTransformation(transformation)
+
+    try:
+        _start = time.time()
+        mfts.train(train_data, partitioner.sets, order=mfts.order)
+        _end = time.time()
+        times = _end - _start
+
+        _start = time.time()
+        _sharp, _res, _cov = benchmarks.get_interval_statistics(test_data, mfts)
+        _end = time.time()
+        times += _end - _start
+    except Exception as e:
+        print(e)
+        _sharp = np.nan
+        _res = np.nan
+        _cov = np.nan
+        times = np.nan
+
+    ret = {'key': _key, 'obj': mfts, 'sharpness': _sharp, 'resolution': _res, 'coverage': _cov, 'time': times}
+
+    print(ret)
+
+    return ret
 
 
+def interval_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
+                         partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
+                         save=False, file=None, sintetic=False):
+    _process_start = time.time()
 
+    print("Process Start: {0: %H:%M:%S}".format(datetime.datetime.now()))
+
+    num_cores = multiprocessing.cpu_count()
+
+    pool = []
+
+    objs = {}
+    sharpness = {}
+    resolution = {}
+    coverage = {}
+    times = {}
+
+    for model in benchmarks.get_interval_methods():
+        mfts = model("")
+
+        if mfts.isHighOrder:
+            for order in np.arange(1, max_order + 1):
+                if order >= mfts.minOrder:
+                    mfts = model("")
+                    mfts.order = order
+                    pool.append(mfts)
+        else:
+            pool.append(mfts)
+
+    experiments = 0
+    for ct, train, test in Util.sliding_window(data, windowsize, train):
+        experiments += 1
+
+        if dump: print('\nWindow: {0}\n'.format(ct))
+
+        for partition in partitions:
+
+            for partitioner in partitioners:
+
+                data_train_fs = partitioner(train, partition, transformation=transformation)
+
+                results = Parallel(n_jobs=num_cores)(
+                    delayed(run_interval)(deepcopy(m), deepcopy(data_train_fs), deepcopy(train), deepcopy(test),
+                                       transformation)
+                    for m in pool)
+
+                for tmp in results:
+                    if tmp['key'] not in objs:
+                        objs[tmp['key']] = tmp['obj']
+                        sharpness[tmp['key']] = []
+                        resolution[tmp['key']] = []
+                        coverage[tmp['key']] = []
+                        times[tmp['key']] = []
+
+                    sharpness[tmp['key']].append(tmp['sharpness'])
+                    resolution[tmp['key']].append(tmp['resolution'])
+                    coverage[tmp['key']].append(tmp['coverage'])
+                    times[tmp['key']].append(tmp['time'])
+
+    _process_end = time.time()
+
+    print("Process End: {0: %H:%M:%S}".format(datetime.datetime.now()))
+
+    print("Process Duration: {0}".format(_process_end - _process_start))
+
+    return benchmarks.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic, times)
+
+
+def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, transformation=None, indexer=None):
+    pttr = str(partitioner.__module__).split('.')[-1]
+    _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
+    mfts.partitioner = partitioner
+    if transformation is not None:
+        mfts.appendTransformation(transformation)
+
+    try:
+        _start = time.time()
+        mfts.train(train_data, partitioner.sets, order=mfts.order)
+        _end = time.time()
+        times = _end - _start
+
+        _crps1, _crps2, _t1, _t2 = benchmarks.get_distribution_statistics(test_data, mfts, steps=steps,
+                                                              resolution=resolution)
+        _t1 += times
+        _t2 += times
+    except Exception as e:
+        print(e)
+        _crps1 = np.nan
+        _crps2 = np.nan
+        _t1 = np.nan
+        _t2 = np.nan
+
+    ret = {'key': _key, 'obj': mfts, 'CRPS_Interval': _crps1, 'CRPS_Distribution': _crps2, 'TIME_Interval': _t1, 'TIME_Distribution': _t2}
+
+    print(ret)
+
+    return ret
+
+
+def ahead_sliding_window(data, windowsize, train, steps,resolution, models=None, partitioners=[Grid.GridPartitioner],
+                         partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
+                         save=False, file=None, sintetic=False):
+    _process_start = time.time()
+
+    print("Process Start: {0: %H:%M:%S}".format(datetime.datetime.now()))
+
+    num_cores = multiprocessing.cpu_count()
+
+    pool = []
+
+    objs = {}
+    crps_interval = {}
+    crps_distr = {}
+    times1 = {}
+    times2 = {}
+
+    for model in benchmarks.get_interval_methods():
+        mfts = model("")
+
+        if mfts.isHighOrder:
+            for order in np.arange(1, max_order + 1):
+                if order >= mfts.minOrder:
+                    mfts = model("")
+                    mfts.order = order
+                    pool.append(mfts)
+        else:
+            pool.append(mfts)
+
+    experiments = 0
+    for ct, train, test in Util.sliding_window(data, windowsize, train):
+        experiments += 1
+
+        if dump: print('\nWindow: {0}\n'.format(ct))
+
+        for partition in partitions:
+
+            for partitioner in partitioners:
+
+                data_train_fs = partitioner(train, partition, transformation=transformation)
+
+                results = Parallel(n_jobs=num_cores)(
+                    delayed(run_ahead)(deepcopy(m), deepcopy(data_train_fs), deepcopy(train), deepcopy(test),
+                                       steps, resolution, transformation)
+                    for m in pool)
+
+                for tmp in results:
+                    if tmp['key'] not in objs:
+                        objs[tmp['key']] = tmp['obj']
+                        crps_interval[tmp['key']] = []
+                        crps_distr[tmp['key']] = []
+                        times1[tmp['key']] = []
+                        times2[tmp['key']] = []
+
+                    crps_interval[tmp['key']].append(tmp['CRPS_Interval'])
+                    crps_distr[tmp['key']].append(tmp['CRPS_Distribution'])
+                    times1[tmp['key']].append(tmp['TIME_Interval'])
+                    times2[tmp['key']].append(tmp['TIME_Distribution'])
+
+    _process_end = time.time()
+
+    print("Process End: {0: %H:%M:%S}".format(datetime.datetime.now()))
+
+    print("Process Duration: {0}".format(_process_end - _process_start))
+
+    return benchmarks.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic)
