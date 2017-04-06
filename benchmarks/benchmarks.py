@@ -408,7 +408,7 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
                         _tdiff = _end - _start
 
                         _start = time.time()
-                        _sharp, _res, _cov = get_interval_statistics(test, mfts)
+                        _sharp, _res, _cov = Measures.get_interval_statistics(test, mfts)
                         _end = time.time()
                         _tdiff += _end - _start
                         sharpness[_key].append(_sharp)
@@ -443,7 +443,7 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
                                 _tdiff = _end - _start
 
                                 _start = time.time()
-                                _sharp, _res, _cov = get_interval_statistics(test, mfts)
+                                _sharp, _res, _cov = Measures.get_interval_statistics(test, mfts)
                                 _end = time.time()
                                 _tdiff += _end - _start
                                 sharpness[_key].append(_sharp)
@@ -488,19 +488,10 @@ def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save
     plot_compared_series(data_test, objs, lcolors, typeonlegend=False, save=save, file=file, tam=tam, intervals=True)
 
 
-def get_interval_statistics(original, model):
-    ret = list()
-    forecasts = model.forecastInterval(original)
-    ret.append(round(Measures.sharpness(forecasts), 2))
-    ret.append(round(Measures.resolution(forecasts), 2))
-    ret.append(round(Measures.coverage(original[model.order:], forecasts[:-1]), 2))
-    return ret
-
-
 def print_interval_statistics(original, models):
     ret = "Model	& Order     & Sharpness		& Resolution		& Coverage	\\\\ \n"
     for fts in models:
-        _sharp, _res, _cov = get_interval_statistics(original, fts)
+        _sharp, _res, _cov = Measures.get_interval_statistics(original, fts)
         ret += fts.shortname + "		& "
         ret += str(fts.order) + "		& "
         ret += str(_sharp) + "		& "

@@ -177,3 +177,12 @@ def get_point_statistics(data, model, indexer=None):
         ret.append(np.nan)
 
     return ret
+
+
+def get_interval_statistics(original, model):
+    ret = list()
+    forecasts = model.forecastInterval(original)
+    ret.append(round(sharpness(forecasts), 2))
+    ret.append(round(resolution(forecasts), 2))
+    ret.append(round(coverage(original[model.order:], forecasts[:-1]), 2))
+    return ret
