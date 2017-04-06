@@ -44,3 +44,6 @@ class Partitioner(object):
                 tmpx = [kk for kk in np.arange(s.lower, s.upper)]
                 tmpy = [s.membership(kk) for kk in np.arange(s.lower, s.upper)]
                 ax.plot(tmpx, tmpy)
+
+    def __str__(self):
+        return self.name

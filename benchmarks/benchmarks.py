@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 # from sklearn.cross_validation import KFold
 from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
-from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution
+from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution, Util
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts
 from copy import deepcopy
@@ -35,64 +35,6 @@ def get_point_methods():
 
 def get_interval_methods():
     return [ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS]
-
-
-def save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u):
-    ret = []
-
-    if sintetic:
-
-        for k in sorted(objs.keys()):
-            try:
-                mod = []
-                mfts = objs[k]
-                mod.append(mfts.shortname)
-                mod.append(mfts.order)
-                mod.append(mfts.partitioner.name)
-                mod.append(mfts.partitioner.partitions)
-                mod.append(len(mfts))
-                mod.append(np.round(np.nanmean(rmse[k]), 2))
-                mod.append(np.round(np.nanstd(rmse[k]), 2))
-                mod.append(np.round(np.nanmean(smape[k]), 2))
-                mod.append(np.round(np.nanstd(smape[k]), 2))
-                mod.append(np.round(np.nanmean(u[k]), 2))
-                mod.append(np.round(np.nanstd(u[k]), 2))
-                mod.append(np.round(np.nanmean(times[k]), 4))
-                ret.append(mod)
-            except Exception as ex:
-                print("Erro ao salvar ", k)
-                print("Exceção ", ex)
-
-        columns = ["Model", "Order", "Scheme","Partitions", "Size", "RMSEAVG", "RMSESTD", "SMAPEAVG", "SMAPESTD", "UAVG", "USTD", "TIMEAVG"]
-    else:
-        for k in sorted(objs.keys()):
-            try:
-                mfts = objs[k]
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts), 'RMSE']
-                tmp.extend(rmse[k])
-                ret.append(deepcopy(tmp))
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),  'SMAPE']
-                tmp.extend(smape[k])
-                ret.append(deepcopy(tmp))
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),  'U']
-                tmp.extend(u[k])
-                ret.append(deepcopy(tmp))
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),  'TIME']
-                tmp.extend(times[k])
-                ret.append(deepcopy(tmp))
-            except Exception as ex:
-                print("Erro ao salvar ", k)
-                print("Exceção ", ex)
-        columns = [str(k) for k in np.arange(0, experiments)]
-        columns.insert(0, "Model")
-        columns.insert(1, "Order")
-        columns.insert(2, "Scheme")
-        columns.insert(3, "Partitions")
-        columns.insert(4, "Size")
-        columns.insert(5, "Measure")
-    dat = pd.DataFrame(ret, columns=columns)
-    if save: dat.to_csv(Util.uniquefilename(file), sep=";")
-    return dat
 
 
 def external_point_sliding_window(models, parameters, data, windowsize,train=0.8, dump=False, save=False, file=None, sintetic=True):
@@ -129,7 +71,7 @@ def external_point_sliding_window(models, parameters, data, windowsize,train=0.8
 
             try:
                 _start = time.time()
-                _rmse, _smape, _u = get_point_statistics(test, model, None)
+                _rmse, _smape, _u = Measures.get_point_statistics(test, model, None)
                 _end = time.time()
                 rmse[_key].append(_rmse)
                 smape[_key].append(_smape)
@@ -143,7 +85,7 @@ def external_point_sliding_window(models, parameters, data, windowsize,train=0.8
                 u[_key].append(np.nan)
                 times[_key].append(np.nan)
 
-    return save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
+    return Util.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
 
 
 def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[Grid.GridPartitioner],
@@ -240,7 +182,7 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
                                     times[_key].append(_end - _start)
 
                                     _start = time.time()
-                                    _rmse, _smape, _u = get_point_statistics(test, mfts, indexer)
+                                    _rmse, _smape, _u = Measures.get_point_statistics(test, mfts, indexer)
                                     _end = time.time()
                                     rmse[_key].append(_rmse)
                                     smape[_key].append(_smape)
@@ -262,7 +204,7 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
 
     print("Process Duration: {0}".format(_process_end - _process_start))
 
-    return save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
+    return Util.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
 
 
 def all_point_forecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True,
@@ -324,38 +266,6 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
         print(getProbabilityDistributionStatistics(pmfs,data_test))
 
         plot_probability_distributions(pmfs, lcolors, tam=tam)
-
-
-def get_point_statistics(data, model, indexer=None):
-    if indexer is not None:
-        ndata = np.array(indexer.get_data(data[model.order:]))
-    else:
-        ndata = np.array(data[model.order:])
-
-    if model.isMultivariate or indexer is None:
-        forecasts = model.forecast(data)
-    elif not model.isMultivariate and indexer is not None:
-        forecasts = model.forecast(indexer.get_data(data))
-
-    if model.hasSeasonality:
-        nforecasts = np.array(forecasts)
-    else:
-        nforecasts = np.array(forecasts[:-1])
-    ret = list()
-    try:
-        ret.append(np.round(Measures.rmse(ndata, nforecasts), 2))
-    except:
-        ret.append(np.nan)
-    try:
-        ret.append(np.round(Measures.smape(ndata, nforecasts), 2))
-    except:
-        ret.append(np.nan)
-    try:
-        ret.append(np.round(Measures.UStatistic(ndata, nforecasts), 2))
-    except:
-        ret.append(np.nan)
-
-    return ret
 
 
 def print_point_statistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):

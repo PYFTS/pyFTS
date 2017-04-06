@@ -6,12 +6,6 @@ import numpy as np
 import pandas as pd
 import time
 import datetime
-import matplotlib as plt
-import matplotlib.colors as pltcolors
-import matplotlib.cm as cmx
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-# from sklearn.cross_validation import KFold
 from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util

@@ -2,8 +2,6 @@ import numpy as np
 import pandas as pd
 from pyFTS import tree
 from pyFTS.common import FuzzySet, SortedCollection
-from pyFTS.benchmarks import Measures
-
 
 class FTS(object):
     def __init__(self, order, name):

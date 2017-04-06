@@ -145,3 +145,35 @@ def crps(targets, densities):
         _crps += sum([ (Ff[col][k]-Fa[col][k])**2 for col in densities.columns])
 
     return _crps / float(l * n)
+
+
+def get_point_statistics(data, model, indexer=None):
+    if indexer is not None:
+        ndata = np.array(indexer.get_data(data[model.order:]))
+    else:
+        ndata = np.array(data[model.order:])
+
+    if model.isMultivariate or indexer is None:
+        forecasts = model.forecast(data)
+    elif not model.isMultivariate and indexer is not None:
+        forecasts = model.forecast(indexer.get_data(data))
+
+    if model.hasSeasonality:
+        nforecasts = np.array(forecasts)
+    else:
+        nforecasts = np.array(forecasts[:-1])
+    ret = list()
+    try:
+        ret.append(np.round(rmse(ndata, nforecasts), 2))
+    except:
+        ret.append(np.nan)
+    try:
+        ret.append(np.round(smape(ndata, nforecasts), 2))
+    except:
+        ret.append(np.nan)
+    try:
+        ret.append(np.round(UStatistic(ndata, nforecasts), 2))
+    except:
+        ret.append(np.nan)
+
+    return ret
