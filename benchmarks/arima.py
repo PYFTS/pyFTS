@@ -23,6 +23,8 @@ class ARIMA(fts.FTS):
         self.minOrder = 1
 
     def train(self, data, sets, order=1, parameters=None):
+        ndata = np.array(self.doTransformations(data))
+
         if parameters is not None:
             self.p = parameters[0]
             self.d = parameters[1]
@@ -31,7 +33,7 @@ class ARIMA(fts.FTS):
             self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ")"
 
         old_fit = self.model_fit
-        self.model =  stats_arima(data, order=(self.p, self.d, self.q))
+        self.model =  stats_arima(ndata, order=(self.p, self.d, self.q))
         #try:
         self.model_fit = self.model.fit(disp=0)
         #except:

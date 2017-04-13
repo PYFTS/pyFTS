@@ -28,38 +28,27 @@ os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
 taiex = np.array(taiexpd["avg"][:5000])
 
-from statsmodels.tsa.arima_model import ARIMA as stats_arima
+#from statsmodels.tsa.arima_model import ARIMA as stats_arima
+from statsmodels.tsa.tsatools import lagmat
 
-model = stats_arima(taiex[:1600], (2,0,1)).fit(disp=0)
+tmp = np.arange(10)
 
-ar = np.array(taiex[1598:1600]).dot( model.arparams )
+lag, a = lagmat(tmp, maxlag=2, trim="both", original='sep')
 
-#print(ar)
-
-res = ar - taiex[1600]
-
-#print(res)
-
-ma = np.array([res]).dot(model.maparams)
-
-#print(ma)
-
-print(ar + ma)
-print(taiex[1598:1601])
-print(taiex[1600])
-
+print(lag)
+print(a)
 
 #from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 #from pyFTS.benchmarks import benchmarks as bchmk
-from pyFTS.benchmarks import arima
+#from pyFTS.benchmarks import arima
 
 
-tmp = arima.ARIMA("")
-tmp.train(taiex[:1600],None,parameters=(2,0,1))
-teste = tmp.forecast(taiex[1598:1601])
+#tmp = arima.ARIMA("")
+#tmp.train(taiex[:1600],None,parameters=(2,0,1))
+#teste = tmp.forecast(taiex[1598:1601])
 
-print(teste)
+#print(teste)
 
 #bchmk.teste(taiex,['192.168.0.109', '192.168.0.101'])
 
