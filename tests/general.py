@@ -28,18 +28,46 @@ os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
 taiex = np.array(taiexpd["avg"][:5000])
 
-from pyFTS.benchmarks import distributed_benchmarks as bchmk
+from statsmodels.tsa.arima_model import ARIMA as stats_arima
+
+model = stats_arima(taiex[:1600], (2,0,1)).fit(disp=0)
+
+ar = np.array(taiex[1598:1600]).dot( model.arparams )
+
+#print(ar)
+
+res = ar - taiex[1600]
+
+#print(res)
+
+ma = np.array([res]).dot(model.maparams)
+
+#print(ma)
+
+print(ar + ma)
+print(taiex[1598:1601])
+print(taiex[1600])
+
+
+#from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 #from pyFTS.benchmarks import benchmarks as bchmk
-from pyFTS import yu
+from pyFTS.benchmarks import arima
+
+
+tmp = arima.ARIMA("")
+tmp.train(taiex[:1600],None,parameters=(2,0,1))
+teste = tmp.forecast(taiex[1598:1601])
+
+print(teste)
 
 #bchmk.teste(taiex,['192.168.0.109', '192.168.0.101'])
 
-bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
-                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-                     partitions= np.arange(10,200,step=5), #transformation=diff,
-                     dump=False, save=True, file="experiments/nasdaq_point_distributed.csv",
-                     nodes=['192.168.0.109', '192.168.0.101']) #, depends=[hofts, ifts])
+#bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
+#                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+#                     partitions= np.arange(10,200,step=5), #transformation=diff,
+#                     dump=False, save=True, file="experiments/nasdaq_point_distributed.csv",
+#                     nodes=['192.168.0.109', '192.168.0.101']) #, depends=[hofts, ifts])
 
 #bchmk.testa(taiex,[10,20],partitioners=[Grid.GridPartitioner], nodes=['192.168.0.109', '192.168.0.101'])
 
