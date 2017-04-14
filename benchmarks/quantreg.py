@@ -24,6 +24,10 @@ class QuantileRegression(fts.FTS):
 
     def train(self, data, sets, order=1, parameters=None):
         self.order = order
+
+        if parameters is not None:
+            self.alpha = parameters
+
         tmp = np.array(self.doTransformations(data))
 
         lagdata, ndata = lagmat(tmp, maxlag=order, trim="both", original='sep')

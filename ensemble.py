@@ -8,6 +8,7 @@ from operator import itemgetter
 from pyFTS.common import FLR, FuzzySet, SortedCollection
 from pyFTS import fts
 
+
 class EnsembleFTS(fts.FTS):
     def __init__(self, order, name, **kwargs):
         super(EnsembleFTS, self).__init__("Ensemble FTS")
@@ -21,11 +22,49 @@ class EnsembleFTS(fts.FTS):
         self.models = []
         self.parameters = []
 
-    def train(self, data, sets, order=1,parameters=None):
+    def build(self, data, models, partitioners, partitions, max_order=3, transformation=None, indexer=None):
 
+        self.models = []
+
+        for count, model in enumerate(models, start=0):
+            mfts = model("")
+            if mfts.benchmark_only:
+                if transformation is not None:
+                    mfts.appendTransformation(transformation)
+                mfts.train(data,None, order=1, parameters=None)
+                self.models.append(mfts)
+            else:
+                for partition in partitions:
+                    for partitioner in partitioners:
+                        data_train_fs = partitioner(data, partition, transformation=transformation)
+                        mfts = model("")
+
+                        mfts.partitioner = data_train_fs
+                        if not mfts.isHighOrder:
+
+                            if transformation is not None:
+                                mfts.appendTransformation(transformation)
+
+                            mfts.train(data, data_train_fs.sets)
+                            self.models.append(mfts)
+                        else:
+                            for order in np.arange(1, max_order + 1):
+                                if order >= mfts.minOrder:
+                                    mfts = model("")
+                                    mfts.partitioner = data_train_fs
+
+                                    if transformation is not None:
+                                        mfts.appendTransformation(transformation)
+
+                                    mfts.train(data, data_train_fs.sets, order=order)
+                                    self.models.append(mfts)
+
+    def train(self, data, sets, order=1,parameters=None):
         pass
 
     def forecast(self, data, **kwargs):
+
+        method = kwargs.get('method','mean')
 
         ndata = np.array(self.doTransformations(data))
 
@@ -33,8 +72,16 @@ class EnsembleFTS(fts.FTS):
 
         ret = []
 
-        for k in np.arange(self.order - 1, l):
-            pass
+        for k in np.arange(0, l):
+            tmp = []
+            for model in self.models:
+                if k >= model.minOrder - 1:
+                    sample = ndata[k - model.order : k]
+                    tmp.append( model.forecast(sample) )
+            if method == 'mean':
+                ret.append( np.nanmean(tmp))
+            elif method == 'median':
+                ret.append(np.percentile(tmp,50))
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
@@ -42,14 +89,25 @@ class EnsembleFTS(fts.FTS):
 
     def forecastInterval(self, data, **kwargs):
 
+        method = kwargs.get('method', 'extremum')
+
         ndata = np.array(self.doTransformations(data))
 
         l = len(ndata)
 
         ret = []
 
-        for k in np.arange(self.order - 1, l):
-            pass
+        for k in np.arange(0, l):
+            tmp = []
+            for model in self.models:
+                if k >= model.minOrder - 1:
+                    sample = ndata[k - model.order : k]
+                    tmp.append( model.forecast(sample) )
+            if method == 'extremum':
+                ret.append( [ min(tmp), max(tmp) ] )
+            elif method == 'quantile':
+                q = kwargs.get('q', [.05, .95])
+                ret.append(np.percentile(tmp,q=q*100))
 
         return ret
 
