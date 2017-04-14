@@ -4,7 +4,7 @@ from pyFTS import fts
 
 
 class WeightedFLRG(fts.FTS):
-    def __init__(self, LHS):
+    def __init__(self, order, **kwargs):
         self.LHS = LHS
         self.RHS = []
         self.count = 1.0
@@ -31,7 +31,7 @@ class WeightedFLRG(fts.FTS):
 
 
 class WeightedFTS(fts.FTS):
-    def __init__(self, name):
+    def __init__(self, order, **kwargs):
         super(WeightedFTS, self).__init__(1, "WFTS " + name)
         self.name = "Weighted FTS"
         self.detail = "Yu"
@@ -53,7 +53,7 @@ class WeightedFTS(fts.FTS):
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
         l = 1
 
         data = np.array(data)

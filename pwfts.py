@@ -42,7 +42,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
 
 class ProbabilisticWeightedFTS(ifts.IntervalFTS):
-    def __init__(self, name, update=True):
+    def __init__(self, order, name, **kwargs):
         super(ProbabilisticWeightedFTS, self).__init__("PWFTS")
         self.shortname = "PWFTS " + name
         self.name = "Probabilistic FTS"
@@ -191,7 +191,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             ret = sum(np.array([pi * s.lower for s in flrg.LHS]))
         return ret
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
 
@@ -296,7 +296,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         return ret
 
-    def forecastInterval(self, data):
+    def forecastInterval(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
 
@@ -402,7 +402,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         return ret
 
-    def forecastAhead(self, data, steps):
+    def forecastAhead(self, data, steps, **kwargs):
         ret = [data[k] for k in np.arange(len(data) - self.order, len(data))]
 
         for k in np.arange(self.order - 1, steps):
@@ -416,7 +416,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         return ret
 
-    def forecastAheadInterval(self, data, steps):
+    def forecastAheadInterval(self, data, steps, **kwargs):
 
         l = len(data)
 
@@ -464,7 +464,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         grid[k] += 1
         return grid
 
-    def forecastAheadDistribution(self, data, steps, resolution, parameters=2):
+    def forecastAheadDistribution(self, data, steps, **kwargs):
 
         ret = []
 

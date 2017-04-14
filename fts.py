@@ -4,7 +4,7 @@ from pyFTS import tree
 from pyFTS.common import FuzzySet, SortedCollection
 
 class FTS(object):
-    def __init__(self, order, name):
+    def __init__(self, order, name, **kwargs):
         self.sets = {}
         self.flrgs = {}
         self.order = order
@@ -38,22 +38,22 @@ class FTS(object):
 
         return best
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
         pass
 
-    def forecastInterval(self, data):
+    def forecastInterval(self, data, **kwargs):
         pass
 
-    def forecastDistribution(self, data):
+    def forecastDistribution(self, data, **kwargs):
         pass
 
-    def forecastAhead(self, data, steps):
+    def forecastAhead(self, data, steps, **kwargs):
         pass
 
-    def forecastAheadInterval(self, data, steps):
+    def forecastAheadInterval(self, data, steps, **kwargs):
         pass
 
-    def forecastAheadDistribution(self, data, steps):
+    def forecastAheadDistribution(self, data, steps, **kwargs):
         pass
 
     def train(self, data, sets, order=1, parameters=None):

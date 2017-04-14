@@ -9,7 +9,7 @@ from pyFTS.common import FLR, FuzzySet, SortedCollection
 from pyFTS import fts
 
 class EnsembleFTS(fts.FTS):
-    def __init__(self, name, update=True):
+    def __init__(self, order, name, **kwargs):
         super(EnsembleFTS, self).__init__("Ensemble FTS")
         self.shortname = "Ensemble FTS " + name
         self.name = "Ensemble FTS"
@@ -25,7 +25,7 @@ class EnsembleFTS(fts.FTS):
 
         pass
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
 
@@ -40,7 +40,7 @@ class EnsembleFTS(fts.FTS):
 
         return ret
 
-    def forecastInterval(self, data):
+    def forecastInterval(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
 
@@ -53,10 +53,10 @@ class EnsembleFTS(fts.FTS):
 
         return ret
 
-    def forecastAhead(self, data, steps):
+    def forecastAhead(self, data, steps, **kwargs):
         pass
 
-    def forecastAheadInterval(self, data, steps):
+    def forecastAheadInterval(self, data, steps, **kwargs):
         pass
 
 
@@ -88,6 +88,6 @@ class EnsembleFTS(fts.FTS):
         grid[k] += 1
         return grid
 
-    def forecastAheadDistribution(self, data, steps, resolution, parameters=2):
+    def forecastAheadDistribution(self, data, steps, **kwargs):
         pass
 

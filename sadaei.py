@@ -36,7 +36,7 @@ class ExponentialyWeightedFLRG(object):
 
 
 class ExponentialyWeightedFTS(fts.FTS):
-    def __init__(self, name):
+    def __init__(self, order, **kwargs):
         super(ExponentialyWeightedFTS, self).__init__(1, "EWFTS")
         self.name = "Exponentialy Weighted FTS"
         self.detail = "Sadaei"
@@ -60,7 +60,7 @@ class ExponentialyWeightedFTS(fts.FTS):
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs, self.c)
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
         l = 1
 
         data = np.array(data)

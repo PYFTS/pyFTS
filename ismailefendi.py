@@ -33,7 +33,7 @@ class ImprovedWeightedFLRG(object):
 
 
 class ImprovedWeightedFTS(fts.FTS):
-    def __init__(self, name):
+    def __init__(self, order, **kwargs):
         super(ImprovedWeightedFTS, self).__init__(1, "IWFTS " + name)
         self.name = "Improved Weighted FTS"
         self.detail = "Ismail & Efendi"
@@ -64,7 +64,7 @@ class ImprovedWeightedFTS(fts.FTS):
         ret = np.array([self.setsDict[s].centroid for s in flrg.RHS])
         return ret
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
         l = 1
 
         data = np.array(data)

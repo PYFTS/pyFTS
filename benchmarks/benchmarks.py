@@ -773,7 +773,7 @@ def get_distribution_statistics(original, model, steps, resolution):
     ret = list()
     try:
         _s1 = time.time()
-        densities1 = model.forecastAheadDistribution(original,steps,resolution, parameters=3)
+        densities1 = model.forecastAheadDistribution(original, steps, parameters=3)
         _e1 = time.time()
         ret.append(round(Measures.crps(original, densities1), 3))
         ret.append(round(_e1 - _s1, 3))
@@ -784,7 +784,7 @@ def get_distribution_statistics(original, model, steps, resolution):
 
     try:
         _s2 = time.time()
-        densities2 = model.forecastAheadDistribution(original, steps, resolution, parameters=2)
+        densities2 = model.forecastAheadDistribution(original, steps, parameters=2)
         _e2 = time.time()
         ret.append( round(Measures.crps(original, densities2), 3))
         ret.append(round(_e2 - _s2, 3))
@@ -823,8 +823,8 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
 
     for count, fts in enumerate(models, start=0):
         if fts.hasDistributionForecasting and distributions[count]:
-            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from],
-                                                    time_to, resolution, parameters=option)
+            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to,
+                                                    parameters=option)
 
             Y = []
             X = []

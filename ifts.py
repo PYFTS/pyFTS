@@ -7,7 +7,7 @@ from pyFTS import hofts, fts, tree
 
 
 class IntervalFTS(hofts.HighOrderFTS):
-    def __init__(self, name):
+    def __init__(self, order, **kwargs):
         super(IntervalFTS, self).__init__("IFTS " + name)
         self.shortname = "IFTS " + name
         self.name = "Interval FTS"
@@ -47,7 +47,7 @@ class IntervalFTS(hofts.HighOrderFTS):
         for child in node.getChildren():
             self.buildTree(child, lags, level + 1)
 
-    def forecastInterval(self, data):
+    def forecastInterval(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
 

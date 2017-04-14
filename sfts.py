@@ -26,7 +26,7 @@ class SeasonalFLRG(FLR.FLR):
 
 
 class SeasonalFTS(fts.FTS):
-    def __init__(self, name):
+    def __init__(self, order, **kwargs):
         super(SeasonalFTS, self).__init__(1, "SFTS")
         self.name = "Seasonal FTS"
         self.detail = "Chen"
@@ -60,7 +60,7 @@ class SeasonalFTS(fts.FTS):
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
 

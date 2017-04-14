@@ -25,7 +25,7 @@ class ConventionalFLRG(object):
 
 
 class ConventionalFTS(fts.FTS):
-    def __init__(self, name):
+    def __init__(self, order, **kwargs):
         super(ConventionalFTS, self).__init__(1, "CFTS " + name)
         self.name = "Conventional FTS"
         self.detail = "Chen"
@@ -48,7 +48,7 @@ class ConventionalFTS(fts.FTS):
         flrs = FLR.generateNonRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
 

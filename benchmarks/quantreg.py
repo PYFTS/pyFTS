@@ -8,7 +8,7 @@ from pyFTS import fts
 
 
 class QuantileRegression(fts.FTS):
-    def __init__(self, name):
+    def __init__(self, order, **kwargs):
         super(QuantileRegression, self).__init__(1, "QR")
         self.name = "QR"
         self.detail = "Quantile Regression"
@@ -38,7 +38,7 @@ class QuantileRegression(fts.FTS):
     def linearmodel(self,data,params):
         return params[0] + sum([ data[k] * params[k+1] for k in np.arange(0, self.order) ])
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
         ndata = np.array(self.doTransformations(data))
         l = len(ndata)
 
@@ -53,7 +53,7 @@ class QuantileRegression(fts.FTS):
 
         return ret
 
-    def forecastInterval(self, data):
+    def forecastInterval(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
 

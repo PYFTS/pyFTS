@@ -4,7 +4,7 @@ from pyFTS import fts
 
 
 class HighOrderFTS(fts.FTS):
-    def __init__(self, name):
+    def __init__(self, order, **kwargs):
         super(HighOrderFTS, self).__init__(1, name)
         self.isHighOrder = True
         self.minOrder = 2
@@ -12,7 +12,7 @@ class HighOrderFTS(fts.FTS):
         self.shortname = "Hwang" + name
         self.detail = "Hwang"
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
 
         ndata = self.doTransformations(data)
 

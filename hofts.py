@@ -39,7 +39,7 @@ class HighOrderFLRG(object):
 
 
 class HighOrderFTS(fts.FTS):
-    def __init__(self, name):
+    def __init__(self, order, **kwargs):
         super(HighOrderFTS, self).__init__(1, "HOFTS" + name)
         self.name = "High Order FTS"
         self.shortname = "HOFTS" + name
@@ -79,7 +79,7 @@ class HighOrderFTS(fts.FTS):
         ret = np.array([self.setsDict[s].centroid for s in flrg.RHS])
         return ret
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
 
         ret = []
 

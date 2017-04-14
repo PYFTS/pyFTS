@@ -4,7 +4,7 @@ from pyFTS import fts, sfts
 
 
 class MultiSeasonalFTS(sfts.SeasonalFTS):
-    def __init__(self, name, indexer):
+    def __init__(self, order, name, **kwargs):
         super(MultiSeasonalFTS, self).__init__("MSFTS")
         self.name = "Multi Seasonal FTS"
         self.shortname = "MSFTS " + name
@@ -36,7 +36,7 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
         flrs = FLR.generateIndexedFLRs(self.sets, self.indexer, data)
         self.flrgs = self.generateFLRG(flrs)
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
 
         ret = []
 
@@ -55,7 +55,7 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
 
         return ret
 
-    def forecastAhead(self, data, steps):
+    def forecastAhead(self, data, steps, **kwargs):
         ret = []
         for i in steps:
             flrg = self.flrgs[str(i)]

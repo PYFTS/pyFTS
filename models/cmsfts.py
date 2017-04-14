@@ -24,7 +24,7 @@ class ContextualSeasonalFLRG(object):
 
 
 class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
-    def __init__(self, name, indexer):
+    def __init__(self, order, name, **kwargs):
         super(ContextualMultiSeasonalFTS, self).__init__("CMSFTS")
         self.name = "Contextual Multi Seasonal FTS"
         self.shortname = "CMSFTS " + name
@@ -62,7 +62,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
         else:
             return  np.array([data.centroid])
 
-    def forecast(self, data):
+    def forecast(self, data, **kwargs):
 
         ret = []
 
@@ -83,7 +83,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
 
         return ret
 
-    def forecastAhead(self, data, steps):
+    def forecastAhead(self, data, steps, **kwargs):
         ret = []
         for i in steps:
             flrg = self.flrgs[str(i)]
