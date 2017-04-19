@@ -4,7 +4,7 @@ from pyFTS import fts
 
 
 class WeightedFLRG(fts.FTS):
-    def __init__(self, order, **kwargs):
+    def __init__(self, order, LHS, **kwargs):
         self.LHS = LHS
         self.RHS = []
         self.count = 1.0
@@ -31,7 +31,7 @@ class WeightedFLRG(fts.FTS):
 
 
 class WeightedFTS(fts.FTS):
-    def __init__(self, order, **kwargs):
+    def __init__(self, order, name, **kwargs):
         super(WeightedFTS, self).__init__(1, "WFTS " + name)
         self.name = "Weighted FTS"
         self.detail = "Yu"
