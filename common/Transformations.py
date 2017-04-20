@@ -60,6 +60,26 @@ class Differential(Transformation):
             return inc
 
 
+class AdaptiveExpectation(Transformation):
+
+    def __init__(self, parameters):
+        super(AdaptiveExpectation, self).__init__(parameters)
+        self.h = parameters
+
+    def apply(self, data, param=None):
+        return  data
+
+    def inverse(self, data, param):
+        n = len(data)
+
+        inc = [param[t] + self.h*(data[t] - param[t]) for t in np.arange(0, n)]
+
+        if n == 1:
+            return inc[0]
+        else:
+            return inc
+
+
 def boxcox(original, plambda):
     n = len(original)
     if plambda != 0:
