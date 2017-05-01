@@ -107,12 +107,22 @@ class FCMPartitioner(partitioner.Partitioner):
     def build(self,data):
         sets = []
 
-        centroides = fuzzy_cmeans(self.partitions, data, 1, 2)
-        centroides.append(self.max)
-        centroides.append(self.min)
-        centroides = list(set(centroides))
-        centroides.sort()
-        for c in np.arange(1,len(centroides)-1):
-            sets.append(FuzzySet.FuzzySet(self.prefix+str(c),Membership.trimf,[round(centroides[c-1],3), round(centroides[c],3), round(centroides[c+1],3)], round(centroides[c],3) ) )
+        centroids = fuzzy_cmeans(self.partitions, data, 1, 2)
+        centroids.append(self.max)
+        centroids.append(self.min)
+        centroids = list(set(centroids))
+        centroids.sort()
+        for c in np.arange(1,len(centroids)-1):
+            if self.membership_function == Membership.trimf:
+                sets.append(FuzzySet.FuzzySet(self.prefix+str(c),Membership.trimf,
+                                              [round(centroids[c-1],3), round(centroids[c],3), round(centroids[c+1],3)],
+                                              round(centroids[c],3) ) )
+            elif self.membership_function == Membership.trapmf:
+                q1 = (round(centroids[c], 3) - round(centroids[c - 1], 3))/2
+                q2 = (round(centroids[c+1], 3) - round(centroids[c], 3)) / 2
+                sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf,
+                                              [round(centroids[c - 1], 3),  round(centroids[c], 3) - q1,
+                                               round(centroids[c], 3) + q2, round(centroids[c + 1], 3)],
+                                              round(centroids[c], 3)))
 
         return sets

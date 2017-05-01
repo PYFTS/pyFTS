@@ -7,6 +7,9 @@ from mpl_toolkits.mplot3d import Axes3D
 from pyFTS.common import Membership, Util
 from pyFTS.partitioners import Grid,Huarng,FCM,Entropy
 
+all_methods = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner, Huarng.HuarngPartitioner]
+
+mfs = [Membership.trimf, Membership.gaussmf, Membership.trapmf]
 
 def plot_sets(data, sets, titles, tam=[12, 10], save=False, file=None):
     num = len(sets)
@@ -20,7 +23,7 @@ def plot_sets(data, sets, titles, tam=[12, 10], save=False, file=None):
         #ax = fig.add_axes([0.05, 1-(k*h), 0.9, h*0.7])  # left, bottom, width, height
         ax = axes[k]
         ax.set_title(titles[k])
-        ax.set_ylim([0, 1])
+        ax.set_ylim([0, 1.1])
         ax.set_xlim([minx, maxx])
         for s in sets[k]:
             if s.mf == Membership.trimf:
@@ -29,7 +32,7 @@ def plot_sets(data, sets, titles, tam=[12, 10], save=False, file=None):
                 tmpx = [ kk for kk in np.arange(s.lower, s.upper)]
                 tmpy = [s.membership(kk) for kk in np.arange(s.lower, s.upper)]
                 ax.plot(tmpx, tmpy)
-            elif s.mf == Membership.gaussmf:
+            elif s.mf == Membership.trapmf:
                 ax.plot(s.parameters, [0, 1, 1, 0])
 
     plt.tight_layout()
@@ -44,9 +47,6 @@ def plot_partitioners(data, objs, tam=[12, 10], save=False, file=None):
 
 
 def explore_partitioners(data, npart, methods=None, mf=None, tam=[12, 10], save=False, file=None):
-    all_methods = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner, Huarng.HuarngPartitioner]
-    mfs = [Membership.trimf, Membership.gaussmf, Membership.trapmf]
-
     if methods is None:
         methods = all_methods
 

@@ -42,8 +42,8 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
 
 class ProbabilisticWeightedFTS(ifts.IntervalFTS):
-    def __init__(self, order, name, **kwargs):
-        super(ProbabilisticWeightedFTS, self).__init__("PWFTS")
+    def __init__(self, name, **kwargs):
+        super(ProbabilisticWeightedFTS, self).__init__(order=1, name=name)
         self.shortname = "PWFTS " + name
         self.name = "Probabilistic FTS"
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
@@ -53,7 +53,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         self.hasIntervalForecasting = True
         self.hasDistributionForecasting = True
         self.isHighOrder = True
-        self.auto_update = update
+        self.auto_update = kwargs.get('update',False)
 
     def train(self, data, sets, order=1,parameters=None):
 
@@ -468,13 +468,17 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         ret = []
 
+        resolution = kwargs.get('resolution',100)
+
+        method = kwargs.get('method',2)
+
         intervals = self.forecastAheadInterval(data, steps)
 
         grid = self.getGridClean(resolution)
 
         index = SortedCollection.SortedCollection(iterable=grid.keys())
 
-        if parameters == 1:
+        if method == 1:
 
             grids = []
             for k in np.arange(0, steps):
@@ -522,7 +526,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 tmp = np.array([grids[k][q] for q in sorted(grids[k])])
                 ret.append(tmp / sum(tmp))
 
-        elif parameters == 2:
+        elif method == 2:
 
             ret = []
 

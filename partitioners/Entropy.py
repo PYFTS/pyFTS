@@ -98,7 +98,7 @@ class EntropyPartitioner(partitioner.Partitioner):
                 b2 = (partitions[c + 1] - partitions[c]) / 2
                 sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trapmf,
                                               [partitions[c - 1], partitions[c] - b1,
-                                               partitions[c] - b2, partitions[c + 1]],
+                                               partitions[c] + b2, partitions[c + 1]],
                                               partitions[c]))
 
         return sets

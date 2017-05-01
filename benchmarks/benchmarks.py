@@ -144,7 +144,7 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
                         times[_key].append(_end - _start)
 
                         _start = time.time()
-                        _rmse, _smape, _u = get_point_statistics(test, mfts, indexer)
+                        _rmse, _smape, _u = Measures.get_point_statistics(test, mfts, indexer)
                         _end = time.time()
                         rmse[_key].append(_rmse)
                         smape[_key].append(_smape)
@@ -271,7 +271,7 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
 def print_point_statistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
     ret = "Model		& Order     & RMSE		& SMAPE      & Theil's U		\\\\ \n"
     for count,model in enumerate(models,start=0):
-        _rmse, _smape, _u = get_point_statistics(data, model, indexers)
+        _rmse, _smape, _u = Measures.get_point_statistics(data, model, indexers)
         ret += model.shortname + "		& "
         ret += str(model.order) + "		& "
         ret += str(_rmse) + "		& "
@@ -765,7 +765,7 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
 
     print_distribution_statistics(data_test[start:], objs, steps, resolution)
 
-    plotComparedIntervalsAhead(data_test, objs, lcolors, distributions=distributions, time_from=start, time_to=steps,
+    plot_compared_intervals_ahead(data_test, objs, lcolors, distributions=distributions, time_from=start, time_to=steps,
                                interpol=False, save=save, file=file, tam=tam, resolution=resolution, option=option)
 
 
@@ -806,7 +806,7 @@ def print_distribution_statistics(original, models, steps, resolution):
     print(ret)
 
 
-def plotComparedIntervalsAhead(original, models, colors, distributions, time_from, time_to,
+def plot_compared_intervals_ahead(original, models, colors, distributions, time_from, time_to,
                                interpol=False, save=False, file=None, tam=[20, 5], resolution=None,
                                cmap='Blues',option=2):
     fig = plt.figure(figsize=tam)
@@ -824,7 +824,7 @@ def plotComparedIntervalsAhead(original, models, colors, distributions, time_fro
     for count, fts in enumerate(models, start=0):
         if fts.hasDistributionForecasting and distributions[count]:
             density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to,
-                                                    parameters=option)
+                                                    resolution=resolution, method=option)
 
             Y = []
             X = []

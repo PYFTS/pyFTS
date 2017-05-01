@@ -20,60 +20,43 @@ from numpy import random
 #gauss_teste = random.normal(0,1.0,400)
 
 
-os.chdir("/home/petronio/dados/Dropbox/Doutorado/Disciplinas/AdvancedFuzzyTimeSeriesModels/")
+os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
-#enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
-#enrollments = np.array(enrollments["Enrollments"])
+enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
+enrollments = np.array(enrollments["Enrollments"])
 
-taiex = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-taiex_treino = np.array(taiex["avg"][2500:3900])
-taiex_teste = np.array(taiex["avg"][3901:4500])
+import importlib
+import pandas as pd
+from pyFTS.partitioners import Grid
+from pyFTS.common import FLR, FuzzySet, Membership, SortedCollection
+from pyFTS import fts
+from pyFTS import hofts
+from pyFTS import pwfts
+from pyFTS import tree
+from pyFTS.benchmarks import benchmarks as bchmk
 
-#nasdaq = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
-#nasdaq_treino = np.array(nasdaq["avg"][0:1600])
-#nasdaq_teste = np.array(nasdaq["avg"][1601:2000])
+enrollments_fs1 = Grid.GridPartitioner(enrollments, 6).sets
+for s in enrollments_fs1:
+    print(s)
 
-diff = Transformations.Differential(1)
+pfts1_enrollments = pwfts.ProbabilisticWeightedFTS("1")
+pfts1_enrollments.train(enrollments, enrollments_fs1, 1)
+pfts1_enrollments.shortname = "1st Order"
+pfts2_enrollments = pwfts.ProbabilisticWeightedFTS("2")
+pfts2_enrollments.dump = False
+pfts2_enrollments.shortname = "2nd Order"
+pfts2_enrollments.train(enrollments, enrollments_fs1, 2)
+pfts3_enrollments = pwfts.ProbabilisticWeightedFTS("3")
+pfts3_enrollments.dump = False
+pfts3_enrollments.shortname = "3rd Order"
+pfts3_enrollments.train(enrollments, enrollments_fs1, 3)
 
-fs = Grid.GridPartitionerTrimf(taiex_treino,10)
+bchmk.plot_compared_series(enrollments,[pfts1_enrollments,pfts2_enrollments, pfts3_enrollments],
+                           ["red","blue","green"], linewidth=2,
+                         typeonlegend=True,save=True,file="pictures/pwfts_enrollments_interval.png",
+                           tam=[20,7],points=False, intervals=False)
 
-#tmp = chen.ConventionalFTS("")
 
-pfts1 = pwfts.ProbabilisticWeightedFTS("1")
-#pfts1.appendTransformation(diff)
-pfts1.train(taiex_treino,fs,1)
-
-from pyFTS.benchmarks import ProbabilityDistribution as dist
-
-forecasts = pfts1.forecast(taiex_treino)
-
-pmf1 = dist.ProbabilityDistribution("Original",100,[min(taiex_treino),max(taiex_treino)],data=taiex_treino)
-
-#print(pmf1.entropy())
-
-pmf2 = dist.ProbabilityDistribution("Original",100,[min(taiex_treino),max(taiex_treino)],data=forecasts)
-
-#print(pmf2.entropy())
-
-#print(pmf2.kullbackleiblerdivergence(pmf1))
-
-#print(pmf2.crossentropy(pmf1))
-
-print(pmf1.averageloglikelihood(taiex_treino))
-
-print(pmf2.averageloglikelihood(taiex_treino))
-
-#pfts2 = pfts.ProbabilisticWeightedFTS("n = 2")
-#pfts2.appendTransformation(diff)
-#pfts2.train(gauss_treino,fs,2)
-
-#pfts3 = pfts.ProbabilisticWeightedFTS("n = 3")
-#pfts3.appendTransformation(diff)
-#pfts3.train(gauss_treino,fs,3)
-
-#densities1 = pfts1.forecastAheadDistribution(gauss_teste[:50],2,1.50, parameters=2)
-
-#print(bchmk.getDistributionStatistics(gauss_teste[:50], [pfts1,pfts2,pfts3], 20, 1.50))
 
 
 
