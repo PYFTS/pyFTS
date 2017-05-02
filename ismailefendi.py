@@ -33,7 +33,7 @@ class ImprovedWeightedFLRG(object):
 
 
 class ImprovedWeightedFTS(fts.FTS):
-    def __init__(self, order, name, **kwargs):
+    def __init__(self, name, **kwargs):
         super(ImprovedWeightedFTS, self).__init__(1, "IWFTS " + name)
         self.name = "Improved Weighted FTS"
         self.detail = "Ismail & Efendi"

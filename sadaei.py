@@ -37,7 +37,7 @@ class ExponentialyWeightedFLRG(object):
 
 
 class ExponentialyWeightedFTS(fts.FTS):
-    def __init__(self, order, **kwargs):
+    def __init__(self, name, **kwargs):
         super(ExponentialyWeightedFTS, self).__init__(1, "EWFTS")
         self.name = "Exponentialy Weighted FTS"
         self.detail = "Sadaei"

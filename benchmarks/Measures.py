@@ -205,12 +205,12 @@ def get_point_statistics(data, model, indexer=None):
     else:
         ndata = np.array(data[model.order:])
 
-    if model.isMultivariate or indexer is None:
+    if model.is_multivariate or indexer is None:
         forecasts = model.forecast(data)
-    elif not model.isMultivariate and indexer is not None:
+    elif not model.is_multivariate and indexer is not None:
         forecasts = model.forecast(indexer.get_data(data))
 
-    if model.hasSeasonality:
+    if model.has_seasonality:
         nforecasts = np.array(forecasts)
     else:
         nforecasts = np.array(forecasts[:-1])

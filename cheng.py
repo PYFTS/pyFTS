@@ -31,7 +31,7 @@ class TrendWeightedFLRG(yu.WeightedFTS):
 
 
 class TrendWeightedFTS(yu.WeightedFTS):
-    def __init__(self, order, name, **kwargs):
+    def __init__(self, name, **kwargs):
         super(TrendWeightedFTS, self).__init__(1, "TWFTS " + name)
         self.name = "Trend Weighted FTS"
         self.detail = "Cheng"

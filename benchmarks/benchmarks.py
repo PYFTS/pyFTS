@@ -122,7 +122,7 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
                     _key = mfts.shortname + " " + pttr + " q = " + str(partition)
 
                     mfts.partitioner = data_train_fs
-                    if not mfts.isHighOrder:
+                    if not mfts.is_high_order:
 
                         if dump: print(ct,_key)
 
@@ -155,7 +155,7 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
 
                     else:
                         for order in np.arange(1, max_order + 1):
-                            if order >= mfts.minOrder:
+                            if order >= mfts.min_order:
                                 mfts = model("")
 
                                 _key = mfts.shortname + " n = " + str(order) + " " + pttr + " q = " + str(partition)
@@ -225,7 +225,7 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
     for count, model in enumerate(models, start=0):
         #print(model)
         mfts = model("")
-        if not mfts.isHighOrder:
+        if not mfts.is_high_order:
             if transformation is not None:
                 mfts.appendTransformation(transformation)
             mfts.train(data_train, data_train_fs.sets)
@@ -233,7 +233,7 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
             lcolors.append( colors[count % ncol] )
         else:
             for order in np.arange(1,max_order+1):
-                if order >= mfts.minOrder:
+                if order >= mfts.min_order:
                     mfts = model(" n = " + str(order))
                     if transformation is not None:
                         mfts.appendTransformation(transformation)
@@ -387,7 +387,7 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
                     _key = mfts.shortname + " " + pttr+ " q = " +str(partition)
 
                     mfts.partitioner = data_train_fs
-                    if not mfts.isHighOrder:
+                    if not mfts.is_high_order:
 
                         if dump: print(ct,_key)
 
@@ -418,7 +418,7 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
 
                     else:
                         for order in np.arange(1, max_order + 1):
-                            if order >= mfts.minOrder:
+                            if order >= mfts.min_order:
                                 mfts = model("")
                                 _key = mfts.shortname + " n = " + str(order) + " " + pttr + " q = " + str(partition)
                                 mfts.partitioner = data_train_fs
@@ -467,7 +467,7 @@ def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save
 
     for count, model in Util.enumerate2(models, start=0, step=2):
         mfts = model("")
-        if not mfts.isHighOrder:
+        if not mfts.is_high_order:
             if transformation is not None:
                 mfts.appendTransformation(transformation)
             mfts.train(data_train, data_train_fs)
@@ -475,7 +475,7 @@ def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save
             lcolors.append( colors[count % ncol] )
         else:
             for order in np.arange(1,max_order+1):
-                if order >= mfts.minOrder:
+                if order >= mfts.min_order:
                     mfts = model(" n = " + str(order))
                     if transformation is not None:
                         mfts.appendTransformation(transformation)
@@ -522,7 +522,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
     ax.plot(original, color='black', label="Original", linewidth=linewidth*1.5)
 
     for count, fts in enumerate(models, start=0):
-        if fts.hasPointForecasting and points:
+        if fts.has_point_forecasting and points:
             forecasted = fts.forecast(original)
             mi.append(min(forecasted) * 0.95)
             ma.append(max(forecasted) * 1.05)
@@ -532,7 +532,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
             if typeonlegend: lbl += " (Point)"
             ax.plot(forecasted, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
 
-        if fts.hasIntervalForecasting and intervals:
+        if fts.has_interval_forecasting and intervals:
             forecasted = fts.forecastInterval(original)
             lower = [kk[0] for kk in forecasted]
             upper = [kk[1] for kk in forecasted]
@@ -660,7 +660,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
                     _key = mfts.shortname + " " + pttr+ " q = " +str(partition)
 
                     mfts.partitioner = data_train_fs
-                    if not mfts.isHighOrder:
+                    if not mfts.is_high_order:
 
                         if dump: print(ct,_key)
 
@@ -692,7 +692,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
 
                     else:
                         for order in np.arange(1, max_order + 1):
-                            if order >= mfts.minOrder:
+                            if order >= mfts.min_order:
                                 mfts = model("")
                                 _key = mfts.shortname + " n = " + str(order) + " " + pttr + " q = " + str(partition)
                                 mfts.partitioner = data_train_fs
@@ -743,7 +743,7 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
 
     for count, model in Util.enumerate2(models, start=0, step=2):
         mfts = model("")
-        if not mfts.isHighOrder:
+        if not mfts.is_high_order:
             if transformation is not None:
                 mfts.appendTransformation(transformation)
             mfts.train(data_train, data_train_fs)
@@ -751,7 +751,7 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
             lcolors.append( colors[count % ncol] )
         else:
             for order in np.arange(1,max_order+1):
-                if order >= mfts.minOrder:
+                if order >= mfts.min_order:
                     mfts = model(" n = " + str(order))
                     if transformation is not None:
                         mfts.appendTransformation(transformation)
@@ -822,7 +822,7 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
     ma = []
 
     for count, fts in enumerate(models, start=0):
-        if fts.hasDistributionForecasting and distributions[count]:
+        if fts.has_probability_forecasting and distributions[count]:
             density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to,
                                                     resolution=resolution, method=option)
 
@@ -863,7 +863,7 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
             cb.set_label('Density')
 
 
-        if fts.hasIntervalForecasting:
+        if fts.has_interval_forecasting:
             forecasts = fts.forecastAheadInterval(original[time_from - fts.order:time_from], time_to)
             lower = [kk[0] for kk in forecasts]
             upper = [kk[1] for kk in forecasts]
@@ -939,7 +939,7 @@ def SelecaoSimples_MenorRMSE(original, parameters, modelo):
     min_rmse = 100000.0
     best = None
     for p in parameters:
-        sets = Grid.GridPartitionerTrimf(original, p)
+        sets = Grid.GridPartitioner(original, p).sets
         fts = modelo(str(p) + " particoes")
         fts.train(original, sets)
         # print(original)
@@ -1095,7 +1095,7 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
             fts.train(train, sets, o, parameters=parameters)
             if not intervals:
                 forecasted = fts.forecast(test)
-                if not fts.hasSeasonality:
+                if not fts.has_seasonality:
                     error = Measures.rmse(np.array(test[o:]), np.array(forecasted[:-1]))
                 else:
                     error = Measures.rmse(np.array(test[o:]), np.array(forecasted))
@@ -1171,7 +1171,7 @@ def sliding_window_simple_search(data, windowsize, model, partitions, orders, sa
                 fts.train(data, sets, o, parameters=parameters)
                 if not intervals:
                     forecasted = fts.forecast(test)
-                    if not fts.hasSeasonality:
+                    if not fts.has_seasonality:
                         _error.append( Measures.rmse(np.array(test[o:]), np.array(forecasted[:-1])) )
                     else:
                         _error.append( Measures.rmse(np.array(test[o:]), np.array(forecasted)) )
@@ -1221,7 +1221,7 @@ def sliding_window_simple_search(data, windowsize, model, partitions, orders, sa
 
 def pftsExploreOrderAndPartitions(data,save=False, file=None):
     fig, axes = plt.subplots(nrows=4, ncols=1, figsize=[6, 8])
-    data_fs1 = Grid.GridPartitionerTrimf(data, 10)
+    data_fs1 = Grid.GridPartitioner(data, 10).sets
     mi = []
     ma = []
 
@@ -1250,7 +1250,7 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
     axes[3].set_title('Interval Forecasts by Number of Partitions')
 
     for partitions in np.arange(5, 11):
-        data_fs = Grid.GridPartitionerTrimf(data, partitions)
+        data_fs = Grid.GridPartitioner(data, partitions).sets
         fts = pwfts.ProbabilisticWeightedFTS("")
         fts.shortname = "q = " + str(partitions)
         fts.train(data, data_fs, 1)

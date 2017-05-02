@@ -31,7 +31,7 @@ class WeightedFLRG(fts.FTS):
 
 
 class WeightedFTS(fts.FTS):
-    def __init__(self, order, name, **kwargs):
+    def __init__(self, name, **kwargs):
         super(WeightedFTS, self).__init__(1, "WFTS " + name)
         self.name = "Weighted FTS"
         self.detail = "Yu"

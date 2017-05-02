@@ -53,8 +53,8 @@ pfts3_enrollments.train(enrollments, enrollments_fs1, 3)
 
 bchmk.plot_compared_series(enrollments,[pfts1_enrollments,pfts2_enrollments, pfts3_enrollments],
                            ["red","blue","green"], linewidth=2,
-                         typeonlegend=True,save=True,file="pictures/pwfts_enrollments_interval.png",
-                           tam=[20,7],points=False, intervals=False)
+                         typeonlegend=True,save=False,file="pictures/pwfts_enrollments_interval.png",
+                           tam=[20,7],points=False, intervals=True)
 
 
 

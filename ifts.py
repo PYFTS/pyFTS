@@ -7,7 +7,7 @@ from pyFTS import hofts, fts, tree
 
 
 class IntervalFTS(hofts.HighOrderFTS):
-    def __init__(self, order, name, **kwargs):
+    def __init__(self, name, **kwargs):
         super(IntervalFTS, self).__init__(order=1, name="IFTS " + name)
         self.shortname = "IFTS " + name
         self.name = "Interval FTS"

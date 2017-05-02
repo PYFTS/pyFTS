@@ -74,9 +74,9 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
     for model in models:
         mfts = model("")
 
-        if mfts.isHighOrder:
+        if mfts.is_high_order:
             for order in np.arange(1, max_order + 1):
-                if order >= mfts.minOrder:
+                if order >= mfts.min_order:
                     mfts = model("")
                     mfts.order = order
                     pool.append(mfts)
@@ -193,9 +193,9 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
     for model in models:
         mfts = model("")
 
-        if mfts.isHighOrder:
+        if mfts.is_high_order:
             for order in np.arange(1, max_order + 1):
-                if order >= mfts.minOrder:
+                if order >= mfts.min_order:
                     mfts = model("")
                     mfts.order = order
                     pool.append(mfts)

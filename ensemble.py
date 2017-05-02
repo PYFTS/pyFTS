@@ -10,7 +10,7 @@ from pyFTS import fts
 
 
 class EnsembleFTS(fts.FTS):
-    def __init__(self, order, name, **kwargs):
+    def __init__(self, name, **kwargs):
         super(EnsembleFTS, self).__init__("Ensemble FTS")
         self.shortname = "Ensemble FTS " + name
         self.name = "Ensemble FTS"

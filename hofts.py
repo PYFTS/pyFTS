@@ -39,7 +39,7 @@ class HighOrderFLRG(object):
 
 
 class HighOrderFTS(fts.FTS):
-    def __init__(self, order, name, **kwargs):
+    def __init__(self, name, **kwargs):
         super(HighOrderFTS, self).__init__(1, "HOFTS" + name)
         self.name = "High Order FTS"
         self.shortname = "HOFTS" + name

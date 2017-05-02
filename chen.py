@@ -25,7 +25,7 @@ class ConventionalFLRG(object):
 
 
 class ConventionalFTS(fts.FTS):
-    def __init__(self, order, **kwargs):
+    def __init__(self, name, **kwargs):
         super(ConventionalFTS, self).__init__(1, "CFTS " + name)
         self.name = "Conventional FTS"
         self.detail = "Chen"

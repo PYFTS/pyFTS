@@ -26,7 +26,7 @@ class SeasonalFLRG(FLR.FLR):
 
 
 class SeasonalFTS(fts.FTS):
-    def __init__(self, order, **kwargs):
+    def __init__(self, name, **kwargs):
         super(SeasonalFTS, self).__init__(1, "SFTS")
         self.name = "Seasonal FTS"
         self.detail = "Chen"
