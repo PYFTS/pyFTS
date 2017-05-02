@@ -13,31 +13,31 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
     def __init__(self, order):
         super(ProbabilisticWeightedFLRG, self).__init__(order)
         self.RHS = {}
-        self.frequencyCount = 0.0
+        self.frequency_count = 0.0
 
     def appendRHS(self, c):
-        self.frequencyCount += 1.0
+        self.frequency_count += 1.0
         if c.name in self.RHS:
             self.RHS[c.name] += 1.0
         else:
             self.RHS[c.name] = 1.0
 
     def appendRHSFuzzy(self, c, mv):
-        self.frequencyCount += mv
+        self.frequency_count += mv
         if c.name in self.RHS:
             self.RHS[c.name] += mv
         else:
             self.RHS[c.name] = mv
 
     def get_probability(self, c):
-        return self.RHS[c] / self.frequencyCount
+        return self.RHS[c] / self.frequency_count
 
     def __str__(self):
         tmp2 = ""
         for c in sorted(self.RHS):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ", "
-            tmp2 = tmp2 + "(" + str(round(self.RHS[c] / self.frequencyCount, 3)) + ")" + c
+            tmp2 = tmp2 + "(" + str(round(self.RHS[c] / self.frequency_count, 3)) + ")" + c
         return self.strLHS() + " -> " + tmp2
 
 
@@ -48,11 +48,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         self.name = "Probabilistic FTS"
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
         self.flrgs = {}
-        self.globalFrequency = 0
-        self.hasPointForecasting = True
-        self.hasIntervalForecasting = True
-        self.hasDistributionForecasting = True
-        self.isHighOrder = True
+        self.global_frequency_count = 0
+        self.has_point_forecasting = True
+        self.has_interval_forecasting = True
+        self.has_probability_forecasting = True
+        self.is_high_order = True
         self.auto_update = kwargs.get('update',False)
 
     def train(self, data, sets, order=1,parameters=None):
@@ -108,7 +108,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 for c, e in enumerate(_sets, start=0):
                     flrgs[flrg.strLHS()].appendRHSFuzzy(e,rhs_mv[c]*max(lhs_mv))
 
-                self.globalFrequency += max(lhs_mv)
+                self.global_frequency_count += max(lhs_mv)
 
         return (flrgs)
 
@@ -130,7 +130,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 flrgs[flrg.strLHS()].appendRHS(flrs[k-1].RHS)
             if self.dump: print("RHS: " + str(flrs[k-1]))
 
-            self.globalFrequency += 1
+            self.global_frequency_count += 1
         return (flrgs)
 
     def update_model(self,data):
@@ -147,7 +147,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             self.flrgs[flrg.strLHS()] = flrg
             self.flrgs[flrg.strLHS()].appendRHS(fzzy[self.order])
 
-        self.globalFrequency += 1
+        self.global_frequency_count += 1
 
     def add_new_PWFLGR(self, flrg):
         if flrg.strLHS() not in self.flrgs:
@@ -155,11 +155,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             for fs in flrg.LHS: tmp.appendLHS(fs)
             tmp.appendRHS(flrg.LHS[-1])
             self.flrgs[tmp.strLHS()] = tmp;
-            self.globalFrequency += 1
+            self.global_frequency_count += 1
 
     def get_probability(self, flrg):
         if flrg.strLHS() in self.flrgs:
-            return self.flrgs[flrg.strLHS()].frequencyCount / self.globalFrequency
+            return self.flrgs[flrg.strLHS()].frequency_count / self.global_frequency_count
         else:
             self.add_new_PWFLGR(flrg)
             return self.get_probability(flrg)
@@ -572,6 +572,6 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def __str__(self):
         tmp = self.name + ":\n"
         for r in sorted(self.flrgs):
-            p = round(self.flrgs[r].frequencyCount / self.globalFrequency, 3)
+            p = round(self.flrgs[r].frequencyCount / self.global_frequency_count, 3)
             tmp = tmp + "(" + str(p) + ") " + str(self.flrgs[r]) + "\n"
         return tmp

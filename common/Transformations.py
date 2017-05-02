@@ -4,6 +4,9 @@ from pyFTS import *
 
 
 class Transformation(object):
+    """
+    Data transformation used to pre and post processing of the FTS
+    """
 
     def __init__(self, parameters):
         self.isInversible = True
@@ -21,7 +24,9 @@ class Transformation(object):
 
 
 class Differential(Transformation):
-
+    """
+    Differentiation data transform
+    """
     def __init__(self, parameters):
         super(Differential, self).__init__(parameters)
         self.lag = parameters
@@ -61,7 +66,9 @@ class Differential(Transformation):
 
 
 class AdaptiveExpectation(Transformation):
-
+    """
+    Adaptive Expectation post processing
+    """
     def __init__(self, parameters):
         super(AdaptiveExpectation, self).__init__(parameters)
         self.h = parameters

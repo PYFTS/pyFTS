@@ -5,12 +5,13 @@ from pyFTS import fts
 
 
 class Naive(fts.FTS):
+    """Naïve Forecasting method"""
     def __init__(self, order, name, **kwargs):
         super(Naive, self).__init__(1, "Naive " + name)
         self.name = "Naïve Model"
         self.detail = "Naïve Model"
         self.benchmark_only = True
-        self.isHighOrder = False
+        self.is_high_order = False
 
     def forecast(self, data, **kwargs):
         return [k for k in data]

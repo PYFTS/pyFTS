@@ -2,6 +2,7 @@ import numpy as np
 from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts
 
+
 class ExponentialyWeightedFLRG(object):
     def __init__(self, LHS, c):
         self.LHS = LHS

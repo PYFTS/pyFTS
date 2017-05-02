@@ -4,7 +4,10 @@ from pyFTS import fts, sfts
 
 
 class MultiSeasonalFTS(sfts.SeasonalFTS):
-    def __init__(self, order, name, **kwargs):
+    """
+    Multi-Seasonal Fuzzy Time Series
+    """
+    def __init__(self, order, name, indexer, **kwargs):
         super(MultiSeasonalFTS, self).__init__("MSFTS")
         self.name = "Multi Seasonal FTS"
         self.shortname = "MSFTS " + name

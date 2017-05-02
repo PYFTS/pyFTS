@@ -8,13 +8,14 @@ from pyFTS import fts
 
 
 class QuantileRegression(fts.FTS):
+    """Façade for statsmodels.regression.quantile_regression"""
     def __init__(self, order, **kwargs):
         super(QuantileRegression, self).__init__(1, "QR")
         self.name = "QR"
         self.detail = "Quantile Regression"
-        self.isHighOrder = True
-        self.hasPointForecasting = True
-        self.hasIntervalForecasting = True
+        self.is_high_order = True
+        self.has_point_forecasting = True
+        self.has_interval_forecasting = True
         self.benchmark_only = True
         self.minOrder = 1
         self.alpha = 0.5

@@ -7,11 +7,14 @@ from pyFTS import fts
 
 
 class ARIMA(fts.FTS):
+    """
+    Façade for statsmodels.tsa.arima_model
+    """
     def __init__(self, order, **kwargs):
         super(ARIMA, self).__init__(1, "ARIMA")
         self.name = "ARIMA"
         self.detail = "Auto Regressive Integrated Moving Average"
-        self.isHighOrder = True
+        self.is_high_order = True
         self.model = None
         self.model_fit = None
         self.trained_data = None
@@ -19,7 +22,7 @@ class ARIMA(fts.FTS):
         self.d = 0
         self.q = 0
         self.benchmark_only = True
-        self.minOrder = 1
+        self.min_order = 1
 
     def train(self, data, sets, order=1, parameters=None):
         if parameters is not None:

@@ -2,6 +2,9 @@ import numpy as np
 from enum import Enum
 
 class SeasonalIndexer(object):
+    """
+    Seasonal Indexer. Responsible to find the seasonal index of a data point inside its data set
+    """
     def __init__(self,num_seasons):
         self.num_seasons = num_seasons
 

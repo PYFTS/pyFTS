@@ -46,7 +46,7 @@ class HighOrderFTS(fts.FTS):
         self.detail = "Chen"
         self.order = 1
         self.setsDict = {}
-        self.isHighOrder = True
+        self.is_high_order = True
 
     def generateFLRG(self, flrs):
         flrgs = {}

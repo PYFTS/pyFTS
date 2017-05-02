@@ -31,9 +31,9 @@ class SeasonalFTS(fts.FTS):
         self.name = "Seasonal FTS"
         self.detail = "Chen"
         self.seasonality = 1
-        self.hasSeasonality = True
-        self.hasPointForecasting = True
-        self.isHighOrder = False
+        self.has_seasonality = True
+        self.has_point_forecasting = True
+        self.is_high_order = False
 
     def generateFLRG(self, flrs):
         flrgs = []

@@ -1,9 +1,23 @@
 from pyFTS.common import FuzzySet, Membership
-import  numpy as np
+import numpy as np
 
 
 class Partitioner(object):
-    def __init__(self,name,data,npart,func = Membership.trimf, names=None, prefix="A", transformation=None):
+    """
+    Universe of Discourse partitioner. Split data on several fuzzy sets
+    """
+
+    def __init__(self, name, data, npart, func=Membership.trimf, names=None, prefix="A", transformation=None):
+        """
+        Universe of Discourse partitioner scheme. Split data on several fuzzy sets
+        :param name: partitioner name
+        :param data: original data to be partitioned
+        :param npart: number of partitions 
+        :param func: membership function
+        :param names: list of partitions names. If None is given the partitions will be auto named with prefix
+        :param prefix: prefix of auto generated partition names
+        :param transformation: data transformation to be applied on data
+        """
         self.name = name
         self.partitions = npart
         self.sets = []
@@ -31,9 +45,19 @@ class Partitioner(object):
         self.sets = self.build(ndata)
 
     def build(self, data):
+        """
+        Perform the partitioning of the Universe of Discourse
+        :param data: 
+        :return: 
+        """
         pass
 
-    def plot(self,ax):
+    def plot(self, ax):
+        """
+        Plot the 
+        :param ax: 
+        :return: 
+        """
         ax.set_title(self.name)
         ax.set_ylim([0, 1])
         ax.set_xlim([self.min, self.max])

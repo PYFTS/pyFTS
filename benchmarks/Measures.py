@@ -1,12 +1,21 @@
 # -*- coding: utf8 -*-
 
+"""
+pyFTS module for common benchmark metrics
+"""
+
 import numpy as np
 import pandas as pd
 from pyFTS.common import FuzzySet,SortedCollection
 
 
-# Autocorrelation function estimative
 def acf(data, k):
+    """
+    Autocorrelation function estimative
+    :param data: 
+    :param k: 
+    :return: 
+    """
     mu = np.mean(data)
     sigma = np.var(data)
     n = len(data)
@@ -17,22 +26,45 @@ def acf(data, k):
     return 1/((n-k)*sigma)*s
 
 
-# Erro quadrático médio
 def rmse(targets, forecasts):
+    """
+    Root Mean Squared Error
+    :param targets: 
+    :param forecasts: 
+    :return: 
+    """
     return np.sqrt(np.nanmean((targets - forecasts) ** 2))
 
 
 def rmse_interval(targets, forecasts):
+    """
+    Root Mean Squared Error
+    :param targets: 
+    :param forecasts: 
+    :return: 
+    """
     fmean = [np.mean(i) for i in forecasts]
     return np.sqrt(np.nanmean((fmean - targets) ** 2))
 
 
-# Erro Percentual médio
 def mape(targets, forecasts):
+    """
+    Mean Average Percentual Error
+    :param targets: 
+    :param forecasts: 
+    :return: 
+    """
     return np.mean(np.abs(targets - forecasts) / targets) * 100
 
 
 def smape(targets, forecasts, type=2):
+    """
+    Symmetric Mean Average Percentual Error
+    :param targets: 
+    :param forecasts: 
+    :param type: 
+    :return: 
+    """
     if type == 1:
         return np.mean(np.abs(forecasts - targets) / ((forecasts + targets)/2))
     elif type == 2:
@@ -46,8 +78,13 @@ def mape_interval(targets, forecasts):
     return np.mean(abs(fmean - targets) / fmean) * 100
 
 
-# Theil's U Statistic
 def UStatistic(targets, forecasts):
+    """
+    Theil's U Statistic
+    :param targets: 
+    :param forecasts: 
+    :return: 
+    """
     l = len(targets)
     naive = []
     y = []
@@ -57,8 +94,13 @@ def UStatistic(targets, forecasts):
     return np.sqrt(sum(y) / sum(naive))
 
 
-# Theil’s Inequality Coefficient
 def TheilsInequality(targets, forecasts):
+    """
+    Theil’s Inequality Coefficient
+    :param targets: 
+    :param forecasts: 
+    :return: 
+    """
     res = targets - forecasts
     t = len(res)
     us = np.sqrt(sum([u**2 for u in res]))
@@ -67,8 +109,13 @@ def TheilsInequality(targets, forecasts):
     return  us / (ys + fs)
 
 
-# Q Statistic for Box-Pierce test
 def BoxPierceStatistic(data, h):
+    """
+    Q Statistic for Box-Pierce test
+    :param data: 
+    :param h: 
+    :return: 
+    """
     n = len(data)
     s = 0
     for k in np.arange(1,h+1):
@@ -77,8 +124,13 @@ def BoxPierceStatistic(data, h):
     return n*s
 
 
-# Q Statistic for Ljung–Box test
 def BoxLjungStatistic(data, h):
+    """
+    Q Statistic for Ljung–Box test
+    :param data: 
+    :param h: 
+    :return: 
+    """
     n = len(data)
     s = 0
     for k in np.arange(1,h+1):
@@ -87,21 +139,21 @@ def BoxLjungStatistic(data, h):
     return n*(n-2)*s
 
 
-# Sharpness - Mean size of the intervals
 def sharpness(forecasts):
+    """Sharpness - Mean size of the intervals"""
     tmp = [i[1] - i[0] for i in forecasts]
     return np.mean(tmp)
 
 
-# Resolution - Standard deviation of the intervals
 def resolution(forecasts):
+    """Resolution - Standard deviation of the intervals"""
     shp = sharpness(forecasts)
     tmp = [abs((i[1] - i[0]) - shp) for i in forecasts]
     return np.mean(tmp)
 
 
-# Percent of
 def coverage(targets, forecasts):
+    """Percent of"""
     preds = []
     for i in np.arange(0, len(forecasts)):
         if targets[i] >= forecasts[i][0] and targets[i] <= forecasts[i][1]:
@@ -133,8 +185,8 @@ def heavyside_cdf(bins, targets):
     return df
 
 
-# Continuous Ranked Probability Score
 def crps(targets, densities):
+    """Continuous Ranked Probability Score"""
     l = len(densities.columns)
     n = len(densities.index)
     Ff = pmf_to_cdf(densities)

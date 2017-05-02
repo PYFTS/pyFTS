@@ -4,6 +4,9 @@ from pyFTS import fts, sfts, chen
 
 
 class ContextualSeasonalFLRG(object):
+    """
+    Contextual Seasonal Fuzzy Logical Relationship Group
+    """
     def __init__(self, seasonality):
         self.season = seasonality
         self.flrgs = {}
@@ -24,16 +27,19 @@ class ContextualSeasonalFLRG(object):
 
 
 class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
-    def __init__(self, order, name, **kwargs):
+    """
+    Contextual Multi-Seasonal Fuzzy Time Series
+    """
+    def __init__(self, order, name, indexer, **kwargs):
         super(ContextualMultiSeasonalFTS, self).__init__("CMSFTS")
         self.name = "Contextual Multi Seasonal FTS"
         self.shortname = "CMSFTS " + name
         self.detail = ""
         self.seasonality = 1
-        self.hasSeasonality = True
-        self.hasPointForecasting = True
-        self.isHighOrder = True
-        self.isMultivariate = True
+        self.has_seasonality = True
+        self.has_point_forecasting = True
+        self.is_high_order = True
+        self.is_multivariate = True
         self.indexer = indexer
         self.flrgs = {}
 

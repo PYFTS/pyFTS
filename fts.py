@@ -3,21 +3,31 @@ import pandas as pd
 from pyFTS import tree
 from pyFTS.common import FuzzySet, SortedCollection
 
+
 class FTS(object):
+    """
+    Fuzzy Time Series
+    """
     def __init__(self, order, name, **kwargs):
+        """
+        Create a Fuzzy Time Series model
+        :param order: model order
+        :param name: model name
+        :param kwargs: model specific parameters
+        """
         self.sets = {}
         self.flrgs = {}
         self.order = order
         self.shortname = name
         self.name = name
         self.detail = name
-        self.isHighOrder = False
-        self.minOrder = 1
-        self.hasSeasonality = False
-        self.hasPointForecasting = True
-        self.hasIntervalForecasting = False
-        self.hasDistributionForecasting = False
-        self.isMultivariate = False
+        self.is_high_order = False
+        self.min_order = 1
+        self.has_seasonality = False
+        self.has_point_forecasting = True
+        self.has_interval_forecasting = False
+        self.has_probability_forecasting = False
+        self.is_multivariate = False
         self.dump = False
         self.transformations = []
         self.transformations_param = []
@@ -28,6 +38,11 @@ class FTS(object):
         self.benchmark_only = False
 
     def fuzzy(self, data):
+        """
+        Fuzzify a data point
+        :param data: data point
+        :return: maximum membership fuzzy set
+        """
         best = {"fuzzyset": "", "membership": 0.0}
 
         for f in self.sets:
@@ -39,24 +54,71 @@ class FTS(object):
         return best
 
     def forecast(self, data, **kwargs):
+        """
+        Point forecast one step ahead 
+        :param data: time series with minimal length to the order of the model
+        :param kwargs: 
+        :return: 
+        """
         pass
 
     def forecastInterval(self, data, **kwargs):
+        """
+        Interval forecast one step ahead
+        :param data: 
+        :param kwargs: 
+        :return: 
+        """
         pass
 
     def forecastDistribution(self, data, **kwargs):
+        """
+        Probabilistic forecast one step ahead
+        :param data: 
+        :param kwargs: 
+        :return: 
+        """
         pass
 
     def forecastAhead(self, data, steps, **kwargs):
+        """
+        Point forecast n steps ahead
+        :param data: 
+        :param steps: 
+        :param kwargs: 
+        :return: 
+        """
         pass
 
     def forecastAheadInterval(self, data, steps, **kwargs):
+        """
+        Interval forecast n steps ahead
+        :param data: 
+        :param steps: 
+        :param kwargs: 
+        :return: 
+        """
         pass
 
     def forecastAheadDistribution(self, data, steps, **kwargs):
+        """
+        Probabilistic forecast n steps ahead
+        :param data: 
+        :param steps: 
+        :param kwargs: 
+        :return: 
+        """
         pass
 
     def train(self, data, sets, order=1, parameters=None):
+        """
+        
+        :param data: 
+        :param sets: 
+        :param order: 
+        :param parameters: 
+        :return: 
+        """
         pass
 
     def getMidpoints(self, flrg):

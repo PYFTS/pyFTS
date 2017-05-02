@@ -4,10 +4,10 @@ from pyFTS import fts
 
 
 class HighOrderFTS(fts.FTS):
-    def __init__(self, order, **kwargs):
+    def __init__(self, order, name, **kwargs):
         super(HighOrderFTS, self).__init__(1, name)
-        self.isHighOrder = True
-        self.minOrder = 2
+        self.is_high_order = True
+        self.min_order = 2
         self.name = "Hwang High Order FTS"
         self.shortname = "Hwang" + name
         self.detail = "Hwang"

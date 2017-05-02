@@ -33,7 +33,7 @@ class ImprovedWeightedFLRG(object):
 
 
 class ImprovedWeightedFTS(fts.FTS):
-    def __init__(self, order, **kwargs):
+    def __init__(self, order, name, **kwargs):
         super(ImprovedWeightedFTS, self).__init__(1, "IWFTS " + name)
         self.name = "Improved Weighted FTS"
         self.detail = "Ismail & Efendi"
@@ -49,7 +49,7 @@ class ImprovedWeightedFTS(fts.FTS):
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 
-    def train(self, data, sets,order=1,parameters=None):
+    def train(self, data, sets, order=1, parameters=None):
         self.sets = sets
 
         for s in self.sets:    self.setsDict[s.name] = s

@@ -15,10 +15,10 @@ class EnsembleFTS(fts.FTS):
         self.shortname = "Ensemble FTS " + name
         self.name = "Ensemble FTS"
         self.flrgs = {}
-        self.hasPointForecasting = True
-        self.hasIntervalForecasting = True
-        self.hasDistributionForecasting = True
-        self.isHighOrder = True
+        self.has_point_forecasting = True
+        self.has_interval_forecasting = True
+        self.has_probability_forecasting = True
+        self.is_high_order = True
         self.models = []
         self.parameters = []
 
@@ -40,7 +40,7 @@ class EnsembleFTS(fts.FTS):
                         mfts = model("")
 
                         mfts.partitioner = data_train_fs
-                        if not mfts.isHighOrder:
+                        if not mfts.is_high_order:
 
                             if transformation is not None:
                                 mfts.appendTransformation(transformation)
@@ -49,7 +49,7 @@ class EnsembleFTS(fts.FTS):
                             self.models.append(mfts)
                         else:
                             for order in np.arange(1, max_order + 1):
-                                if order >= mfts.minOrder:
+                                if order >= mfts.min_order:
                                     mfts = model("")
                                     mfts.partitioner = data_train_fs
 

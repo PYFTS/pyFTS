@@ -4,6 +4,12 @@ from pyFTS import *
 
 
 def trimf(x, parameters):
+    """
+    Triangular fuzzy membership function  
+    :param x: data point
+    :param parameters: a list with 3 real values
+    :return: the membership value of x given the parameters
+    """
     xx = round(x, 3)
     if xx < parameters[0]:
         return 0
@@ -16,6 +22,12 @@ def trimf(x, parameters):
 
 
 def trapmf(x, parameters):
+    """
+    Trapezoidal fuzzy membership function  
+    :param x: data point
+    :param parameters: a list with 4 real values
+    :return: the membership value of x given the parameters
+    """
     if x < parameters[0]:
         return 0
     elif parameters[0] <= x < parameters[1]:
@@ -29,6 +41,12 @@ def trapmf(x, parameters):
 
 
 def gaussmf(x, parameters):
+    """
+    Gaussian fuzzy membership function  
+    :param x: data point
+    :param parameters: a list with 2 real values (mean and variance)
+    :return: the membership value of x given the parameters
+    """
     return math.exp((-(x - parameters[0])**2)/(2 * parameters[1]**2))
     #return math.exp(-0.5 * ((x - parameters[0]) / parameters[1]) ** 2)
 
