@@ -3,8 +3,8 @@ from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts
 
 
-class WeightedFLRG(fts.FTS):
-    def __init__(self, order, LHS, **kwargs):
+class WeightedFLRG(object):
+    def __init__(self, LHS, **kwargs):
         self.LHS = LHS
         self.RHS = []
         self.count = 1.0

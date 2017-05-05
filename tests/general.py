@@ -55,7 +55,7 @@ from pyFTS.benchmarks import distributed_benchmarks as bchmk
 bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
                      partitions= np.arange(10,200,step=5), #transformation=diff,
-                     dump=False, save=False, file="experiments/nasdaq_point_distributed.csv",
+                     dump=True, save=False, file="experiments/nasdaq_point_distributed.csv",
                      nodes=['192.168.1.42']) #, depends=[hofts, ifts])
 
 #bchmk.testa(taiex,[10,20],partitioners=[Grid.GridPartitioner], nodes=['192.168.0.109', '192.168.0.101'])

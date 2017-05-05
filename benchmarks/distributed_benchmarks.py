@@ -1,3 +1,11 @@
+"""
+dispy Distributed Benchmarks to FTS methods
+
+To enable a dispy cluster node:
+
+python3 /usr/local/bin/dispynode.py -i [local IP] -d
+"""
+
 import random
 import dispy
 import dispy.httpd

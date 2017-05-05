@@ -200,6 +200,7 @@ def crps(targets, densities):
 
 
 def get_point_statistics(data, model, indexer=None):
+    """Condensate all measures for point forecasters"""
     if indexer is not None:
         ndata = np.array(indexer.get_data(data[model.order:]))
     else:
@@ -232,6 +233,7 @@ def get_point_statistics(data, model, indexer=None):
 
 
 def get_interval_statistics(original, model):
+    """Condensate all measures for interval forecasters"""
     ret = list()
     forecasts = model.forecastInterval(original)
     ret.append(round(sharpness(forecasts), 2))

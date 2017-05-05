@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
+"""Benchmarks to FTS methods"""
+
+
 import numpy as np
 import pandas as pd
 import time
@@ -12,7 +15,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 # from sklearn.cross_validation import KFold
 from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
-from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution, Util
+from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution, Util, quantreg
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
 from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts
 from copy import deepcopy
@@ -27,17 +30,38 @@ styles = ['-','--','-.',':','.']
 nsty = len(styles)
 
 def get_benchmark_point_methods():
+    """Return all non FTS methods for point forecast"""
     return [naive.Naive, arima.ARIMA]
 
 def get_point_methods():
+    """Return all FTS methods for point forecast"""
     return [chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
                   sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]
 
+def get_benchmark_interval_methods():
+    """Return all non FTS methods for interval forecast"""
+    return [quantreg.QuantileRegression]
+
 def get_interval_methods():
+    """Return all FTS methods for interval forecast"""
     return [ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS]
 
 
-def external_point_sliding_window(models, parameters, data, windowsize,train=0.8, dump=False, save=False, file=None, sintetic=True):
+def external_point_sliding_window(models, parameters, data, windowsize,train=0.8, dump=False,
+                                  save=False, file=None, sintetic=True):
+    """
+    Sliding window benchmarks for non FTS point forecasters
+    :param models: non FTS point forecasters
+    :param parameters: parameters for each model
+    :param data: data set
+    :param windowsize: size of sliding window
+    :param train: percentual of sliding window data used to train the models
+    :param dump: 
+    :param save: save results
+    :param file: file path to save the results
+    :param sintetic: if true only the average and standard deviation of the results
+    :return: DataFrame with the results
+    """
     objs = {}
     lcolors = {}
     rmse = {}
@@ -91,6 +115,23 @@ def external_point_sliding_window(models, parameters, data, windowsize,train=0.8
 def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[Grid.GridPartitioner],
                    partitions=[10], max_order=3,transformation=None,indexer=None,dump=False,
                    save=False, file=None, sintetic=True):
+    """
+    Sliding window benchmarks for FTS point forecasters
+    :param data: 
+    :param windowsize: size of sliding window
+    :param train: percentual of sliding window data used to train the models
+    :param models: FTS point forecasters
+    :param partitioners: Universe of Discourse partitioner
+    :param partitions: the max number of partitions on the Universe of Discourse 
+    :param max_order: the max order of the models (for high order models)
+    :param transformation: data transformation
+    :param indexer: seasonal indexer
+    :param dump: 
+    :param save: save results
+    :param file: file path to save the results
+    :param sintetic: if true only the average and standard deviation of the results
+    :return: DataFrame with the results
+    """
 
     _process_start = time.time()
 
@@ -210,7 +251,23 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
 def all_point_forecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True,
                         series=True, save=False, file=None, tam=[20, 5], models=None, transformation=None,
                         distributions=False):
-
+    """
+    Fixed data benchmark for FTS point forecasters
+    :param data_train: data used to train the models
+    :param data_test: data used to test the models
+    :param partitions: the max number of partitions on the Universe of Discourse 
+    :param max_order: the max order of the models (for high order models)
+    :param statistics: print statistics
+    :param residuals: print and plot residuals
+    :param series: plot time series
+    :param save: save results
+    :param file: file path to save the results
+    :param tam: figure dimensions to plot the graphs 
+    :param models: list of models to benchmark
+    :param transformation: data transformation
+    :param distributions: plot distributions
+    :return: 
+    """
     if models is None:
         models = get_point_methods()
 
