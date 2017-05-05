@@ -78,6 +78,7 @@ def bestSplit(data, npart):
 
 
 class EntropyPartitioner(partitioner.Partitioner):
+    """Huarng Entropy Partitioner"""
     def __init__(self, data, npart, func = Membership.trimf, transformation=None):
         super(EntropyPartitioner, self).__init__("Entropy", data, npart, func=func, transformation=transformation)
 

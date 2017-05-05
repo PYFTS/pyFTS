@@ -38,6 +38,7 @@ class FLRGTreeNode:
 
 
 class FLRGTree:
+    """Represents a FLRG set with a tree structure"""
     def __init__(self):
         self.root = FLRGTreeNode(None)
 

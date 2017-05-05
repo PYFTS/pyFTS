@@ -4,6 +4,7 @@ from pyFTS import fts
 
 
 class SeasonalFLRG(FLR.FLR):
+    """First Order Seasonal Fuzzy Logical Relationship Group"""
     def __init__(self, seasonality):
         super(SeasonalFLRG, self).__init__(None,None)
         self.LHS = seasonality
@@ -26,6 +27,7 @@ class SeasonalFLRG(FLR.FLR):
 
 
 class SeasonalFTS(fts.FTS):
+    """First Order Seasonal Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
         super(SeasonalFTS, self).__init__(1, "SFTS")
         self.name = "Seasonal FTS"

@@ -7,6 +7,7 @@ from pyFTS import hofts, fts, tree
 
 
 class IntervalFTS(hofts.HighOrderFTS):
+    """High Order Interval Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
         super(IntervalFTS, self).__init__(order=1, name="IFTS " + name)
         self.shortname = "IFTS " + name

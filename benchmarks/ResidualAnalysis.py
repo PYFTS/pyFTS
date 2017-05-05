@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
+"""Residual Analysis methods"""
+
 import numpy as np
 import pandas as pd
 import matplotlib as plt
@@ -11,15 +13,28 @@ from scipy import stats
 
 
 def residuals(targets, forecasts, order=1):
+    """First order residuals"""
     return np.array(targets[order:]) - np.array(forecasts[:-1])
 
 
 def ChiSquared(q,h):
+    """
+    Chi-Squared value
+    :param q: 
+    :param h: 
+    :return: 
+    """
     p = stats.chi2.sf(q, h)
     return p
 
 
 def compareResiduals(data, models):
+    """
+    Compare residual's statistics of several models
+    :param data: 
+    :param models: 
+    :return: 
+    """
     ret = "Model		& Order     & Mean      & STD       & Box-Pierce    & Box-Ljung & P-value \\\\ \n"
     for mfts in models:
         forecasts = mfts.forecast(data)
@@ -40,7 +55,15 @@ def compareResiduals(data, models):
 
 
 def plotResiduals(targets, models, tam=[8, 8], save=False, file=None):
-
+    """
+    Plot residuals and statistics
+    :param targets: 
+    :param models: 
+    :param tam: 
+    :param save: 
+    :param file: 
+    :return: 
+    """
     fig, axes = plt.subplots(nrows=len(models), ncols=3, figsize=tam)
     c = 0
     for mfts in models:

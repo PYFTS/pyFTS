@@ -4,6 +4,7 @@ from pyFTS import fts
 
 
 class HighOrderFLRG(object):
+    """Conventional High Order Fuzzy Logical Relationship Group"""
     def __init__(self, order):
         self.LHS = []
         self.RHS = {}
@@ -39,6 +40,7 @@ class HighOrderFLRG(object):
 
 
 class HighOrderFTS(fts.FTS):
+    """Conventional High Order Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
         super(HighOrderFTS, self).__init__(1, "HOFTS" + name)
         self.name = "High Order FTS"

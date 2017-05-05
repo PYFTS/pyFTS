@@ -101,6 +101,9 @@ def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
 
 
 class FCMPartitioner(partitioner.Partitioner):
+    """
+    
+    """
     def __init__(self, data,npart,func = Membership.trimf, transformation=None):
         super(FCMPartitioner, self).__init__("FCM", data, npart, func=func, transformation=transformation)
 

@@ -4,6 +4,7 @@ from pyFTS import fts
 
 
 class ConventionalFLRG(object):
+    """First Order Conventional Fuzzy Logical Relationship Group"""
     def __init__(self, LHS):
         self.LHS = LHS
         self.RHS = set()
@@ -25,6 +26,7 @@ class ConventionalFLRG(object):
 
 
 class ConventionalFTS(fts.FTS):
+    """Conventional Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
         super(ConventionalFTS, self).__init__(1, "CFTS " + name)
         self.name = "Conventional FTS"

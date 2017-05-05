@@ -6,7 +6,7 @@ from pyFTS.common import FuzzySet, Membership
 from pyFTS.partitioners import partitioner
 
 
-def distancia(x, y):
+def distance(x, y):
     if isinstance(x, list):
         tmp = functools.reduce(operator.add, [(x[k] - y[k]) ** 2 for k in range(0, len(x))])
     else:
@@ -38,7 +38,7 @@ def c_means(k, dados, tam):
             grupotmp = grupos[inst_count]
 
             for grupo in centroides:
-                tmp = distancia(instancia, grupo)
+                tmp = distance(instancia, grupo)
                 if tmp < dist:
                     dist = tmp
                     # associa a a centroide de menor distância à instância
@@ -75,6 +75,7 @@ def c_means(k, dados, tam):
         iteracoes = iteracoes + 1
 
     return centroides
+
 
 class CMeansPartitioner(partitioner.Partitioner):
     def __init__(self, data, npart, func = Membership.trimf, transformation=None):

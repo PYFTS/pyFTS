@@ -4,6 +4,7 @@ from pyFTS import fts
 
 
 class ExponentialyWeightedFLRG(object):
+    """First Order Exponentialy Weighted Fuzzy Logical Relationship Group"""
     def __init__(self, LHS, c):
         self.LHS = LHS
         self.RHS = []
@@ -37,6 +38,7 @@ class ExponentialyWeightedFLRG(object):
 
 
 class ExponentialyWeightedFTS(fts.FTS):
+    """First Order Exponentialy Weighted Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
         super(ExponentialyWeightedFTS, self).__init__(1, "EWFTS")
         self.name = "Exponentialy Weighted FTS"

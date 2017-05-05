@@ -7,6 +7,7 @@ from pyFTS.partitioners import partitioner
 
 
 class GridPartitioner(partitioner.Partitioner):
+    """Even Length Grid Partitioner"""
     def __init__(self, data, npart, func = Membership.trimf, transformation=None):
         super(GridPartitioner, self).__init__("Grid", data, npart, func=func, transformation=transformation)
 

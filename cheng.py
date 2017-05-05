@@ -4,6 +4,7 @@ from pyFTS import fts, yu
 
 
 class TrendWeightedFLRG(yu.WeightedFTS):
+    """First Order Trend Weighted Fuzzy Logical Relationship Group"""
     def __init__(self, LHS, **kwargs):
         super(TrendWeightedFTS, self).__init__(LHS)
 
@@ -31,6 +32,7 @@ class TrendWeightedFLRG(yu.WeightedFTS):
 
 
 class TrendWeightedFTS(yu.WeightedFTS):
+    """First Order Trend Weighted Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
         super(TrendWeightedFTS, self).__init__(1, "TWFTS " + name)
         self.name = "Trend Weighted FTS"

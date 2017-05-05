@@ -10,6 +10,7 @@ from pyFTS import hofts, ifts, tree
 
 
 class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
+    """High Order Probabilistic Weighted Fuzzy Logical Relationship Group"""
     def __init__(self, order):
         super(ProbabilisticWeightedFLRG, self).__init__(order)
         self.RHS = {}
@@ -42,6 +43,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
 
 class ProbabilisticWeightedFTS(ifts.IntervalFTS):
+    """High Order Probabilistic Weighted Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
         super(ProbabilisticWeightedFTS, self).__init__(order=1, name=name)
         self.shortname = "PWFTS " + name

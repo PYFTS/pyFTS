@@ -1,3 +1,7 @@
+"""
+Benchmark utility functions
+"""
+
 import numpy as np
 import pandas as pd
 from copy import deepcopy
@@ -5,6 +9,19 @@ from pyFTS.common import Util
 
 
 def save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u):
+    """
+    Create a dataframe to store the benchmark results
+    :param experiments: dictionary with the execution results
+    :param file: 
+    :param objs: 
+    :param rmse: 
+    :param save: 
+    :param sintetic: 
+    :param smape: 
+    :param times: 
+    :param u: 
+    :return: 
+    """
     ret = []
 
     if sintetic:

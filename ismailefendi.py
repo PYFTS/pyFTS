@@ -4,6 +4,7 @@ from pyFTS import fts
 
 
 class ImprovedWeightedFLRG(object):
+    """First Order Improved Weighted Fuzzy Logical Relationship Group"""
     def __init__(self, LHS):
         self.LHS = LHS
         self.RHS = {}
@@ -33,6 +34,7 @@ class ImprovedWeightedFLRG(object):
 
 
 class ImprovedWeightedFTS(fts.FTS):
+    """First Order Improved Weighted Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
         super(ImprovedWeightedFTS, self).__init__(1, "IWFTS " + name)
         self.name = "Improved Weighted FTS"
