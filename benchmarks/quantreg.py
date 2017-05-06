@@ -16,6 +16,7 @@ class QuantileRegression(fts.FTS):
         self.is_high_order = True
         self.has_point_forecasting = True
         self.has_interval_forecasting = True
+        self.has_probability_forecasting = True
         self.benchmark_only = True
         self.minOrder = 1
         self.alpha = 0.5

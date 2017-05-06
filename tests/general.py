@@ -17,16 +17,30 @@ from pyFTS.benchmarks import naive, arima
 from pyFTS.benchmarks import Measures
 from numpy import random
 
+os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
+
+enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
+enrollments = np.array(enrollments["Enrollments"])
+
+from pyFTS import song
+
+enrollments_fs = Grid.GridPartitioner(enrollments, 10).sets
+
+model = song.ConventionalFTS('')
+model.train(enrollments,enrollments_fs)
+teste = model.forecast(enrollments)
+
+print(teste)
+
+
 #print(FCM.FCMPartitionerTrimf.__module__)
 
 #gauss = random.normal(0,1.0,1000)
 #gauss_teste = random.normal(0,1.0,400)
 
 
-os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
-
-taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-taiex = np.array(taiexpd["avg"][:5000])
+#taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
+#taiex = np.array(taiexpd["avg"][:5000])
 
 #from statsmodels.tsa.arima_model import ARIMA as stats_arima
 from statsmodels.tsa.tsatools import lagmat
@@ -38,7 +52,7 @@ from statsmodels.tsa.tsatools import lagmat
 #print(lag)
 #print(a)
 
-from pyFTS.benchmarks import distributed_benchmarks as bchmk
+#from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 #from pyFTS.benchmarks import benchmarks as bchmk
 #from pyFTS.benchmarks import arima
@@ -52,11 +66,11 @@ from pyFTS.benchmarks import distributed_benchmarks as bchmk
 
 #bchmk.teste(taiex,['192.168.0.109', '192.168.0.101'])
 
-bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
-                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-                     partitions= np.arange(10,200,step=5), #transformation=diff,
-                     dump=True, save=False, file="experiments/nasdaq_point_distributed.csv",
-                     nodes=['192.168.1.42']) #, depends=[hofts, ifts])
+#bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
+#                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+#                     partitions= np.arange(10,200,step=5), #transformation=diff,
+#                     dump=True, save=False, file="experiments/nasdaq_point_distributed.csv",
+#                     nodes=['192.168.1.42']) #, depends=[hofts, ifts])
 
 #bchmk.testa(taiex,[10,20],partitioners=[Grid.GridPartitioner], nodes=['192.168.0.109', '192.168.0.101'])
 
@@ -83,10 +97,10 @@ bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
 #                                    gauss,2000,train=0.8, dump=True, save=True, file="experiments/arima_gauss.csv")
 
 
-bchmk.interval_sliding_window(gauss,2000,train=0.8, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
-                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-                     partitions= np.arange(10,200,step=5), #
-                     dump=True, save=False, file="experiments/nasdaq_interval.csv")
+#bchmk.interval_sliding_window(gauss,2000,train=0.8, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
+#                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+#                     partitions= np.arange(10,200,step=5), #
+#                     dump=True, save=False, file="experiments/nasdaq_interval.csv")
 
 #3bchmk.ahead_sliding_window(taiex,2000,train=0.8, steps=20, resolution=250, #transformation=diff, #models=[pwfts.ProbabilisticWeightedFTS], # #
 #                    partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],

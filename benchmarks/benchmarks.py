@@ -17,7 +17,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution, Util, quantreg
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
-from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts
+from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts, cheng
 from copy import deepcopy
 
 colors = ['grey', 'rosybrown', 'maroon', 'red','orange', 'yellow', 'olive', 'green',
@@ -31,11 +31,11 @@ nsty = len(styles)
 
 def get_benchmark_point_methods():
     """Return all non FTS methods for point forecast"""
-    return [naive.Naive, arima.ARIMA]
+    return [naive.Naive, arima.ARIMA, quantreg.QuantileRegression]
 
 def get_point_methods():
     """Return all FTS methods for point forecast"""
-    return [chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+    return [chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS, cheng.TrendWeightedFTS,
                   sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]
 
 def get_benchmark_interval_methods():
