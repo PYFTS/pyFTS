@@ -17,7 +17,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution, Util, quantreg
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
-from pyFTS import fts, song, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts, cheng, ensemble
+from pyFTS import fts, song, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts, cheng, ensemble, hwang
 from copy import deepcopy
 
 colors = ['grey', 'rosybrown', 'maroon', 'red','orange', 'yellow', 'olive', 'green',
@@ -38,7 +38,7 @@ def get_benchmark_point_methods():
 def get_point_methods():
     """Return all FTS methods for point forecasting"""
     return [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-            cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS,
+            cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
             pwfts.ProbabilisticWeightedFTS]
 
 

@@ -1,3 +1,9 @@
+"""
+First Order Conventional Fuzzy Time Series by Chen (1996)
+
+S.-M. Chen, “Forecasting enrollments based on fuzzy time series,” Fuzzy Sets Syst., vol. 81, no. 3, pp. 311–319, 1996.
+"""
+
 import numpy as np
 from pyFTS.common import FuzzySet, FLR
 from pyFTS import fts

@@ -1,3 +1,10 @@
+"""
+First Order Weighted Fuzzy Time Series by Yu(2005)
+
+H.-K. Yu, “Weighted fuzzy time series models for TAIEX forecasting,” 
+Phys. A Stat. Mech. its Appl., vol. 349, no. 3, pp. 609–624, 2005.
+"""
+
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts

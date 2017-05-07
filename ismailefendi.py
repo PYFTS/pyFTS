@@ -1,3 +1,10 @@
+"""
+First Order Improved Weighted Fuzzy Time Series by Efendi, Ismail and Deris (2013)
+
+R. Efendi, Z. Ismail, and M. M. Deris, “Improved weight Fuzzy Time Series as used in the exchange rates forecasting of 
+US Dollar to Ringgit Malaysia,” Int. J. Comput. Intell. Appl., vol. 12, no. 1, p. 1350005, 2013.
+"""
+
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts

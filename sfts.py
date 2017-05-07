@@ -1,3 +1,11 @@
+"""
+Simple First Order Seasonal Fuzzy Time Series implementation of Song (1999) based of Conventional FTS by Chen (1996)
+
+Q. Song, “Seasonal forecasting in fuzzy time series,” Fuzzy sets Syst., vol. 107, pp. 235–236, 1999.
+
+S.-M. Chen, “Forecasting enrollments based on fuzzy time series,” Fuzzy Sets Syst., vol. 81, no. 3, pp. 311–319, 1996.
+"""
+
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts

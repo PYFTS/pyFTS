@@ -1,3 +1,10 @@
+"""
+High Order Fuzzy Time Series by Hwang, Chen and Lee (1998)
+
+Jeng-Ren Hwang, Shyi-Ming Chen, and Chia-Hoang Lee, “Handling forecasting problems using fuzzy time series,” 
+Fuzzy Sets Syst., no. 100, pp. 217–228, 1998.
+"""
+
 import numpy as np
 from pyFTS.common import FuzzySet,FLR,Transformations
 from pyFTS import fts

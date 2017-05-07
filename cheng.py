@@ -1,12 +1,21 @@
+"""
+Trend Weighted Fuzzy Time Series by Cheng, Chen and Wu (2009)
+
+C.-H. Cheng, Y.-S. Chen, and Y.-L. Wu, “Forecasting innovation diffusion of products using trend-weighted fuzzy time-series model,” 
+Expert Syst. Appl., vol. 36, no. 2, pp. 1826–1832, 2009.
+"""
+
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts, yu
 
 
-class TrendWeightedFLRG(yu.WeightedFTS):
-    """First Order Trend Weighted Fuzzy Logical Relationship Group"""
+class TrendWeightedFLRG(yu.WeightedFLRG):
+    """
+    First Order Trend Weighted Fuzzy Logical Relationship Group
+    """
     def __init__(self, LHS, **kwargs):
-        super(TrendWeightedFTS, self).__init__(LHS)
+        super(TrendWeightedFLRG, self).__init__(LHS)
 
     def weights(self):
         count_nochange = 0.0
@@ -16,10 +25,10 @@ class TrendWeightedFLRG(yu.WeightedFTS):
 
         for c in self.RHS:
             tmp = 0
-            if self.RHS.midpoint == c.midpoint:
+            if self.LHS.centroid == c.centroid:
                 count_nochange += 1.0
                 tmp = count_nochange
-            elif self.RHS.midpoint > c.midpoint:
+            elif self.LHS.centroid > c.centroid:
                 count_down += 1.0
                 tmp = count_down
             else:
@@ -34,7 +43,7 @@ class TrendWeightedFLRG(yu.WeightedFTS):
 class TrendWeightedFTS(yu.WeightedFTS):
     """First Order Trend Weighted Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(TrendWeightedFTS, self).__init__(1, "TWFTS " + name)
+        super(TrendWeightedFTS, self).__init__("TWFTS " + name)
         self.name = "Trend Weighted FTS"
         self.detail = "Cheng"
 
@@ -44,6 +53,6 @@ class TrendWeightedFTS(yu.WeightedFTS):
             if flr.LHS.name in flrgs:
                 flrgs[flr.LHS.name].append(flr.RHS)
             else:
-                flrgs[flr.LHS.name] = TrendWeightedFLRG(flr.LHS);
+                flrgs[flr.LHS.name] = TrendWeightedFLRG(flr.LHS)
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)

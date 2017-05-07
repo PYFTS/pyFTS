@@ -1,3 +1,10 @@
+"""
+First Order Exponentialy Weighted Fuzzy Time Series by Sadaei et al. (2013)
+
+H. J. Sadaei, R. Enayatifar, A. H. Abdullah, and A. Gani, “Short-term load forecasting using a hybrid model with a 
+refined exponentially weighted fuzzy time series and an improved harmony search,” Int. J. Electr. Power Energy Syst., vol. 62, no. from 2005, pp. 118–129, 2014.
+"""
+
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
 from pyFTS import fts

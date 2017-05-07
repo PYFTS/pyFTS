@@ -1,9 +1,16 @@
+"""
+First Order Traditional Fuzzy Time Series method by Song & Chissom (1993)
+
+Q. Song and B. S. Chissom, “Fuzzy time series and its models,” Fuzzy Sets Syst., vol. 54, no. 3, pp. 269–277, 1993.
+"""
+
 import numpy as np
 from pyFTS.common import FuzzySet, FLR
 from pyFTS import fts
 
+
 class ConventionalFTS(fts.FTS):
-    """Conventional Fuzzy Time Series"""
+    """Traditional Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
         super(ConventionalFTS, self).__init__(1, "FTS " + name)
         self.name = "Traditional FTS"
