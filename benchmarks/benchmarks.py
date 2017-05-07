@@ -17,7 +17,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution, Util, quantreg
 from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
-from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts, cheng
+from pyFTS import fts, song, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts, cheng, ensemble
 from copy import deepcopy
 
 colors = ['grey', 'rosybrown', 'maroon', 'red','orange', 'yellow', 'olive', 'green',
@@ -29,22 +29,32 @@ styles = ['-','--','-.',':','.']
 
 nsty = len(styles)
 
+
 def get_benchmark_point_methods():
-    """Return all non FTS methods for point forecast"""
+    """Return all non FTS methods for point forecasting"""
     return [naive.Naive, arima.ARIMA, quantreg.QuantileRegression]
 
+
 def get_point_methods():
-    """Return all FTS methods for point forecast"""
-    return [chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS, cheng.TrendWeightedFTS,
-                  sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]
+    """Return all FTS methods for point forecasting"""
+    return [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+            cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS,
+            pwfts.ProbabilisticWeightedFTS]
+
 
 def get_benchmark_interval_methods():
-    """Return all non FTS methods for interval forecast"""
+    """Return all non FTS methods for interval forecasting"""
     return [quantreg.QuantileRegression]
 
+
 def get_interval_methods():
-    """Return all FTS methods for interval forecast"""
+    """Return all FTS methods for interval forecasting"""
     return [ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS]
+
+
+def get_probabilistic_methods():
+    """Return all FTS methods for probabilistic forecasting"""
+    return [quantreg.QuantileRegression, ensemble.EnsembleFTS, pwfts.ProbabilisticWeightedFTS]
 
 
 def external_point_sliding_window(models, parameters, data, windowsize,train=0.8, dump=False,
@@ -628,6 +638,19 @@ def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
 
 
 def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic):
+    """
+    Save benchmark results for m-step ahead probabilistic forecasters 
+    :param experiments: 
+    :param file: 
+    :param objs: 
+    :param crps_interval: 
+    :param crps_distr: 
+    :param times1: 
+    :param times2: 
+    :param save: 
+    :param sintetic: 
+    :return: 
+    """
     ret = []
 
     if sintetic:
@@ -738,7 +761,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
 
                         _tdiff = _end - _start
 
-                        _crps1, _crps2, _t1, _t2 = get_distribution_statistics(test,mfts,steps=steps,resolution=resolution)
+                        _crps1, _crps2, _t1, _t2 = Measures.get_distribution_statistics(test,mfts,steps=steps,resolution=resolution)
 
                         crps_interval[_key].append(_crps1)
                         crps_distr[_key].append(_crps2)
@@ -773,7 +796,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
 
                                 _tdiff = _end - _start
 
-                                _crps1, _crps2, _t1, _t2 = get_distribution_statistics(test, mfts, steps=steps,
+                                _crps1, _crps2, _t1, _t2 = Measures.get_distribution_statistics(test, mfts, steps=steps,
                                                                                        resolution=resolution)
 
                                 crps_interval[_key].append(_crps1)
@@ -826,36 +849,13 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
                                interpol=False, save=save, file=file, tam=tam, resolution=resolution, option=option)
 
 
-def get_distribution_statistics(original, model, steps, resolution):
-    ret = list()
-    try:
-        _s1 = time.time()
-        densities1 = model.forecastAheadDistribution(original, steps, parameters=3)
-        _e1 = time.time()
-        ret.append(round(Measures.crps(original, densities1), 3))
-        ret.append(round(_e1 - _s1, 3))
-    except Exception as e:
-        print('Erro: ', e)
-        ret.append(np.nan)
-        ret.append(np.nan)
 
-    try:
-        _s2 = time.time()
-        densities2 = model.forecastAheadDistribution(original, steps, parameters=2)
-        _e2 = time.time()
-        ret.append( round(Measures.crps(original, densities2), 3))
-        ret.append(round(_e2 - _s2, 3))
-    except:
-        ret.append(np.nan)
-        ret.append(np.nan)
-
-    return ret
 
 
 def print_distribution_statistics(original, models, steps, resolution):
     ret = "Model	& Order     &  Interval & Distribution	\\\\ \n"
     for fts in models:
-        _crps1, _crps2, _t1, _t2 = get_distribution_statistics(original, fts, steps, resolution)
+        _crps1, _crps2, _t1, _t2 = Measures.get_distribution_statistics(original, fts, steps, resolution)
         ret += fts.shortname + "		& "
         ret += str(fts.order) + "		& "
         ret += str(_crps1) + "		& "

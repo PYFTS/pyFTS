@@ -18,6 +18,17 @@ from pyFTS.benchmarks import  benchmarks
 
 
 def run_point(mfts, partitioner, train_data, test_data, transformation=None, indexer=None):
+    """
+    Point forecast benchmark function to be executed on threads
+    :param mfts: FTS model
+    :param partitioner: Universe of Discourse partitioner
+    :param train_data: data used to train the model
+    :param test_data: ata used to test the model
+    :param window_key: id of the sliding window
+    :param transformation: data transformation
+    :param indexer: seasonal indexer
+    :return: a dictionary with the benchmark results 
+    """
     pttr = str(partitioner.__module__).split('.')[-1]
     _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
     mfts.partitioner = partitioner
@@ -51,6 +62,23 @@ def run_point(mfts, partitioner, train_data, test_data, transformation=None, ind
 def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
                          partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
                          save=False, file=None, sintetic=False):
+    """
+    Parallel sliding window benchmarks for FTS point forecasters
+    :param data: 
+    :param windowsize: size of sliding window
+    :param train: percentual of sliding window data used to train the models
+    :param models: FTS point forecasters
+    :param partitioners: Universe of Discourse partitioner
+    :param partitions: the max number of partitions on the Universe of Discourse 
+    :param max_order: the max order of the models (for high order models)
+    :param transformation: data transformation
+    :param indexer: seasonal indexer
+    :param dump: 
+    :param save: save results
+    :param file: file path to save the results
+    :param sintetic: if true only the average and standard deviation of the results
+    :return: DataFrame with the results
+    """
     _process_start = time.time()
 
     print("Process Start: {0: %H:%M:%S}".format(datetime.datetime.now()))
@@ -116,6 +144,17 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
 
 
 def run_interval(mfts, partitioner, train_data, test_data, transformation=None, indexer=None):
+    """
+    Interval forecast benchmark function to be executed on threads
+    :param mfts: FTS model
+    :param partitioner: Universe of Discourse partitioner
+    :param train_data: data used to train the model
+    :param test_data: ata used to test the model
+    :param window_key: id of the sliding window
+    :param transformation: data transformation
+    :param indexer: seasonal indexer
+    :return: a dictionary with the benchmark results 
+    """
     pttr = str(partitioner.__module__).split('.')[-1]
     _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
     mfts.partitioner = partitioner
@@ -149,6 +188,23 @@ def run_interval(mfts, partitioner, train_data, test_data, transformation=None, 
 def interval_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
                          partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
                          save=False, file=None, sintetic=False):
+    """
+     Parallel sliding window benchmarks for FTS interval forecasters
+     :param data: 
+     :param windowsize: size of sliding window
+     :param train: percentual of sliding window data used to train the models
+     :param models: FTS point forecasters
+     :param partitioners: Universe of Discourse partitioner
+     :param partitions: the max number of partitions on the Universe of Discourse 
+     :param max_order: the max order of the models (for high order models)
+     :param transformation: data transformation
+     :param indexer: seasonal indexer
+     :param dump: 
+     :param save: save results
+     :param file: file path to save the results
+     :param sintetic: if true only the average and standard deviation of the results
+     :return: DataFrame with the results
+     """
     _process_start = time.time()
 
     print("Process Start: {0: %H:%M:%S}".format(datetime.datetime.now()))
@@ -215,6 +271,18 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
 
 
 def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, transformation=None, indexer=None):
+    """
+    Probabilistic m-step ahead forecast benchmark function to be executed on threads
+    :param mfts: FTS model
+    :param partitioner: Universe of Discourse partitioner
+    :param train_data: data used to train the model
+    :param test_data: ata used to test the model 
+    :param steps: 
+    :param resolution: 
+    :param transformation: data transformation
+    :param indexer: seasonal indexer
+    :return: a dictionary with the benchmark results 
+    """
     pttr = str(partitioner.__module__).split('.')[-1]
     _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
     mfts.partitioner = partitioner
@@ -248,6 +316,25 @@ def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, trans
 def ahead_sliding_window(data, windowsize, train, steps,resolution, models=None, partitioners=[Grid.GridPartitioner],
                          partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
                          save=False, file=None, sintetic=False):
+    """
+    Parallel sliding window benchmarks for FTS probabilistic forecasters
+    :param data: 
+    :param windowsize: size of sliding window
+    :param train: percentual of sliding window data used to train the models
+    :param steps: 
+    :param resolution: 
+    :param models: FTS point forecasters
+    :param partitioners: Universe of Discourse partitioner
+    :param partitions: the max number of partitions on the Universe of Discourse 
+    :param max_order: the max order of the models (for high order models)
+    :param transformation: data transformation
+    :param indexer: seasonal indexer
+    :param dump: 
+    :param save: save results
+    :param file: file path to save the results
+    :param sintetic: if true only the average and standard deviation of the results
+    :return: DataFrame with the results 
+    """
     _process_start = time.time()
 
     print("Process Start: {0: %H:%M:%S}".format(datetime.datetime.now()))

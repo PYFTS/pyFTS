@@ -5,8 +5,8 @@ from pyFTS import fts
 class ConventionalFTS(fts.FTS):
     """Conventional Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(ConventionalFTS, self).__init__(1, "CFTS " + name)
-        self.name = "Conventional FTS"
+        super(ConventionalFTS, self).__init__(1, "FTS " + name)
+        self.name = "Traditional FTS"
         self.detail = "Song & Chissom"
         self.R = None
 

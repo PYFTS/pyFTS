@@ -4,6 +4,7 @@
 pyFTS module for common benchmark metrics
 """
 
+import time
 import numpy as np
 import pandas as pd
 from pyFTS.common import FuzzySet,SortedCollection
@@ -239,4 +240,30 @@ def get_interval_statistics(original, model):
     ret.append(round(sharpness(forecasts), 2))
     ret.append(round(resolution(forecasts), 2))
     ret.append(round(coverage(original[model.order:], forecasts[:-1]), 2))
+    return ret
+
+
+def get_distribution_statistics(original, model, steps, resolution):
+    ret = list()
+    try:
+        _s1 = time.time()
+        densities1 = model.forecastAheadDistribution(original, steps, parameters=3)
+        _e1 = time.time()
+        ret.append(round(crps(original, densities1), 3))
+        ret.append(round(_e1 - _s1, 3))
+    except Exception as e:
+        print('Erro: ', e)
+        ret.append(np.nan)
+        ret.append(np.nan)
+
+    try:
+        _s2 = time.time()
+        densities2 = model.forecastAheadDistribution(original, steps, parameters=2)
+        _e2 = time.time()
+        ret.append( round(crps(original, densities2), 3))
+        ret.append(round(_e2 - _s2, 3))
+    except:
+        ret.append(np.nan)
+        ret.append(np.nan)
+
     return ret
