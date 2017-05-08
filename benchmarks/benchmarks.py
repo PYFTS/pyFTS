@@ -4,21 +4,24 @@
 """Benchmarks to FTS methods"""
 
 
+import datetime
+import time
+from copy import deepcopy
+
+import matplotlib as plt
+import matplotlib.cm as cmx
+import matplotlib.colors as pltcolors
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import time
-import datetime
-import matplotlib as plt
-import matplotlib.colors as pltcolors
-import matplotlib.cm as cmx
-import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+
+from probabilistic import ProbabilityDistribution
+from pyFTS import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, ensemble, hwang
+from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, Util, quantreg
+from pyFTS.common import Transformations, Util
 # from sklearn.cross_validation import KFold
-from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
-from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution, Util, quantreg
-from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
-from pyFTS import fts, song, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts, cheng, ensemble, hwang
-from copy import deepcopy
+from pyFTS.partitioners import Grid
 
 colors = ['grey', 'rosybrown', 'maroon', 'red','orange', 'yellow', 'olive', 'green',
           'cyan', 'blue', 'darkblue', 'purple', 'darkviolet']
@@ -369,62 +372,6 @@ def getProbabilityDistributionStatistics(pmfs, data):
         ret += "	\\\\ \n"
     return ret
 
-def save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic, times):
-    ret = []
-    if sintetic:
-        for k in sorted(objs.keys()):
-            mod = []
-            mfts = objs[k]
-            mod.append(mfts.shortname)
-            mod.append(mfts.order)
-            mod.append(mfts.partitioner.name)
-            mod.append(mfts.partitioner.partitions)
-            mod.append(round(np.nanmean(sharpness[k]), 2))
-            mod.append(round(np.nanstd(sharpness[k]), 2))
-            mod.append(round(np.nanmean(resolution[k]), 2))
-            mod.append(round(np.nanstd(resolution[k]), 2))
-            mod.append(round(np.nanmean(coverage[k]), 2))
-            mod.append(round(np.nanstd(coverage[k]), 2))
-            mod.append(round(np.nanmean(times[k]), 2))
-            mod.append(round(np.nanstd(times[k]), 2))
-            mod.append(len(mfts))
-            ret.append(mod)
-
-        columns = ["Model", "Order", "Scheme", "Partitions", "SHARPAVG", "SHARPSTD", "RESAVG", "RESSTD", "COVAVG",
-                   "COVSTD", "TIMEAVG", "TIMESTD", "SIZE"]
-    else:
-        for k in sorted(objs.keys()):
-            try:
-                mfts = objs[k]
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),
-                       'Sharpness']
-                tmp.extend(sharpness[k])
-                ret.append(deepcopy(tmp))
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),
-                       'Resolution']
-                tmp.extend(resolution[k])
-                ret.append(deepcopy(tmp))
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),
-                       'Coverage']
-                tmp.extend(coverage[k])
-                ret.append(deepcopy(tmp))
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),
-                       'TIME']
-                tmp.extend(times[k])
-                ret.append(deepcopy(tmp))
-            except Exception as ex:
-                print("Erro ao salvar ", k)
-                print("Exceção ", ex)
-        columns = [str(k) for k in np.arange(0, experiments)]
-        columns.insert(0, "Model")
-        columns.insert(1, "Order")
-        columns.insert(2, "Scheme")
-        columns.insert(3, "Partitions")
-        columns.insert(4, "Size")
-        columns.insert(5, "Measure")
-    dat = pd.DataFrame(ret, columns=columns)
-    if save: dat.to_csv(Util.uniquefilename(file), sep=";")
-    return dat
 
 
 def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[Grid.GridPartitioner],
@@ -518,7 +465,7 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
                                 coverage[_key].append(_cov)
                                 times[_key].append(_tdiff)
 
-    return save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic, times)
+    return Util.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic, times)
 
 
 def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5],
@@ -637,80 +584,6 @@ def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
     ax.legend(handles0, labels0)
 
 
-def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic):
-    """
-    Save benchmark results for m-step ahead probabilistic forecasters 
-    :param experiments: 
-    :param file: 
-    :param objs: 
-    :param crps_interval: 
-    :param crps_distr: 
-    :param times1: 
-    :param times2: 
-    :param save: 
-    :param sintetic: 
-    :return: 
-    """
-    ret = []
-
-    if sintetic:
-
-        for k in sorted(objs.keys()):
-            try:
-                ret = []
-                for k in sorted(objs.keys()):
-                    try:
-                        mod = []
-                        mfts = objs[k]
-                        mod.append(mfts.shortname)
-                        mod.append(mfts.order)
-                        mod.append(mfts.partitioner.name)
-                        mod.append(mfts.partitioner.partitions)
-                        mod.append(np.round(np.nanmean(crps_interval[k]), 2))
-                        mod.append(np.round(np.nanstd(crps_interval[k]), 2))
-                        mod.append(np.round(np.nanmean(crps_distr[k]), 2))
-                        mod.append(np.round(np.nanstd(crps_distr[k]), 2))
-                        mod.append(len(mfts))
-                        mod.append(np.round(np.nanmean(times1[k]), 4))
-                        mod.append(np.round(np.nanmean(times2[k]), 4))
-                        ret.append(mod)
-                    except Exception as e:
-                        print('Erro: %s' % e)
-            except Exception as ex:
-                print("Erro ao salvar ", k)
-                print("Exceção ", ex)
-
-        columns = ["Model", "Order", "Scheme", "Partitions", "CRPS1AVG", "CRPS1STD", "CRPS2AVG", "CRPS2STD",
-                   "SIZE", "TIME1AVG", "TIME2AVG"]
-    else:
-        for k in sorted(objs.keys()):
-            try:
-                mfts = objs[k]
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts), 'CRPS_Interval']
-                tmp.extend(crps_interval[k])
-                ret.append(deepcopy(tmp))
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),  'CRPS_Distribution']
-                tmp.extend(crps_distr[k])
-                ret.append(deepcopy(tmp))
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),  'TIME_Interval']
-                tmp.extend(times1[k])
-                ret.append(deepcopy(tmp))
-                tmp = [mfts.shortname, mfts.order, mfts.partitioner.name, mfts.partitioner.partitions, len(mfts),  'TIME_Distribution']
-                tmp.extend(times2[k])
-                ret.append(deepcopy(tmp))
-            except Exception as ex:
-                print("Erro ao salvar ", k)
-                print("Exceção ", ex)
-        columns = [str(k) for k in np.arange(0, experiments)]
-        columns.insert(0, "Model")
-        columns.insert(1, "Order")
-        columns.insert(2, "Scheme")
-        columns.insert(3, "Partitions")
-        columns.insert(4, "Size")
-        columns.insert(5, "Measure")
-    dat = pd.DataFrame(ret, columns=columns)
-    if save: dat.to_csv(Util.uniquefilename(file), sep=";")
-    return dat
 
 
 def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution = None, partitioners=[Grid.GridPartitioner],
@@ -806,7 +679,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
 
                                 if dump: print(_crps1, _crps2, _tdiff, _t1, _t2)
 
-    return save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic)
+    return Util.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic)
 
 
 def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resolution = None, max_order=3,save=False, file=None, tam=[20, 5],
@@ -978,6 +851,7 @@ def plotCompared(original, forecasts, labels, title):
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
     ax.set_ylim([min(original), max(original)])
+
 
 def SelecaoSimples_MenorRMSE(original, parameters, modelo):
     ret = []

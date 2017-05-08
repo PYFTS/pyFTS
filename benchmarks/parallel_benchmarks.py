@@ -2,19 +2,17 @@
 joblib Parallelized Benchmarks to FTS methods
 """
 
-from copy import deepcopy
-from joblib import Parallel, delayed
+import datetime
 import multiprocessing
+import time
+from copy import deepcopy
 
 import numpy as np
-import pandas as pd
-import time
-import datetime
-from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
-from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution
-from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
-from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts
-from pyFTS.benchmarks import  benchmarks
+from joblib import Parallel, delayed
+
+from pyFTS.benchmarks import benchmarks, Util
+from pyFTS.common import Util
+from pyFTS.partitioners import Grid
 
 
 def run_point(mfts, partitioner, train_data, test_data, transformation=None, indexer=None):
@@ -140,7 +138,7 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
 
     print("Process Duration: {0}".format(_process_end - _process_start))
 
-    return benchmarks.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
+    return Util.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
 
 
 def run_interval(mfts, partitioner, train_data, test_data, transformation=None, indexer=None):
@@ -267,7 +265,7 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
 
     print("Process Duration: {0}".format(_process_end - _process_start))
 
-    return benchmarks.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic, times)
+    return Util.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic, times)
 
 
 def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, transformation=None, indexer=None):
@@ -397,4 +395,4 @@ def ahead_sliding_window(data, windowsize, train, steps,resolution, models=None,
 
     print("Process Duration: {0}".format(_process_end - _process_start))
 
-    return benchmarks.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic)
+    return Util.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic)

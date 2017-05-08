@@ -6,20 +6,16 @@ To enable a dispy cluster node:
 python3 /usr/local/bin/dispynode.py -i [local IP] -d
 """
 
-import random
+import datetime
+import time
+
 import dispy
 import dispy.httpd
-from copy import deepcopy
 import numpy as np
-import pandas as pd
-import time
-import datetime
-import pyFTS
-from pyFTS.partitioners import partitioner, Grid, Huarng, Entropy, FCM
-from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, ProbabilityDistribution
-from pyFTS.common import Membership, FuzzySet, FLR, Transformations, Util
-from pyFTS import fts, chen, yu, ismailefendi, sadaei, hofts, hwang,  pwfts, ifts
-from pyFTS.benchmarks import  benchmarks, parallel_benchmarks, Util as bUtil
+
+from pyFTS.benchmarks import benchmarks, Util as bUtil
+from pyFTS.common import Util
+from pyFTS.partitioners import Grid
 
 
 def run_point(mfts, partitioner, train_data, test_data, window_key=None, transformation=None, indexer=None):

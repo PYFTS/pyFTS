@@ -98,7 +98,6 @@ class ProbabilityDistribution(object):
         axis.set_xlabel('Universe of Discourse')
         axis.set_ylabel('Probability')
 
-
     def __str__(self):
         head = '|'
         body = '|'
