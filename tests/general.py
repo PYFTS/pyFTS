@@ -64,9 +64,14 @@ from pyFTS.benchmarks import arima, quantreg
 #Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/taiex_point_analitic.csv",11)
 
 #tmp = arima.ARIMA("")
-#tmp.train(taiex[:1600],(2,1,1))
-#teste = tmp.forecast(taiex[1600:2000])
+#tmp.train(taiex[:1600], None, order=(1,0,1))
+#teste = tmp.forecast(taiex[1600:1610])
 
+#tmp = quantreg.QuantileRegression("")
+#tmp.train(taiex[:1600], None, order=1)
+#teste = tmp.forecast(taiex[1600:1610])
+
+#print(taiex[1600:1610])
 #print(teste)
 
 #bchmk.teste(taiex,['192.168.0.109', '192.168.0.101'])
@@ -75,7 +80,7 @@ bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
                      partitions= np.arange(10,200,step=10), #transformation=diff,
                      dump=True, save=True, file="experiments/taiex_point_analytic.csv",
-                     nodes=['192.168.0.102', '192.168.0.109']) #, depends=[hofts, ifts])
+                     nodes=['192.168.0.102', '192.168.0.109', '192.168.0.106']) #, depends=[hofts, ifts])
 
 #bchmk.testa(taiex,[10,20],partitioners=[Grid.GridPartitioner], nodes=['192.168.0.109', '192.168.0.101'])
 

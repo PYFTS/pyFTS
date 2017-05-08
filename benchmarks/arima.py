@@ -24,11 +24,11 @@ class ARIMA(fts.FTS):
         self.benchmark_only = True
         self.min_order = 1
 
-    def train(self, data, sets, order=(2,1,1), parameters=None):
+    def train(self, data, sets, order, parameters=None):
         self.p = order[0]
         self.d = order[1]
         self.q = order[2]
-        self.order = max([self.p, self.d, self.q])
+        self.order = self.p + self.q
         self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ")"
 
         old_fit = self.model_fit
@@ -51,13 +51,19 @@ class ARIMA(fts.FTS):
 
         ret = []
 
-        ar = np.array([self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l)])
+        if self.d == 0:
+            ar = np.array([self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l)])
+        else:
+            ar = np.array([ndata[k] + self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l)])
 
-        residuals = np.array([ar[k - self.p] - ndata[k] for k in np.arange(self.p, l)])
+        if self.q > 0:
+            residuals = np.array([ndata[k] - ar[k - self.p] for k in np.arange(self.p, l)])
 
-        ma = np.array([self.ma(residuals[k - self.q: k]) for k in np.arange(self.q, len(ar) + 1)])
+            ma = np.array([self.ma(residuals[k - self.q: k]) for k in np.arange(self.q, len(residuals))])
 
-        ret = ar + ma
+            ret = ar[self.q:] + ma
+        else:
+            ret = ar
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 

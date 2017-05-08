@@ -101,7 +101,7 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
                             quantreg.QuantileRegression, quantreg.QuantileRegression]
 
     if benchmark_models_parameters is None:
-        benchmark_models_parameters = [None, (1, 0, 1), (1, 1, 1), (2, 1, 1), (2, 1, 2), 1, 2]
+        benchmark_models_parameters = [None, (1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
 
     cluster = dispy.JobCluster(run_point, nodes=nodes) #, depends=dependencies)
 
