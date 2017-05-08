@@ -9,7 +9,7 @@ from pyFTS import fts
 
 class QuantileRegression(fts.FTS):
     """Façade for statsmodels.regression.quantile_regression"""
-    def __init__(self, order, **kwargs):
+    def __init__(self, name, **kwargs):
         super(QuantileRegression, self).__init__(1, "QR")
         self.name = "QR"
         self.detail = "Quantile Regression"
@@ -27,19 +27,21 @@ class QuantileRegression(fts.FTS):
     def train(self, data, sets, order=1, parameters=None):
         self.order = order
 
-        if parameters is not None:
-            self.alpha = parameters
+        self.alpha = parameters
 
         tmp = np.array(self.doTransformations(data))
 
         lagdata, ndata = lagmat(tmp, maxlag=order, trim="both", original='sep')
-        uqt = QuantReg(ndata, lagdata).fit(1 - self.alpha)
-        mqt = QuantReg(ndata, lagdata).fit(0.5)
-        lqt = QuantReg(ndata, lagdata).fit(self.alpha)
 
-        self.upper_qt = [uqt.params[k] for k in uqt.params.keys()]
-        self.mean_qt = [mqt.params[k] for k in mqt.params.keys()]
-        self.lower_qt = [lqt.params[k] for k in lqt.params.keys()]
+        mqt = QuantReg(ndata, lagdata).fit(0.5)
+        if self.alpha is not None:
+            uqt = QuantReg(ndata, lagdata).fit(1 - self.alpha)
+            lqt = QuantReg(ndata, lagdata).fit(self.alpha)
+
+        self.mean_qt = [k for k in mqt.params]
+        if self.alpha is not None:
+            self.upper_qt = [uqt.params[k] for k in uqt.params.keys()]
+            self.lower_qt = [lqt.params[k] for k in lqt.params.keys()]
 
     def linearmodel(self,data,params):
         return params[0] + sum([ data[k] * params[k+1] for k in np.arange(0, self.order) ])

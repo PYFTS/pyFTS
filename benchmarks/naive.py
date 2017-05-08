@@ -6,7 +6,7 @@ from pyFTS import fts
 
 class Naive(fts.FTS):
     """Naïve Forecasting method"""
-    def __init__(self, order, name, **kwargs):
+    def __init__(self, name, **kwargs):
         super(Naive, self).__init__(1, "Naive " + name)
         self.name = "Naïve Model"
         self.detail = "Naïve Model"

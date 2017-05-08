@@ -60,74 +60,10 @@ def get_probabilistic_methods():
     return [quantreg.QuantileRegression, ensemble.EnsembleFTS, pwfts.ProbabilisticWeightedFTS]
 
 
-def external_point_sliding_window(models, parameters, data, windowsize,train=0.8, dump=False,
-                                  save=False, file=None, sintetic=True):
-    """
-    Sliding window benchmarks for non FTS point forecasters
-    :param models: non FTS point forecasters
-    :param parameters: parameters for each model
-    :param data: data set
-    :param windowsize: size of sliding window
-    :param train: percentual of sliding window data used to train the models
-    :param dump: 
-    :param save: save results
-    :param file: file path to save the results
-    :param sintetic: if true only the average and standard deviation of the results
-    :return: DataFrame with the results
-    """
-    objs = {}
-    lcolors = {}
-    rmse = {}
-    smape = {}
-    u = {}
-    times = {}
-
-    experiments = 0
-    for ct, train, test in Util.sliding_window(data, windowsize, train):
-        experiments += 1
-        for count, method in enumerate(models, start=0):
-            model = method("")
-
-            _start = time.time()
-            model.train(train, None, parameters=parameters[count])
-            _end = time.time()
-
-            _key = model.shortname
-
-            if dump: print(ct, _key)
-
-            if _key not in objs:
-                objs[_key] = model
-                lcolors[_key] = colors[count % ncol]
-                rmse[_key] = []
-                smape[_key] = []
-                u[_key] = []
-                times[_key] = []
-
-            _tdiff = _end - _start
-
-            try:
-                _start = time.time()
-                _rmse, _smape, _u = Measures.get_point_statistics(test, model, None)
-                _end = time.time()
-                rmse[_key].append(_rmse)
-                smape[_key].append(_smape)
-                u[_key].append(_u)
-                _tdiff += _end - _start
-                times[_key].append(_tdiff)
-                if dump: print(_rmse, _smape, _u, _tdiff)
-            except:
-                rmse[_key].append(np.nan)
-                smape[_key].append(np.nan)
-                u[_key].append(np.nan)
-                times[_key].append(np.nan)
-
-    return Util.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
-
-
 def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[Grid.GridPartitioner],
-                   partitions=[10], max_order=3,transformation=None,indexer=None,dump=False,
-                   save=False, file=None, sintetic=True):
+                         partitions=[10], max_order=3,transformation=None,indexer=None,dump=False,
+                         benchmark_models=None, benchmark_models_parameters = None,
+                         save=False, file=None, sintetic=True):
     """
     Sliding window benchmarks for FTS point forecasters
     :param data: 
@@ -152,7 +88,6 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
 
     if models is None:
         models = get_point_methods()
-
 
     objs = {}
     lcolors = {}

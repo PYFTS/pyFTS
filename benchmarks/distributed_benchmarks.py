@@ -13,7 +13,7 @@ import dispy
 import dispy.httpd
 import numpy as np
 
-from pyFTS.benchmarks import benchmarks, Util as bUtil
+from pyFTS.benchmarks import benchmarks, Util as bUtil, naive, quantreg, arima
 from pyFTS.common import Util
 from pyFTS.partitioners import Grid
 
@@ -31,22 +31,28 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
     :return: a dictionary with the benchmark results 
     """
     import time
-    from pyFTS import yu,chen,hofts,ifts,pwfts,ismailefendi,sadaei
+    from pyFTS import yu,chen,hofts,ifts,pwfts,ismailefendi,sadaei, song, cheng, hwang
     from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures
+    from pyFTS.benchmarks import Measures, naive, arima, quantreg
 
-    tmp = [yu.WeightedFTS, chen.ConventionalFTS, hofts.HighOrderFTS, ifts.IntervalFTS,
-           pwfts.ProbabilisticWeightedFTS, ismailefendi.ImprovedWeightedFTS, sadaei.ExponentialyWeightedFTS]
+    tmp = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+            cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
+            pwfts.ProbabilisticWeightedFTS]
 
     tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
 
+    tmp4 = [naive.Naive, arima.ARIMA, quantreg.QuantileRegression]
+
     tmp3 = [Measures.get_point_statistics]
 
-    pttr = str(partitioner.__module__).split('.')[-1]
-    _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
-    mfts.partitioner = partitioner
-    if transformation is not None:
-        mfts.appendTransformation(transformation)
+    if mfts.benchmark_only:
+        _key = mfts.shortname + str(mfts.order if mfts.order is not None else "")
+    else:
+        pttr = str(partitioner.__module__).split('.')[-1]
+        _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
+        mfts.partitioner = partitioner
+        if transformation is not None:
+            mfts.appendTransformation(transformation)
 
     _start = time.time()
     mfts.train(train_data, partitioner.sets, order=mfts.order)
@@ -65,6 +71,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
 
 def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
                          partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
+                         benchmark_models=None, benchmark_models_parameters = None,
                          save=False, file=None, sintetic=False,nodes=None, depends=None):
     """
     Distributed sliding window benchmarks for FTS point forecasters
@@ -78,6 +85,8 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
     :param transformation: data transformation
     :param indexer: seasonal indexer
     :param dump: 
+    :param benchmark_models: Non FTS models to benchmark
+    :param benchmark_models_parameters: Non FTS models parameters
     :param save: save results
     :param file: file path to save the results
     :param sintetic: if true only the average and standard deviation of the results
@@ -85,6 +94,13 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
     :param depends: list of module dependencies 
     :return: DataFrame with the results
     """
+
+    if benchmark_models is None:
+        benchmark_models = [naive.Naive, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA,
+                            quantreg.QuantileRegression, quantreg.QuantileRegression]
+
+    if benchmark_models_parameters is None:
+        benchmark_models_parameters = [None, (1, 0, 1), (1, 1, 1), (2, 1, 1), (2, 1, 2), 1, 2]
 
     cluster = dispy.JobCluster(run_point, nodes=nodes) #, depends=dependencies)
 
@@ -116,10 +132,19 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
                     pool.append(mfts)
         else:
             pool.append(mfts)
+            mfts.order = 1
+            pool.append(mfts)
+
+    for count, model in enumerate(benchmark_models, start=0):
+        mfts = model("")
+        mfts.order = benchmark_models_parameters[count]
+        pool.append(mfts)
 
     experiments = 0
     for ct, train, test in Util.sliding_window(data, windowsize, train):
         experiments += 1
+
+        benchmarks_only = {}
 
         if dump: print('\nWindow: {0}\n'.format(ct))
 
@@ -129,9 +154,13 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
 
                 data_train_fs = partitioner(train, partition, transformation=transformation)
 
-                for id, m in enumerate(pool,start=0):
+                for _id, m in enumerate(pool,start=0):
+                    if m.benchmark_only and m.shortname in benchmarks_only:
+                        continue
+                    else:
+                        benchmarks_only[m.shortname] = m
                     job = cluster.submit(m, data_train_fs, train, test, ct, transformation)
-                    job.id = id  # associate an ID to identify jobs (if needed later)
+                    job.id = _id  # associate an ID to identify jobs (if needed later)
                     jobs.append(job)
 
     for job in jobs:

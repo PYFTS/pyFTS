@@ -38,9 +38,8 @@ os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 #gauss = random.normal(0,1.0,5000)
 #gauss_teste = random.normal(0,1.0,400)
 
-
-#taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-#taiex = np.array(taiexpd["avg"][:5000])
+taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
+taiex = np.array(taiexpd["avg"][:5000])
 
 #nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
 #nasdaq = np.array(nasdaqpd["avg"][0:5000])
@@ -62,7 +61,7 @@ from pyFTS.benchmarks import Util
 
 #Util.cast_dataframe_to_sintetic_point("experiments/taiex_point_analitic.csv","experiments/taiex_point_sintetic.csv",11)
 
-Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/taiex_point_analitic.csv",11)
+#Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/taiex_point_analitic.csv",11)
 
 #tmp = arima.ARIMA("")
 #tmp.train(taiex[:1600],None,parameters=(2,0,1))
@@ -72,11 +71,11 @@ Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/ta
 
 #bchmk.teste(taiex,['192.168.0.109', '192.168.0.101'])
 
-#bchmk.point_sliding_window(gauss,2000,train=0.8, #models=[yu.WeightedFTS], # #
-#                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-#                     partitions= np.arange(3,10,step=1), #transformation=diff,
-#                     dump=True, save=True, file="experiments/gauss_point_distributed.csv",
-#                     nodes=['192.168.0.102', '192.168.0.109']) #, depends=[hofts, ifts])
+bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
+                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+                     partitions= np.arange(10,200,step=10), #transformation=diff,
+                     dump=True, save=True, file="experiments/taiex_point_analytic.csv",
+                     nodes=['192.168.0.102', '192.168.0.109']) #, depends=[hofts, ifts])
 
 #bchmk.testa(taiex,[10,20],partitioners=[Grid.GridPartitioner], nodes=['192.168.0.109', '192.168.0.101'])
 

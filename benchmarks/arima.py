@@ -10,7 +10,7 @@ class ARIMA(fts.FTS):
     """
     Façade for statsmodels.tsa.arima_model
     """
-    def __init__(self, order, **kwargs):
+    def __init__(self, name, **kwargs):
         super(ARIMA, self).__init__(1, "ARIMA")
         self.name = "ARIMA"
         self.detail = "Auto Regressive Integrated Moving Average"
@@ -24,34 +24,41 @@ class ARIMA(fts.FTS):
         self.benchmark_only = True
         self.min_order = 1
 
-    def train(self, data, sets, order=1, parameters=None):
-        if parameters is not None:
-            self.p = parameters[0]
-            self.d = parameters[1]
-            self.q = parameters[2]
-            self.order = max([self.p, self.d, self.q])
-            self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ")"
+    def train(self, data, sets, order=(2,1,1), parameters=None):
+        self.p = order[0]
+        self.d = order[1]
+        self.q = order[2]
+        self.order = max([self.p, self.d, self.q])
+        self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ")"
 
         old_fit = self.model_fit
         self.model =  stats_arima(data, order=(self.p, self.d, self.q))
-        try:
-            self.model_fit = self.model.fit(disp=0)
-        except:
-            try:
-                self.model = stats_arima(data, order=(self.p, self.d, self.q))
-                self.model_fit = self.model.fit(disp=1)
-            except:
-                self.model_fit = old_fit
+        self.model_fit = self.model.fit(disp=0)
 
-        self.trained_data = data #.tolist()
+    def ar(self, data):
+        return data.dot(self.model_fit.arparams)
+
+    def ma(self, data):
+        return data.dot(self.model_fit.maparams)
 
     def forecast(self, data, **kwargs):
         if self.model_fit is None:
             return np.nan
+
+        ndata = np.array(self.doTransformations(data))
+
+        l = len(ndata)
+
         ret = []
-        for t in data:
-            output = self.model_fit.forecast()
-            ret.append( output[0] )
-            self.trained_data = np.append(self.trained_data, t) #.append(t)
-            self.train(self.trained_data,None,order=self.order, parameters=(self.p, self.d, self.q))
+
+        ar = np.array([self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l)])
+
+        residuals = np.array([ar[k - self.p] - ndata[k] for k in np.arange(self.p, l)])
+
+        ma = np.array([self.ma(residuals[k - self.q: k]) for k in np.arange(self.q, len(ar) + 1)])
+
+        ret = ar + ma
+
+        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+
         return ret
