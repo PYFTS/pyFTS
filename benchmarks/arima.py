@@ -11,7 +11,7 @@ class ARIMA(fts.FTS):
     Façade for statsmodels.tsa.arima_model
     """
     def __init__(self, name, **kwargs):
-        super(ARIMA, self).__init__(1, "ARIMA")
+        super(ARIMA, self).__init__(1, "ARIMA"+name)
         self.name = "ARIMA"
         self.detail = "Auto Regressive Integrated Moving Average"
         self.is_high_order = True

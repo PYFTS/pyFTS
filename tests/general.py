@@ -57,15 +57,15 @@ from statsmodels.tsa.tsatools import lagmat
 from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 from pyFTS.benchmarks import Util
-#from pyFTS.benchmarks import arima
+from pyFTS.benchmarks import arima, quantreg
 
 #Util.cast_dataframe_to_sintetic_point("experiments/taiex_point_analitic.csv","experiments/taiex_point_sintetic.csv",11)
 
 #Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/taiex_point_analitic.csv",11)
 
 #tmp = arima.ARIMA("")
-#tmp.train(taiex[:1600],None,parameters=(2,0,1))
-#teste = tmp.forecast(taiex[1598:1601])
+#tmp.train(taiex[:1600],(2,1,1))
+#teste = tmp.forecast(taiex[1600:2000])
 
 #print(teste)
 

@@ -8,6 +8,7 @@ python3 /usr/local/bin/dispynode.py -i [local IP] -d
 
 import datetime
 import time
+from copy import deepcopy
 
 import dispy
 import dispy.httpd
@@ -136,8 +137,9 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
             pool.append(mfts)
 
     for count, model in enumerate(benchmark_models, start=0):
-        mfts = model("")
-        mfts.order = benchmark_models_parameters[count]
+        par = benchmark_models_parameters[count]
+        mfts = model(str(par if par is not None else ""))
+        mfts.order = par
         pool.append(mfts)
 
     experiments = 0

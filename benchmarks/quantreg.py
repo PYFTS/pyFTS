@@ -10,7 +10,7 @@ from pyFTS import fts
 class QuantileRegression(fts.FTS):
     """Façade for statsmodels.regression.quantile_regression"""
     def __init__(self, name, **kwargs):
-        super(QuantileRegression, self).__init__(1, "QR")
+        super(QuantileRegression, self).__init__(1, "QR"+name)
         self.name = "QR"
         self.detail = "Quantile Regression"
         self.is_high_order = True
@@ -43,8 +43,11 @@ class QuantileRegression(fts.FTS):
             self.upper_qt = [uqt.params[k] for k in uqt.params.keys()]
             self.lower_qt = [lqt.params[k] for k in lqt.params.keys()]
 
+        self.shortname = "QAR(" + str(self.order) + ")"
+
     def linearmodel(self,data,params):
-        return params[0] + sum([ data[k] * params[k+1] for k in np.arange(0, self.order) ])
+        #return params[0] + sum([ data[k] * params[k+1] for k in np.arange(0, self.order) ])
+        return sum([data[k] * params[k] for k in np.arange(0, self.order)])
 
     def forecast(self, data, **kwargs):
         ndata = np.array(self.doTransformations(data))

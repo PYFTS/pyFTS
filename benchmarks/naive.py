@@ -7,7 +7,7 @@ from pyFTS import fts
 class Naive(fts.FTS):
     """Naïve Forecasting method"""
     def __init__(self, name, **kwargs):
-        super(Naive, self).__init__(1, "Naive " + name)
+        super(Naive, self).__init__(1, "Naive")
         self.name = "Naïve Model"
         self.detail = "Naïve Model"
         self.benchmark_only = True
