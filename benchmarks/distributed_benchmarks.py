@@ -35,6 +35,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
     from pyFTS import yu,chen,hofts,ifts,pwfts,ismailefendi,sadaei, song, cheng, hwang
     from pyFTS.partitioners import Grid, Entropy, FCM
     from pyFTS.benchmarks import Measures, naive, arima, quantreg
+    from pyFTS.common import Transformations
 
     tmp = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
             cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
@@ -45,6 +46,8 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
     tmp4 = [naive.Naive, arima.ARIMA, quantreg.QuantileRegression]
 
     tmp3 = [Measures.get_point_statistics]
+
+    tmp5 = [Transformations.Differential]
 
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "")

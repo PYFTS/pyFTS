@@ -32,8 +32,11 @@ class ARIMA(fts.FTS):
         self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ")"
 
         old_fit = self.model_fit
-        self.model =  stats_arima(data, order=(self.p, self.d, self.q))
-        self.model_fit = self.model.fit(disp=0)
+        try:
+            self.model =  stats_arima(data, order=(self.p, self.d, self.q))
+            self.model_fit = self.model.fit(disp=0)
+        except:
+            self.model_fit = None
 
     def ar(self, data):
         return data.dot(self.model_fit.arparams)

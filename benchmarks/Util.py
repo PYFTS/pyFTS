@@ -141,9 +141,15 @@ def save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, t
                 print("Erro ao salvar ", k)
                 print("Exceção ", ex)
         columns = point_dataframe_analytic_columns(experiments)
-    dat = pd.DataFrame(ret, columns=columns)
-    if save: dat.to_csv(Util.uniquefilename(file), sep=";", index=False)
-    return dat
+    try:
+        dat = pd.DataFrame(ret, columns=columns)
+        if save: dat.to_csv(Util.uniquefilename(file), sep=";", index=False)
+        return dat
+    except Exception as ex:
+        print(ex)
+        print(experiments)
+        print(columns)
+        print(ret)
 
 
 def cast_dataframe_to_sintetic_point(infile, outfile, experiments):
@@ -193,9 +199,9 @@ def analytical_data_columns(experiments):
     return data_columns
 
 
-def plot_dataframe_point(file_synthetic, file_analytic, experiments):
+def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam):
 
-    fig, axes = plt.subplots(nrows=4, ncols=1, figsize=[6, 8])
+    fig, axes = plt.subplots(nrows=4, ncols=1, figsize=tam)
 
     axes[0].set_title('RMSE')
     axes[1].set_title('SMAPE')
@@ -216,7 +222,7 @@ def plot_dataframe_point(file_synthetic, file_analytic, experiments):
     times = []
     labels = []
 
-    for b in bests.keys():
+    for b in sorted(bests.keys()):
         best = bests[b]
         tmp = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
                 & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]

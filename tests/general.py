@@ -82,6 +82,14 @@ bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
                      dump=True, save=True, file="experiments/taiex_point_analytic.csv",
                      nodes=['192.168.0.102', '192.168.0.109', '192.168.0.106']) #, depends=[hofts, ifts])
 
+diff = Transformations.Differential(1)
+
+bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
+                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+                     partitions= np.arange(10,200,step=10), transformation=diff,
+                     dump=True, save=True, file="experiments/taiex_point_analytic_diff.csv",
+                     nodes=['192.168.0.102', '192.168.0.109', '192.168.0.106']) #, depends=[hofts, ifts])
+
 #bchmk.testa(taiex,[10,20],partitioners=[Grid.GridPartitioner], nodes=['192.168.0.109', '192.168.0.101'])
 
 #parallel_util.explore_partitioners(taiex,20)
