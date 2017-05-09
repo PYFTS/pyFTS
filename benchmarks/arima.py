@@ -35,7 +35,8 @@ class ARIMA(fts.FTS):
         try:
             self.model =  stats_arima(data, order=(self.p, self.d, self.q))
             self.model_fit = self.model.fit(disp=0)
-        except:
+        except Exception as ex:
+            print(ex)
             self.model_fit = None
 
     def ar(self, data):
@@ -55,14 +56,14 @@ class ARIMA(fts.FTS):
         ret = []
 
         if self.d == 0:
-            ar = np.array([self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l)])
+            ar = np.array([self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l+1)]) #+1 to forecast one step ahead given all available lags
         else:
-            ar = np.array([ndata[k] + self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l)])
+            ar = np.array([ndata[k] + self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l+1)])
 
         if self.q > 0:
             residuals = np.array([ndata[k] - ar[k - self.p] for k in np.arange(self.p, l)])
 
-            ma = np.array([self.ma(residuals[k - self.q: k]) for k in np.arange(self.q, len(residuals))])
+            ma = np.array([self.ma(residuals[k - self.q: k]) for k in np.arange(self.q, len(residuals)+1)])
 
             ret = ar[self.q:] + ma
         else:
