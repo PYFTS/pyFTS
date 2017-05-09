@@ -38,8 +38,8 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
     from pyFTS.common import Transformations
 
     tmp = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-            cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
-            pwfts.ProbabilisticWeightedFTS]
+           cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
+           pwfts.ProbabilisticWeightedFTS]
 
     tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
 
