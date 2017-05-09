@@ -18,7 +18,8 @@ from mpl_toolkits.mplot3d import Axes3D
 
 from probabilistic import ProbabilityDistribution
 from pyFTS import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, ensemble, hwang
-from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, Util, quantreg
+from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, quantreg
+from pyFTS.benchmarks import Util as bUtil
 from pyFTS.common import Transformations, Util
 # from sklearn.cross_validation import KFold
 from pyFTS.partitioners import Grid
@@ -60,10 +61,47 @@ def get_probabilistic_methods():
     return [quantreg.QuantileRegression, ensemble.EnsembleFTS, pwfts.ProbabilisticWeightedFTS]
 
 
-def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[Grid.GridPartitioner],
-                         partitions=[10], max_order=3,transformation=None,indexer=None,dump=False,
+def run_point(mfts, partitioner, train_data, test_data, window_key=None, transformation=None, indexer=None):
+    """
+    Point forecast benchmark function to be executed on sliding window
+    :param mfts: FTS model
+    :param partitioner: Universe of Discourse partitioner
+    :param train_data: data used to train the model
+    :param test_data: ata used to test the model
+    :param window_key: id of the sliding window
+    :param transformation: data transformation
+    :param indexer: seasonal indexer
+    :return: a dictionary with the benchmark results 
+    """
+
+    if mfts.benchmark_only:
+        _key = mfts.shortname + str(mfts.order if mfts.order is not None else "")
+    else:
+        pttr = str(partitioner.__module__).split('.')[-1]
+        _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
+        mfts.partitioner = partitioner
+        if transformation is not None:
+            mfts.appendTransformation(transformation)
+
+    _start = time.time()
+    mfts.train(train_data, partitioner.sets, order=mfts.order)
+    _end = time.time()
+    times = _end - _start
+
+    _start = time.time()
+    _rmse, _smape, _u = Measures.get_point_statistics(test_data, mfts, indexer)
+    _end = time.time()
+    times += _end - _start
+
+    ret = {'key': _key, 'obj': mfts, 'rmse': _rmse, 'smape': _smape, 'u': _u, 'time': times, 'window': window_key}
+
+    return ret
+
+
+def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
+                         partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
                          benchmark_models=None, benchmark_models_parameters = None,
-                         save=False, file=None, sintetic=True):
+                         save=False, file=None, sintetic=False):
     """
     Sliding window benchmarks for FTS point forecasters
     :param data: 
@@ -76,116 +114,89 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
     :param transformation: data transformation
     :param indexer: seasonal indexer
     :param dump: 
+    :param benchmark_models: Non FTS models to benchmark
+    :param benchmark_models_parameters: Non FTS models parameters
     :param save: save results
     :param file: file path to save the results
     :param sintetic: if true only the average and standard deviation of the results
     :return: DataFrame with the results
     """
 
+    if benchmark_models is None: # and models is None:
+        benchmark_models = [naive.Naive, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA,
+                            quantreg.QuantileRegression, quantreg.QuantileRegression]
+
+    if benchmark_models_parameters is None:
+        benchmark_models_parameters = [1, (1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
+
     _process_start = time.time()
 
     print("Process Start: {0: %H:%M:%S}".format(datetime.datetime.now()))
 
-    if models is None:
-        models = get_point_methods()
-
+    pool = []
+    jobs = []
     objs = {}
-    lcolors = {}
     rmse = {}
     smape = {}
     u = {}
     times = {}
 
+    if models is None:
+        models = get_point_methods()
+
+    for model in models:
+        mfts = model("")
+
+        if mfts.is_high_order:
+            for order in np.arange(1, max_order + 1):
+                if order >= mfts.min_order:
+                    mfts = model("")
+                    mfts.order = order
+                    pool.append(mfts)
+        else:
+            mfts.order = 1
+            pool.append(mfts)
+
+    if benchmark_models is not None:
+        for count, model in enumerate(benchmark_models, start=0):
+            par = benchmark_models_parameters[count]
+            mfts = model(str(par if par is not None else ""))
+            mfts.order = par
+            pool.append(mfts)
+
     experiments = 0
-    for ct, train,test in Util.sliding_window(data, windowsize, train):
+    for ct, train, test in Util.sliding_window(data, windowsize, train):
         experiments += 1
+
+        benchmarks_only = {}
+
+        if dump: print('\nWindow: {0}\n'.format(ct))
+
         for partition in partitions:
+
             for partitioner in partitioners:
-                pttr = str(partitioner.__module__).split('.')[-1]
+
                 data_train_fs = partitioner(train, partition, transformation=transformation)
 
-                for count, model in enumerate(models, start=0):
-
-                    mfts = model("")
-
-                    _key = mfts.shortname + " " + pttr + " q = " + str(partition)
-
-                    mfts.partitioner = data_train_fs
-                    if not mfts.is_high_order:
-
-                        if dump: print(ct,_key)
-
-                        if _key not in objs:
-                            objs[_key] = mfts
-                            lcolors[_key] = colors[count % ncol]
-                            rmse[_key] = []
-                            smape[_key] = []
-                            u[_key] = []
-                            times[_key] = []
-
-                        if transformation is not None:
-                            mfts.appendTransformation(transformation)
-
-
-                        _start = time.time()
-                        mfts.train(train, data_train_fs.sets)
-                        _end = time.time()
-                        times[_key].append(_end - _start)
-
-                        _start = time.time()
-                        _rmse, _smape, _u = Measures.get_point_statistics(test, mfts, indexer)
-                        _end = time.time()
-                        rmse[_key].append(_rmse)
-                        smape[_key].append(_smape)
-                        u[_key].append(_u)
-                        times[_key].append(_end - _start)
-
-                        if dump: print(_rmse, _smape, _u)
-
+                for _id, m in enumerate(pool,start=0):
+                    if m.benchmark_only and m.shortname in benchmarks_only:
+                        continue
                     else:
-                        for order in np.arange(1, max_order + 1):
-                            if order >= mfts.min_order:
-                                mfts = model("")
+                        benchmarks_only[m.shortname] = m
 
-                                _key = mfts.shortname + " n = " + str(order) + " " + pttr + " q = " + str(partition)
+                    tmp = run_point(deepcopy(m), data_train_fs, train, test, ct, transformation)
 
-                                mfts.partitioner = data_train_fs
-
-                                if dump: print(ct,_key)
-
-                                if _key not in objs:
-                                    objs[_key] = mfts
-                                    lcolors[_key] = colors[count % ncol]
-                                    rmse[_key] = []
-                                    smape[_key] = []
-                                    u[_key] = []
-                                    times[_key] = []
-
-                                if transformation is not None:
-                                    mfts.appendTransformation(transformation)
-
-                                try:
-                                    _start = time.time()
-                                    mfts.train(train, data_train_fs.sets, order=order)
-                                    _end = time.time()
-                                    times[_key].append(_end - _start)
-
-                                    _start = time.time()
-                                    _rmse, _smape, _u = Measures.get_point_statistics(test, mfts, indexer)
-                                    _end = time.time()
-                                    rmse[_key].append(_rmse)
-                                    smape[_key].append(_smape)
-                                    u[_key].append(_u)
-                                    times[_key].append(_end - _start)
-
-                                    if dump: print(_rmse, _smape, _u)
-
-                                except Exception as e:
-                                    print(e)
-                                    rmse[_key].append(np.nan)
-                                    smape[_key].append(np.nan)
-                                    u[_key].append(np.nan)
-                                    times[_key].append(np.nan)
+                    if tmp['key'] not in objs:
+                        objs[tmp['key']] = tmp['obj']
+                        rmse[tmp['key']] = []
+                        smape[tmp['key']] = []
+                        u[tmp['key']] = []
+                        times[tmp['key']] = []
+                    rmse[tmp['key']].append(tmp['rmse'])
+                    smape[tmp['key']].append(tmp['smape'])
+                    u[tmp['key']].append(tmp['u'])
+                    times[tmp['key']].append(tmp['time'])
+                    print(tmp['key'], tmp['window'])
 
     _process_end = time.time()
 
@@ -193,7 +204,8 @@ def point_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[G
 
     print("Process Duration: {0}".format(_process_end - _process_start))
 
-    return Util.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
+    return bUtil.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
+
 
 
 def all_point_forecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True,
@@ -309,9 +321,9 @@ def getProbabilityDistributionStatistics(pmfs, data):
 
 
 
-def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners=[Grid.GridPartitioner],
-                   partitions=[10], max_order=3,transformation=None,indexer=None,dump=False,
-                   save=False, file=None, sintetic=True):
+def interval_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
+                            partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
+                            save=False, file=None, synthetic=True):
     if models is None:
         models = get_interval_methods()
 
@@ -400,7 +412,7 @@ def interval_sliding_window(data, windowsize, train=0.8,models=None,partitioners
                                 coverage[_key].append(_cov)
                                 times[_key].append(_tdiff)
 
-    return Util.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic, times)
+    return bUtil.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times)
 
 
 def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5],
@@ -522,8 +534,8 @@ def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
 
 
 def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution = None, partitioners=[Grid.GridPartitioner],
-                   partitions=[10], max_order=3,transformation=None,indexer=None,dump=False,
-                   save=False, file=None, sintetic=False):
+                         partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
+                         save=False, file=None, synthetic=False):
     if models is None:
         models = [pwfts.ProbabilisticWeightedFTS]
 
@@ -614,7 +626,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
 
                                 if dump: print(_crps1, _crps2, _tdiff, _t1, _t2)
 
-    return Util.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic)
+    return bUtil.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, synthetic)
 
 
 def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resolution = None, max_order=3,save=False, file=None, tam=[20, 5],

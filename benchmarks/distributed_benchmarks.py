@@ -99,12 +99,12 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
     :return: DataFrame with the results
     """
 
-    if benchmark_models is None:
+    if benchmark_models is None and models is None:
         benchmark_models = [naive.Naive, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA,
                             quantreg.QuantileRegression, quantreg.QuantileRegression]
 
     if benchmark_models_parameters is None:
-        benchmark_models_parameters = [None, (1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
+        benchmark_models_parameters = [1, (1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
 
     cluster = dispy.JobCluster(run_point, nodes=nodes) #, depends=dependencies)
 
@@ -135,15 +135,15 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
                     mfts.order = order
                     pool.append(mfts)
         else:
-            pool.append(mfts)
             mfts.order = 1
             pool.append(mfts)
 
-    for count, model in enumerate(benchmark_models, start=0):
-        par = benchmark_models_parameters[count]
-        mfts = model(str(par if par is not None else ""))
-        mfts.order = par
-        pool.append(mfts)
+    if benchmark_models is not None:
+        for count, model in enumerate(benchmark_models, start=0):
+            par = benchmark_models_parameters[count]
+            mfts = model(str(par if par is not None else ""))
+            mfts.order = par
+            pool.append(mfts)
 
     experiments = 0
     for ct, train, test in Util.sliding_window(data, windowsize, train):

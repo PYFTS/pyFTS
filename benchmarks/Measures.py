@@ -202,6 +202,7 @@ def crps(targets, densities):
 
 def get_point_statistics(data, model, indexer=None):
     """Condensate all measures for point forecasters"""
+
     if indexer is not None:
         ndata = np.array(indexer.get_data(data[model.order:]))
     else:
@@ -212,22 +213,29 @@ def get_point_statistics(data, model, indexer=None):
     elif not model.is_multivariate and indexer is not None:
         forecasts = model.forecast(indexer.get_data(data))
 
-    if model.has_seasonality:
-        nforecasts = np.array(forecasts)
-    else:
-        nforecasts = np.array(forecasts[:-1])
+    try:
+        if model.has_seasonality:
+            nforecasts = np.array(forecasts)
+        else:
+            nforecasts = np.array(forecasts[:-1])
+    except Exception as ex:
+        print(ex)
+        return [np.nan,np.nan,np.nan]
     ret = list()
     try:
         ret.append(np.round(rmse(ndata, nforecasts), 2))
-    except:
+    except Exception as ex:
+        print(ex)
         ret.append(np.nan)
     try:
         ret.append(np.round(smape(ndata, nforecasts), 2))
-    except:
+    except Exception as ex:
+        print(ex)
         ret.append(np.nan)
     try:
         ret.append(np.round(UStatistic(ndata, nforecasts), 2))
-    except:
+    except Exception as ex:
+        print(ex)
         ret.append(np.nan)
 
     return ret

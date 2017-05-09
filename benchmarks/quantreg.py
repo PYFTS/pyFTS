@@ -55,7 +55,7 @@ class QuantileRegression(fts.FTS):
 
         ret = []
 
-        for k in np.arange(self.order, l):
+        for k in np.arange(self.order, l+1):   #+1 to forecast one step ahead given all available lags
             sample = ndata[k - self.order : k]
 
             ret.append(self.linearmodel(sample, self.mean_qt))
@@ -72,7 +72,7 @@ class QuantileRegression(fts.FTS):
 
         ret = []
 
-        for k in np.arange(self.order - 1, l):
+        for k in np.arange(self.order , l):
             sample = ndata[k - self.order: k]
             up = self.linearmodel(sample, self.upper_qt)
             down = self.linearmodel(sample, self.down_qt)

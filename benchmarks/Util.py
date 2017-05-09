@@ -48,7 +48,7 @@ def find_best(dataframe, criteria, ascending):
     return ret
 
 
-def point_dataframe_sintetic_columns():
+def point_dataframe_synthetic_columns():
     return ["Model", "Order", "Scheme", "Partitions", "Size", "RMSEAVG", "RMSESTD", "SMAPEAVG", "SMAPESTD", "UAVG",
             "USTD", "TIMEAVG", "TIMESTD"]
 
@@ -64,7 +64,7 @@ def point_dataframe_analytic_columns(experiments):
     return columns
 
 
-def save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u):
+def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, times, u):
     """
     Create a dataframe to store the benchmark results
     :param experiments: dictionary with the execution results
@@ -72,7 +72,7 @@ def save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, t
     :param objs: 
     :param rmse: 
     :param save: 
-    :param sintetic: 
+    :param synthetic: 
     :param smape: 
     :param times: 
     :param u: 
@@ -80,7 +80,7 @@ def save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, t
     """
     ret = []
 
-    if sintetic:
+    if synthetic:
 
         for k in sorted(objs.keys()):
             try:
@@ -109,7 +109,7 @@ def save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, t
                 print("Erro ao salvar ", k)
                 print("Exceção ", ex)
 
-        columns = point_dataframe_sintetic_columns()
+        columns = point_dataframe_synthetic_columns()
     else:
         for k in sorted(objs.keys()):
             try:
@@ -152,7 +152,7 @@ def save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, t
         print(ret)
 
 
-def cast_dataframe_to_sintetic_point(infile, outfile, experiments):
+def cast_dataframe_to_synthetic_point(infile, outfile, experiments):
     columns = point_dataframe_analytic_columns(experiments)
     dat = pd.read_csv(infile, sep=";", usecols=columns)
     models = dat.Model.unique()
@@ -190,7 +190,7 @@ def cast_dataframe_to_sintetic_point(infile, outfile, experiments):
                         mod.append(np.round(np.nanstd(times), 4))
                         ret.append(mod)
 
-    dat = pd.DataFrame(ret, columns=point_dataframe_sintetic_columns())
+    dat = pd.DataFrame(ret, columns=point_dataframe_synthetic_columns())
     dat.to_csv(Util.uniquefilename(outfile), sep=";", index=False)
 
 
@@ -208,7 +208,7 @@ def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam):
     axes[2].set_title('U Statistic')
     axes[3].set_title('Execution Time')
 
-    dat_syn = pd.read_csv(file_synthetic, sep=";", usecols=point_dataframe_sintetic_columns())
+    dat_syn = pd.read_csv(file_synthetic, sep=";", usecols=point_dataframe_synthetic_columns())
 
     bests = find_best(dat_syn, ['UAVG','RMSEAVG','USTD','RMSESTD'], [1,1,1,1])
 
@@ -241,9 +241,9 @@ def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam):
 
 
 
-def save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic, times):
+def save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times):
     ret = []
-    if sintetic:
+    if synthetic:
         for k in sorted(objs.keys()):
             mod = []
             mfts = objs[k]
@@ -268,7 +268,7 @@ def save_dataframe_interval(coverage, experiments, file, objs, resolution, save,
             mod.append(l)
             ret.append(mod)
 
-        columns = interval_dataframe_sintetic_columns()
+        columns = interval_dataframe_synthetic_columns()
     else:
         for k in sorted(objs.keys()):
             try:
@@ -315,13 +315,13 @@ def interval_dataframe_analytic_columns(experiments):
     return columns
 
 
-def interval_dataframe_sintetic_columns():
+def interval_dataframe_synthetic_columns():
     columns = ["Model", "Order", "Scheme", "Partitions", "SHARPAVG", "SHARPSTD", "RESAVG", "RESSTD", "COVAVG",
                "COVSTD", "TIMEAVG", "TIMESTD", "SIZE"]
     return columns
 
 
-def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic):
+def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, synthetic):
     """
     Save benchmark results for m-step ahead probabilistic forecasters 
     :param experiments: 
@@ -332,12 +332,12 @@ def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, tim
     :param times1: 
     :param times2: 
     :param save: 
-    :param sintetic: 
+    :param synthetic: 
     :return: 
     """
     ret = []
 
-    if sintetic:
+    if synthetic:
 
         for k in sorted(objs.keys()):
             try:
@@ -370,7 +370,7 @@ def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, tim
                 print("Erro ao salvar ", k)
                 print("Exceção ", ex)
 
-        columns = ahead_dataframe_sintetic_columns()
+        columns = ahead_dataframe_synthetic_columns()
     else:
         for k in sorted(objs.keys()):
             try:
@@ -417,7 +417,7 @@ def ahead_dataframe_analytic_columns(experiments):
     return columns
 
 
-def ahead_dataframe_sintetic_columns():
+def ahead_dataframe_synthetic_columns():
     columns = ["Model", "Order", "Scheme", "Partitions", "CRPS1AVG", "CRPS1STD", "CRPS2AVG", "CRPS2STD",
                "SIZE", "TIME1AVG", "TIME2AVG"]
     return columns

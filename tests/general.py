@@ -39,7 +39,7 @@ os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 #gauss_teste = random.normal(0,1.0,400)
 
 taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-taiex = np.array(taiexpd["avg"][:5000])
+taiex = np.array(taiexpd["avg"][:2000])
 
 #nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
 #nasdaq = np.array(nasdaqpd["avg"][0:5000])
@@ -54,34 +54,39 @@ from statsmodels.tsa.tsatools import lagmat
 #print(lag)
 #print(a)
 
-from pyFTS.benchmarks import distributed_benchmarks as bchmk
+from pyFTS.benchmarks import benchmarks as bchmk
+#from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 from pyFTS.benchmarks import Util
 from pyFTS.benchmarks import arima, quantreg
 
-#Util.cast_dataframe_to_sintetic_point("experiments/taiex_point_analitic.csv","experiments/taiex_point_sintetic.csv",11)
+#Util.cast_dataframe_to_synthetic_point("experiments/taiex_point_analitic.csv","experiments/taiex_point_sintetic.csv",11)
 
 #Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/taiex_point_analitic.csv",11)
 
 #tmp = arima.ARIMA("")
-#tmp.train(taiex[:1600], None, order=(1,0,1))
-#teste = tmp.forecast(taiex[1600:1610])
+#tmp.train(taiex[:1600], None, order=(2,0,2))
+#teste = tmp.forecast(taiex[1600:1605])
 
 #tmp = quantreg.QuantileRegression("")
-#tmp.train(taiex[:1600], None, order=1)
-#teste = tmp.forecast(taiex[1600:1610])
+#tmp.train(taiex[:1600], None, order=2)
+#teste = tmp.forecast(taiex[1600:1605])
 
-#print(taiex[1600:1610])
+#print(taiex[1600:1605])
 #print(teste)
 
 #bchmk.teste(taiex,['192.168.0.109', '192.168.0.101'])
 
-bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
-                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-                     partitions= np.arange(10,200,step=10), #transformation=diff,
-                     dump=True, save=True, file="experiments/taiex_point_analytic.csv",
-                     nodes=['192.168.0.102', '192.168.0.109', '192.168.0.106']) #, depends=[hofts, ifts])
+from pyFTS import song, chen, yu, cheng
 
+
+bchmk.point_sliding_window(taiex,1000,train=0.8, models=[], #song.ConventionalFTS, chen.ConventionalFTS], #[yu.WeightedFTS, cheng.TrendWeightedFTS], # #
+                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+                     partitions= [10], #np.arange(10,200,step=10), #transformation=diff,
+                     dump=True, save=True, file="experiments/XXXtaiex_point_analytic.csv") #,
+#                     nodes=['192.168.0.102', '192.168.0.109', '192.168.0.106']) #, depends=[hofts, ifts])
+
+"""
 diff = Transformations.Differential(1)
 
 bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
@@ -89,7 +94,7 @@ bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
                      partitions= np.arange(10,200,step=10), transformation=diff,
                      dump=True, save=True, file="experiments/taiex_point_analytic_diff.csv",
                      nodes=['192.168.0.102', '192.168.0.109', '192.168.0.106']) #, depends=[hofts, ifts])
-
+"""
 #bchmk.testa(taiex,[10,20],partitioners=[Grid.GridPartitioner], nodes=['192.168.0.109', '192.168.0.101'])
 
 #parallel_util.explore_partitioners(taiex,20)

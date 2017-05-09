@@ -14,5 +14,5 @@ class Naive(fts.FTS):
         self.is_high_order = False
 
     def forecast(self, data, **kwargs):
-        return [k for k in data]
+        return data
 
