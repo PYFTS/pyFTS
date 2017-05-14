@@ -219,7 +219,7 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, tran
     import time
     from pyFTS import hofts,ifts,pwfts
     from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures
+    from pyFTS.benchmarks import Measures, arima, quantreg
 
     tmp = [hofts.HighOrderFTS, ifts.IntervalFTS,  pwfts.ProbabilisticWeightedFTS]
 
@@ -291,7 +291,7 @@ def interval_sliding_window(data, windowsize, train=0.8,  inc=0.1, models=None, 
     if benchmark_models_parameters is None:
         benchmark_models_parameters = [(1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
 
-    cluster = dispy.JobCluster(run_point, nodes=nodes) #, depends=dependencies)
+    cluster = dispy.JobCluster(run_interval, nodes=nodes) #, depends=dependencies)
 
     http_server = dispy.httpd.DispyHTTPServer(cluster)
 

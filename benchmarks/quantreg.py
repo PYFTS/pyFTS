@@ -38,8 +38,8 @@ class QuantileRegression(fts.FTS):
 
         self.mean_qt = [k for k in mqt.params]
         if self.alpha is not None:
-            self.upper_qt = [uqt.params[k] for k in uqt.params.keys()]
-            self.lower_qt = [lqt.params[k] for k in lqt.params.keys()]
+            self.upper_qt = [k for k in uqt.params]
+            self.lower_qt = [k for k in lqt.params]
 
         self.shortname = "QAR(" + str(self.order) + ")"
 

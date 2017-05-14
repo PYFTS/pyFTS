@@ -29,11 +29,11 @@ DATASETS
 #gauss = random.normal(0,1.0,5000)
 #gauss_teste = random.normal(0,1.0,400)
 
-taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-taiex = np.array(taiexpd["avg"][:5000])
+#taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
+#taiex = np.array(taiexpd["avg"][:5000])
 
-#nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
-#nasdaq = np.array(nasdaqpd["avg"][0:5000])
+nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
+nasdaq = np.array(nasdaqpd["avg"][0:5000])
 
 #sp500pd = pd.read_csv("DataSets/S&P500.csv", sep=",")
 #sp500 = np.array(sp500pd["Avg"][11000:])
@@ -73,7 +73,7 @@ from pyFTS.benchmarks import arima, quantreg
 
 #bchmk.teste(taiex,['192.168.0.109', '192.168.0.101'])
 
-from pyFTS import song, chen, yu, cheng
+diff = Transformations.Differential(1)
 
 """
 bchmk.point_sliding_window(sonda, 9000, train=0.8, inc=0.4,#models=[yu.WeightedFTS], # #
@@ -82,7 +82,7 @@ bchmk.point_sliding_window(sonda, 9000, train=0.8, inc=0.4,#models=[yu.WeightedF
                      dump=True, save=True, file="experiments/sondaws_point_analytic.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-diff = Transformations.Differential(1)
+
 
 bchmk.point_sliding_window(sonda, 9000, train=0.8, inc=0.4, #models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
@@ -91,6 +91,21 @@ bchmk.point_sliding_window(sonda, 9000, train=0.8, inc=0.4, #models=[yu.Weighted
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 #"""
 
+bchmk.interval_sliding_window(nasdaq, 2000, train=0.8, inc=0.1,#models=[yu.WeightedFTS], # #
+                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+                     partitions= np.arange(10,200,step=10), #transformation=diff,
+                     dump=True, save=True, file="experiments/nasdaq_interval_analytic.csv",
+                     nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+
+
+
+bchmk.interval_sliding_window(nasdaq, 2000, train=0.8, inc=0.1, #models=[yu.WeightedFTS], # #
+                     partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
+                     partitions= np.arange(3,20,step=2), #transformation=diff,
+                     dump=True, save=True, file="experiments/nasdaq_interval_analytic_diff.csv",
+                     nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+
+"""
 from pyFTS.partitioners import Grid
 from pyFTS import pwfts
 
@@ -108,3 +123,4 @@ x = tmp.forecastInterval(taiex[1600:1610])
 
 print(taiex[1600:1610])
 print(x)
+"""
