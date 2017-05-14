@@ -33,7 +33,7 @@ class ARIMA(fts.FTS):
         self.d = order[1]
         self.q = order[2]
         self.order = self.p + self.q
-        self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ")"
+        self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ") - " + str(self.alpha)
 
         old_fit = self.model_fit
         try:

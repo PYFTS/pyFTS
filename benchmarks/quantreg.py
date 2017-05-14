@@ -41,7 +41,7 @@ class QuantileRegression(fts.FTS):
             self.upper_qt = [k for k in uqt.params]
             self.lower_qt = [k for k in lqt.params]
 
-        self.shortname = "QAR(" + str(self.order) + ")"
+        self.shortname = "QAR(" + str(self.order) + ") - " + str(self.alpha)
 
     def linearmodel(self,data,params):
         #return params[0] + sum([ data[k] * params[k+1] for k in np.arange(0, self.order) ])
@@ -74,7 +74,7 @@ class QuantileRegression(fts.FTS):
             sample = ndata[k - self.order: k]
             up = self.linearmodel(sample, self.upper_qt)
             down = self.linearmodel(sample, self.lower_qt)
-            ret.append([up, down])
+            ret.append([down, up])
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
 

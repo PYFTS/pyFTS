@@ -54,7 +54,7 @@ nasdaq = np.array(nasdaqpd["avg"][0:5000])
 from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 from pyFTS.benchmarks import Util
-from pyFTS.benchmarks import arima, quantreg
+from pyFTS.benchmarks import arima, quantreg, Measures
 
 #Util.cast_dataframe_to_synthetic_point("experiments/taiex_point_analitic.csv","experiments/taiex_point_sintetic.csv",11)
 
@@ -64,13 +64,18 @@ from pyFTS.benchmarks import arima, quantreg
 #tmp.train(taiex[:1600], None, order=(2,0,2))
 #teste = tmp.forecastInterval(taiex[1600:1605])
 
-#tmp = quan#treg.QuantileRegression("")
-#tmp.train(taiex[:1600], None, order=2)
-#teste = tmp.forecast(taiex[1600:1605])
+"""
+tmp = quantreg.QuantileRegression("", alpha=0.25)
+tmp.train(taiex[:1600], None, order=1)
+teste = tmp.forecastInterval(taiex[1600:1605])
 
-#print(taiex[1600:1605])
-#print(teste)
+print(taiex[1600:1605])
+print(teste)
 
+kk = Measures.get_interval_statistics(taiex[1600:1605], tmp)
+
+print(kk)
+"""
 #bchmk.teste(taiex,['192.168.0.109', '192.168.0.101'])
 
 diff = Transformations.Differential(1)
@@ -89,6 +94,7 @@ bchmk.point_sliding_window(sonda, 9000, train=0.8, inc=0.4, #models=[yu.Weighted
                      partitions= np.arange(3,20,step=2), #transformation=diff,
                      dump=True, save=True, file="experiments/sondaws_point_analytic_diff.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+"""
 #"""
 
 bchmk.interval_sliding_window(nasdaq, 2000, train=0.8, inc=0.1,#models=[yu.WeightedFTS], # #
@@ -104,6 +110,8 @@ bchmk.interval_sliding_window(nasdaq, 2000, train=0.8, inc=0.1, #models=[yu.Weig
                      partitions= np.arange(3,20,step=2), #transformation=diff,
                      dump=True, save=True, file="experiments/nasdaq_interval_analytic_diff.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+
+#"""
 
 """
 from pyFTS.partitioners import Grid
@@ -123,4 +131,4 @@ x = tmp.forecastInterval(taiex[1600:1610])
 
 print(taiex[1600:1610])
 print(x)
-"""
+#"""
