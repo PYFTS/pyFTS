@@ -73,7 +73,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
     return ret
 
 
-def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
+def point_sliding_window(data, windowsize, train=0.8, inc=0.1, models=None, partitioners=[Grid.GridPartitioner],
                          partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
                          benchmark_models=None, benchmark_models_parameters = None,
                          save=False, file=None, sintetic=False,nodes=None, depends=None):
@@ -82,6 +82,7 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
     :param data: 
     :param windowsize: size of sliding window
     :param train: percentual of sliding window data used to train the models
+    :param inc: percentual of window is used do increment 
     :param models: FTS point forecasters
     :param partitioners: Universe of Discourse partitioner
     :param partitions: the max number of partitions on the Universe of Discourse 
@@ -146,7 +147,7 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
             pool.append(mfts)
 
     experiments = 0
-    for ct, train, test in Util.sliding_window(data, windowsize, train):
+    for ct, train, test in Util.sliding_window(data, windowsize, train, inc):
         experiments += 1
 
         benchmarks_only = {}
@@ -223,13 +224,18 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, tran
 
     tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
 
+    tmp4 = [arima.ARIMA, quantreg.QuantileRegression]
+
     tmp3 = [Measures.get_interval_statistics]
 
-    pttr = str(partitioner.__module__).split('.')[-1]
-    _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
-    mfts.partitioner = partitioner
-    if transformation is not None:
-        mfts.appendTransformation(transformation)
+    if mfts.benchmark_only:
+        _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
+    else:
+        pttr = str(partitioner.__module__).split('.')[-1]
+        _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
+        mfts.partitioner = partitioner
+        if transformation is not None:
+            mfts.appendTransformation(transformation)
 
     _start = time.time()
     mfts.train(train_data, partitioner.sets, order=mfts.order)
@@ -237,24 +243,26 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, tran
     times = _end - _start
 
     _start = time.time()
-    _sharp, _res, _cov = Measures.get_interval_statistics(test_data, mfts)
+    _sharp, _res, _cov, _q05, _q25, _q75, _q95 = Measures.get_interval_statistics(test_data, mfts)
     _end = time.time()
     times += _end - _start
 
     ret = {'key': _key, 'obj': mfts, 'sharpness': _sharp, 'resolution': _res, 'coverage': _cov, 'time': times,
-           'window': window_key}
+           'Q05': _q05, 'Q25': _q25, 'Q75': _q75, 'Q95': _q95, 'window': window_key}
 
     return ret
 
 
-def interval_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
-                         partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
-                         save=False, file=None, sintetic=False,nodes=None, depends=None):
+def interval_sliding_window(data, windowsize, train=0.8,  inc=0.1, models=None, partitioners=[Grid.GridPartitioner],
+                            partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
+                            benchmark_models=None, benchmark_models_parameters = None,
+                            save=False, file=None, sintetic=False,nodes=None, depends=None):
     """
      Distributed sliding window benchmarks for FTS interval forecasters
      :param data: 
      :param windowsize: size of sliding window
      :param train: percentual of sliding window data used to train the models
+     :param inc:
      :param models: FTS point forecasters
      :param partitioners: Universe of Discourse partitioner
      :param partitions: the max number of partitions on the Universe of Discourse 
@@ -262,6 +270,8 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
      :param transformation: data transformation
      :param indexer: seasonal indexer
      :param dump: 
+     :param benchmark_models:
+     :param benchmark_models_parameters:
      :param save: save results
      :param file: file path to save the results
      :param sintetic: if true only the average and standard deviation of the results
@@ -269,6 +279,15 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
      :param depends: list of module dependencies 
      :return: DataFrame with the results
      """
+
+    alphas = [0.5, 0.25]
+
+    if benchmark_models is None and models is None:
+        benchmark_models = [arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA,
+                            quantreg.QuantileRegression, quantreg.QuantileRegression]
+
+    if benchmark_models_parameters is None:
+        benchmark_models_parameters = [(1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
 
     cluster = dispy.JobCluster(run_point, nodes=nodes) #, depends=dependencies)
 
@@ -284,6 +303,10 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
     sharpness = {}
     resolution = {}
     coverage = {}
+    q05 = {}
+    q25 = {}
+    q75 = {}
+    q95 = {}
     times = {}
 
     if models is None:
@@ -299,11 +322,22 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                     mfts.order = order
                     pool.append(mfts)
         else:
+            mfts.order = 1
             pool.append(mfts)
 
+    if benchmark_models is not None:
+        for count, model in enumerate(benchmark_models, start=0):
+            for a in alphas:
+                par = benchmark_models_parameters[count]
+                mfts = model(str(par if par is not None else ""), alpha=a)
+                mfts.order = par
+                pool.append(mfts)
+
     experiments = 0
-    for ct, train, test in Util.sliding_window(data, windowsize, train):
+    for ct, train, test in Util.sliding_window(data, windowsize, train, inc=inc):
         experiments += 1
+
+        benchmarks_only = {}
 
         if dump: print('\nWindow: {0}\n'.format(ct))
 
@@ -314,6 +348,10 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                 data_train_fs = partitioner(train, partition, transformation=transformation)
 
                 for id, m in enumerate(pool,start=0):
+                    if m.benchmark_only and m.shortname in benchmarks_only:
+                        continue
+                    else:
+                        benchmarks_only[m.shortname] = m
                     job = cluster.submit(m, data_train_fs, train, test, ct, transformation)
                     job.id = id  # associate an ID to identify jobs (if needed later)
                     jobs.append(job)
@@ -327,11 +365,19 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                 resolution[tmp['key']] = []
                 coverage[tmp['key']] = []
                 times[tmp['key']] = []
+                q05[tmp['key']] = []
+                q25[tmp['key']] = []
+                q75[tmp['key']] = []
+                q95[tmp['key']] = []
 
             sharpness[tmp['key']].append(tmp['sharpness'])
             resolution[tmp['key']].append(tmp['resolution'])
             coverage[tmp['key']].append(tmp['coverage'])
             times[tmp['key']].append(tmp['time'])
+            q05[tmp['key']].append(tmp['Q05'])
+            q25[tmp['key']].append(tmp['Q25'])
+            q75[tmp['key']].append(tmp['Q75'])
+            q95[tmp['key']].append(tmp['Q95'])
             print(tmp['key'])
         else:
             print(job.exception)
@@ -350,8 +396,8 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
     http_server.shutdown()  # this waits until browser gets all updates
     cluster.close()
 
-    return benchmarks.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic,
-                                              times)
+    return bUtil.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic,
+                                         times, q05, q25, q75, q95)
 
 
 def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, window_key=None, transformation=None, indexer=None):

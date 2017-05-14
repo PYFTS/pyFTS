@@ -88,7 +88,13 @@ class FTS(object):
         :param kwargs: 
         :return: 
         """
-        pass
+        ret = []
+        for k in np.arange(0,steps):
+            tmp = self.forecast(data[-self.order:],kwargs)
+            ret.append(tmp)
+            data.append(tmp)
+
+        return ret
 
     def forecastAheadInterval(self, data, steps, **kwargs):
         """

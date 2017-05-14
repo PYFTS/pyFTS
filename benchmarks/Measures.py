@@ -164,6 +164,36 @@ def coverage(targets, forecasts):
     return np.mean(preds)
 
 
+def pinball(tau, target, forecast):
+    """
+    Pinball loss function. Measure the distance of forecast to the tau-quantile of the target 
+    :param tau: quantile value in the range (0,1)
+    :param target: 
+    :param forecast: 
+    :return: distance of forecast to the tau-quantile of the target
+    """
+    if target >= forecast:
+        return (target - forecast) * tau
+    else:
+        return (forecast - target) * (1 - tau)
+
+
+def pinball_mean(tau, targets, forecasts):
+    """
+    Mean pinball loss value of the forecast for a given tau-quantile of the targets
+    :param tau: quantile value in the range (0,1)
+    :param targets: list of target values
+    :param forecasts: list of prediction intervals
+    :return: 
+    """
+    preds = []
+    if tau <= 0.5:
+        preds = [pinball(tau, targets[i], forecasts[i][0]) for i in np.arange(0, len(forecasts))]
+    else:
+        preds = [pinball(tau, targets[i], forecasts[i][1]) for i in np.arange(0, len(forecasts))]
+    return np.nanmean(preds)
+
+
 def pmf_to_cdf(density):
     ret = []
     for row in density.index:
@@ -248,6 +278,10 @@ def get_interval_statistics(original, model):
     ret.append(round(sharpness(forecasts), 2))
     ret.append(round(resolution(forecasts), 2))
     ret.append(round(coverage(original[model.order:], forecasts[:-1]), 2))
+    ret.append(round(pinball_mean(0.05, original[model.order:], forecasts[:-1]), 2))
+    ret.append(round(pinball_mean(0.25, original[model.order:], forecasts[:-1]), 2))
+    ret.append(round(pinball_mean(0.75, original[model.order:], forecasts[:-1]), 2))
+    ret.append(round(pinball_mean(0.95, original[model.order:], forecasts[:-1]), 2))
     return ret
 
 

@@ -240,8 +240,7 @@ def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam):
     plt.show()
 
 
-
-def save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times):
+def save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times, q05, q25, q75, q95):
     ret = []
     if synthetic:
         for k in sorted(objs.keys()):
@@ -265,6 +264,14 @@ def save_dataframe_interval(coverage, experiments, file, objs, resolution, save,
             mod.append(round(np.nanstd(coverage[k]), 2))
             mod.append(round(np.nanmean(times[k]), 2))
             mod.append(round(np.nanstd(times[k]), 2))
+            mod.append(round(np.nanmean(q05[k]), 2))
+            mod.append(round(np.nanstd(q05[k]), 2))
+            mod.append(round(np.nanmean(q25[k]), 2))
+            mod.append(round(np.nanstd(q25[k]), 2))
+            mod.append(round(np.nanmean(q75[k]), 2))
+            mod.append(round(np.nanstd(q75[k]), 2))
+            mod.append(round(np.nanmean(q95[k]), 2))
+            mod.append(round(np.nanstd(q95[k]), 2))
             mod.append(l)
             ret.append(mod)
 
@@ -296,6 +303,18 @@ def save_dataframe_interval(coverage, experiments, file, objs, resolution, save,
                 tmp = [n, o, s, p, l, 'TIME']
                 tmp.extend(times[k])
                 ret.append(deepcopy(tmp))
+                tmp = [n, o, s, p, l, 'Q05']
+                tmp.extend(q05[k])
+                ret.append(deepcopy(tmp))
+                tmp = [n, o, s, p, l, 'Q25']
+                tmp.extend(q25[k])
+                ret.append(deepcopy(tmp))
+                tmp = [n, o, s, p, l, 'Q75']
+                tmp.extend(q75[k])
+                ret.append(deepcopy(tmp))
+                tmp = [n, o, s, p, l, 'Q95']
+                tmp.extend(q95[k])
+                ret.append(deepcopy(tmp))
             except Exception as ex:
                 print("Erro ao salvar ", k)
                 print("Exceção ", ex)
@@ -317,7 +336,7 @@ def interval_dataframe_analytic_columns(experiments):
 
 def interval_dataframe_synthetic_columns():
     columns = ["Model", "Order", "Scheme", "Partitions", "SHARPAVG", "SHARPSTD", "RESAVG", "RESSTD", "COVAVG",
-               "COVSTD", "TIMEAVG", "TIMESTD", "SIZE"]
+               "COVSTD", "TIMEAVG", "TIMESTD", "Q05AVG", "Q05STD", "Q25AVG", "Q25STD", "Q75AVG", "Q75STD", "Q95AVG", "Q95STD", "SIZE"]
     return columns
 
 

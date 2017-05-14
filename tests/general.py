@@ -22,40 +22,36 @@ os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 #enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
 #enrollments = np.array(enrollments["Enrollments"])
 
-#from pyFTS import song
-
-#enrollments_fs = Grid.GridPartitioner(enrollments, 10).sets
-
-#model = song.ConventionalFTS('')
-#model.train(enrollments,enrollments_fs)
-#teste = model.forecast(enrollments)
-
-#print(teste)
-
-
-#print(FCM.FCMPartitionerTrimf.__module__)
+"""
+DATASETS
+"""
 
 #gauss = random.normal(0,1.0,5000)
 #gauss_teste = random.normal(0,1.0,400)
 
-taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-taiex = np.array(taiexpd["avg"][:2000])
+#taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
+#taiex = np.array(taiexpd["avg"][:5000])
 
 #nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
 #nasdaq = np.array(nasdaqpd["avg"][0:5000])
 
-#from statsmodels.tsa.arima_model import ARIMA as stats_arima
-from statsmodels.tsa.tsatools import lagmat
+#sp500pd = pd.read_csv("DataSets/S&P500.csv", sep=",")
+#sp500 = np.array(sp500pd["Avg"][11000:])
+#del(sp500pd)
 
-#tmp = np.arange(10)
+sondapd = pd.read_csv("DataSets/SONDA_BSB_HOURLY_AVG.csv", sep=";")
+sondapd = sondapd.dropna(axis=0, how='any')
+sonda = np.array(sondapd["ws_10m"])
+del(sondapd)
 
-#lag, a = lagmat(tmp, maxlag=2, trim="both", original='sep')
+#bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
+#best = np.array(bestpd["Anomaly"])
 
 #print(lag)
 #print(a)
 
-from pyFTS.benchmarks import benchmarks as bchmk
-#from pyFTS.benchmarks import distributed_benchmarks as bchmk
+#from pyFTS.benchmarks import benchmarks as bchmk
+from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 from pyFTS.benchmarks import Util
 from pyFTS.benchmarks import arima, quantreg
@@ -66,9 +62,9 @@ from pyFTS.benchmarks import arima, quantreg
 
 #tmp = arima.ARIMA("")
 #tmp.train(taiex[:1600], None, order=(2,0,2))
-#teste = tmp.forecast(taiex[1600:1605])
+#teste = tmp.forecastInterval(taiex[1600:1605])
 
-#tmp = quantreg.QuantileRegression("")
+#tmp = quan#treg.QuantileRegression("")
 #tmp.train(taiex[:1600], None, order=2)
 #teste = tmp.forecast(taiex[1600:1605])
 
@@ -80,21 +76,20 @@ from pyFTS.benchmarks import arima, quantreg
 from pyFTS import song, chen, yu, cheng
 
 
-bchmk.point_sliding_window(taiex,1000,train=0.8, models=[], #song.ConventionalFTS, chen.ConventionalFTS], #[yu.WeightedFTS, cheng.TrendWeightedFTS], # #
+bchmk.point_sliding_window(sonda, 9000, train=0.8, inc=0.4,#models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-                     partitions= [10], #np.arange(10,200,step=10), #transformation=diff,
-                     dump=True, save=True, file="experiments/XXXtaiex_point_analytic.csv") #,
-#                     nodes=['192.168.0.102', '192.168.0.109', '192.168.0.106']) #, depends=[hofts, ifts])
+                     partitions= np.arange(10,200,step=10), #transformation=diff,
+                     dump=True, save=True, file="experiments/sondaws_point_analytic.csv",
+                     nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-"""
 diff = Transformations.Differential(1)
 
-bchmk.point_sliding_window(taiex,2000,train=0.8, #models=[yu.WeightedFTS], # #
+bchmk.point_sliding_window(sonda, 9000, train=0.8, inc=0.4, #models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-                     partitions= np.arange(10,200,step=10), transformation=diff,
-                     dump=True, save=True, file="experiments/taiex_point_analytic_diff.csv",
-                     nodes=['192.168.0.102', '192.168.0.109', '192.168.0.106']) #, depends=[hofts, ifts])
-"""
+                     partitions= np.arange(3,20,step=2), #transformation=diff,
+                     dump=True, save=True, file="experiments/sondaws_point_analytic_diff.csv",
+                     nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+#"""
 #bchmk.testa(taiex,[10,20],partitioners=[Grid.GridPartitioner], nodes=['192.168.0.109', '192.168.0.101'])
 
 #parallel_util.explore_partitioners(taiex,20)

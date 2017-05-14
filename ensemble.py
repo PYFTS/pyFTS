@@ -72,7 +72,7 @@ class EnsembleFTS(fts.FTS):
 
         ret = []
 
-        for k in np.arange(0, l):
+        for k in np.arange(0, l+1):
             tmp = []
             for model in self.models:
                 if k >= model.minOrder - 1:

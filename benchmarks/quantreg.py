@@ -19,15 +19,13 @@ class QuantileRegression(fts.FTS):
         self.has_probability_forecasting = True
         self.benchmark_only = True
         self.minOrder = 1
-        self.alpha = 0.5
+        self.alpha = kwargs.get("alpha", 0.05)
         self.upper_qt = None
         self.mean_qt = None
         self.lower_qt = None
 
     def train(self, data, sets, order=1, parameters=None):
         self.order = order
-
-        self.alpha = parameters
 
         tmp = np.array(self.doTransformations(data))
 
