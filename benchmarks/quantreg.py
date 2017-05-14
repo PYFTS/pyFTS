@@ -73,7 +73,7 @@ class QuantileRegression(fts.FTS):
         for k in np.arange(self.order , l):
             sample = ndata[k - self.order: k]
             up = self.linearmodel(sample, self.upper_qt)
-            down = self.linearmodel(sample, self.down_qt)
+            down = self.linearmodel(sample, self.lower_qt)
             ret.append([up, down])
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
