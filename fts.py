@@ -135,7 +135,7 @@ class FTS(object):
         if transformation is not None:
             self.transformations.append(transformation)
 
-    def doTransformations(self,data,params=None,updateUoD=False):
+    def doTransformations(self,data,params=None,updateUoD=False, **kwargs):
         ndata = data
         if updateUoD:
             if min(data) < 0:
@@ -157,7 +157,7 @@ class FTS(object):
 
         return ndata
 
-    def doInverseTransformations(self, data, params=None):
+    def doInverseTransformations(self, data, params=None, **kwargs):
         ndata = data
         if len(self.transformations) > 0:
             if params is None:

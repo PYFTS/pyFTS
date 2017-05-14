@@ -103,7 +103,7 @@ class ARIMA(fts.FTS):
 
             ret.append(tmp)
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
 
         return ret
 

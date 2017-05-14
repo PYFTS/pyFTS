@@ -398,9 +398,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             if norm == 0:
                 ret.append([0, 0])
             else:
-                lo_ = self.doInverseTransformations(sum(lo) / norm, params=[data[k - (self.order - 1): k + 1]])
-                up_ = self.doInverseTransformations(sum(up) / norm, params=[data[k - (self.order - 1): k + 1]])
+                lo_ = sum(lo) / norm
+                up_ = sum(up) / norm
                 ret.append([lo_, up_])
+
+        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
 
         return ret
 

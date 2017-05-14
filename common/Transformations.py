@@ -13,10 +13,10 @@ class Transformation(object):
         self.parameters = parameters
         self.minimalLength = 1
 
-    def apply(self,data,param):
+    def apply(self,data,param,**kwargs):
         pass
 
-    def inverse(self,data, param):
+    def inverse(self,data, param,**kwargs):
         pass
 
     def __str__(self):
@@ -32,7 +32,7 @@ class Differential(Transformation):
         self.lag = parameters
         self.minimalLength = 2
 
-    def apply(self, data, param=None):
+    def apply(self, data, param=None,**kwargs):
         if param is not None:
             self.lag = param
 
@@ -47,7 +47,9 @@ class Differential(Transformation):
         for t in np.arange(0, self.lag): diff.insert(0, 0)
         return diff
 
-    def inverse(self,data, param):
+    def inverse(self,data, param, **kwargs):
+
+        interval = kwargs.get("interval",False)
 
         if isinstance(data, (np.ndarray, np.generic)):
             data = data.tolist()
@@ -57,7 +59,10 @@ class Differential(Transformation):
 
         n = len(data)
 
-        inc = [data[t] + param[t] for t in np.arange(0, n)]
+        if not interval:
+            inc = [data[t] + param[t] for t in np.arange(0, n)]
+        else:
+            inc = [[data[t][0] + param[t], data[t][0] + param[t]] for t in np.arange(0, n)]
 
         if n == 1:
             return inc[0]
@@ -73,10 +78,10 @@ class AdaptiveExpectation(Transformation):
         super(AdaptiveExpectation, self).__init__(parameters)
         self.h = parameters
 
-    def apply(self, data, param=None):
+    def apply(self, data, param=None,**kwargs):
         return  data
 
-    def inverse(self, data, param):
+    def inverse(self, data, param,**kwargs):
         n = len(data)
 
         inc = [param[t] + self.h*(data[t] - param[t]) for t in np.arange(0, n)]

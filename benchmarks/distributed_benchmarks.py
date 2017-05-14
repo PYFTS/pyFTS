@@ -55,8 +55,9 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
         mfts.partitioner = partitioner
-        if transformation is not None:
-            mfts.appendTransformation(transformation)
+
+    if transformation is not None:
+        mfts.appendTransformation(transformation)
 
     _start = time.time()
     mfts.train(train_data, partitioner.sets, order=mfts.order)
@@ -234,8 +235,9 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, tran
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
         mfts.partitioner = partitioner
-        if transformation is not None:
-            mfts.appendTransformation(transformation)
+
+    if transformation is not None:
+        mfts.appendTransformation(transformation)
 
     _start = time.time()
     mfts.train(train_data, partitioner.sets, order=mfts.order)
