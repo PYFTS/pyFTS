@@ -282,7 +282,7 @@ def interval_sliding_window(data, windowsize, train=0.8,  inc=0.1, models=None, 
      :return: DataFrame with the results
      """
 
-    alphas = [0.5, 0.25]
+    alphas = [0.05, 0.25]
 
     if benchmark_models is None and models is None:
         benchmark_models = [arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA,

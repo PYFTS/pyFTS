@@ -10,7 +10,7 @@ from pyFTS import fts
 class QuantileRegression(fts.FTS):
     """Façade for statsmodels.regression.quantile_regression"""
     def __init__(self, name, **kwargs):
-        super(QuantileRegression, self).__init__(1, "QR"+name)
+        super(QuantileRegression, self).__init__(1, "")
         self.name = "QR"
         self.detail = "Quantile Regression"
         self.is_high_order = True
@@ -23,11 +23,12 @@ class QuantileRegression(fts.FTS):
         self.upper_qt = None
         self.mean_qt = None
         self.lower_qt = None
+        self.shortname = "QAR("+str(self.order)+","+str(self.alpha)+")"
 
     def train(self, data, sets, order=1, parameters=None):
         self.order = order
 
-        tmp = np.array(self.doTransformations(data))
+        tmp = np.array(self.doTransformations(data, updateUoD=True))
 
         lagdata, ndata = lagmat(tmp, maxlag=order, trim="both", original='sep')
 

@@ -26,7 +26,8 @@ class ARIMA(fts.FTS):
         self.q = 0
         self.benchmark_only = True
         self.min_order = 1
-        self.alpha = (1 - kwargs.get("alpha", 0.90))/2
+        self.alpha = kwargs.get("alpha", 0.05)
+        self.shortname += str(self.alpha)
 
     def train(self, data, sets, order, parameters=None):
         self.p = order[0]
@@ -34,6 +35,8 @@ class ARIMA(fts.FTS):
         self.q = order[2]
         self.order = self.p + self.q
         self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ") - " + str(self.alpha)
+
+        data = self.doTransformations(data, updateUoD=True)
 
         old_fit = self.model_fit
         try:
@@ -85,25 +88,28 @@ class ARIMA(fts.FTS):
 
         sigma = np.sqrt(self.model_fit.sigma2)
 
-        ndata = np.array(self.doTransformations(data))
+        #ndata = np.array(self.doTransformations(data))
 
-        l = len(ndata)
+        l = len(data)
 
         ret = []
 
         for k in np.arange(self.order, l+1):
             tmp = []
 
-            sample = [ndata[i] for i in np.arange(k - self.order, k)]
+            sample = [data[i] for i in np.arange(k - self.order, k)]
 
-            mean = self.forecast(sample)[0]
+            mean = self.forecast(sample)
+
+            if isinstance(mean,(list, np.ndarray)):
+                mean = mean[0]
 
             tmp.append(mean + st.norm.ppf(self.alpha) * sigma)
             tmp.append(mean + st.norm.ppf(1 - self.alpha) * sigma)
 
             ret.append(tmp)
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
+        #ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
 
         return ret
 
@@ -112,8 +118,6 @@ class ARIMA(fts.FTS):
             return np.nan
 
         smoothing = kwargs.get("smoothing",0.2)
-
-        alpha = (1 - kwargs.get("alpha", 0.95))/2
 
         sigma = np.sqrt(self.model_fit.sigma2)
 
@@ -130,8 +134,8 @@ class ARIMA(fts.FTS):
 
             hsigma = (1 + k*smoothing)*sigma
 
-            tmp.append(means[k] + st.norm.ppf(alpha) * hsigma)
-            tmp.append(means[k] + st.norm.ppf(1 - alpha) * hsigma)
+            tmp.append(means[k] + st.norm.ppf(self.alpha) * hsigma)
+            tmp.append(means[k] + st.norm.ppf(1 - self.alpha) * hsigma)
 
             ret.append(tmp)
 
