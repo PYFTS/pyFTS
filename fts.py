@@ -88,11 +88,19 @@ class FTS(object):
         :param kwargs: 
         :return: 
         """
+        ndata = [k for k in self.doTransformations(data[- self.order:])]
+
         ret = []
         for k in np.arange(0,steps):
-            tmp = self.forecast(data[-self.order:],kwargs)
+            tmp = self.forecast(ndata[-self.order:], **kwargs)
+
+            if isinstance(tmp,(list, np.ndarray)):
+                tmp = tmp[0]
+
             ret.append(tmp)
-            data.append(tmp)
+            ndata.append(tmp)
+
+        ret = self.doInverseTransformations(ret, params=[ndata[self.order - 1:]])
 
         return ret
 
@@ -164,7 +172,7 @@ class FTS(object):
                 params = [None for k in self.transformations]
 
             for c, t in enumerate(reversed(self.transformations), start=0):
-                ndata = t.inverse(ndata, params[c])
+                ndata = t.inverse(ndata, params[c], **kwargs)
 
         return ndata
 
@@ -180,66 +188,39 @@ class FTS(object):
     def len_total(self):
         return sum([len(k) for k in self.flrgs])
 
-    def buildTreeWithoutOrder(self, node, lags, level):
+    def get_empty_grid(self, _min, _max, resolution):
+        grid = {}
 
-        if level not in lags:
-            return
+        for sbin in np.arange(_min,_max, resolution):
+            grid[sbin] = 0
 
-        for s in lags[level]:
-            node.appendChild(tree.FLRGTreeNode(s))
+        return grid
 
-        for child in node.getChildren():
-            self.buildTreeWithoutOrder(child, lags, level + 1)
-
-    def inputoutputmapping(self,bins=100):
-
-        dim_uod = tuple([bins for k in range(0,self.order)])
-
-        dim_fs = tuple([ len(self.sets) for k in range(0, self.order)])
-
-        simulation_uod = np.zeros(shape=dim_uod, dtype=float)
-
-        simulation_fs = np.zeros(shape=dim_fs, dtype=float)
-
-        percentiles = np.linspace(self.sets[0].lower, self.sets[-1].upper, bins).tolist()
-
-        pdf_uod = {}
-
-        for k in percentiles:
-            pdf_uod[k] = 0
-
-        pdf_fs = {}
-        for k in self.sets:
-            pdf_fs[k.name] = 0
-
-        lags = {}
-
-        for o in np.arange(0, self.order):
-            lags[o] = percentiles
-
-            # Build the tree with all possible paths
-
-        root = tree.FLRGTreeNode(None)
-
-        self.buildTreeWithoutOrder(root, lags, 0)
-
-        # Trace the possible paths
+    def getGridClean(self, resolution):
+        if len(self.transformations) == 0:
+            _min = self.sets[0].lower
+            _max = self.sets[-1].upper
+        else:
+            _min = self.original_min
+            _max = self.original_max
+        return self.get_empty_grid(_min, _max, resolution)
 
 
-        for p in root.paths():
-            path = list(reversed(list(filter(None.__ne__, p))))
 
-            index_uod = tuple([percentiles.index(k) for k in path])
+    def gridCount(self, grid, resolution, index, interval):
+        #print(point_to_interval)
+        for k in index.inside(interval[0],interval[1]):
+            #print(k)
+            grid[k] += 1
+        return grid
 
-            index_fs = tuple([ FuzzySet.getMaxMembershipFuzzySetIndex(k, self.sets) for k in path])
+    def gridCountPoint(self, grid, resolution, index, point):
+        k = index.find_ge(point)
+        # print(k)
+        grid[k] += 1
+        return grid
 
-            forecast = self.forecast(path)[0]
 
-            simulation_uod[index_uod] = forecast
-
-            simulation_fs[index_fs] = forecast
-
-        return [simulation_fs, simulation_uod ]
 
 
 

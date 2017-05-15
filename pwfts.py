@@ -193,6 +193,18 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             ret = sum(np.array([pi * s.lower for s in flrg.LHS]))
         return ret
 
+    def buildTreeWithoutOrder(self, node, lags, level):
+
+        if level not in lags:
+            return
+
+        for s in lags[level]:
+            node.appendChild(tree.FLRGTreeNode(s))
+
+        for child in node.getChildren():
+            self.buildTreeWithoutOrder(child, lags, level + 1)
+
+
     def forecast(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
@@ -439,34 +451,6 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 ret.append([np.min(lower), np.max(upper)])
 
         return ret
-
-    def getGridClean(self, resolution):
-        grid = {}
-
-        if len(self.transformations) == 0:
-            _min = self.sets[0].lower
-            _max = self.sets[-1].upper
-        else:
-            _min = self.original_min
-            _max = self.original_max
-
-        for sbin in np.arange(_min,_max, resolution):
-            grid[sbin] = 0
-
-        return grid
-
-    def gridCount(self, grid, resolution, index, interval):
-        #print(interval)
-        for k in index.inside(interval[0],interval[1]):
-            #print(k)
-            grid[k] += 1
-        return grid
-
-    def gridCountPoint(self, grid, resolution, index, point):
-        k = index.find_ge(point)
-        # print(k)
-        grid[k] += 1
-        return grid
 
     def forecastAheadDistribution(self, data, steps, **kwargs):
 

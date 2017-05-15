@@ -2,9 +2,11 @@
 # -*- coding: utf8 -*-
 
 import numpy as np
+import pandas as pd
 from statsmodels.tsa.arima_model import ARIMA as stats_arima
 import scipy.stats as st
 from pyFTS import fts
+from pyFTS.common import SortedCollection
 
 
 class ARIMA(fts.FTS):
@@ -109,7 +111,7 @@ class ARIMA(fts.FTS):
 
             ret.append(tmp)
 
-        #ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
+        #ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], point_to_interval=True)
 
         return ret
 
@@ -117,7 +119,7 @@ class ARIMA(fts.FTS):
         if self.model_fit is None:
             return np.nan
 
-        smoothing = kwargs.get("smoothing",0.2)
+        smoothing = kwargs.get("smoothing",0.5)
 
         sigma = np.sqrt(self.model_fit.sigma2)
 
@@ -125,7 +127,7 @@ class ARIMA(fts.FTS):
 
         l = len(ndata)
 
-        means = self.forecastAhead(data,steps,kwargs)
+        nmeans = self.forecastAhead(ndata, steps, **kwargs)
 
         ret = []
 
@@ -134,11 +136,52 @@ class ARIMA(fts.FTS):
 
             hsigma = (1 + k*smoothing)*sigma
 
-            tmp.append(means[k] + st.norm.ppf(self.alpha) * hsigma)
-            tmp.append(means[k] + st.norm.ppf(1 - self.alpha) * hsigma)
+            tmp.append(nmeans[k] + st.norm.ppf(self.alpha) * hsigma)
+            tmp.append(nmeans[k] + st.norm.ppf(1 - self.alpha) * hsigma)
 
             ret.append(tmp)
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.doInverseTransformations(ret, params=[[data[-1] for a in np.arange(0,steps)]], interval=True)
 
         return ret
+
+    def forecastAheadDistribution(self, data, steps, **kwargs):
+        smoothing = kwargs.get("smoothing", 0.5)
+
+        sigma = np.sqrt(self.model_fit.sigma2)
+
+        ndata = np.array(self.doTransformations(data))
+
+        l = len(ndata)
+
+        percentile_size = (self.original_max - self.original_min)/100
+
+        resolution = kwargs.get('resolution', percentile_size)
+
+        grid = self.get_empty_grid(self.original_min, self.original_max, resolution)
+
+        index = SortedCollection.SortedCollection(iterable=grid.keys())
+
+        ret = []
+
+        nmeans = self.forecastAhead(ndata, steps, **kwargs)
+
+        for k in np.arange(0, steps):
+            grid = self.get_empty_grid(self.original_min, self.original_max, resolution)
+            for alpha in np.arange(0.05, 0.5, 0.05):
+                tmp = []
+
+                hsigma = (1 + k * smoothing) * sigma
+
+                tmp.append(nmeans[k] + st.norm.ppf(alpha) * hsigma)
+                tmp.append(nmeans[k] + st.norm.ppf(1 - alpha) * hsigma)
+
+                grid = self.gridCount(grid, resolution, index, tmp)
+
+            tmp = np.array([grid[i] for i in sorted(grid)])
+
+            ret.append(tmp / sum(tmp))
+
+        grid = self.get_empty_grid(self.original_min, self.original_max, resolution)
+        df = pd.DataFrame(ret, columns=sorted(grid))
+        return df

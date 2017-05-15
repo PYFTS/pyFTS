@@ -47,12 +47,12 @@ def get_point_methods():
 
 
 def get_benchmark_interval_methods():
-    """Return all non FTS methods for interval forecasting"""
+    """Return all non FTS methods for point_to_interval forecasting"""
     return [quantreg.QuantileRegression]
 
 
 def get_interval_methods():
-    """Return all FTS methods for interval forecasting"""
+    """Return all FTS methods for point_to_interval forecasting"""
     return [ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS]
 
 

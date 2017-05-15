@@ -272,7 +272,7 @@ def get_point_statistics(data, model, indexer=None):
 
 
 def get_interval_statistics(original, model):
-    """Condensate all measures for interval forecasters"""
+    """Condensate all measures for point_to_interval forecasters"""
     ret = list()
     forecasts = model.forecastInterval(original)
     ret.append(round(sharpness(forecasts), 2))

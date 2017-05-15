@@ -49,7 +49,7 @@ class Differential(Transformation):
 
     def inverse(self,data, param, **kwargs):
 
-        interval = kwargs.get("interval",False)
+        interval = kwargs.get("point_to_interval",False)
 
         if isinstance(data, (np.ndarray, np.generic)):
             data = data.tolist()
@@ -62,7 +62,7 @@ class Differential(Transformation):
         if not interval:
             inc = [data[t] + param[t] for t in np.arange(0, n)]
         else:
-            inc = [[data[t][0] + param[t], data[t][0] + param[t]] for t in np.arange(0, n)]
+            inc = [[data[t][0] + param[t], data[t][1] + param[t]] for t in np.arange(0, n)]
 
         if n == 1:
             return inc[0]

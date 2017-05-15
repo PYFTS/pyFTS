@@ -48,6 +48,7 @@ nasdaq = np.array(nasdaqpd["avg"][0:5000])
 
 #bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
 #best = np.array(bestpd["Anomaly"])
+#del(bestpd)
 
 #print(lag)
 #print(a)
@@ -61,26 +62,25 @@ from pyFTS.benchmarks import arima, quantreg, Measures
 #Util.cast_dataframe_to_synthetic_point("experiments/taiex_point_analitic.csv","experiments/taiex_point_sintetic.csv",11)
 
 #Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/taiex_point_analitic.csv",11)
-
+#"""
 tmp = arima.ARIMA("", alpha=0.25)
 #tmp.appendTransformation(diff)
-tmp.train(nasdaq[:1600], None, order=(2,0,2))
-teste = tmp.forecastInterval(nasdaq[1600:1604])
+tmp.train(nasdaq[:1600], None, order=(1,0,1))
+teste = tmp.forecastAheadDistribution(nasdaq[1600:1604], steps=5, resolution=100)
 
-"""
-tmp = quantreg.QuantileRegression("", alpha=0.25)
-tmp.train(taiex[:1600], None, order=1)
-teste = tmp.forecastInterval(taiex[1600:1605])
-"""
+
+#tmp = quantreg.QuantileRegression("", dist=True)
+#tmp.appendTransformation(diff)
+#tmp.train(nasdaq[:1600], None, order=1)
+#teste = tmp.forecastAheadDistribution(nasdaq[1600:1604], steps=5, resolution=50)
+
 print(nasdaq[1600:1605])
 print(teste)
 
-kk = Measures.get_interval_statistics(nasdaq[1600:1605], tmp)
+#kk = Measures.get_interval_statistics(nasdaq[1600:1605], tmp)
 
-print(kk)
-
-#bchmk.teste(taiex,['192.168.0.109', '192.168.0.101'])
-
+#print(kk)
+#"""
 
 
 """
@@ -97,24 +97,25 @@ bchmk.point_sliding_window(sonda, 9000, train=0.8, inc=0.4, #models=[yu.Weighted
                      partitions= np.arange(3,20,step=2), #transformation=diff,
                      dump=True, save=True, file="experiments/sondaws_point_analytic_diff.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
-"""
+
 """
 
-bchmk.interval_sliding_window(taiex, 2000, train=0.8, inc=0.1,#models=[yu.WeightedFTS], # #
+"""
+
+bchmk.interval_sliding_window(best, 5000, train=0.8, inc=0.8,#models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
-                     partitions= np.arange(10,200,step=10), #transformation=diff,
-                     dump=True, save=True, file="experiments/taiex_interval_analytic.csv",
+                     partitions= np.arange(10,200,step=10),
+                     dump=True, save=True, file="experiments/best"
+                                                "_interval_analytic.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-
-
-bchmk.interval_sliding_window(nasdaq, 2000, train=0.8, inc=0.1, #models=[yu.WeightedFTS], # #
+bchmk.interval_sliding_window(best, 5000, train=0.8, inc=0.8, #models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
                      partitions= np.arange(3,20,step=2), transformation=diff,
-                     dump=True, save=True, file="experiments/nasdaq_interval_analytic_diff.csv",
+                     dump=True, save=True, file="experiments/best_interval_analytic_diff.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-"""
+#"""
 
 """
 from pyFTS.partitioners import Grid

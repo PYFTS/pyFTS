@@ -134,7 +134,7 @@ class EnsembleFTS(fts.FTS):
         return grid
 
     def gridCount(self, grid, resolution, index, interval):
-        #print(interval)
+        #print(point_to_interval)
         for k in index.inside(interval[0],interval[1]):
             #print(k)
             grid[k] += 1

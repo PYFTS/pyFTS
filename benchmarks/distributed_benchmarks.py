@@ -260,7 +260,7 @@ def interval_sliding_window(data, windowsize, train=0.8,  inc=0.1, models=None, 
                             benchmark_models=None, benchmark_models_parameters = None,
                             save=False, file=None, sintetic=False,nodes=None, depends=None):
     """
-     Distributed sliding window benchmarks for FTS interval forecasters
+     Distributed sliding window benchmarks for FTS point_to_interval forecasters
      :param data: 
      :param windowsize: size of sliding window
      :param train: percentual of sliding window data used to train the models
