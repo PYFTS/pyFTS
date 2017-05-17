@@ -210,16 +210,17 @@ class FTS(object):
     def gridCount(self, grid, resolution, index, interval):
         #print(point_to_interval)
         for k in index.inside(interval[0],interval[1]):
-            #print(k)
             grid[k] += 1
         return grid
 
     def gridCountPoint(self, grid, resolution, index, point):
-        k = index.find_ge(point)
-        # print(k)
-        grid[k] += 1
-        return grid
+        if not isinstance(point, (list, np.ndarray)):
+            point = [point]
 
+        for p in point:
+            k = index.find_ge(p)
+            grid[k] += 1
+        return grid
 
 
 

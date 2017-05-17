@@ -69,10 +69,21 @@ from pyFTS.benchmarks import arima, quantreg, Measures
 
 #Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/taiex_point_analitic.csv",11)
 #"""
-tmp = arima.ARIMA("", alpha=0.25)
+arima100 = arima.ARIMA("", alpha=0.25)
 #tmp.appendTransformation(diff)
-tmp.train(enrollments, None, order=(1,0,0))
-teste = tmp.forecastInterval(enrollments)
+arima100.train(passengers, None, order=(1,0,0))
+
+arima101 = arima.ARIMA("", alpha=0.25)
+#tmp.appendTransformation(diff)
+arima101.train(passengers, None, order=(1,0,1))
+
+arima200 = arima.ARIMA("", alpha=0.25)
+#tmp.appendTransformation(diff)
+arima200.train(passengers, None, order=(2,0,0))
+
+arima201 = arima.ARIMA("", alpha=0.25)
+#tmp.appendTransformation(diff)
+arima201.train(passengers, None, order=(2,0,1))
 
 
 #tmp = quantreg.QuantileRegression("", alpha=0.25, dist=True)

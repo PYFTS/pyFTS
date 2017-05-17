@@ -9,11 +9,20 @@ from pyFTS.common import FLR, FuzzySet, SortedCollection
 from pyFTS import fts, chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu
 from pyFTS.benchmarks import arima, quantreg
 from pyFTS.common import Transformations
+import scipy.stats as st
+from pyFTS import tree
+
+
+def sampler(data, quantiles):
+    ret = []
+    for qt in quantiles:
+        ret.append(np.nanpercentile(data, q=qt * 100))
+    return ret
 
 
 class EnsembleFTS(fts.FTS):
     def __init__(self, name, **kwargs):
-        super(EnsembleFTS, self).__init__("Ensemble FTS")
+        super(EnsembleFTS, self).__init__(1, "Ensemble FTS")
         self.shortname = "Ensemble FTS " + name
         self.name = "Ensemble FTS"
         self.flrgs = {}
@@ -23,51 +32,54 @@ class EnsembleFTS(fts.FTS):
         self.is_high_order = True
         self.models = []
         self.parameters = []
+        self.alpha = kwargs.get("alpha", 0.05)
+        self.max_order = 1
 
-    def build(self, data, models, partitioners, partitions, max_order=3, transformation=None, indexer=None):
-
-        methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, cheng.TrendWeightedFTS,
-                   ismailefendi.ImprovedWeightedFTS, sadaei.ExponentialyWeightedFTS, hwang.HighOrderFTS,
-                   hofts.HighOrderFTS, arima.ARIMA, quantreg.QuantileRegression]
-
-        transformations = [None, Transformations.Differential(1)]
-
-        for count, method in enumerate(methods, start=0):
-            mfts = method("")
-            if mfts.benchmark_only:
-                if transformation is not None:
-                    mfts.appendTransformation(transformation)
-                mfts.train(data,None, order=1, parameters=None)
-                self.models.append(mfts)
-            else:
-                for partition in partitions:
-                    for partitioner in partitioners:
-                        data_train_fs = partitioner(data, partition, transformation=transformation)
-                        mfts = method("")
-
-                        mfts.partitioner = data_train_fs
-                        if not mfts.is_high_order:
-
-                            if transformation is not None:
-                                mfts.appendTransformation(transformation)
-
-                            mfts.train(data, data_train_fs.sets)
-                            self.models.append(mfts)
-                        else:
-                            for order in np.arange(1, max_order + 1):
-                                if order >= mfts.min_order:
-                                    mfts = method("")
-                                    mfts.partitioner = data_train_fs
-
-                                    if transformation is not None:
-                                        mfts.appendTransformation(transformation)
-
-                                    mfts.train(data, data_train_fs.sets, order=order)
-                                    self.models.append(mfts)
+    def appendModel(self, model):
+        self.models.append(model)
+        if model.order > self.max_order:
+            self.max_order = model.order
 
     def train(self, data, sets, order=1,parameters=None):
-        #if self.models is None:
-        pass
+        self.original_max = max(data)
+        self.original_min = min(data)
+
+    def get_models_forecasts(self,data):
+        tmp = []
+        for model in self.models:
+            sample = data[-model.order:]
+            forecast = model.forecast(sample)
+            if isinstance(forecast, (list,np.ndarray)):
+                forecast = int(forecast[-1])
+            tmp.append(forecast)
+        return tmp
+
+    def get_point(self,method, forecasts, **kwargs):
+        if method == 'mean':
+            ret = np.nanmean(forecasts)
+        elif method == 'median':
+            ret = np.nanpercentile(forecasts, 50)
+        elif method == 'quantile':
+            alpha = kwargs.get("alpha",0.05)
+            ret = np.percentile(forecasts, alpha*100)
+
+        return ret
+
+    def get_interval(self, method, forecasts):
+        ret = []
+        if method == 'extremum':
+            ret.append([min(forecasts), max(forecasts)])
+        elif method == 'quantile':
+            qt_lo = np.nanpercentile(forecasts, q=self.alpha * 100)
+            qt_up = np.nanpercentile(forecasts, q=(1-self.alpha) * 100)
+            ret.append([qt_lo, qt_up])
+        elif method == 'normal':
+            mu = np.nanmean(forecasts)
+            sigma = np.sqrt(np.nanvar(forecasts))
+            ret.append(mu + st.norm.ppf(self.alpha) * sigma)
+            ret.append(mu + st.norm.ppf(1 - self.alpha) * sigma)
+
+        return ret
 
     def forecast(self, data, **kwargs):
 
@@ -76,27 +88,25 @@ class EnsembleFTS(fts.FTS):
         ndata = np.array(self.doTransformations(data))
 
         l = len(ndata)
-
         ret = []
 
-        for k in np.arange(0, l+1):
-            tmp = []
-            for model in self.models:
-                if k >= model.minOrder - 1:
-                    sample = ndata[k - model.order : k]
-                    tmp.append( model.forecast(sample) )
-            if method == 'mean':
-                ret.append( np.nanmean(tmp))
-            elif method == 'median':
-                ret.append(np.percentile(tmp,50))
+        for k in np.arange(self.max_order, l+1):
+            sample = ndata[k - self.max_order : k ]
+            tmp = self.get_models_forecasts(sample)
+            point = self.get_point(method, tmp)
+            ret.append(point)
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
         return ret
 
+
     def forecastInterval(self, data, **kwargs):
 
         method = kwargs.get('method', 'extremum')
+
+        if 'alpha' in kwargs:
+            self.alpha = kwargs.get('alpha',0.05)
 
         ndata = np.array(self.doTransformations(data))
 
@@ -104,55 +114,80 @@ class EnsembleFTS(fts.FTS):
 
         ret = []
 
-        for k in np.arange(0, l):
-            tmp = []
-            for model in self.models:
-                if k >= model.minOrder - 1:
-                    sample = ndata[k - model.order : k]
-                    tmp.append( model.forecast(sample) )
-            if method == 'extremum':
-                ret.append( [ min(tmp), max(tmp) ] )
-            elif method == 'quantile':
-                q = kwargs.get('q', [.05, .95])
-                ret.append(np.percentile(tmp,q=q*100))
+        for k in np.arange(self.max_order, l+1):
+            sample = ndata[k - self.max_order : k ]
+            tmp = self.get_models_forecasts(sample)
+            interval = self.get_interval(method, tmp)
+            ret.append(interval)
 
         return ret
 
-    def forecastAhead(self, data, steps, **kwargs):
-        pass
-
     def forecastAheadInterval(self, data, steps, **kwargs):
-        pass
 
+        method = kwargs.get('method', 'extremum')
 
-    def getGridClean(self, resolution):
-        grid = {}
+        ret = []
 
-        if len(self.transformations) == 0:
-            _min = self.sets[0].lower
-            _max = self.sets[-1].upper
-        else:
-            _min = self.original_min
-            _max = self.original_max
+        samples = [[k,k] for k in data[-self.max_order:]]
 
-        for sbin in np.arange(_min,_max, resolution):
-            grid[sbin] = 0
+        for k in np.arange(self.max_order, steps):
+            forecasts = []
+            sample = samples[k - self.max_order : k]
+            lo_sample = [i[0] for i in sample]
+            up_sample = [i[1] for i in sample]
+            forecasts.extend(self.get_models_forecasts(lo_sample) )
+            forecasts.extend(self.get_models_forecasts(up_sample))
+            interval = self.get_interval(method, forecasts)
 
-        return grid
+            if len(interval) == 1:
+                interval = interval[0]
 
-    def gridCount(self, grid, resolution, index, interval):
-        #print(point_to_interval)
-        for k in index.inside(interval[0],interval[1]):
-            #print(k)
-            grid[k] += 1
-        return grid
+            ret.append(interval)
+            samples.append(interval)
 
-    def gridCountPoint(self, grid, resolution, index, point):
-        k = index.find_ge(point)
-        # print(k)
-        grid[k] += 1
-        return grid
+        return ret
+
+    def empty_grid(self, resolution):
+        return self.get_empty_grid(-(self.original_max*2), self.original_max*2, resolution)
 
     def forecastAheadDistribution(self, data, steps, **kwargs):
-        pass
+        method = kwargs.get('method', 'extremum')
+
+        percentile_size = (self.original_max - self.original_min) / 100
+
+        resolution = kwargs.get('resolution', percentile_size)
+
+        grid = self.empty_grid(resolution)
+
+        index = SortedCollection.SortedCollection(iterable=grid.keys())
+
+        ret = []
+
+        samples = [[k] for k in data[-self.max_order:]]
+
+        for k in np.arange(self.max_order, steps + self.max_order):
+            forecasts = []
+            lags = {}
+            for i in np.arange(0, self.max_order): lags[i] = samples[k - self.max_order + i]
+
+            # Build the tree with all possible paths
+
+            root = tree.FLRGTreeNode(None)
+
+            tree.buildTreeWithoutOrder(root, lags, 0)
+
+            for p in root.paths():
+                path = list(reversed(list(filter(None.__ne__, p))))
+
+                forecasts.extend(self.get_models_forecasts(path))
+
+            samples.append(sampler(forecasts, [0.05, 0.25, 0.5, 0.75, 0.95 ]))
+
+            grid = self.gridCountPoint(grid, resolution, index, forecasts)
+
+            tmp = np.array([grid[i] for i in sorted(grid)])
+
+            ret.append(tmp / sum(tmp))
+
+        return ret
 
