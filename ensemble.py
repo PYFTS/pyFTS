@@ -6,7 +6,9 @@ import pandas as pd
 import math
 from operator import itemgetter
 from pyFTS.common import FLR, FuzzySet, SortedCollection
-from pyFTS import fts
+from pyFTS import fts, chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu
+from pyFTS.benchmarks import arima, quantreg
+from pyFTS.common import Transformations
 
 
 class EnsembleFTS(fts.FTS):
@@ -24,10 +26,14 @@ class EnsembleFTS(fts.FTS):
 
     def build(self, data, models, partitioners, partitions, max_order=3, transformation=None, indexer=None):
 
-        self.models = []
+        methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, cheng.TrendWeightedFTS,
+                   ismailefendi.ImprovedWeightedFTS, sadaei.ExponentialyWeightedFTS, hwang.HighOrderFTS,
+                   hofts.HighOrderFTS, arima.ARIMA, quantreg.QuantileRegression]
 
-        for count, model in enumerate(models, start=0):
-            mfts = model("")
+        transformations = [None, Transformations.Differential(1)]
+
+        for count, method in enumerate(methods, start=0):
+            mfts = method("")
             if mfts.benchmark_only:
                 if transformation is not None:
                     mfts.appendTransformation(transformation)
@@ -37,7 +43,7 @@ class EnsembleFTS(fts.FTS):
                 for partition in partitions:
                     for partitioner in partitioners:
                         data_train_fs = partitioner(data, partition, transformation=transformation)
-                        mfts = model("")
+                        mfts = method("")
 
                         mfts.partitioner = data_train_fs
                         if not mfts.is_high_order:
@@ -50,7 +56,7 @@ class EnsembleFTS(fts.FTS):
                         else:
                             for order in np.arange(1, max_order + 1):
                                 if order >= mfts.min_order:
-                                    mfts = model("")
+                                    mfts = method("")
                                     mfts.partitioner = data_train_fs
 
                                     if transformation is not None:
@@ -60,6 +66,7 @@ class EnsembleFTS(fts.FTS):
                                     self.models.append(mfts)
 
     def train(self, data, sets, order=1,parameters=None):
+        #if self.models is None:
         pass
 
     def forecast(self, data, **kwargs):

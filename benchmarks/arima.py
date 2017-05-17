@@ -20,6 +20,7 @@ class ARIMA(fts.FTS):
         self.is_high_order = True
         self.has_point_forecasting = True
         self.has_interval_forecasting = True
+        self.has_probability_forecasting = True
         self.model = None
         self.model_fit = None
         self.trained_data = None
@@ -44,7 +45,6 @@ class ARIMA(fts.FTS):
         try:
             self.model =  stats_arima(data, order=(self.p, self.d, self.q))
             self.model_fit = self.model.fit(disp=0)
-            print(np.sqrt(self.model_fit.sigma2))
         except Exception as ex:
             print(ex)
             self.model_fit = None
@@ -145,6 +145,9 @@ class ARIMA(fts.FTS):
 
         return ret
 
+    def empty_grid(self, resolution):
+        return self.get_empty_grid(-(self.original_max*2), self.original_max*2, resolution)
+
     def forecastAheadDistribution(self, data, steps, **kwargs):
         smoothing = kwargs.get("smoothing", 0.5)
 
@@ -158,7 +161,7 @@ class ARIMA(fts.FTS):
 
         resolution = kwargs.get('resolution', percentile_size)
 
-        grid = self.get_empty_grid(self.original_min, self.original_max, resolution)
+        grid = self.empty_grid(resolution)
 
         index = SortedCollection.SortedCollection(iterable=grid.keys())
 
@@ -167,7 +170,7 @@ class ARIMA(fts.FTS):
         nmeans = self.forecastAhead(ndata, steps, **kwargs)
 
         for k in np.arange(0, steps):
-            grid = self.get_empty_grid(self.original_min, self.original_max, resolution)
+            grid = self.empty_grid(resolution)
             for alpha in np.arange(0.05, 0.5, 0.05):
                 tmp = []
 
@@ -182,6 +185,6 @@ class ARIMA(fts.FTS):
 
             ret.append(tmp / sum(tmp))
 
-        grid = self.get_empty_grid(self.original_min, self.original_max, resolution)
+        grid = self.empty_grid(resolution)
         df = pd.DataFrame(ret, columns=sorted(grid))
         return df

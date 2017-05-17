@@ -4,6 +4,7 @@ from bisect import bisect_left, bisect_right
 # Original Source Code: https://code.activestate.com/recipes/577197-sortedcollection/
 # Author: RAYMOND HETTINGER
 
+
 class SortedCollection(object):
     '''Sequence sorted by a key function.
 
@@ -204,8 +205,8 @@ class SortedCollection(object):
         raise ValueError('No item found between keys : %r,%r' % (ge,le))
 
     def inside(self, ge, le):
-        g = bisect_right(self._keys, ge)
-        l = bisect_left(self._keys, le)
+        l = bisect_right(self._keys, le)
+        g = bisect_left(self._keys, ge)
         if g != len(self) and l != len(self) and g != l:
             return self._items[g : l]
         elif g != len(self) and l != len(self) and g == l:

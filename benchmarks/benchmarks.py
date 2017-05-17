@@ -16,13 +16,19 @@ import numpy as np
 import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
 
-from probabilistic import ProbabilityDistribution
+from pyFTS.probabilistic import ProbabilityDistribution
 from pyFTS import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, ensemble, hwang
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, quantreg
 from pyFTS.benchmarks import Util as bUtil
 from pyFTS.common import Transformations, Util
 # from sklearn.cross_validation import KFold
 from pyFTS.partitioners import Grid
+from matplotlib import rc
+
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+## for Palatino and other serif fonts use:
+#rc('font',**{'family':'serif','serif':['Palatino']})
+rc('text', usetex=True)
 
 colors = ['grey', 'rosybrown', 'maroon', 'red','orange', 'yellow', 'olive', 'green',
           'cyan', 'blue', 'darkblue', 'purple', 'darkviolet']
@@ -472,6 +478,21 @@ def plot_distribution(dist):
 
 def plot_compared_series(original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5],
                          points=True, intervals=True, linewidth=1.5):
+    """
+    Plot the forecasts of several one step ahead models, by point or by interval 
+    :param original: Original time series data (list)
+    :param models: List of models to compare
+    :param colors: List of models colors
+    :param typeonlegend: Add the type of forecast (point / interval) on legend
+    :param save: Save the picture on file
+    :param file: Filename to save the picture
+    :param tam: Size of the picture
+    :param points: True to plot the point forecasts, False otherwise
+    :param intervals: True to plot the interval forecasts, False otherwise 
+    :param linewidth: 
+    :return: 
+    """
+
     fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
 
@@ -504,8 +525,12 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
                 upper.insert(0, None)
             lbl = fts.shortname
             if typeonlegend: lbl += " (Interval)"
-            ax.plot(lower, color=colors[count], label=lbl, ls="--",linewidth=linewidth)
-            ax.plot(upper, color=colors[count], ls="--",linewidth=linewidth)
+            if not points and intervals:
+                ls = "-"
+            else:
+                ls = "--"
+            ax.plot(lower, color=colors[count], label=lbl, ls=ls,linewidth=linewidth)
+            ax.plot(upper, color=colors[count], ls=ls,linewidth=linewidth)
 
         handles0, labels0 = ax.get_legend_handles_labels()
         lgd = ax.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
@@ -685,7 +710,24 @@ def print_distribution_statistics(original, models, steps, resolution):
 
 def plot_compared_intervals_ahead(original, models, colors, distributions, time_from, time_to,
                                interpol=False, save=False, file=None, tam=[20, 5], resolution=None,
-                               cmap='Blues',option=2):
+                               cmap='Blues',option=2, linewidth=1.5):
+    """
+    Plot the forecasts of several one step ahead models, by point or by interval 
+    :param original: Original time series data (list)
+    :param models: List of models to compare
+    :param colors: List of models colors
+    :param distributions: True to plot a distribution
+    :param time_from: index of data poit to start the ahead forecasting
+    :param time_to: number of steps ahead to forecast
+    :param interpol: Fill space between distribution plots
+    :param save: Save the picture on file
+    :param file: Filename to save the picture
+    :param tam: Size of the picture
+    :param resolution: 
+    :param cmap: Color map to be used on distribution plot 
+    :param option: Distribution type to be passed for models
+    :return: 
+    """
     fig = plt.figure(figsize=tam)
     ax = fig.add_subplot(111)
 
@@ -739,7 +781,6 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
 
             cb.set_label('Density')
 
-
         if fts.has_interval_forecasting:
             forecasts = fts.forecastAheadInterval(original[time_from - fts.order:time_from], time_to)
             lower = [kk[0] for kk in forecasts]
@@ -749,8 +790,8 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
             for k in np.arange(0, time_from - fts.order):
                 lower.insert(0, None)
                 upper.insert(0, None)
-            ax.plot(lower, color=colors[count], label=fts.shortname)
-            ax.plot(upper, color=colors[count])
+            ax.plot(lower, color=colors[count], label=fts.shortname, linewidth=linewidth)
+            ax.plot(upper, color=colors[count], linewidth=linewidth*1.5)
 
         else:
             forecasts = fts.forecast(original)
@@ -760,10 +801,12 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
                 forecasts.insert(0, None)
             ax.plot(forecasts, color=colors[count], label=fts.shortname)
 
-    ax.plot(original, color='black', label="Original")
+    ax.plot(original, color='black', label="Original", linewidth=linewidth*1.5)
     handles0, labels0 = ax.get_legend_handles_labels()
-    ax.legend(handles0, labels0, loc=2)
-    # ax.set_title(fts.name)
+    if True in distributions:
+        lgd = ax.legend(handles0, labels0, loc=2)
+    else:
+        lgd = ax.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
     _mi = min(mi)
     if _mi < 0:
         _mi *= 1.1
@@ -780,9 +823,7 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
-    #plt.colorbar()
-
-    Util.showAndSaveImage(fig, file, save)
+    Util.showAndSaveImage(fig, file, save, lgd=lgd)
 
 
 def plotCompared(original, forecasts, labels, title):

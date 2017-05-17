@@ -19,6 +19,7 @@ class QuantileRegression(fts.FTS):
         self.has_point_forecasting = True
         self.has_interval_forecasting = True
         self.has_probability_forecasting = True
+        self.has_probability_forecasting = True
         self.benchmark_only = True
         self.minOrder = 1
         self.alpha = kwargs.get("alpha", 0.05)
@@ -108,14 +109,21 @@ class QuantileRegression(fts.FTS):
     def forecastAheadInterval(self, data, steps, **kwargs):
         ndata = np.array(self.doTransformations(data))
 
+        smoothing = kwargs.get("smoothing", 0.9)
+
         l = len(ndata)
 
-        ret = [[k, k] for k in ndata[-self.order:]]
+        ret = []
 
-        for k in np.arange(self.order, steps + self.order):
-            intl = self.interval_to_interval([ret[x] for x in np.arange(k - self.order, k)], self.lower_qt, self.upper_qt)
+        nmeans = self.forecastAhead(ndata, steps, **kwargs)
 
-            ret.append(intl)
+        for k in np.arange(0, self.order):
+            nmeans.insert(k,ndata[-(k+1)])
+
+        for k in np.arange(self.order, steps+self.order):
+            intl = self.point_to_interval(nmeans[k - self.order: k], self.lower_qt, self.upper_qt)
+
+            ret.append([intl[0]*(1 + k*smoothing), intl[1]*(1 + k*smoothing)])
 
         ret = self.doInverseTransformations(ret, params=[[data[-1] for a in np.arange(0, steps + self.order)]], interval=True)
 

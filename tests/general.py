@@ -19,8 +19,8 @@ from numpy import random
 
 os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
-#enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
-#enrollments = np.array(enrollments["Enrollments"])
+enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
+enrollments = np.array(enrollments["Enrollments"])
 
 diff = Transformations.Differential(1)
 
@@ -28,14 +28,20 @@ diff = Transformations.Differential(1)
 DATASETS
 """
 
+passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
+passengers = np.array(passengers["Passengers"])
+
+#sunspots = pd.read_csv("DataSets/sunspots.csv", sep=",")
+#sunspots = np.array(sunspots["SUNACTIVITY"])
+
 #gauss = random.normal(0,1.0,5000)
 #gauss_teste = random.normal(0,1.0,400)
 
 #taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
 #taiex = np.array(taiexpd["avg"][:5000])
 
-nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
-nasdaq = np.array(nasdaqpd["avg"][0:5000])
+#nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
+#nasdaq = np.array(nasdaqpd["avg"][0:5000])
 
 #sp500pd = pd.read_csv("DataSets/S&P500.csv", sep=",")
 #sp500 = np.array(sp500pd["Avg"][11000:])
@@ -43,7 +49,7 @@ nasdaq = np.array(nasdaqpd["avg"][0:5000])
 
 #sondapd = pd.read_csv("DataSets/SONDA_BSB_HOURLY_AVG.csv", sep=";")
 #sondapd = sondapd.dropna(axis=0, how='any')
-#sonda = np.array(sondapd["ws_10m"])
+#sonda = np.array(sondapd["glo_avg"])
 #del(sondapd)
 
 #bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
@@ -53,8 +59,8 @@ nasdaq = np.array(nasdaqpd["avg"][0:5000])
 #print(lag)
 #print(a)
 
-#from pyFTS.benchmarks import benchmarks as bchmk
-from pyFTS.benchmarks import distributed_benchmarks as bchmk
+from pyFTS.benchmarks import benchmarks as bchmk
+#from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 from pyFTS.benchmarks import Util
 from pyFTS.benchmarks import arima, quantreg, Measures
@@ -65,17 +71,20 @@ from pyFTS.benchmarks import arima, quantreg, Measures
 #"""
 tmp = arima.ARIMA("", alpha=0.25)
 #tmp.appendTransformation(diff)
-tmp.train(nasdaq[:1600], None, order=(1,0,1))
-teste = tmp.forecastAheadDistribution(nasdaq[1600:1604], steps=5, resolution=100)
+tmp.train(enrollments, None, order=(1,0,0))
+teste = tmp.forecastInterval(enrollments)
 
 
-#tmp = quantreg.QuantileRegression("", dist=True)
+#tmp = quantreg.QuantileRegression("", alpha=0.25, dist=True)
 #tmp.appendTransformation(diff)
-#tmp.train(nasdaq[:1600], None, order=1)
+#tmp.train(sunspots[:150], None, order=1)
+#teste = tmp.forecastAheadInterval(sunspots[150:155], 5)
 #teste = tmp.forecastAheadDistribution(nasdaq[1600:1604], steps=5, resolution=50)
 
-print(nasdaq[1600:1605])
-print(teste)
+bchmk.plot_compared_series(enrollments,[tmp], ['blue','red'], points=False, intervals=True)
+
+#print(sunspots[150:155])
+#print(teste)
 
 #kk = Measures.get_interval_statistics(nasdaq[1600:1605], tmp)
 
@@ -109,10 +118,10 @@ bchmk.interval_sliding_window(best, 5000, train=0.8, inc=0.8,#models=[yu.Weighte
                                                 "_interval_analytic.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-bchmk.interval_sliding_window(best, 5000, train=0.8, inc=0.8, #models=[yu.WeightedFTS], # #
+bchmk.interval_sliding_window(sp500, 2000, train=0.8, inc=0.2, #models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
                      partitions= np.arange(3,20,step=2), transformation=diff,
-                     dump=True, save=True, file="experiments/best_interval_analytic_diff.csv",
+                     dump=True, save=True, file="experiments/sp500_analytic_diff.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
 #"""
