@@ -708,9 +708,9 @@ def print_distribution_statistics(original, models, steps, resolution):
     print(ret)
 
 
-def plot_compared_intervals_ahead(original, models, colors, distributions, time_from, time_to,
-                               interpol=False, save=False, file=None, tam=[20, 5], resolution=None,
-                               cmap='Blues',option=2, linewidth=1.5):
+def plot_compared_intervals_ahead(original, models, colors, distributions, time_from, time_to, intervals = True,
+                               save=False, file=None, tam=[20, 5], resolution=None,
+                               cmap='Blues', linewidth=1.5):
     """
     Plot the forecasts of several one step ahead models, by point or by interval 
     :param original: Original time series data (list)
@@ -743,45 +743,12 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
     for count, fts in enumerate(models, start=0):
         if fts.has_probability_forecasting and distributions[count]:
             density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to,
-                                                    resolution=resolution, method=option)
+                                                    resolution=resolution)
 
-            Y = []
-            X = []
-            C = []
-            S = []
-            y = density.columns
-            t = len(y)
+            #plot_density_scatter(ax, cmap, density, fig, resolution, time_from, time_to)
+            plot_density_rectange(ax, cm, density, fig, resolution, time_from, time_to)
 
-            ss = time_to ** 2
-
-            for k in density.index:
-                #alpha = [scalarMap.to_rgba(density[col][k]) for col in density.columns]
-                col = [density[col][k]*5 for col in density.columns]
-
-                x = [time_from + k for x in np.arange(0, t)]
-
-                s = [ss for x in np.arange(0, t)]
-
-                ic = resolution/10
-
-                for cc in np.arange(0, resolution, ic):
-                    Y.append(y + cc)
-                    X.append(x)
-                    C.append(col)
-                    S.append(s)
-
-            Y = np.hstack(Y)
-            X = np.hstack(X)
-            C = np.hstack(C)
-            S = np.hstack(S)
-
-            s = ax.scatter(X, Y, c=C, marker='s',s=S, linewidths=0, edgecolors=None, cmap=cmap)
-            s.set_clim([0, 1])
-            cb = fig.colorbar(s)
-
-            cb.set_label('Density')
-
-        if fts.has_interval_forecasting:
+        if fts.has_interval_forecasting and intervals:
             forecasts = fts.forecastAheadInterval(original[time_from - fts.order:time_from], time_to)
             lower = [kk[0] for kk in forecasts]
             upper = [kk[1] for kk in forecasts]
@@ -792,14 +759,6 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
                 upper.insert(0, None)
             ax.plot(lower, color=colors[count], label=fts.shortname, linewidth=linewidth)
             ax.plot(upper, color=colors[count], linewidth=linewidth*1.5)
-
-        else:
-            forecasts = fts.forecast(original)
-            mi.append(min(forecasts))
-            ma.append(max(forecasts))
-            for k in np.arange(0, time_from):
-                forecasts.insert(0, None)
-            ax.plot(forecasts, color=colors[count], label=fts.shortname)
 
     ax.plot(original, color='black', label="Original", linewidth=linewidth*1.5)
     handles0, labels0 = ax.get_legend_handles_labels()
@@ -824,6 +783,27 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
     ax.set_xlim([0, len(original)])
 
     Util.showAndSaveImage(fig, file, save, lgd=lgd)
+
+
+def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to):
+    from matplotlib.patches import Rectangle
+    from matplotlib.collections import PatchCollection
+    from  matplotlib.colorbar import ColorbarPatch
+    patches = []
+    colors = []
+    for x in density.index:
+        for y in density.columns:
+            s = Rectangle((time_from + x, y), 1, resolution, fill=True, lw = 0)
+            patches.append(s)
+            colors.append(density[y][x]*5)
+    pc = PatchCollection(patches=patches, match_original=True)
+    pc.set_clim([0, 1])
+    pc.set_cmap(cmap)
+    pc.set_array(np.array(colors))
+    ax.add_collection(pc)
+    cb = fig.colorbar(pc, ax=ax)
+    cb.set_label('Density')
+
 
 
 def plotCompared(original, forecasts, labels, title):

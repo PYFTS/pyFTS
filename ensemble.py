@@ -12,7 +12,6 @@ from pyFTS.common import Transformations
 import scipy.stats as st
 from pyFTS import tree
 
-
 def sampler(data, quantiles):
     ret = []
     for qt in quantiles:
@@ -33,12 +32,14 @@ class EnsembleFTS(fts.FTS):
         self.models = []
         self.parameters = []
         self.alpha = kwargs.get("alpha", 0.05)
-        self.max_order = 1
+        self.order = 1
+        self.point_method = kwargs.get('point_method', 'mean')
+        self.interval_method = kwargs.get('interval_method', 'quantile')
 
     def appendModel(self, model):
         self.models.append(model)
-        if model.order > self.max_order:
-            self.max_order = model.order
+        if model.order > self.order:
+            self.order = model.order
 
     def train(self, data, sets, order=1,parameters=None):
         self.original_max = max(data)
@@ -49,31 +50,33 @@ class EnsembleFTS(fts.FTS):
         for model in self.models:
             sample = data[-model.order:]
             forecast = model.forecast(sample)
-            if isinstance(forecast, (list,np.ndarray)):
+            if isinstance(forecast, (list,np.ndarray)) and len(forecast) > 0:
                 forecast = int(forecast[-1])
+            elif isinstance(forecast, (list,np.ndarray)) and len(forecast) == 0:
+                forecast = np.nan
             tmp.append(forecast)
         return tmp
 
-    def get_point(self,method, forecasts, **kwargs):
-        if method == 'mean':
+    def get_point(self,forecasts, **kwargs):
+        if self.point_method == 'mean':
             ret = np.nanmean(forecasts)
-        elif method == 'median':
+        elif self.point_method == 'median':
             ret = np.nanpercentile(forecasts, 50)
-        elif method == 'quantile':
+        elif self.point_method == 'quantile':
             alpha = kwargs.get("alpha",0.05)
             ret = np.percentile(forecasts, alpha*100)
 
         return ret
 
-    def get_interval(self, method, forecasts):
+    def get_interval(self, forecasts):
         ret = []
-        if method == 'extremum':
+        if self.interval_method == 'extremum':
             ret.append([min(forecasts), max(forecasts)])
-        elif method == 'quantile':
+        elif self.interval_method == 'quantile':
             qt_lo = np.nanpercentile(forecasts, q=self.alpha * 100)
             qt_up = np.nanpercentile(forecasts, q=(1-self.alpha) * 100)
             ret.append([qt_lo, qt_up])
-        elif method == 'normal':
+        elif self.interval_method == 'normal':
             mu = np.nanmean(forecasts)
             sigma = np.sqrt(np.nanvar(forecasts))
             ret.append(mu + st.norm.ppf(self.alpha) * sigma)
@@ -83,61 +86,59 @@ class EnsembleFTS(fts.FTS):
 
     def forecast(self, data, **kwargs):
 
-        method = kwargs.get('method','mean')
+        if "method" in kwargs:
+            self.point_method = kwargs.get('method','mean')
 
-        ndata = np.array(self.doTransformations(data))
-
-        l = len(ndata)
+        l = len(data)
         ret = []
 
-        for k in np.arange(self.max_order, l+1):
-            sample = ndata[k - self.max_order : k ]
+        for k in np.arange(self.order, l+1):
+            sample = data[k - self.order : k]
             tmp = self.get_models_forecasts(sample)
-            point = self.get_point(method, tmp)
+            point = self.get_point(tmp)
             ret.append(point)
-
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
         return ret
 
-
     def forecastInterval(self, data, **kwargs):
 
-        method = kwargs.get('method', 'extremum')
+        if "method" in kwargs:
+            self.interval_method = kwargs.get('method','quantile')
 
         if 'alpha' in kwargs:
             self.alpha = kwargs.get('alpha',0.05)
 
-        ndata = np.array(self.doTransformations(data))
-
-        l = len(ndata)
+        l = len(data)
 
         ret = []
 
-        for k in np.arange(self.max_order, l+1):
-            sample = ndata[k - self.max_order : k ]
+        for k in np.arange(self.order, l+1):
+            sample = data[k - self.order : k]
             tmp = self.get_models_forecasts(sample)
-            interval = self.get_interval(method, tmp)
+            interval = self.get_interval(tmp)
+            if len(interval) == 1:
+                interval = interval[-1]
             ret.append(interval)
 
         return ret
 
     def forecastAheadInterval(self, data, steps, **kwargs):
 
-        method = kwargs.get('method', 'extremum')
+        if 'method' in kwargs:
+            self.interval_method = kwargs.get('method','quantile')
 
         ret = []
 
-        samples = [[k,k] for k in data[-self.max_order:]]
+        samples = [[k,k] for k in data[-self.order:]]
 
-        for k in np.arange(self.max_order, steps):
+        for k in np.arange(self.order, steps+self.order):
             forecasts = []
-            sample = samples[k - self.max_order : k]
+            sample = samples[k - self.order : k]
             lo_sample = [i[0] for i in sample]
             up_sample = [i[1] for i in sample]
             forecasts.extend(self.get_models_forecasts(lo_sample) )
             forecasts.extend(self.get_models_forecasts(up_sample))
-            interval = self.get_interval(method, forecasts)
+            interval = self.get_interval(forecasts)
 
             if len(interval) == 1:
                 interval = interval[0]
@@ -151,7 +152,8 @@ class EnsembleFTS(fts.FTS):
         return self.get_empty_grid(-(self.original_max*2), self.original_max*2, resolution)
 
     def forecastAheadDistribution(self, data, steps, **kwargs):
-        method = kwargs.get('method', 'extremum')
+        if 'method' in kwargs:
+            self.point_method = kwargs.get('method','mean')
 
         percentile_size = (self.original_max - self.original_min) / 100
 
@@ -163,12 +165,12 @@ class EnsembleFTS(fts.FTS):
 
         ret = []
 
-        samples = [[k] for k in data[-self.max_order:]]
+        samples = [[k] for k in data[-self.order:]]
 
-        for k in np.arange(self.max_order, steps + self.max_order):
+        for k in np.arange(self.order, steps + self.order):
             forecasts = []
             lags = {}
-            for i in np.arange(0, self.max_order): lags[i] = samples[k - self.max_order + i]
+            for i in np.arange(0, self.order): lags[i] = samples[k - self.order + i]
 
             # Build the tree with all possible paths
 
@@ -189,5 +191,39 @@ class EnsembleFTS(fts.FTS):
 
             ret.append(tmp / sum(tmp))
 
-        return ret
+        grid = self.empty_grid(resolution)
+        df = pd.DataFrame(ret, columns=sorted(grid))
+        return df
 
+
+class AllMethodEnsembleFTS(EnsembleFTS):
+    def __init__(self, **kwargs):
+        super(AllMethodEnsembleFTS, self).__init__(name="Ensemble FTS", **kwargs)
+        self.min_order = 3
+
+    def set_transformations(self, model):
+        for t in self.transformations:
+            model.appendTransformation(t)
+
+    def train(self, data, sets, order=1, parameters=None):
+        self.original_max = max(data)
+        self.original_min = min(data)
+
+        fo_methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, cheng.TrendWeightedFTS,
+                      sadaei.ExponentialyWeightedFTS,  ismailefendi.ImprovedWeightedFTS]
+
+        ho_methods = [hofts.HighOrderFTS, hwang.HighOrderFTS]
+
+        for method in fo_methods:
+            model = method("")
+            self.set_transformations(model)
+            model.train(data, sets)
+            self.appendModel(model)
+
+        for method in ho_methods:
+            for o in np.arange(1, order+1):
+                model = method("")
+                if model.min_order >= o:
+                    self.set_transformations(model)
+                    model.train(data, sets, order=o)
+                    self.appendModel(model)
