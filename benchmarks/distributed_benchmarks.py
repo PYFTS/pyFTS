@@ -417,19 +417,24 @@ def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, windo
     :return: a dictionary with the benchmark results 
     """
     import time
-    from pyFTS import hofts, ifts, pwfts
+    import numpy as np
+    from pyFTS import hofts, ifts, pwfts, ensemble
     from pyFTS.partitioners import Grid, Entropy, FCM
     from pyFTS.benchmarks import Measures, arima, quantreg
 
-    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA, quantreg.QuantileRegression]
+    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA, ensemble.AllMethodEnsembleFTS]
 
     tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
 
     tmp3 = [Measures.get_distribution_statistics]
 
-    pttr = str(partitioner.__module__).split('.')[-1]
-    _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
-    mfts.partitioner = partitioner
+    if mfts.benchmark_only:
+        _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
+    else:
+        pttr = str(partitioner.__module__).split('.')[-1]
+        _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
+        mfts.partitioner = partitioner
+
     if transformation is not None:
         mfts.appendTransformation(transformation)
 
@@ -456,9 +461,10 @@ def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, windo
     return ret
 
 
-def ahead_sliding_window(data, windowsize, train, steps,resolution, models=None, partitioners=[Grid.GridPartitioner],
+def ahead_sliding_window(data, windowsize, steps, resolution, train=0.8, inc=0.1, models=None, partitioners=[Grid.GridPartitioner],
                          partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
-                         save=False, file=None, sintetic=False,nodes=None, depends=None):
+                         benchmark_models=None, benchmark_models_parameters = None,
+                         save=False, file=None, synthetic=False, nodes=None):
     """
     Distributed sliding window benchmarks for FTS probabilistic forecasters
     :param data: 
@@ -475,12 +481,21 @@ def ahead_sliding_window(data, windowsize, train, steps,resolution, models=None,
     :param dump: 
     :param save: save results
     :param file: file path to save the results
-    :param sintetic: if true only the average and standard deviation of the results
+    :param synthetic: if true only the average and standard deviation of the results
     :param nodes: list of cluster nodes to distribute tasks
     :param depends: list of module dependencies 
     :return: DataFrame with the results 
     """
-    cluster = dispy.JobCluster(run_point, nodes=nodes)  # , depends=dependencies)
+
+    alphas = [0.05, 0.25]
+
+    if benchmark_models is None and models is None:
+        benchmark_models = [arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA]
+
+    if benchmark_models_parameters is None:
+        benchmark_models_parameters = [(1, 0, 0), (1, 0, 1), (2, 0, 0), (2, 0, 1), (2, 0, 2)]
+
+    cluster = dispy.JobCluster(run_ahead, nodes=nodes)  # , depends=dependencies)
 
     http_server = dispy.httpd.DispyHTTPServer(cluster)
 
@@ -511,9 +526,19 @@ def ahead_sliding_window(data, windowsize, train, steps,resolution, models=None,
         else:
             pool.append(mfts)
 
+    if benchmark_models is not None:
+        for count, model in enumerate(benchmark_models, start=0):
+            for a in alphas:
+                par = benchmark_models_parameters[count]
+                mfts = model(str(par if par is not None else ""), alpha=a, dist=True)
+                mfts.order = par
+                pool.append(mfts)
+
     experiments = 0
-    for ct, train, test in Util.sliding_window(data, windowsize, train):
+    for ct, train, test in Util.sliding_window(data, windowsize, train, inc=inc):
         experiments += 1
+
+        benchmarks_only = {}
 
         if dump: print('\nWindow: {0}\n'.format(ct))
 
@@ -524,7 +549,11 @@ def ahead_sliding_window(data, windowsize, train, steps,resolution, models=None,
                 data_train_fs = partitioner(train, partition, transformation=transformation)
 
                 for id, m in enumerate(pool,start=0):
-                    job = cluster.submit(m, data_train_fs, train, test, ct, transformation)
+                    if m.benchmark_only and m.shortname in benchmarks_only:
+                        continue
+                    else:
+                        benchmarks_only[m.shortname] = m
+                    job = cluster.submit(m, data_train_fs, train, test, steps, resolution, ct, transformation)
                     job.id = id  # associate an ID to identify jobs (if needed later)
                     jobs.append(job)
 
@@ -559,4 +588,4 @@ def ahead_sliding_window(data, windowsize, train, steps,resolution, models=None,
     http_server.shutdown()  # this waits until browser gets all updates
     cluster.close()
 
-    return benchmarks.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, sintetic)
+    return bUtil.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, synthetic)

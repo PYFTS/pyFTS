@@ -25,7 +25,7 @@ passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
 passengers = np.array(passengers["Passengers"])
 
 
-e = ensemble.AllMethodEnsembleFTS()
+e = ensemble.AllMethodEnsembleFTS(alpha=0.25, point_method="median", interval_method='quantile')
 
 fo_methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS,
               ismailefendi.ImprovedWeightedFTS]
@@ -99,24 +99,28 @@ print(_normal)
 """
 
 #"""
-#_extremum = e.forecastAheadInterval(passengers, 10, method="extremum")
-#print(_extremum)
+_extremum = e.forecastAheadInterval(passengers, 10, method="extremum")
+print(_extremum)
 
-#_quantile = e.forecastAheadInterval(passengers[:50], 40, method="quantile", alpha=0.25)
-#print(_quantile)
+_quantile = e.forecastAheadInterval(passengers[:50], 10, method="quantile", alpha=0.05)
+print(_quantile)
 
+_quantile = e.forecastAheadInterval(passengers[:50], 10, method="quantile", alpha=0.25)
+print(_quantile)
 
-#_normal = e.forecastAheadInterval(passengers, 10, method="normal", alpha=0.25)
-#print(_normal)
+_normal = e.forecastAheadInterval(passengers[:50], 10, method="normal", alpha=0.05)
+print(_normal)
+_normal = e.forecastAheadInterval(passengers[:50], 10, method="normal", alpha=0.25)
+print(_normal)
 #"""
 
 #dist = e.forecastAheadDistribution(passengers, 20)
 
 #print(dist)
 
-bchmk.plot_compared_intervals_ahead(passengers[:120],[e], ['blue','red'],
-                                    distributions=[True,False],  save=True, file="pictures/distribution_ahead_arma",
-                                    time_from=60, time_to=10, tam=[12,5])
+#bchmk.plot_compared_intervals_ahead(passengers[:120],[e], ['blue','red'],
+#                                    distributions=[True,False],  save=True, file="pictures/distribution_ahead_arma",
+#                                    time_from=60, time_to=10, tam=[12,5])
 
 
 

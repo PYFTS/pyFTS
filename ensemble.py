@@ -6,7 +6,7 @@ import pandas as pd
 import math
 from operator import itemgetter
 from pyFTS.common import FLR, FuzzySet, SortedCollection
-from pyFTS import fts, chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu
+from pyFTS import fts, chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu, sfts
 from pyFTS.benchmarks import arima, quantreg
 from pyFTS.common import Transformations
 import scipy.stats as st
@@ -127,24 +127,36 @@ class EnsembleFTS(fts.FTS):
         if 'method' in kwargs:
             self.interval_method = kwargs.get('method','quantile')
 
+        if 'alpha' in kwargs:
+            self.alpha = kwargs.get('alpha', self.alpha)
+
         ret = []
 
-        samples = [[k,k] for k in data[-self.order:]]
+        samples = [[k] for k in data[-self.order:]]
 
-        for k in np.arange(self.order, steps+self.order):
+        for k in np.arange(self.order, steps + self.order):
             forecasts = []
-            sample = samples[k - self.order : k]
-            lo_sample = [i[0] for i in sample]
-            up_sample = [i[1] for i in sample]
-            forecasts.extend(self.get_models_forecasts(lo_sample) )
-            forecasts.extend(self.get_models_forecasts(up_sample))
+            lags = {}
+            for i in np.arange(0, self.order): lags[i] = samples[k - self.order + i]
+
+            # Build the tree with all possible paths
+
+            root = tree.FLRGTreeNode(None)
+
+            tree.buildTreeWithoutOrder(root, lags, 0)
+
+            for p in root.paths():
+                path = list(reversed(list(filter(None.__ne__, p))))
+
+                forecasts.extend(self.get_models_forecasts(path))
+
+            samples.append(sampler(forecasts, np.arange(0.1, 1, 0.2)))
             interval = self.get_interval(forecasts)
 
             if len(interval) == 1:
                 interval = interval[0]
 
             ret.append(interval)
-            samples.append(interval)
 
         return ret
 
@@ -183,7 +195,7 @@ class EnsembleFTS(fts.FTS):
 
                 forecasts.extend(self.get_models_forecasts(path))
 
-            samples.append(sampler(forecasts, [0.05, 0.25, 0.5, 0.75, 0.95 ]))
+            samples.append(sampler(forecasts, np.arange(0.1, 1, 0.1)))
 
             grid = self.gridCountPoint(grid, resolution, index, forecasts)
 
@@ -197,7 +209,7 @@ class EnsembleFTS(fts.FTS):
 
 
 class AllMethodEnsembleFTS(EnsembleFTS):
-    def __init__(self, **kwargs):
+    def __init__(self, name, **kwargs):
         super(AllMethodEnsembleFTS, self).__init__(name="Ensemble FTS", **kwargs)
         self.min_order = 3
 
@@ -210,7 +222,7 @@ class AllMethodEnsembleFTS(EnsembleFTS):
         self.original_min = min(data)
 
         fo_methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, cheng.TrendWeightedFTS,
-                      sadaei.ExponentialyWeightedFTS,  ismailefendi.ImprovedWeightedFTS]
+                      sadaei.ExponentialyWeightedFTS,  ismailefendi.ImprovedWeightedFTS, sfts.SeasonalFTS]
 
         ho_methods = [hofts.HighOrderFTS, hwang.HighOrderFTS]
 
@@ -227,3 +239,5 @@ class AllMethodEnsembleFTS(EnsembleFTS):
                     self.set_transformations(model)
                     model.train(data, sets, order=o)
                     self.appendModel(model)
+
+

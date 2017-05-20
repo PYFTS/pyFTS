@@ -28,8 +28,8 @@ diff = Transformations.Differential(1)
 DATASETS
 """
 
-passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
-passengers = np.array(passengers["Passengers"])
+#passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
+#passengers = np.array(passengers["Passengers"])
 
 #sunspots = pd.read_csv("DataSets/sunspots.csv", sep=",")
 #sunspots = np.array(sunspots["SUNACTIVITY"])
@@ -37,8 +37,8 @@ passengers = np.array(passengers["Passengers"])
 #gauss = random.normal(0,1.0,5000)
 #gauss_teste = random.normal(0,1.0,400)
 
-#taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-#taiex = np.array(taiexpd["avg"][:5000])
+taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
+taiex = np.array(taiexpd["avg"][:5000])
 
 #nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
 #nasdaq = np.array(nasdaqpd["avg"][0:5000])
@@ -59,8 +59,8 @@ passengers = np.array(passengers["Passengers"])
 #print(lag)
 #print(a)
 
-from pyFTS.benchmarks import benchmarks as bchmk
-#from pyFTS.benchmarks import distributed_benchmarks as bchmk
+#from pyFTS.benchmarks import benchmarks as bchmk
+from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 from pyFTS.benchmarks import Util
 from pyFTS.benchmarks import arima, quantreg, Measures
@@ -68,7 +68,7 @@ from pyFTS.benchmarks import arima, quantreg, Measures
 #Util.cast_dataframe_to_synthetic_point("experiments/taiex_point_analitic.csv","experiments/taiex_point_sintetic.csv",11)
 
 #Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/taiex_point_analitic.csv",11)
-#"""
+"""
 arima100 = arima.ARIMA("", alpha=0.25)
 #tmp.appendTransformation(diff)
 arima100.train(passengers, None, order=(1,0,0))
@@ -136,6 +136,18 @@ bchmk.interval_sliding_window(sp500, 2000, train=0.8, inc=0.2, #models=[yu.Weigh
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
 #"""
+
+bchmk.ahead_sliding_window(taiex, 2000, steps=10, resolution=100, train=0.8, inc=0.1,
+                     partitioners=[Grid.GridPartitioner],
+                     partitions= np.arange(10,200,step=10),
+                     dump=True, save=True, file="experiments/taiex_ahead_analytic.csv",
+                     nodes=['192.168.0.105', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+
+bchmk.ahead_sliding_window(taiex, 2000, steps=10, resolution=100, train=0.8, inc=0.1,
+                     partitioners=[Grid.GridPartitioner],
+                     partitions= np.arange(3,20,step=2), transformation=diff,
+                     dump=True, save=True, file="experiments/taiex_ahead_analytic_diff.csv",
+                     nodes=['192.168.0.105', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
 """
 from pyFTS.partitioners import Grid

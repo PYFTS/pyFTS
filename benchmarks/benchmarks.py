@@ -64,7 +64,7 @@ def get_interval_methods():
 
 def get_probabilistic_methods():
     """Return all FTS methods for probabilistic forecasting"""
-    return [quantreg.QuantileRegression, ensemble.EnsembleFTS, pwfts.ProbabilisticWeightedFTS]
+    return [arima.ARIMA, ensemble.AllMethodEnsembleFTS, pwfts.ProbabilisticWeightedFTS]
 
 
 def run_point(mfts, partitioner, train_data, test_data, window_key=None, transformation=None, indexer=None):
