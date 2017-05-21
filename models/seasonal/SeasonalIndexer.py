@@ -30,23 +30,26 @@ class LinearSeasonalIndexer(SeasonalIndexer):
         self.seasons = seasons
 
     def get_season_of_data(self,data):
-        return self.get_season_by_index(np.arange(0,len(data)))
+        return self.get_season_by_index(np.arange(0, len(data)).tolist())
 
     def get_season_by_index(self,index):
         ret = []
-        for ix in index:
-            if self.num_seasons == 1:
-                season = ix % self.seasons
-            else:
-                season = []
-                for seasonality in self.seasons:
-                    print("S ", seasonality)
-                    tmp = ix // seasonality
-                    print("T ", tmp)
-                    season.append(tmp)
-                #season.append(rest)
+        if not isinstance(index, (list, np.ndarray)):
+            season = (index % self.seasons[0]) + 1
+        else:
+            for ix in index:
+                if self.num_seasons == 1:
+                    season = (ix % self.seasons[0])
+                else:
+                    season = []
+                    for seasonality in self.seasons:
+                        #print("S ", seasonality)
+                        tmp = ix // seasonality
+                        #print("T ", tmp)
+                        season.append(tmp)
+                    #season.append(rest)
 
-            ret.append(season)
+        ret.append(season)
 
         return ret
 

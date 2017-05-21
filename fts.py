@@ -36,6 +36,7 @@ class FTS(object):
         self.partitioner = None
         self.auto_update = False
         self.benchmark_only = False
+        self.indexer = None
 
     def fuzzy(self, data):
         """

@@ -46,28 +46,24 @@ class SeasonalFTS(fts.FTS):
         self.is_high_order = False
 
     def generateFLRG(self, flrs):
-        flrgs = []
-        season = 1
-        for flr in flrs:
+        flrgs = {}
+        for ct, flr in enumerate(flrs, start=1):
 
-            if len(flrgs) < self.seasonality:
-                flrgs.append(SeasonalFLRG(season))
+            season = self.indexer.get_season_by_index(ct)[0]
+
+            if season not in flrgs:
+                flrgs[season] = SeasonalFLRG(season)
 
             #print(season)
-            flrgs[season-1].append(flr.RHS)
-
-            season = (season + 1) % (self.seasonality + 1)
-
-            if season == 0: season = 1
+            flrgs[season].append(flr.RHS)
 
         return (flrgs)
 
-    def train(self, data, sets, order=1,parameters=12):
+    def train(self, data, sets, order=1, parameters=None):
         self.sets = sets
-        self.seasonality = parameters
         ndata = self.doTransformations(data)
         tmpdata = FuzzySet.fuzzySeries(ndata, sets)
-        flrs = FLR.generateRecurrentFLRs(tmpdata)
+        flrs = FLR.generateNonRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
     def forecast(self, data, **kwargs):
@@ -79,13 +75,10 @@ class SeasonalFTS(fts.FTS):
         ret = []
 
         for k in np.arange(1, l):
-            #flrg = self.flrgs[ndata[k]]
 
-            season = (k + 1) % (self.seasonality + 1)
+            season = self.indexer.get_season_by_index(k)[0]
 
-            #print(season)
-
-            flrg = self.flrgs[season-1]
+            flrg = self.flrgs[season]
 
             mp = self.getMidpoints(flrg)
 

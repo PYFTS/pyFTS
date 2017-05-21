@@ -438,6 +438,9 @@ def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, windo
     if transformation is not None:
         mfts.appendTransformation(transformation)
 
+    if mfts.has_seasonality:
+        mfts.indexer = indexer
+
     try:
         _start = time.time()
         mfts.train(train_data, partitioner.sets, order=mfts.order)
@@ -553,7 +556,7 @@ def ahead_sliding_window(data, windowsize, steps, resolution, train=0.8, inc=0.1
                         continue
                     else:
                         benchmarks_only[m.shortname] = m
-                    job = cluster.submit(m, data_train_fs, train, test, steps, resolution, ct, transformation)
+                    job = cluster.submit(m, data_train_fs, train, test, steps, resolution, ct, transformation, indexer)
                     job.id = id  # associate an ID to identify jobs (if needed later)
                     jobs.append(job)
 

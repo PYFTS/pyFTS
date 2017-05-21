@@ -19,14 +19,14 @@ from numpy import random
 
 os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
-enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
-enrollments = np.array(enrollments["Enrollments"])
-
 diff = Transformations.Differential(1)
 
 """
 DATASETS
 """
+
+#enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
+#enrollments = np.array(enrollments["Enrollments"])
 
 #passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
 #passengers = np.array(passengers["Passengers"])
@@ -37,8 +37,8 @@ DATASETS
 #gauss = random.normal(0,1.0,5000)
 #gauss_teste = random.normal(0,1.0,400)
 
-taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-taiex = np.array(taiexpd["avg"][:5000])
+#taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
+#taiex = np.array(taiexpd["avg"][:5000])
 
 #nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
 #nasdaq = np.array(nasdaqpd["avg"][0:5000])
@@ -52,9 +52,9 @@ taiex = np.array(taiexpd["avg"][:5000])
 #sonda = np.array(sondapd["glo_avg"])
 #del(sondapd)
 
-#bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
-#best = np.array(bestpd["Anomaly"])
-#del(bestpd)
+bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
+best = np.array(bestpd["Anomaly"])
+del(bestpd)
 
 #print(lag)
 #print(a)
@@ -135,36 +135,50 @@ bchmk.interval_sliding_window(sp500, 2000, train=0.8, inc=0.2, #models=[yu.Weigh
                      dump=True, save=True, file="experiments/sp500_analytic_diff.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-#"""
+"""
 
-bchmk.ahead_sliding_window(taiex, 2000, steps=10, resolution=100, train=0.8, inc=0.1,
+"""
+
+bchmk.ahead_sliding_window(best, 4000, steps=10, resolution=100, train=0.8, inc=0.5,
                      partitioners=[Grid.GridPartitioner],
                      partitions= np.arange(10,200,step=10),
-                     dump=True, save=True, file="experiments/taiex_ahead_analytic.csv",
-                     nodes=['192.168.0.105', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+                     dump=True, save=True, file="experiments/best_ahead_analytic.csv",
+                     nodes=['192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-bchmk.ahead_sliding_window(taiex, 2000, steps=10, resolution=100, train=0.8, inc=0.1,
+
+bchmk.ahead_sliding_window(best, 4000, steps=10, resolution=100, train=0.8, inc=0.5,
                      partitioners=[Grid.GridPartitioner],
                      partitions= np.arange(3,20,step=2), transformation=diff,
-                     dump=True, save=True, file="experiments/taiex_ahead_analytic_diff.csv",
-                     nodes=['192.168.0.105', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+                     dump=True, save=True, file="experiments/best_ahead_analytic_diff.csv",
+                     nodes=['192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
 """
 from pyFTS.partitioners import Grid
-from pyFTS import pwfts
+from pyFTS.models.seasonal import SeasonalIndexer
+from pyFTS import sfts
+
+ix = SeasonalIndexer.LinearSeasonalIndexer([10])
+
+#print(ix.get_season_of_data(best[:2000]))
+
+#print(ix.get_season_by_index(45))
 
 diff = Transformations.Differential(1)
 
-fs = Grid.GridPartitioner(taiex[:2000], 10, transformation=diff)
+fs = Grid.GridPartitioner(best[:2000], 10, transformation=diff)
 
-tmp = pwfts.ProbabilisticWeightedFTS("")
-
+tmp = sfts.SeasonalFTS("")
+tmp.indexer = ix
 tmp.appendTransformation(diff)
 
-tmp.train(taiex[:1600], fs.sets, order=1)
+#tmp = pwfts.ProbabilisticWeightedFTS("")
 
-x = tmp.forecastInterval(taiex[1600:1610])
+#tmp.appendTransformation(diff)
 
-print(taiex[1600:1610])
+tmp.train(best[:1600], fs.sets, order=1)
+
+x = tmp.forecast(best[1600:1610])
+
+#print(taiex[1600:1610])
 print(x)
 #"""
