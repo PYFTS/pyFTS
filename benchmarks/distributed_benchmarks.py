@@ -421,12 +421,13 @@ def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, windo
     from pyFTS import hofts, ifts, pwfts, ensemble
     from pyFTS.partitioners import Grid, Entropy, FCM
     from pyFTS.benchmarks import Measures, arima, quantreg
+    from pyFTS.models.seasonal import SeasonalIndexer
 
     tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA, ensemble.AllMethodEnsembleFTS]
 
     tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
 
-    tmp3 = [Measures.get_distribution_statistics]
+    tmp3 = [Measures.get_distribution_statistics, SeasonalIndexer.SeasonalIndexer, SeasonalIndexer.LinearSeasonalIndexer]
 
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
