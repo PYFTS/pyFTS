@@ -16,10 +16,12 @@ from pyFTS import fts,hofts,ifts,pwfts,tree, chen
 from pyFTS.benchmarks import naive, arima
 from pyFTS.benchmarks import Measures
 from numpy import random
+from pyFTS.models.seasonal import SeasonalIndexer
 
 os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
 diff = Transformations.Differential(1)
+ix = SeasonalIndexer.LinearSeasonalIndexer([12, 24], [720, 1],[False, False])
 
 """
 DATASETS
@@ -47,14 +49,14 @@ DATASETS
 #sp500 = np.array(sp500pd["Avg"][11000:])
 #del(sp500pd)
 
-#sondapd = pd.read_csv("DataSets/SONDA_BSB_HOURLY_AVG.csv", sep=";")
-#sondapd = sondapd.dropna(axis=0, how='any')
-#sonda = np.array(sondapd["glo_avg"])
-#del(sondapd)
+sondapd = pd.read_csv("DataSets/SONDA_BSB_HOURLY_AVG.csv", sep=";")
+sondapd = sondapd.dropna(axis=0, how='any')
+sonda = np.array(sondapd["glo_avg"])
+del(sondapd)
 
-bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
-best = np.array(bestpd["Anomaly"])
-del(bestpd)
+#bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
+#best = np.array(bestpd["Anomaly"])
+#del(bestpd)
 
 #print(lag)
 #print(a)
@@ -137,35 +139,41 @@ bchmk.interval_sliding_window(sp500, 2000, train=0.8, inc=0.2, #models=[yu.Weigh
 
 """
 
-"""
+#"""
 
-bchmk.ahead_sliding_window(best, 4000, steps=10, resolution=100, train=0.8, inc=0.5,
+bchmk.ahead_sliding_window(sonda, 10000, steps=10, resolution=10, train=0.2, inc=0.5,
                      partitioners=[Grid.GridPartitioner],
-                     partitions= np.arange(10,200,step=10),
-                     dump=True, save=True, file="experiments/best_ahead_analytic.csv",
+                     partitions= np.arange(10,200,step=10), indexer=ix,
+                     dump=True, save=True, file="experiments/sondasolar_ahead_analytic.csv",
                      nodes=['192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
 
-bchmk.ahead_sliding_window(best, 4000, steps=10, resolution=100, train=0.8, inc=0.5,
+bchmk.ahead_sliding_window(sonda, 10000, steps=10, resolution=10, train=0.2, inc=0.5,
                      partitioners=[Grid.GridPartitioner],
-                     partitions= np.arange(3,20,step=2), transformation=diff,
-                     dump=True, save=True, file="experiments/best_ahead_analytic_diff.csv",
+                     partitions= np.arange(3,20,step=2), transformation=diff, indexer=ix,
+                     dump=True, save=True, file="experiments/sondasolar_ahead_analytic_diff.csv",
                      nodes=['192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
 """
 from pyFTS.partitioners import Grid
-from pyFTS.models.seasonal import SeasonalIndexer
+
 from pyFTS import sfts
 
-ix = SeasonalIndexer.LinearSeasonalIndexer([10])
+
 
 #print(ix.get_season_of_data(best[:2000]))
 
 #print(ix.get_season_by_index(45))
 
+#ix = SeasonalIndexer.LinearSeasonalIndexer([720,24],[False,True,False])
+
+#print(ix.get_season_of_data(sonda[6500:9000])[-20:])
+
 diff = Transformations.Differential(1)
 
-fs = Grid.GridPartitioner(best[:2000], 10, transformation=diff)
+fs = Grid.GridPartitioner(sonda[:9000], 10, transformation=diff)
+
+
 
 tmp = sfts.SeasonalFTS("")
 tmp.indexer = ix
@@ -175,9 +183,9 @@ tmp.appendTransformation(diff)
 
 #tmp.appendTransformation(diff)
 
-tmp.train(best[:1600], fs.sets, order=1)
+tmp.train(sonda[:9000], fs.sets, order=1)
 
-x = tmp.forecast(best[1600:1610])
+x = tmp.forecast(sonda[:1610])
 
 #print(taiex[1600:1610])
 print(x)

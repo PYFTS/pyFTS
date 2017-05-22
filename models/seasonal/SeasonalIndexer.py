@@ -25,9 +25,11 @@ class SeasonalIndexer(object):
 
 
 class LinearSeasonalIndexer(SeasonalIndexer):
-    def __init__(self,seasons):
+    def __init__(self,seasons,units,ignore=None):
         super(LinearSeasonalIndexer, self).__init__(len(seasons))
         self.seasons = seasons
+        self.units = units
+        self.ignore = ignore
 
     def get_season_of_data(self,data):
         return self.get_season_by_index(np.arange(0, len(data)).tolist())
@@ -35,21 +37,26 @@ class LinearSeasonalIndexer(SeasonalIndexer):
     def get_season_by_index(self,index):
         ret = []
         if not isinstance(index, (list, np.ndarray)):
-            season = (index % self.seasons[0]) + 1
+            if self.num_seasons == 1:
+                season = (index // self.units[0]) % self.seasons[0]
+            else:
+                season = []
+                for ct, seasonality in enumerate(self.seasons, start=0):
+                    tmp = (index // self.units[ct]) % self.seasons[ct]
+                    if not self.ignore[ct]:
+                        season.append(tmp)
+            ret.append(season)
         else:
             for ix in index:
                 if self.num_seasons == 1:
-                    season = (ix % self.seasons[0])
+                    season = (ix  // self.units[0]) % self.seasons[0]
                 else:
                     season = []
-                    for seasonality in self.seasons:
-                        #print("S ", seasonality)
-                        tmp = ix // seasonality
-                        #print("T ", tmp)
-                        season.append(tmp)
-                    #season.append(rest)
-
-        ret.append(season)
+                    for ct, seasonality in enumerate(self.seasons, start=0):
+                        tmp = (ix  // self.units[ct]) % self.seasons[ct]
+                        if not self.ignore[ct]:
+                            season.append(tmp)
+                ret.append(season)
 
         return ret
 

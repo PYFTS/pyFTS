@@ -51,11 +51,13 @@ class SeasonalFTS(fts.FTS):
 
             season = self.indexer.get_season_by_index(ct)[0]
 
-            if season not in flrgs:
-                flrgs[season] = SeasonalFLRG(season)
+            ss = str(season)
+
+            if ss not in flrgs:
+                flrgs[ss] = SeasonalFLRG(season)
 
             #print(season)
-            flrgs[season].append(flr.RHS)
+            flrgs[ss].append(flr.RHS)
 
         return (flrgs)
 
@@ -63,7 +65,7 @@ class SeasonalFTS(fts.FTS):
         self.sets = sets
         ndata = self.doTransformations(data)
         tmpdata = FuzzySet.fuzzySeries(ndata, sets)
-        flrs = FLR.generateNonRecurrentFLRs(tmpdata)
+        flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
     def forecast(self, data, **kwargs):
@@ -78,11 +80,11 @@ class SeasonalFTS(fts.FTS):
 
             season = self.indexer.get_season_by_index(k)[0]
 
-            flrg = self.flrgs[season]
+            flrg = self.flrgs[str(season)]
 
             mp = self.getMidpoints(flrg)
 
-            ret.append(sum(mp) / len(mp))
+            ret.append(np.percentile(mp, 50))
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
