@@ -15,7 +15,7 @@ class IntervalFTS(hofts.HighOrderFTS):
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H. (2016)"
         self.flrgs = {}
         self.has_point_forecasting = False
-        self.has_point_forecasting = True
+        self.has_interval_forecasting = True
         self.is_high_order = True
 
     def getUpper(self, flrg):

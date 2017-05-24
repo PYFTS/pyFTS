@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from checkbox_support.parsers.tests.test_modinfo import testMultipleModinfoParser
-from mpl_toolkits.mplot3d import Axes3D
+#from mpl_toolkits.mplot3d import Axes3D
 
 
 import numpy as np
@@ -20,8 +20,9 @@ from pyFTS.common import Util
 
 def extract_measure(dataframe,measure,data_columns):
     if not dataframe.empty:
-        tmp = dataframe[(dataframe.Measure == measure)][data_columns].to_dict(orient="records")[0]
-        ret = [k for k in tmp.values()]
+        df = dataframe[(dataframe.Measure == measure)][data_columns]
+        tmp = df.to_dict(orient="records")[0]
+        ret = [k for k in tmp.values() if not np.isnan(k)]
         return ret
     else:
         return None
@@ -191,7 +192,7 @@ def cast_dataframe_to_synthetic_point(infile, outfile, experiments):
                         ret.append(mod)
 
     dat = pd.DataFrame(ret, columns=point_dataframe_synthetic_columns())
-    dat.to_csv(Util.uniquefilename(outfile), sep=";", index=False)
+    dat.to_csv(outfile, sep=";", index=False)
 
 
 def analytical_data_columns(experiments):
@@ -199,22 +200,28 @@ def analytical_data_columns(experiments):
     return data_columns
 
 
-def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam):
+def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
+                         sort_columns=['UAVG', 'RMSEAVG', 'USTD', 'RMSESTD'],
+                         sort_ascend=[1, 1, 1, 1],save_best=False,
+                         ignore=None,replace=None):
 
-    fig, axes = plt.subplots(nrows=4, ncols=1, figsize=tam)
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=tam)
 
     axes[0].set_title('RMSE')
     axes[1].set_title('SMAPE')
     axes[2].set_title('U Statistic')
-    axes[3].set_title('Execution Time')
 
     dat_syn = pd.read_csv(file_synthetic, sep=";", usecols=point_dataframe_synthetic_columns())
 
-    bests = find_best(dat_syn, ['UAVG','RMSEAVG','USTD','RMSESTD'], [1,1,1,1])
+    bests = find_best(dat_syn, sort_columns, sort_ascend)
 
     dat_ana = pd.read_csv(file_analytic, sep=";", usecols=point_dataframe_analytic_columns(experiments))
 
     data_columns = analytical_data_columns(experiments)
+
+    if save_best:
+        dat = pd.DataFrame.from_dict(bests, orient='index')
+        dat.to_csv(Util.uniquefilename(file_synthetic.replace("synthetic","best")), sep=";", index=False)
 
     rmse = []
     smape = []
@@ -223,6 +230,9 @@ def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam):
     labels = []
 
     for b in sorted(bests.keys()):
+        if check_ignore_list(b, ignore):
+            continue
+
         best = bests[b]
         tmp = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
                 & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
@@ -230,14 +240,36 @@ def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam):
         smape.append(extract_measure(tmp, 'SMAPE', data_columns))
         u.append(extract_measure(tmp, 'U', data_columns))
         times.append(extract_measure(tmp, 'TIME', data_columns))
-        labels.append(best["Model"] + " " + str(best["Order"]))
 
-    axes[0].boxplot(rmse, labels=labels, showmeans=True)
-    axes[1].boxplot(smape, labels=labels, showmeans=True)
-    axes[2].boxplot(u, labels=labels, showmeans=True)
-    axes[3].boxplot(times, labels=labels, showmeans=True)
+        labels.append(check_replace_list(best["Model"] + " " + str(best["Order"]),replace))
 
-    plt.show()
+    axes[0].boxplot(rmse, labels=labels, autorange=True, showmeans=True)
+    axes[0].set_title("RMSE")
+    axes[1].boxplot(smape, labels=labels, autorange=True, showmeans=True)
+    axes[1].set_title("SMAPE")
+    axes[2].boxplot(u, labels=labels, autorange=True, showmeans=True)
+    axes[2].set_title("U Statistic")
+
+    plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)
+
+
+def check_replace_list(m, replace):
+    if replace is not None:
+        for r in replace:
+            if r[0] in m:
+                return r[1]
+    return m
+
+
+def check_ignore_list(b, ignore):
+    flag = False
+    if ignore is not None:
+        for i in ignore:
+            if i in b:
+                flag = True
+    return flag
 
 
 def save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times, q05, q25, q75, q95):
@@ -336,8 +368,168 @@ def interval_dataframe_analytic_columns(experiments):
 
 def interval_dataframe_synthetic_columns():
     columns = ["Model", "Order", "Scheme", "Partitions", "SHARPAVG", "SHARPSTD", "RESAVG", "RESSTD", "COVAVG",
-               "COVSTD", "TIMEAVG", "TIMESTD", "Q05AVG", "Q05STD", "Q25AVG", "Q25STD", "Q75AVG", "Q75STD", "Q95AVG", "Q95STD", "SIZE"]
+               "COVSTD", "TIMEAVG", "TIMESTD", "Q05AVG", "Q05STD", "Q25AVG", "Q25STD", "Q75AVG", "Q75STD", "Q95AVG", "Q95STD"]
     return columns
+
+
+def cast_dataframe_to_synthetic_interval(infile, outfile, experiments):
+    columns = interval_dataframe_analytic_columns(experiments)
+    dat = pd.read_csv(infile, sep=";", usecols=columns)
+    models = dat.Model.unique()
+    orders = dat.Order.unique()
+    schemes = dat.Scheme.unique()
+    partitions = dat.Partitions.unique()
+
+    data_columns = analytical_data_columns(experiments)
+
+    ret = []
+
+    for m in models:
+        for o in orders:
+            for s in schemes:
+                for p in partitions:
+                    mod = []
+                    df = dat[(dat.Model == m) & (dat.Order == o) & (dat.Scheme == s) & (dat.Partitions == p)]
+                    if not df.empty:
+                        sharpness = extract_measure(df, 'Sharpness', data_columns)
+                        resolution = extract_measure(df, 'Resolution', data_columns)
+                        coverage = extract_measure(df, 'Coverage', data_columns)
+                        times = extract_measure(df, 'TIME', data_columns)
+                        q05 = extract_measure(df, 'Q05', data_columns)
+                        q25 = extract_measure(df, 'Q25', data_columns)
+                        q75 = extract_measure(df, 'Q75', data_columns)
+                        q95 = extract_measure(df, 'Q95', data_columns)
+                        mod.append(m)
+                        mod.append(o)
+                        mod.append(s)
+                        mod.append(p)
+                        mod.append(np.round(np.nanmean(sharpness), 2))
+                        mod.append(np.round(np.nanstd(sharpness), 2))
+                        mod.append(np.round(np.nanmean(resolution), 2))
+                        mod.append(np.round(np.nanstd(resolution), 2))
+                        mod.append(np.round(np.nanmean(coverage), 2))
+                        mod.append(np.round(np.nanstd(coverage), 2))
+                        mod.append(np.round(np.nanmean(times), 4))
+                        mod.append(np.round(np.nanstd(times), 4))
+                        mod.append(np.round(np.nanmean(q05), 4))
+                        mod.append(np.round(np.nanstd(q05), 4))
+                        mod.append(np.round(np.nanmean(q25), 4))
+                        mod.append(np.round(np.nanstd(q25), 4))
+                        mod.append(np.round(np.nanmean(q75), 4))
+                        mod.append(np.round(np.nanstd(q75), 4))
+                        mod.append(np.round(np.nanmean(q95), 4))
+                        mod.append(np.round(np.nanstd(q95), 4))
+                        ret.append(mod)
+
+    dat = pd.DataFrame(ret, columns=interval_dataframe_synthetic_columns())
+    dat.to_csv(outfile, sep=";", index=False)
+
+
+def plot_dataframe_interval(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
+                            sort_columns=['COVAVG', 'SHARPAVG', 'COVSTD', 'SHARPSTD'],
+                            sort_ascend=[True, False, True, True],save_best=False,
+                            ignore=None, replace=None):
+
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=tam)
+
+    axes[0].set_title('Sharpness')
+    axes[1].set_title('Resolution')
+    axes[2].set_title('Coverage')
+
+    dat_syn = pd.read_csv(file_synthetic, sep=";", usecols=interval_dataframe_synthetic_columns())
+
+    bests = find_best(dat_syn, sort_columns, sort_ascend)
+
+    dat_ana = pd.read_csv(file_analytic, sep=";", usecols=interval_dataframe_analytic_columns(experiments))
+
+    data_columns = analytical_data_columns(experiments)
+
+    if save_best:
+        dat = pd.DataFrame.from_dict(bests, orient='index')
+        dat.to_csv(Util.uniquefilename(file_synthetic.replace("synthetic","best")), sep=";", index=False)
+
+    sharpness = []
+    resolution = []
+    coverage = []
+    times = []
+    labels = []
+    bounds_shp = []
+
+    for b in sorted(bests.keys()):
+        if check_ignore_list(b, ignore):
+            continue
+        best = bests[b]
+        df = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
+                & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
+        sharpness.append( extract_measure(df,'Sharpness',data_columns) )
+        resolution.append(extract_measure(df, 'Resolution', data_columns))
+        coverage.append(extract_measure(df, 'Coverage', data_columns))
+        times.append(extract_measure(df, 'TIME', data_columns))
+        labels.append(check_replace_list(best["Model"] + " " + str(best["Order"]), replace))
+
+    axes[0].boxplot(sharpness, labels=labels, autorange=True, showmeans=True)
+    axes[0].set_title("Sharpness")
+    axes[1].boxplot(resolution, labels=labels, autorange=True, showmeans=True)
+    axes[1].set_title("Resolution")
+    axes[2].boxplot(coverage, labels=labels, autorange=True, showmeans=True)
+    axes[2].set_title("Coverage")
+    axes[2].set_ylim([0, 1.1])
+
+    plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)
+
+
+
+def plot_dataframe_interval_pinball(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
+                                    sort_columns=['COVAVG','SHARPAVG','COVSTD','SHARPSTD'],
+                                    sort_ascend=[True, False, True, True], save_best=False,
+                                    ignore=None, replace=None):
+
+    fig, axes = plt.subplots(nrows=1, ncols=4, figsize=tam)
+    axes[0].set_title(r'$\tau=0.05$')
+    axes[1].set_title(r'$\tau=0.25$')
+    axes[2].set_title(r'$\tau=0.75$')
+    axes[3].set_title(r'$\tau=0.95$')
+
+    dat_syn = pd.read_csv(file_synthetic, sep=";", usecols=interval_dataframe_synthetic_columns())
+
+    bests = find_best(dat_syn, sort_columns, sort_ascend)
+
+    dat_ana = pd.read_csv(file_analytic, sep=";", usecols=interval_dataframe_analytic_columns(experiments))
+
+    data_columns = analytical_data_columns(experiments)
+
+    if save_best:
+        dat = pd.DataFrame.from_dict(bests, orient='index')
+        dat.to_csv(Util.uniquefilename(file_synthetic.replace("synthetic","best")), sep=";", index=False)
+
+    q05 = []
+    q25 = []
+    q75 = []
+    q95 = []
+    labels = []
+
+    for b in sorted(bests.keys()):
+        if check_ignore_list(b, ignore):
+            continue
+        best = bests[b]
+        df = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
+                & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
+        q05.append(extract_measure(df, 'Q05', data_columns))
+        q25.append(extract_measure(df, 'Q25', data_columns))
+        q75.append(extract_measure(df, 'Q75', data_columns))
+        q95.append(extract_measure(df, 'Q95', data_columns))
+        labels.append(check_replace_list(best["Model"] + " " + str(best["Order"]), replace))
+
+    axes[0].boxplot(q05, labels=labels, vert=False, autorange=True, showmeans=True)
+    axes[1].boxplot(q25, labels=labels, vert=False, autorange=True, showmeans=True)
+    axes[2].boxplot(q75, labels=labels, vert=False, autorange=True, showmeans=True)
+    axes[3].boxplot(q95, labels=labels, vert=False, autorange=True, showmeans=True)
+
+    plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)
 
 
 def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, synthetic):
@@ -438,5 +630,90 @@ def ahead_dataframe_analytic_columns(experiments):
 
 def ahead_dataframe_synthetic_columns():
     columns = ["Model", "Order", "Scheme", "Partitions", "CRPS1AVG", "CRPS1STD", "CRPS2AVG", "CRPS2STD",
-               "SIZE", "TIME1AVG", "TIME2AVG"]
+               "TIME1AVG", "TIME1STD", "TIME2AVG", "TIME2STD"]
     return columns
+
+
+def cast_dataframe_to_synthetic_ahead(infile, outfile, experiments):
+    columns = ahead_dataframe_analytic_columns(experiments)
+    dat = pd.read_csv(infile, sep=";", usecols=columns)
+    models = dat.Model.unique()
+    orders = dat.Order.unique()
+    schemes = dat.Scheme.unique()
+    partitions = dat.Partitions.unique()
+
+    data_columns = analytical_data_columns(experiments)
+
+    ret = []
+
+    for m in models:
+        for o in orders:
+            for s in schemes:
+                for p in partitions:
+                    mod = []
+                    df = dat[(dat.Model == m) & (dat.Order == o) & (dat.Scheme == s) & (dat.Partitions == p)]
+                    if not df.empty:
+                        crps1 = extract_measure(df, 'CRPS_Interval', data_columns)
+                        crps2 = extract_measure(df, 'CRPS_Distribution', data_columns)
+                        times1 = extract_measure(df, 'TIME_Interval', data_columns)
+                        times2 = extract_measure(df, 'TIME_Distribution', data_columns)
+                        mod.append(m)
+                        mod.append(o)
+                        mod.append(s)
+                        mod.append(p)
+                        mod.append(np.round(np.nanmean(crps1), 2))
+                        mod.append(np.round(np.nanstd(crps1), 2))
+                        mod.append(np.round(np.nanmean(crps2), 2))
+                        mod.append(np.round(np.nanstd(crps2), 2))
+                        mod.append(np.round(np.nanmean(times1), 2))
+                        mod.append(np.round(np.nanstd(times1), 2))
+                        mod.append(np.round(np.nanmean(times2), 4))
+                        mod.append(np.round(np.nanstd(times2), 4))
+                        ret.append(mod)
+
+    dat = pd.DataFrame(ret, columns=ahead_dataframe_synthetic_columns())
+    dat.to_csv(outfile, sep=";", index=False)
+
+
+def plot_dataframe_ahead(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
+                         sort_columns=['CRPS1AVG', 'CRPS2AVG', 'CRPS1STD', 'CRPS2STD'],
+                         sort_ascend=[True, True, True, True],save_best=False,
+                         ignore=None, replace=None):
+
+    fig, axes = plt.subplots(nrows=2, ncols=1, figsize=tam)
+
+    axes[0].set_title('CRPS Interval Ahead')
+    axes[1].set_title('CRPS Distribution Ahead')
+
+    dat_syn = pd.read_csv(file_synthetic, sep=";", usecols=ahead_dataframe_synthetic_columns())
+
+    bests = find_best(dat_syn, sort_columns, sort_ascend)
+
+    dat_ana = pd.read_csv(file_analytic, sep=";", usecols=ahead_dataframe_analytic_columns(experiments))
+
+    data_columns = analytical_data_columns(experiments)
+
+    if save_best:
+        dat = pd.DataFrame.from_dict(bests, orient='index')
+        dat.to_csv(Util.uniquefilename(file_synthetic.replace("synthetic","best")), sep=";", index=False)
+
+    crps1 = []
+    crps2 = []
+    labels = []
+
+    for b in sorted(bests.keys()):
+        if check_ignore_list(b, ignore):
+            continue
+        best = bests[b]
+        df = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
+                & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
+        crps1.append( extract_measure(df,'CRPS_Interval',data_columns) )
+        crps2.append(extract_measure(df, 'CRPS_Distribution', data_columns))
+        labels.append(check_replace_list(best["Model"] + " " + str(best["Order"]), replace))
+
+    axes[0].boxplot(crps1, labels=labels, autorange=True, showmeans=True)
+    axes[1].boxplot(crps2, labels=labels, autorange=True, showmeans=True)
+
+    plt.tight_layout()
+    Util.showAndSaveImage(fig, file, save)
+

@@ -62,7 +62,7 @@ class ExponentialyWeightedFTS(fts.FTS):
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 
-    def train(self, data, sets,order=1,parameters=2):
+    def train(self, data, sets,order=1,parameters=1.05):
         self.c = parameters
         self.sets = sets
         ndata = self.doTransformations(data)

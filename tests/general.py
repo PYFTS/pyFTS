@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib as plt
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+#from mpl_toolkits.mplot3d import Axes3D
 
 import pandas as pd
 from pyFTS.partitioners import Grid, Entropy, FCM, Huarng
@@ -41,28 +41,30 @@ DATASETS
 
 #taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
 #taiex = np.array(taiexpd["avg"][:5000])
+#del(taiexpd)
 
 #nasdaqpd = pd.read_csv("DataSets/NASDAQ_IXIC.csv", sep=",")
 #nasdaq = np.array(nasdaqpd["avg"][0:5000])
+#del(nasdaqpd)
 
 #sp500pd = pd.read_csv("DataSets/S&P500.csv", sep=",")
 #sp500 = np.array(sp500pd["Avg"][11000:])
 #del(sp500pd)
 
-sondapd = pd.read_csv("DataSets/SONDA_BSB_HOURLY_AVG.csv", sep=";")
-sondapd = sondapd.dropna(axis=0, how='any')
-sonda = np.array(sondapd["glo_avg"])
-del(sondapd)
+#sondapd = pd.read_csv("DataSets/SONDA_BSB_HOURLY_AVG.csv", sep=";")
+#sondapd = sondapd.dropna(axis=0, how='any')
+#sonda = np.array(sondapd["glo_avg"])
+#del(sondapd)
 
-#bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
-#best = np.array(bestpd["Anomaly"])
-#del(bestpd)
+bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
+best = np.array(bestpd["Anomaly"])
+del(bestpd)
 
 #print(lag)
 #print(a)
 
-#from pyFTS.benchmarks import benchmarks as bchmk
-from pyFTS.benchmarks import distributed_benchmarks as bchmk
+from pyFTS.benchmarks import benchmarks as bchmk
+#from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
 from pyFTS.benchmarks import Util
 from pyFTS.benchmarks import arima, quantreg, Measures
@@ -102,7 +104,7 @@ bchmk.plot_compared_series(enrollments,[tmp], ['blue','red'], points=False, inte
 #kk = Measures.get_interval_statistics(nasdaq[1600:1605], tmp)
 
 #print(kk)
-#"""
+"""
 
 
 """
@@ -120,9 +122,9 @@ bchmk.point_sliding_window(sonda, 9000, train=0.8, inc=0.4, #models=[yu.Weighted
                      dump=True, save=True, file="experiments/sondaws_point_analytic_diff.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-"""
 
-"""
+
+
 
 bchmk.interval_sliding_window(best, 5000, train=0.8, inc=0.8,#models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
@@ -131,28 +133,48 @@ bchmk.interval_sliding_window(best, 5000, train=0.8, inc=0.8,#models=[yu.Weighte
                                                 "_interval_analytic.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-bchmk.interval_sliding_window(sp500, 2000, train=0.8, inc=0.2, #models=[yu.WeightedFTS], # #
+
+
+bchmk.interval_sliding_window(taiex, 2000, train=0.8, inc=0.1, #models=[yu.WeightedFTS], # #
                      partitioners=[Grid.GridPartitioner], #Entropy.EntropyPartitioner], # FCM.FCMPartitioner, ],
                      partitions= np.arange(3,20,step=2), transformation=diff,
-                     dump=True, save=True, file="experiments/sp500_analytic_diff.csv",
+                     dump=True, save=True, file="experiments/taiex_interval_analytic_diff.csv",
                      nodes=['192.168.0.103', '192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+
+
+
+
+
+bchmk.ahead_sliding_window(sonda, 10000, steps=10, resolution=10, train=0.2, inc=0.2,
+                     partitioners=[Grid.GridPartitioner],
+                     partitions= np.arange(10,200,step=10), indexer=ix,
+                     dump=True, save=True, file="experiments/sondawind_ahead_analytic.csv",
+                     nodes=['192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+
+
+bchmk.ahead_sliding_window(sonda, 10000, steps=10, resolution=10, train=0.2, inc=0.2,
+                     partitioners=[Grid.GridPartitioner],
+                     partitions= np.arange(3,20,step=2), transformation=diff, indexer=ix,
+                     dump=True, save=True, file="experiments/sondawind_ahead_analytic_diff.csv",
+                     nodes=['192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
 """
 
-#"""
+from pyFTS import pwfts
+from pyFTS.common import Transformations
+from pyFTS.partitioners import Grid
 
-bchmk.ahead_sliding_window(sonda, 10000, steps=10, resolution=10, train=0.2, inc=0.5,
-                     partitioners=[Grid.GridPartitioner],
-                     partitions= np.arange(10,200,step=10), indexer=ix,
-                     dump=True, save=True, file="experiments/sondasolar_ahead_analytic.csv",
-                     nodes=['192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+diff = Transformations.Differential(1)
+fs = Grid.GridPartitioner(best, 190) #, transformation=diff)
 
 
-bchmk.ahead_sliding_window(sonda, 10000, steps=10, resolution=10, train=0.2, inc=0.5,
-                     partitioners=[Grid.GridPartitioner],
-                     partitions= np.arange(3,20,step=2), transformation=diff, indexer=ix,
-                     dump=True, save=True, file="experiments/sondasolar_ahead_analytic_diff.csv",
-                     nodes=['192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
+model = pwfts.ProbabilisticWeightedFTS("FTS 1")
+#model.appendTransformation(diff)
+model.train(best[0:1600],fs.sets, order=3)
+
+bchmk.plot_compared_intervals_ahead(best[1600:1700],[model], ['blue','red'],
+                                    distributions=[True], save=True, file="pictures/best_ahead_forecasts",
+                                    time_from=40, time_to=60, resolution=100)
 
 """
 from pyFTS.partitioners import Grid

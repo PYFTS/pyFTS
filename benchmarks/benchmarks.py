@@ -14,7 +14,7 @@ import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from mpl_toolkits.mplot3d import Axes3D
+#from mpl_toolkits.mplot3d import Axes3D
 
 from pyFTS.probabilistic import ProbabilityDistribution
 from pyFTS import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, ensemble, hwang
@@ -213,10 +213,35 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
     return bUtil.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
 
 
+def build_model_pool_point(models, max_order, benchmark_models, benchmark_models_parameters):
+    pool = []
+    if models is None:
+        models = get_point_methods()
+    for model in models:
+        mfts = model("")
+
+        if mfts.is_high_order:
+            for order in np.arange(1, max_order + 1):
+                if order >= mfts.min_order:
+                    mfts = model("")
+                    mfts.order = order
+                    pool.append(mfts)
+        else:
+            mfts.order = 1
+            pool.append(mfts)
+
+    if benchmark_models is not None:
+        for count, model in enumerate(benchmark_models, start=0):
+            par = benchmark_models_parameters[count]
+            mfts = model(str(par if par is not None else ""))
+            mfts.order = par
+            pool.append(mfts)
+    return pool
+
 
 def all_point_forecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True,
                         series=True, save=False, file=None, tam=[20, 5], models=None, transformation=None,
-                        distributions=False):
+                        distributions=False, benchmark_models=None, benchmark_models_parameters=None):
     """
     Fixed data benchmark for FTS point forecasters
     :param data_train: data used to train the models
@@ -234,8 +259,7 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
     :param distributions: plot distributions
     :return: 
     """
-    if models is None:
-        models = get_point_methods()
+    models = build_model_pool_point(models, max_order, benchmark_models, benchmark_models_parameters)
 
     objs = []
 
@@ -247,22 +271,11 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
 
     for count, model in enumerate(models, start=0):
         #print(model)
-        mfts = model("")
-        if not mfts.is_high_order:
-            if transformation is not None:
-                mfts.appendTransformation(transformation)
-            mfts.train(data_train, data_train_fs.sets)
-            objs.append(mfts)
-            lcolors.append( colors[count % ncol] )
-        else:
-            for order in np.arange(1,max_order+1):
-                if order >= mfts.min_order:
-                    mfts = model(" n = " + str(order))
-                    if transformation is not None:
-                        mfts.appendTransformation(transformation)
-                    mfts.train(data_train, data_train_fs.sets, order=order)
-                    objs.append(mfts)
-                    lcolors.append(colors[(count + order) % ncol])
+        if transformation is not None:
+            model.appendTransformation(transformation)
+        model.train(data_train, data_train_fs.sets, order=model.order)
+        objs.append(model)
+        lcolors.append( colors[count % ncol] )
 
     if statistics:
         print_point_statistics(data_test, objs)
@@ -421,38 +434,55 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
     return bUtil.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times)
 
 
-def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5],
-                           models=None, transformation=None):
+def build_model_pool_interval(models, max_order, benchmark_models, benchmark_models_parameters):
+    pool = []
     if models is None:
         models = get_interval_methods()
+    for model in models:
+        mfts = model("")
 
-    objs = []
+        if mfts.is_high_order:
+            for order in np.arange(1, max_order + 1):
+                if order >= mfts.min_order:
+                    mfts = model("")
+                    mfts.order = order
+                    pool.append(mfts)
+        else:
+            mfts.order = 1
+            pool.append(mfts)
+    alphas = [0.05, 0.25]
+    if benchmark_models is not None:
+        for count, model in enumerate(benchmark_models, start=0):
+            par = benchmark_models_parameters[count]
+            for alpha in alphas:
+                mfts = model(str(alpha), alpha=alpha)
+                mfts.order = par
+                pool.append(mfts)
+    return pool
 
-    data_train_fs = Grid.GridPartitioner(data_train,partitions, transformation=transformation).sets
+
+def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5],
+                             statistics=False, models=None, transformation=None,
+                             benchmark_models=None, benchmark_models_parameters=None):
+    models = build_model_pool_interval(models, max_order, benchmark_models, benchmark_models_parameters)
+
+    data_train_fs = Grid.GridPartitioner(data_train, partitions, transformation=transformation).sets
 
     lcolors = []
+    objs = []
 
     for count, model in Util.enumerate2(models, start=0, step=2):
-        mfts = model("")
-        if not mfts.is_high_order:
-            if transformation is not None:
-                mfts.appendTransformation(transformation)
-            mfts.train(data_train, data_train_fs)
-            objs.append(mfts)
-            lcolors.append( colors[count % ncol] )
-        else:
-            for order in np.arange(1,max_order+1):
-                if order >= mfts.min_order:
-                    mfts = model(" n = " + str(order))
-                    if transformation is not None:
-                        mfts.appendTransformation(transformation)
-                    mfts.train(data_train, data_train_fs, order=order)
-                    objs.append(mfts)
-                    lcolors.append(colors[count % ncol])
+        if transformation is not None:
+            model.appendTransformation(transformation)
+            model.train(data_train, data_train_fs, order=model.order)
+        objs.append(model)
+        lcolors.append( colors[count % ncol] )
 
-    print_interval_statistics(data_test, objs)
+    if statistics:
+        print_interval_statistics(data_test, objs)
 
-    plot_compared_series(data_test, objs, lcolors, typeonlegend=False, save=save, file=file, tam=tam, intervals=True)
+    plot_compared_series(data_test, objs, lcolors, typeonlegend=False, save=save, file=file, tam=tam,
+                         points=False, intervals=True)
 
 
 def print_interval_statistics(original, models):
@@ -465,15 +495,6 @@ def print_interval_statistics(original, models):
         ret += str(_res) + "		& "
         ret += str(_cov) + "	\\\\ \n"
     print(ret)
-
-
-def plot_distribution(dist):
-    for k in dist.index:
-        alpha = np.array([dist[x][k] for x in dist]) * 100
-        x = [k for x in np.arange(0, len(alpha))]
-        y = dist.columns
-        plt.scatter(x, y, c=alpha, marker='s', linewidths=0, cmap='Oranges', norm=pltcolors.Normalize(vmin=0, vmax=1),
-                    vmin=0, vmax=1, edgecolors=None)
 
 
 def plot_compared_series(original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5],
@@ -506,11 +527,13 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
     for count, fts in enumerate(models, start=0):
         if fts.has_point_forecasting and points:
             forecasted = fts.forecast(original)
+            if isinstance(forecasted, np.ndarray):
+                forecasted = forecasted.tolist()
             mi.append(min(forecasted) * 0.95)
             ma.append(max(forecasted) * 1.05)
             for k in np.arange(0, fts.order):
                 forecasted.insert(0, None)
-            lbl = fts.shortname
+            lbl = fts.shortname + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
             if typeonlegend: lbl += " (Point)"
             ax.plot(forecasted, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
 
@@ -523,7 +546,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
             for k in np.arange(0, fts.order):
                 lower.insert(0, None)
                 upper.insert(0, None)
-            lbl = fts.shortname
+            lbl = fts.shortname + " " + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
             if typeonlegend: lbl += " (Interval)"
             if not points and intervals:
                 ls = "-"
@@ -554,8 +577,6 @@ def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
 
     handles0, labels0 = ax.get_legend_handles_labels()
     ax.legend(handles0, labels0)
-
-
 
 
 def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution = None, partitioners=[Grid.GridPartitioner],

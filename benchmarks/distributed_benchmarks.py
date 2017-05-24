@@ -101,13 +101,6 @@ def point_sliding_window(data, windowsize, train=0.8, inc=0.1, models=None, part
     :return: DataFrame with the results
     """
 
-    if benchmark_models is None and models is None:
-        benchmark_models = [naive.Naive, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA,
-                            quantreg.QuantileRegression, quantreg.QuantileRegression]
-
-    if benchmark_models_parameters is None:
-        benchmark_models_parameters = [1, (1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
-
     cluster = dispy.JobCluster(run_point, nodes=nodes) #, depends=dependencies)
 
     http_server = dispy.httpd.DispyHTTPServer(cluster)
@@ -116,7 +109,7 @@ def point_sliding_window(data, windowsize, train=0.8, inc=0.1, models=None, part
 
     print("Process Start: {0: %H:%M:%S}".format(datetime.datetime.now()))
 
-    pool = []
+
     jobs = []
     objs = {}
     rmse = {}
@@ -124,28 +117,7 @@ def point_sliding_window(data, windowsize, train=0.8, inc=0.1, models=None, part
     u = {}
     times = {}
 
-    if models is None:
-        models = benchmarks.get_point_methods()
-
-    for model in models:
-        mfts = model("")
-
-        if mfts.is_high_order:
-            for order in np.arange(1, max_order + 1):
-                if order >= mfts.min_order:
-                    mfts = model("")
-                    mfts.order = order
-                    pool.append(mfts)
-        else:
-            mfts.order = 1
-            pool.append(mfts)
-
-    if benchmark_models is not None:
-        for count, model in enumerate(benchmark_models, start=0):
-            par = benchmark_models_parameters[count]
-            mfts = model(str(par if par is not None else ""))
-            mfts.order = par
-            pool.append(mfts)
+    pool = build_model_pool_point(models, max_order, benchmark_models, benchmark_models_parameters)
 
     experiments = 0
     for ct, train, test in Util.sliding_window(data, windowsize, train, inc):
@@ -202,6 +174,40 @@ def point_sliding_window(data, windowsize, train=0.8, inc=0.1, models=None, part
     cluster.close()
 
     return bUtil.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
+
+
+def build_model_pool_point(models, max_order, benchmark_models, benchmark_models_parameters):
+    pool = []
+
+    if benchmark_models is None and models is None:
+        benchmark_models = [arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA,
+                            quantreg.QuantileRegression, quantreg.QuantileRegression]
+
+    if benchmark_models_parameters is None:
+        benchmark_models_parameters = [(1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
+
+    if models is None:
+        models = benchmarks.get_point_methods()
+    for model in models:
+        mfts = model("")
+
+        if mfts.is_high_order:
+            for order in np.arange(1, max_order + 1):
+                if order >= mfts.min_order:
+                    mfts = model("")
+                    mfts.order = order
+                    pool.append(mfts)
+        else:
+            mfts.order = 1
+            pool.append(mfts)
+
+    if benchmark_models is not None:
+        for count, model in enumerate(benchmark_models, start=0):
+            par = benchmark_models_parameters[count]
+            mfts = model(str(par if par is not None else ""))
+            mfts.order = par
+            pool.append(mfts)
+    return pool
 
 
 def run_interval(mfts, partitioner, train_data, test_data, window_key=None, transformation=None, indexer=None):

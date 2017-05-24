@@ -65,27 +65,30 @@ def plotResiduals(targets, models, tam=[8, 8], save=False, file=None):
     :return: 
     """
     fig, axes = plt.subplots(nrows=len(models), ncols=3, figsize=tam)
-    c = 0
-    for mfts in models:
+    for c, mfts in enumerate(models):
+        if len(models) > 1:
+            ax = axes[c]
+        else:
+            ax = axes
         forecasts = mfts.forecast(targets)
         res = residuals(targets,forecasts,mfts.order)
         mu = np.mean(res)
         sig = np.std(res)
 
-        axes[c][0].set_title("Residuals Mean=" + str(mu) + " STD = " + str(sig))
-        axes[c][0].set_ylabel('E')
-        axes[c][0].set_xlabel('T')
-        axes[c][0].plot(res)
+        ax[0].set_title("Residuals Mean=" + str(mu) + " STD = " + str(sig))
+        ax[0].set_ylabel('E')
+        ax[0].set_xlabel('T')
+        ax[0].plot(res)
 
-        axes[c][1].set_title("Residuals Autocorrelation")
-        axes[c][1].set_ylabel('ACS')
-        axes[c][1].set_xlabel('Lag')
-        axes[c][1].acorr(res)
+        ax[1].set_title("Residuals Autocorrelation")
+        ax[1].set_ylabel('ACS')
+        ax[1].set_xlabel('Lag')
+        ax[1].acorr(res)
 
-        axes[c][2].set_title("Residuals Histogram")
-        axes[c][2].set_ylabel('Freq')
-        axes[c][2].set_xlabel('Bins')
-        axes[c][2].hist(res)
+        ax[2].set_title("Residuals Histogram")
+        ax[2].set_ylabel('Freq')
+        ax[2].set_xlabel('Bins')
+        ax[2].hist(res)
 
         c += 1
 
@@ -98,25 +101,29 @@ def plot_residuals(targets, models, tam=[8, 8], save=False, file=None):
     fig, axes = plt.subplots(nrows=len(models), ncols=3, figsize=tam)
 
     for c, mfts in enumerate(models, start=0):
+        if len(models) > 1:
+            ax = axes[c]
+        else:
+            ax = axes
         forecasts = mfts.forecast(targets)
         res = residuals(targets, forecasts, mfts.order)
         mu = np.mean(res)
         sig = np.std(res)
 
-        if c == 0: axes[c][0].set_title("Residuals", size='large')
-        axes[c][0].set_ylabel(mfts.shortname, size='large')
-        axes[c][0].set_xlabel(' ')
-        axes[c][0].plot(res)
+        if c == 0: ax[0].set_title("Residuals", size='large')
+        ax[0].set_ylabel(mfts.shortname, size='large')
+        ax[0].set_xlabel(' ')
+        ax[0].plot(res)
 
-        if c == 0: axes[c][1].set_title("Residuals Autocorrelation", size='large')
-        axes[c][1].set_ylabel('ACS')
-        axes[c][1].set_xlabel('Lag')
-        axes[c][1].acorr(res)
+        if c == 0: ax[1].set_title("Residuals Autocorrelation", size='large')
+        ax[1].set_ylabel('ACS')
+        ax[1].set_xlabel('Lag')
+        ax[1].acorr(res)
 
-        if c == 0: axes[c][2].set_title("Residuals Histogram", size='large')
-        axes[c][2].set_ylabel('Freq')
-        axes[c][2].set_xlabel('Bins')
-        axes[c][2].hist(res)
+        if c == 0: ax[2].set_title("Residuals Histogram", size='large')
+        ax[2].set_ylabel('Freq')
+        ax[2].set_xlabel('Bins')
+        ax[2].hist(res)
 
     plt.tight_layout()
 

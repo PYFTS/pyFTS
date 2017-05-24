@@ -537,9 +537,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                     [intervals[x][0] + (intervals[x][1] - intervals[x][0]) / 2 for x in np.arange(k - self.order, k)])
                 grid = self.gridCount(grid, resolution, index, np.ravel(qtle_mid))
 
-                tmp = np.array([grid[k] for k in sorted(grid)])
-
-                ret.append(tmp / sum(tmp))
+                tmp = np.array([grid[k] for k in sorted(grid) if not np.isnan(grid[k])])
+                try:
+                    ret.append(tmp / sum(tmp))
+                except Exception as ex:
+                    ret.append(0)
 
         else:
             ret = []

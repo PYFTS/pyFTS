@@ -26,9 +26,9 @@ def showAndSaveImage(fig,file,flag,lgd=None):
     if flag:
         plt.show()
         if lgd is not None:
-            fig.savefig(uniquefilename(file), additional_artists=lgd,bbox_inches='tight')  #bbox_extra_artists=(lgd,), )
+            fig.savefig(file, additional_artists=lgd,bbox_inches='tight')  #bbox_extra_artists=(lgd,), )
         else:
-            fig.savefig(uniquefilename(file))
+            fig.savefig(file)
         plt.close(fig)
 
 
