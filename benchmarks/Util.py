@@ -200,6 +200,119 @@ def analytical_data_columns(experiments):
     return data_columns
 
 
+def scale_params(data):
+    vmin = np.nanmin(data)
+    vlen = np.nanmax(data) - vmin
+    return (vmin, vlen)
+
+def scale(data, params):
+    ndata = [(k-params[0])/params[1] for k in data]
+    return ndata
+
+
+def unified_scaled_point(experiments, tam, save=False, file=None,
+                         sort_columns=['UAVG', 'RMSEAVG', 'USTD', 'RMSESTD'],
+                         sort_ascend=[1, 1, 1, 1],save_best=False,
+                         ignore=None, replace=None):
+
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=tam)
+
+    axes[0].set_title('RMSE')
+    axes[1].set_title('SMAPE')
+    axes[2].set_title('U Statistic')
+
+    models = {}
+
+    for experiment in experiments:
+
+        mdl = {}
+
+        dat_syn = pd.read_csv(experiment[0], sep=";", usecols=point_dataframe_synthetic_columns())
+
+        bests = find_best(dat_syn, sort_columns, sort_ascend)
+
+        dat_ana = pd.read_csv(experiment[1], sep=";", usecols=point_dataframe_analytic_columns(experiment[2]))
+
+        rmse = []
+        smape = []
+        u = []
+        times = []
+
+        data_columns = analytical_data_columns(experiment[2])
+
+        for b in sorted(bests.keys()):
+            if check_ignore_list(b, ignore):
+                continue
+
+            if b not in models:
+                models[b] = {}
+                models[b]['rmse'] = []
+                models[b]['smape'] = []
+                models[b]['u'] = []
+                models[b]['times'] = []
+
+            if b not in mdl:
+                mdl[b] = {}
+                mdl[b]['rmse'] = []
+                mdl[b]['smape'] = []
+                mdl[b]['u'] = []
+                mdl[b]['times'] = []
+
+            best = bests[b]
+            print(best)
+            tmp = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
+                    & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
+            tmpl = extract_measure(tmp,'RMSE',data_columns)
+            mdl[b]['rmse'].extend( tmpl )
+            rmse.extend( tmpl )
+            tmpl = extract_measure(tmp, 'SMAPE', data_columns)
+            mdl[b]['smape'].extend(tmpl)
+            smape.extend(tmpl)
+            tmpl = extract_measure(tmp, 'U', data_columns)
+            mdl[b]['u'].extend(tmpl)
+            u.extend(tmpl)
+            tmpl = extract_measure(tmp, 'TIME', data_columns)
+            mdl[b]['times'].extend(tmpl)
+            times.extend(tmpl)
+
+            models[b]['label'] = check_replace_list(best["Model"] + " " + str(best["Order"]), replace)
+
+
+        rmse_param = scale_params(rmse)
+        smape_param = scale_params(smape)
+        u_param = scale_params(u)
+        times_param = scale_params(times)
+
+        for key in sorted(models.keys()):
+            models[key]['rmse'].extend( scale(mdl[key]['rmse'], rmse_param) )
+            models[key]['smape'].extend( scale(mdl[key]['smape'], smape_param) )
+            models[key]['u'].extend( scale(mdl[key]['u'], u_param) )
+            models[key]['times'].extend( scale(mdl[key]['times'], times_param) )
+
+    rmse = []
+    smape = []
+    u = []
+    times = []
+    labels = []
+    for key in sorted(models.keys()):
+        rmse.append(models[key]['rmse'])
+        smape.append(models[key]['smape'])
+        u.append(models[key]['u'])
+        times.append(models[key]['times'])
+        labels.append(models[key]['label'])
+
+    axes[0].boxplot(rmse, labels=labels, autorange=True, showmeans=True)
+    axes[0].set_title("RMSE")
+    axes[1].boxplot(smape, labels=labels, autorange=True, showmeans=True)
+    axes[1].set_title("SMAPE")
+    axes[2].boxplot(u, labels=labels, autorange=True, showmeans=True)
+    axes[2].set_title("U Statistic")
+
+    plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)
+
+
 def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
                          sort_columns=['UAVG', 'RMSEAVG', 'USTD', 'RMSESTD'],
                          sort_ascend=[1, 1, 1, 1],save_best=False,
@@ -425,6 +538,104 @@ def cast_dataframe_to_synthetic_interval(infile, outfile, experiments):
     dat.to_csv(outfile, sep=";", index=False)
 
 
+def unified_scaled_interval(experiments, tam, save=False, file=None,
+                            sort_columns=['COVAVG', 'SHARPAVG', 'COVSTD', 'SHARPSTD'],
+                            sort_ascend=[True, False, True, True],save_best=False,
+                            ignore=None, replace=None):
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=tam)
+
+    axes[0].set_title('Sharpness')
+    axes[1].set_title('Resolution')
+    axes[2].set_title('Coverage')
+
+    models = {}
+
+    for experiment in experiments:
+
+        mdl = {}
+
+        dat_syn = pd.read_csv(experiment[0], sep=";", usecols=interval_dataframe_synthetic_columns())
+
+        bests = find_best(dat_syn, sort_columns, sort_ascend)
+
+        dat_ana = pd.read_csv(experiment[1], sep=";", usecols=interval_dataframe_analytic_columns(experiment[2]))
+
+        sharpness = []
+        resolution = []
+        coverage = []
+        times = []
+
+        data_columns = analytical_data_columns(experiment[2])
+
+        for b in sorted(bests.keys()):
+            if check_ignore_list(b, ignore):
+                continue
+
+            if b not in models:
+                models[b] = {}
+                models[b]['sharpness'] = []
+                models[b]['resolution'] = []
+                models[b]['coverage'] = []
+                models[b]['times'] = []
+
+            if b not in mdl:
+                mdl[b] = {}
+                mdl[b]['sharpness'] = []
+                mdl[b]['resolution'] = []
+                mdl[b]['coverage'] = []
+                mdl[b]['times'] = []
+
+            best = bests[b]
+            print(best)
+            tmp = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
+                          & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
+            tmpl = extract_measure(tmp, 'Sharpness', data_columns)
+            mdl[b]['sharpness'].extend(tmpl)
+            sharpness.extend(tmpl)
+            tmpl = extract_measure(tmp, 'Resolution', data_columns)
+            mdl[b]['resolution'].extend(tmpl)
+            resolution.extend(tmpl)
+            tmpl = extract_measure(tmp, 'Coverage', data_columns)
+            mdl[b]['coverage'].extend(tmpl)
+            coverage.extend(tmpl)
+            tmpl = extract_measure(tmp, 'TIME', data_columns)
+            mdl[b]['times'].extend(tmpl)
+            times.extend(tmpl)
+
+            models[b]['label'] = check_replace_list(best["Model"] + " " + str(best["Order"]), replace)
+
+        sharpness_param = scale_params(sharpness)
+        resolution_param = scale_params(resolution)
+        coverage_param = scale_params(coverage)
+        times_param = scale_params(times)
+
+        for key in sorted(models.keys()):
+            models[key]['sharpness'].extend(scale(mdl[key]['sharpness'], sharpness_param))
+            models[key]['resolution'].extend(scale(mdl[key]['resolution'], resolution_param))
+            models[key]['coverage'].extend(scale(mdl[key]['coverage'], coverage_param))
+            models[key]['times'].extend(scale(mdl[key]['times'], times_param))
+
+    sharpness = []
+    resolution = []
+    coverage = []
+    times = []
+    labels = []
+    for key in sorted(models.keys()):
+        sharpness.append(models[key]['sharpness'])
+        resolution.append(models[key]['resolution'])
+        coverage.append(models[key]['coverage'])
+        times.append(models[key]['times'])
+        labels.append(models[key]['label'])
+
+    axes[0].boxplot(sharpness, labels=labels, autorange=True, showmeans=True)
+    axes[1].boxplot(resolution, labels=labels, autorange=True, showmeans=True)
+    axes[2].boxplot(coverage, labels=labels, autorange=True, showmeans=True)
+
+    plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)
+
+
 def plot_dataframe_interval(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
                             sort_columns=['COVAVG', 'SHARPAVG', 'COVSTD', 'SHARPSTD'],
                             sort_ascend=[True, False, True, True],save_best=False,
@@ -480,6 +691,102 @@ def plot_dataframe_interval(file_synthetic, file_analytic, experiments, tam, sav
     Util.showAndSaveImage(fig, file, save)
 
 
+def unified_scaled_interval_pinball(experiments, tam, save=False, file=None,
+                                    sort_columns=['COVAVG','SHARPAVG','COVSTD','SHARPSTD'],
+                                    sort_ascend=[True, False, True, True], save_best=False,
+                                    ignore=None, replace=None):
+    fig, axes = plt.subplots(nrows=1, ncols=4, figsize=tam)
+    axes[0].set_title(r'$\tau=0.05$')
+    axes[1].set_title(r'$\tau=0.25$')
+    axes[2].set_title(r'$\tau=0.75$')
+    axes[3].set_title(r'$\tau=0.95$')
+    models = {}
+
+    for experiment in experiments:
+
+        mdl = {}
+
+        dat_syn = pd.read_csv(experiment[0], sep=";", usecols=interval_dataframe_synthetic_columns())
+
+        bests = find_best(dat_syn, sort_columns, sort_ascend)
+
+        dat_ana = pd.read_csv(experiment[1], sep=";", usecols=interval_dataframe_analytic_columns(experiment[2]))
+
+        q05	= []
+        q25 = []
+        q75 = []
+        q95 = []
+
+        data_columns = analytical_data_columns(experiment[2])
+
+        for b in sorted(bests.keys()):
+            if check_ignore_list(b, ignore):
+                continue
+
+            if b not in models:
+                models[b] = {}
+                models[b]['q05'] = []
+                models[b]['q25'] = []
+                models[b]['q75'] = []
+                models[b]['q95'] = []
+
+            if b not in mdl:
+                mdl[b] = {}
+                mdl[b]['q05'] = []
+                mdl[b]['q25'] = []
+                mdl[b]['q75'] = []
+                mdl[b]['q95'] = []
+
+            best = bests[b]
+            print(best)
+            tmp = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
+                          & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
+            tmpl = extract_measure(tmp, 'Q05', data_columns)
+            mdl[b]['q05'].extend(tmpl)
+            q05.extend(tmpl)
+            tmpl = extract_measure(tmp, 'Q25', data_columns)
+            mdl[b]['q25'].extend(tmpl)
+            q25.extend(tmpl)
+            tmpl = extract_measure(tmp, 'Q75', data_columns)
+            mdl[b]['q75'].extend(tmpl)
+            q75.extend(tmpl)
+            tmpl = extract_measure(tmp, 'Q95', data_columns)
+            mdl[b]['q95'].extend(tmpl)
+            q95.extend(tmpl)
+
+            models[b]['label'] = check_replace_list(best["Model"] + " " + str(best["Order"]), replace)
+
+        q05_param = scale_params(q05)
+        q25_param = scale_params(q25)
+        q75_param = scale_params(q75)
+        q95_param = scale_params(q95)
+
+        for key in sorted(models.keys()):
+            models[key]['q05'].extend(scale(mdl[key]['q05'], q05_param))
+            models[key]['q25'].extend(scale(mdl[key]['q25'], q25_param))
+            models[key]['q75'].extend(scale(mdl[key]['q75'], q75_param))
+            models[key]['q95'].extend(scale(mdl[key]['q95'], q95_param))
+
+    q05 = []
+    q25 = []
+    q75 = []
+    q95 = []
+    labels = []
+    for key in sorted(models.keys()):
+        q05.append(models[key]['q05'])
+        q25.append(models[key]['q25'])
+        q75.append(models[key]['q75'])
+        q95.append(models[key]['q95'])
+        labels.append(models[key]['label'])
+
+    axes[0].boxplot(q05, labels=labels, vert=False, autorange=True, showmeans=True)
+    axes[1].boxplot(q25, labels=labels, vert=False, autorange=True, showmeans=True)
+    axes[2].boxplot(q75, labels=labels, vert=False, autorange=True, showmeans=True)
+    axes[3].boxplot(q95, labels=labels, vert=False, autorange=True, showmeans=True)
+
+    plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)
 
 def plot_dataframe_interval_pinball(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
                                     sort_columns=['COVAVG','SHARPAVG','COVSTD','SHARPSTD'],
@@ -673,6 +980,82 @@ def cast_dataframe_to_synthetic_ahead(infile, outfile, experiments):
 
     dat = pd.DataFrame(ret, columns=ahead_dataframe_synthetic_columns())
     dat.to_csv(outfile, sep=";", index=False)
+
+
+def unified_scaled_ahead(experiments, tam, save=False, file=None,
+                         sort_columns=['CRPS1AVG', 'CRPS2AVG', 'CRPS1STD', 'CRPS2STD'],
+                         sort_ascend=[True, True, True, True], save_best=False,
+                         ignore=None, replace=None):
+    fig, axes = plt.subplots(nrows=2, ncols=1, figsize=tam)
+
+    axes[0].set_title('CRPS Interval Ahead')
+    axes[1].set_title('CRPS Distribution Ahead')
+
+    models = {}
+
+    for experiment in experiments:
+
+        mdl = {}
+
+        dat_syn = pd.read_csv(experiment[0], sep=";", usecols=ahead_dataframe_synthetic_columns())
+
+        bests = find_best(dat_syn, sort_columns, sort_ascend)
+
+        dat_ana = pd.read_csv(experiment[1], sep=";", usecols=ahead_dataframe_analytic_columns(experiment[2]))
+
+        crps1 = []
+        crps2 = []
+
+        data_columns = analytical_data_columns(experiment[2])
+
+        for b in sorted(bests.keys()):
+            if check_ignore_list(b, ignore):
+                continue
+
+            if b not in models:
+                models[b] = {}
+                models[b]['crps1'] = []
+                models[b]['crps2'] = []
+
+            if b not in mdl:
+                mdl[b] = {}
+                mdl[b]['crps1'] = []
+                mdl[b]['crps2'] = []
+
+            best = bests[b]
+            tmp = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
+                          & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
+            tmpl = extract_measure(tmp, 'CRPS_Interval', data_columns)
+            mdl[b]['crps1'].extend(tmpl)
+            crps1.extend(tmpl)
+            tmpl = extract_measure(tmp, 'CRPS_Distribution', data_columns)
+            mdl[b]['crps2'].extend(tmpl)
+            crps2.extend(tmpl)
+
+            models[b]['label'] = check_replace_list(best["Model"] + " " + str(best["Order"]), replace)
+
+        crps1_param = scale_params(crps1)
+        crps2_param = scale_params(crps2)
+
+        for key in sorted(mdl.keys()):
+            print(key)
+            models[key]['crps1'].extend(scale(mdl[key]['crps1'], crps1_param))
+            models[key]['crps2'].extend(scale(mdl[key]['crps2'], crps2_param))
+
+    crps1 = []
+    crps2 = []
+    labels = []
+    for key in sorted(models.keys()):
+        crps1.append(models[key]['crps1'])
+        crps2.append(models[key]['crps2'])
+        labels.append(models[key]['label'])
+
+    axes[0].boxplot(crps1, labels=labels, autorange=True, showmeans=True)
+    axes[1].boxplot(crps2, labels=labels, autorange=True, showmeans=True)
+
+    plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)
 
 
 def plot_dataframe_ahead(file_synthetic, file_analytic, experiments, tam, save=False, file=None,

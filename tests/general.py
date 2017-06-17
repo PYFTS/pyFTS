@@ -56,9 +56,9 @@ DATASETS
 #sonda = np.array(sondapd["glo_avg"])
 #del(sondapd)
 
-bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
-best = np.array(bestpd["Anomaly"])
-del(bestpd)
+#bestpd = pd.read_csv("DataSets/BEST_TAVG.csv", sep=";")
+#best = np.array(bestpd["Anomaly"])
+#del(bestpd)
 
 #print(lag)
 #print(a)
@@ -164,17 +164,74 @@ from pyFTS import pwfts
 from pyFTS.common import Transformations
 from pyFTS.partitioners import Grid
 
-diff = Transformations.Differential(1)
-fs = Grid.GridPartitioner(best, 190) #, transformation=diff)
+#diff = Transformations.Differential(1)
+#fs = Grid.GridPartitioner(best, 190) #, transformation=diff)
 
 
-model = pwfts.ProbabilisticWeightedFTS("FTS 1")
+#model = pwfts.ProbabilisticWeightedFTS("FTS 1")
 #model.appendTransformation(diff)
-model.train(best[0:1600],fs.sets, order=3)
+#model.train(best[0:1600],fs.sets, order=3)
 
-bchmk.plot_compared_intervals_ahead(best[1600:1700],[model], ['blue','red'],
-                                    distributions=[True], save=True, file="pictures/best_ahead_forecasts",
-                                    time_from=40, time_to=60, resolution=100)
+#bchmk.plot_compared_intervals_ahead(best[1600:1700],[model], ['blue','red'],
+#                                    distributions=[True], save=True, file="pictures/best_ahead_forecasts",
+#                                    time_from=40, time_to=60, resolution=100)
+'''
+experiments = [
+    ["experiments/taiex_point_synthetic_diff.csv","experiments/taiex_point_analytic_diff.csv",16],
+    ["experiments/nasdaq_point_synthetic_diff.csv","experiments/nasdaq_point_analytic_diff.csv", 11],
+    ["experiments/sp500_point_synthetic_diff.csv","experiments/sp500_point_analytic_diff.csv", 21],
+    ["experiments/best_point_synthetic_diff.csv","experiments/best_point_analytic_diff.csv", 13],
+    ["experiments/sondasun_point_synthetic_diff.csv","experiments/sondasun_point_analytic_diff.csv", 15],
+    ["experiments/sondawind_point_synthetic_diff.csv","experiments/sondawind_point_analytic_diff.csv", 8],
+    ["experiments/gauss_point_synthetic_diff.csv","experiments/gauss_point_analytic_diff.csv", 16]
+]
+
+Util.unified_scaled_point(experiments,tam=[15,8],save=True,file="pictures/unified_experiments_point.png",
+                         ignore=['ARIMA(1,0,0)','ARIMA(2,0,0)','ARIMA(2,0,1)','ARIMA(2,0,2)','QAR(2)'],
+                         replace=[['ARIMA','ARIMA'],['QAR','QAR']])
+
+'''
+
+'''
+experiments = [
+    ["experiments/taiex_interval_synthetic.csv","experiments/taiex_interval_analytic.csv",16],
+    ["experiments/nasdaq_interval_synthetic_diff.csv","experiments/nasdaq_interval_analytic_diff.csv",11],
+    ["experiments/sp500_interval_synthetic_diff.csv","experiments/sp500_interval_analytic_diff.csv", 11],
+    ["experiments/best_interval_synthetic_diff.csv","experiments/best_interval_analytic_diff.csv",13],
+    ["experiments/sondasun_interval_synthetic_diff.csv","experiments/sondasun_interval_analytic_diff.csv",8],
+    ["experiments/sondawind_interval_synthetic_diff.csv","experiments/sondawind_interval_analytic_diff.csv",8],
+    ["experiments/gauss_interval_synthetic_diff.csv","experiments/gauss_interval_analytic_diff.csv", 8]
+]
+
+Util.unified_scaled_interval(experiments,tam=[15,8],save=True,file="pictures/unified_experiments_interval.png",
+                             ignore=['ARIMA(1,0,0)', 'ARIMA(2,0,0)', 'ARIMA(2,0,1)', 'ARIMA(2,0,2)', 'QAR(2)'],
+                             replace=[['ARIMA(1,0,1) - 0.05', 'ARIMA 0.05'], ['ARIMA(1,0,1) - 0.25', 'ARIMA 0.25'],
+                                      ['QAR(1) - 0.05', 'QAR 0.05'], ['QAR(1) - 0.25', 'QAR 0.25']])
+
+Util.unified_scaled_interval_pinball(experiments,tam=[15,8],save=True,file="pictures/unified_experiments_interval_pinball.png",
+                             ignore=['ARIMA(1,0,0)', 'ARIMA(2,0,0)', 'ARIMA(2,0,1)', 'ARIMA(2,0,2)', 'QAR(2)'],
+                             replace=[['ARIMA(1,0,1) - 0.05', 'ARIMA 0.05'], ['ARIMA(1,0,1) - 0.25', 'ARIMA 0.25'],
+                                      ['QAR(1) - 0.05', 'QAR 0.05'], ['QAR(1) - 0.25', 'QAR 0.25']])
+
+'''
+
+experiments = [
+    ["experiments/taiex_ahead_synthetic.csv","experiments/taiex_ahead_analytic.csv",16],
+    ["experiments/nasdaq_ahead_synthetic.csv","experiments/nasdaq_ahead_analytic.csv",11],
+    ["experiments/sp500_ahead_synthetic.csv","experiments/sp500_ahead_analytic.csv", 21],
+    ["experiments/best_ahead_synthetic.csv","experiments/best_ahead_analytic.csv", 24],
+    ["experiments/sondasun_ahead_synthetic.csv","experiments/sondasun_ahead_analytic.csv",13],
+    ["experiments/sondawind_ahead_synthetic.csv","experiments/sondawind_ahead_analytic.csv", 13],
+    ["experiments/gauss_ahead_synthetic_diff.csv","experiments/gauss_ahead_analytic_diff.csv",16]
+]
+
+Util.unified_scaled_ahead(experiments,tam=[15,8],save=True,file="pictures/unified_experiments_ahead.png",
+                          ignore=['ARIMA(1,0,0)', 'ARIMA(0,0,1)', 'ARIMA(2,0,0)', 'ARIMA(2,0,1)',
+                                  'ARIMA(2,0,2)', 'QAR(2)', 'ARIMA0.05'],
+                          replace=[['ARIMA(1,0,1) - 0.05', 'ARIMA 0.05'], ['ARIMA(1,0,1) - 0.25', 'ARIMA 0.25'],
+                                   ['QAR(1) - 0.05', 'QAR 0.05'], ['QAR(1) - 0.25', 'QAR 0.25']])
+
+
 
 """
 from pyFTS.partitioners import Grid
