@@ -7,7 +7,7 @@ class Partitioner(object):
     Universe of Discourse partitioner. Split data on several fuzzy sets
     """
 
-    def __init__(self, name, data, npart, func=Membership.trimf, names=None, prefix="A", transformation=None):
+    def __init__(self, name, data, npart, func=Membership.trimf, names=None, prefix="A", transformation=None, indexer=None):
         """
         Universe of Discourse partitioner scheme. Split data on several fuzzy sets
         :param name: partitioner name
@@ -25,9 +25,15 @@ class Partitioner(object):
         self.setnames = names
         self.prefix = prefix
         self.transformation = transformation
+        self.indexer = indexer
+
+        if self.indexer is not None:
+            ndata = self.indexer.get_data(data)
+        else:
+            ndata = data
 
         if transformation is not None:
-            ndata = transformation.apply(data)
+            ndata = transformation.apply(ndata)
         else:
             ndata = data
 
@@ -42,7 +48,10 @@ class Partitioner(object):
             self.max = _max * 1.1
         else:
             self.max = _max * 0.9
+
         self.sets = self.build(ndata)
+
+        del(ndata)
 
     def build(self, data):
         """

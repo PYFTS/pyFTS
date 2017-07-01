@@ -209,6 +209,8 @@ def scale(data, params):
     ndata = [(k-params[0])/params[1] for k in data]
     return ndata
 
+def stats(measure, data):
+    print(measure, np.nanmean(data), np.nanstd(data))
 
 def unified_scaled_point(experiments, tam, save=False, file=None,
                          sort_columns=['UAVG', 'RMSEAVG', 'USTD', 'RMSESTD'],
@@ -259,7 +261,6 @@ def unified_scaled_point(experiments, tam, save=False, file=None,
                 mdl[b]['times'] = []
 
             best = bests[b]
-            print(best)
             tmp = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
                     & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
             tmpl = extract_measure(tmp,'RMSE',data_columns)
@@ -277,10 +278,13 @@ def unified_scaled_point(experiments, tam, save=False, file=None,
 
             models[b]['label'] = check_replace_list(best["Model"] + " " + str(best["Order"]), replace)
 
-
+        print("GLOBAL")
         rmse_param = scale_params(rmse)
+        stats("rmse", rmse)
         smape_param = scale_params(smape)
+        stats("smape", smape)
         u_param = scale_params(u)
+        stats("u", u)
         times_param = scale_params(times)
 
         for key in sorted(models.keys()):
@@ -295,9 +299,13 @@ def unified_scaled_point(experiments, tam, save=False, file=None,
     times = []
     labels = []
     for key in sorted(models.keys()):
+        print(key)
         rmse.append(models[key]['rmse'])
+        stats("rmse", models[key]['rmse'])
         smape.append(models[key]['smape'])
+        stats("smape", models[key]['smape'])
         u.append(models[key]['u'])
+        stats("u", models[key]['u'])
         times.append(models[key]['times'])
         labels.append(models[key]['label'])
 
@@ -995,6 +1003,8 @@ def unified_scaled_ahead(experiments, tam, save=False, file=None,
 
     for experiment in experiments:
 
+        print(experiment)
+
         mdl = {}
 
         dat_syn = pd.read_csv(experiment[0], sep=";", usecols=ahead_dataframe_synthetic_columns())
@@ -1023,6 +1033,9 @@ def unified_scaled_ahead(experiments, tam, save=False, file=None,
                 mdl[b]['crps2'] = []
 
             best = bests[b]
+
+            print(best)
+
             tmp = dat_ana[(dat_ana.Model == best["Model"]) & (dat_ana.Order == best["Order"])
                           & (dat_ana.Scheme == best["Scheme"]) & (dat_ana.Partitions == best["Partitions"])]
             tmpl = extract_measure(tmp, 'CRPS_Interval', data_columns)

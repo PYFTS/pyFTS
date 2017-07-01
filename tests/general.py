@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 import pandas as pd
 from pyFTS.partitioners import Grid, Entropy, FCM, Huarng
-from pyFTS.common import FLR,FuzzySet,Membership,Transformations
+from pyFTS.common import FLR,FuzzySet,Membership,Transformations, Util as cUtil
 from pyFTS import fts,hofts,ifts,pwfts,tree, chen
 #from pyFTS.benchmarks import benchmarks as bchmk
 from pyFTS.benchmarks import naive, arima
@@ -20,8 +20,8 @@ from pyFTS.models.seasonal import SeasonalIndexer
 
 os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
-diff = Transformations.Differential(1)
-ix = SeasonalIndexer.LinearSeasonalIndexer([12, 24], [720, 1],[False, False])
+#diff = Transformations.Differential(1)
+#ix = SeasonalIndexer.LinearSeasonalIndexer([12, 24], [720, 1],[False, False])
 
 """
 DATASETS
@@ -62,6 +62,52 @@ DATASETS
 
 #print(lag)
 #print(a)
+
+sonda = pd.read_csv("DataSets/SONDA_BSB_MOD.csv", sep=";")
+
+sonda['data'] = pd.to_datetime(sonda['data'])
+
+sonda = sonda[:][527041:]
+
+sonda.index = np.arange(0,len(sonda.index))
+
+sonda_treino = sonda[:1051200]
+sonda_teste = sonda[1051201:]
+
+from pyFTS.models.seasonal import SeasonalIndexer
+
+ix_m15 = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.minute],[15],'glo_avg')
+
+cUtil.persist_obj(ix_m15, "models/sonda_ix_m15.pkl")
+
+
+ix_Mh = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.month,SeasonalIndexer.DateTime.hour],
+                                             [None, None],'glo_avg')
+
+cUtil.persist_obj(ix_Mh, "models/sonda_ix_Mh.pkl")
+
+ix_Mhm15 = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.month,
+                                                     SeasonalIndexer.DateTime.hour, SeasonalIndexer.DateTime.minute],
+                                             [None, None,15],'glo_avg')
+
+cUtil.persist_obj(ix_Mhm15, "models/sonda_ix_Mhm15.pkl")
+
+
+tmp = ix_Mh.get_data(sonda_treino)
+for max_part in [10, 20, 30, 40, 50]:
+
+    fs1 = Grid.GridPartitionerTrimf(tmp,max_part)
+
+    cUtil.persist_obj(fs1,"models/sonda_fs_grid_" + str(max_part) + ".pkl")
+
+    fs2 = FCM.FCMPartitionerTrimf(tmp, max_part)
+
+    cUtil.persist_obj(fs2, "models/sonda_fs_fcm_" + str(max_part) + ".pkl")
+
+    fs3 = Entropy.EntropyPartitionerTrimf(tmp, max_part)
+
+    cUtil.persist_obj(fs3, "models/sonda_fs_entropy_" + str(max_part) + ".pkl")
+
 
 from pyFTS.benchmarks import benchmarks as bchmk
 #from pyFTS.benchmarks import distributed_benchmarks as bchmk
@@ -189,7 +235,6 @@ experiments = [
 Util.unified_scaled_point(experiments,tam=[15,8],save=True,file="pictures/unified_experiments_point.png",
                          ignore=['ARIMA(1,0,0)','ARIMA(2,0,0)','ARIMA(2,0,1)','ARIMA(2,0,2)','QAR(2)'],
                          replace=[['ARIMA','ARIMA'],['QAR','QAR']])
-
 '''
 
 '''
@@ -215,13 +260,14 @@ Util.unified_scaled_interval_pinball(experiments,tam=[15,8],save=True,file="pict
 
 '''
 
+'''
 experiments = [
-    ["experiments/taiex_ahead_synthetic.csv","experiments/taiex_ahead_analytic.csv",16],
-    ["experiments/nasdaq_ahead_synthetic.csv","experiments/nasdaq_ahead_analytic.csv",11],
-    ["experiments/sp500_ahead_synthetic.csv","experiments/sp500_ahead_analytic.csv", 21],
-    ["experiments/best_ahead_synthetic.csv","experiments/best_ahead_analytic.csv", 24],
-    ["experiments/sondasun_ahead_synthetic.csv","experiments/sondasun_ahead_analytic.csv",13],
-    ["experiments/sondawind_ahead_synthetic.csv","experiments/sondawind_ahead_analytic.csv", 13],
+    ["experiments/taiex_ahead_synthetic_diff.csv","experiments/taiex_ahead_analytic_diff.csv",16],
+    ["experiments/nasdaq_ahead_synthetic_diff.csv","experiments/nasdaq_ahead_analytic_diff.csv",11],
+    ["experiments/sp500_ahead_synthetic_diff.csv","experiments/sp500_ahead_analytic_diff.csv", 21],
+    ["experiments/best_ahead_synthetic_diff.csv","experiments/best_ahead_analytic_diff.csv", 24],
+    ["experiments/sondasun_ahead_synthetic_diff.csv","experiments/sondasun_ahead_analytic_diff.csv",13],
+    ["experiments/sondawind_ahead_synthetic_diff.csv","experiments/sondawind_ahead_analytic_diff.csv", 13],
     ["experiments/gauss_ahead_synthetic_diff.csv","experiments/gauss_ahead_analytic_diff.csv",16]
 ]
 
@@ -233,7 +279,9 @@ Util.unified_scaled_ahead(experiments,tam=[15,8],save=True,file="pictures/unifie
 
 
 
-"""
+'''
+
+'''
 from pyFTS.partitioners import Grid
 
 from pyFTS import sfts
@@ -268,4 +316,4 @@ x = tmp.forecast(sonda[:1610])
 
 #print(taiex[1600:1610])
 print(x)
-#"""
+'''

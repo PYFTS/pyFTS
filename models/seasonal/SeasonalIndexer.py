@@ -1,6 +1,7 @@
 import numpy as np
 from enum import Enum
 
+
 class SeasonalIndexer(object):
     """
     Seasonal Indexer. Responsible to find the seasonal index of a data point inside its data set
@@ -116,6 +117,7 @@ class DataFrameSeasonalIndexer(SeasonalIndexer):
     def set_data(self, data, value):
         data.loc[:,self.data_fields] = value
         return data
+
 
 class DateTime(Enum):
     year = 1

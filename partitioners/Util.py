@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib as plt
 import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+#from mpl_toolkits.mplot3d import Axes3D
 from pyFTS.common import Membership, Util
 from pyFTS.partitioners import Grid,Huarng,FCM,Entropy
 

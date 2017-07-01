@@ -5,38 +5,55 @@ from pyFTS.common import FuzzySet,SortedCollection
 
 
 class ProbabilityDistribution(object):
-    def __init__(self,name,nbins,uod,bins=None,labels=None, data=None):
-        self.name = name
-        self.nbins = nbins
-        self.uod = uod
-        if bins is None:
-            #range = (uod[1] - uod[0])/nbins
-            #self.bins = np.arange(uod[0],uod[1],range).tolist()
-            self.bins = np.linspace(uod[0], uod[1], nbins).tolist()
-            self.labels = [str(k) for k in self.bins]
+    """
+    Represents a discrete or continous probability distribution
+    If type is histogram, the PDF is discrete
+    If type is KDE the PDF is continuous
+    """
+    def __init__(self,type, **kwargs):
+        if type is None:
+            self.type = "KDE"
         else:
-            self.bins = bins
-            self.labels = labels
+            self.type = type
+        self.description = kwargs.get("description", None)
 
-        self.index = SortedCollection.SortedCollection(iterable=sorted(self.bins))
-        self.distribution = {}
-        self.count = 0
-        for k in self.bins: self.distribution[k] = 0
+        self.uod = kwargs.get("uod", None)
 
-        if data is not None: self.append(data)
+        if self.type == "histogram":
+            self.nbins = kwargs.get("num_bins", None)
+            self.bins = kwargs.get("bins", None)
+            self.labels = kwargs.get("bins_labels", None)
+
+            if self.bins is None:
+                self.bins = np.linspace(self.uod[0], self.uod[1], self.nbins).tolist()
+                self.labels = [str(k) for k in self.bins]
+
+            self.index = SortedCollection.SortedCollection(iterable=sorted(self.bins))
+            self.distribution = {}
+            self.count = 0
+            for k in self.bins: self.distribution[k] = 0
+
+        self.data = kwargs.get("data",None)
 
     def append(self, values):
-        for k in values:
-            v = self.index.find_ge(k)
-            self.distribution[v] += 1
-            self.count += 1
+        if self.type == "histogram":
+            for k in values:
+                v = self.index.find_ge(k)
+                self.distribution[v] += 1
+                self.count += 1
+        else:
+            self.data.extend(values)
 
     def density(self, values):
-        ret = []
-        for k in values:
-            v = self.index.find_ge(k)
-            ret.append(self.distribution[v] / self.count)
-        return ret
+        if self.type == "histogram":
+            ret = []
+            for k in values:
+                v = self.index.find_ge(k)
+                ret.append(self.distribution[v] / self.count)
+            return ret
+        else:
+            pass
+
 
     def cummulative(self, values):
         pass
