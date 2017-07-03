@@ -76,38 +76,33 @@ sonda_teste = sonda[1051201:]
 
 from pyFTS.models.seasonal import SeasonalIndexer
 
-ix_m15 = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.minute],[15],'glo_avg')
+indexers = []
 
-cUtil.persist_obj(ix_m15, "models/sonda_ix_m15.pkl")
+for i in ["models/sonda_ix_m15.pkl", "models/sonda_ix_Mh.pkl", "models/sonda_ix_Mhm15.pkl"]:
+    obj = cUtil.load_obj(i)
+    indexers.append( obj )
+    print(obj)
+
+partitioners = []
+
+transformations = ["", "_diff"]
+for max_part in [10, 20, 30, 40, 50, 60]:
+    for t in transformations:
+        obj = cUtil.load_obj("models/sonda_fs_grid_" + str(max_part) + t + ".pkl")
+        partitioners.append( obj )
+        print(obj)
 
 
-ix_Mh = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.month,SeasonalIndexer.DateTime.hour],
-                                             [None, None],'glo_avg')
+from pyFTS import ensemble
 
-cUtil.persist_obj(ix_Mh, "models/sonda_ix_Mh.pkl")
+fts = ensemble.SeasonalEnsembleFTS("")
 
-ix_Mhm15 = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.month,
-                                                     SeasonalIndexer.DateTime.hour, SeasonalIndexer.DateTime.minute],
-                                             [None, None,15],'glo_avg')
+fts.indexers = indexers
+fts.partitioners = partitioners
 
-cUtil.persist_obj(ix_Mhm15, "models/sonda_ix_Mhm15.pkl")
+fts.train(sonda_treino, sets=None)
 
-
-tmp = ix_Mh.get_data(sonda_treino)
-for max_part in [10, 20, 30, 40, 50]:
-
-    fs1 = Grid.GridPartitionerTrimf(tmp,max_part)
-
-    cUtil.persist_obj(fs1,"models/sonda_fs_grid_" + str(max_part) + ".pkl")
-
-    fs2 = FCM.FCMPartitionerTrimf(tmp, max_part)
-
-    cUtil.persist_obj(fs2, "models/sonda_fs_fcm_" + str(max_part) + ".pkl")
-
-    fs3 = Entropy.EntropyPartitionerTrimf(tmp, max_part)
-
-    cUtil.persist_obj(fs3, "models/sonda_fs_entropy_" + str(max_part) + ".pkl")
-
+cUtil.persist_obj(fts, "models/msfts_ensemble_sonda_grid.pkl")
 
 from pyFTS.benchmarks import benchmarks as bchmk
 #from pyFTS.benchmarks import distributed_benchmarks as bchmk

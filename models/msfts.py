@@ -7,7 +7,7 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
     """
     Multi-Seasonal Fuzzy Time Series
     """
-    def __init__(self, order, name, indexer, **kwargs):
+    def __init__(self, name, indexer, **kwargs):
         super(MultiSeasonalFTS, self).__init__("MSFTS")
         self.name = "Multi Seasonal FTS"
         self.shortname = "MSFTS " + name

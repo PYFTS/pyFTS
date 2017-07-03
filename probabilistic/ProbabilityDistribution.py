@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pyFTS.common import FuzzySet,SortedCollection
+from pyFTS.probabilistic import kde
 
 
 class ProbabilityDistribution(object):
@@ -11,13 +12,14 @@ class ProbabilityDistribution(object):
     If type is KDE the PDF is continuous
     """
     def __init__(self,type, **kwargs):
+        self.uod = kwargs.get("uod", None)
+
         if type is None:
             self.type = "KDE"
+            self.kde = kde.KernelSmoothing(kwargs.get("h", 1), kwargs.get("method", "epanechnikov"))
         else:
             self.type = type
         self.description = kwargs.get("description", None)
-
-        self.uod = kwargs.get("uod", None)
 
         if self.type == "histogram":
             self.nbins = kwargs.get("num_bins", None)
@@ -45,14 +47,15 @@ class ProbabilityDistribution(object):
             self.data.extend(values)
 
     def density(self, values):
-        if self.type == "histogram":
-            ret = []
-            for k in values:
+        ret = []
+        for k in values:
+            if self.type == "histogram":
                 v = self.index.find_ge(k)
                 ret.append(self.distribution[v] / self.count)
-            return ret
-        else:
-            pass
+            else:
+                v = self.kde.probability(k, self.data)
+                ret.append(v)
+        return ret
 
 
     def cummulative(self, values):

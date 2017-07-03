@@ -12,6 +12,7 @@ from pyFTS.common import Transformations
 import scipy.stats as st
 from pyFTS import tree
 from pyFTS.models import msfts
+from pyFTS.probabilistic import ProbabilityDistribution, kde
 
 def sampler(data, quantiles):
     ret = []
@@ -242,28 +243,5 @@ class AllMethodEnsembleFTS(EnsembleFTS):
                     self.appendModel(model)
 
 
-class SeasonalEnsembleFTS(EnsembleFTS):
-    def __init__(self, name, **kwargs):
-        super(SeasonalEnsembleFTS, self).__init__(name="Seasonal Ensemble FTS", **kwargs)
-        self.min_order = 1
-        self.indexers = []
-        self.partitioners = []
-        self.is_multivariate = True
-        self.has_seasonality = True
-        self.has_probability_forecasting = True
-
-    def train(self, data, sets, order=1, parameters=None):
-        self.original_max = max(data)
-        self.original_min = min(data)
-
-        for ix in self.indexers:
-            for pt in self.partitioners:
-
-                model = msfts.MultiSeasonalFTS()
-                model.indexer = ix
-                model.appendTransformation(pt.transformation)
-                model.train(data,pt.sets,order=1)
-
-                self.appendModel(model)
 
 
