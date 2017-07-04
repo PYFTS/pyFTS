@@ -20,7 +20,7 @@ from pyFTS.models.seasonal import SeasonalIndexer
 
 os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
-#diff = Transformations.Differential(1)
+diff = Transformations.Differential(1)
 #ix = SeasonalIndexer.LinearSeasonalIndexer([12, 24], [720, 1],[False, False])
 
 """
@@ -72,22 +72,27 @@ sonda = sonda[:][527041:]
 sonda.index = np.arange(0,len(sonda.index))
 
 sonda_treino = sonda[:1051200]
-sonda_teste = sonda[1051201:]
+sonda_teste = sonda[1051901:1051910]
+
+ix_m15 = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.minute],[15],'glo_avg', name='m15')
+
+fs1 = Grid.GridPartitioner(sonda_treino,50,transformation=diff, indexer=ix_m15)
+
 
 '''
 from pyFTS.models.seasonal import SeasonalIndexer
 
 indexers = []
 
-for i in ["models/sonda_ix_m15.pkl", "models/sonda_ix_Mh.pkl", "models/sonda_ix_Mhm15.pkl"]:
+for i in ["models/sonda_ix_Mhm15.pkl"]: #, "models/sonda_ix_m15.pkl", "models/sonda_ix_Mh.pkl", ]:
     obj = cUtil.load_obj(i)
     indexers.append( obj )
     print(obj)
 
 partitioners = []
 
-transformations = ["", "_diff"]
-for max_part in [10, 20, 30, 40, 50, 60]:
+transformations = [""] #, "_diff"]
+for max_part in [30, 40, 50, 60, 70, 80, 90]:
     for t in transformations:
         obj = cUtil.load_obj("models/sonda_fs_grid_" + str(max_part) + t + ".pkl")
         partitioners.append( obj )
@@ -96,17 +101,33 @@ for max_part in [10, 20, 30, 40, 50, 60]:
 
 from pyFTS.ensemble import ensemble, multiseasonal
 
-fts = multiseasonal.SeasonalEnsembleFTS("")
+fts = multiseasonal.SeasonalEnsembleFTS("sonda_msfts_Mhm15")
 
 fts.indexers = indexers
 fts.partitioners = partitioners
 
+fts.indexer = indexers[0]
+
 fts.train(sonda_treino, sets=None)
 '''
-ftse = cUtil.load_obj("models/sonda_msfts_ensemble.pkl")
+#'''
 
-tmp = ftse.forecastDistribution(sonda_teste)
+#ix = cUtil.load_obj("models/sonda_ix_m15.pkl")
 
+#ftse = cUtil.load_obj("models/msfts_Grid40_diff_Mhm15.pkl")
+
+#ftse.indexer = ix
+
+#ftse.update_uod(sonda_treino)
+
+#tmp = ftse.forecastDistribution(sonda_teste,h=1)
+
+#tmp = ftse.forecast(sonda_teste,h=1)
+
+#tmp[5].plot()
+#'''
+
+'''
 from pyFTS.benchmarks import benchmarks as bchmk
 #from pyFTS.benchmarks import distributed_benchmarks as bchmk
 #from pyFTS.benchmarks import parallel_benchmarks as bchmk
@@ -299,7 +320,7 @@ diff = Transformations.Differential(1)
 fs = Grid.GridPartitioner(sonda[:9000], 10, transformation=diff)
 
 
-
+'''
 tmp = sfts.SeasonalFTS("")
 tmp.indexer = ix
 tmp.appendTransformation(diff)

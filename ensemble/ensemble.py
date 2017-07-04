@@ -59,7 +59,10 @@ class EnsembleFTS(fts.FTS):
                     forecast = int(forecast[-1])
                 elif isinstance(forecast, (list,np.ndarray)) and len(forecast) == 0:
                     forecast = np.nan
-            tmp.append(forecast)
+            if isinstance(forecast, list):
+                tmp.extend(forecast)
+            else:
+                tmp.append(forecast)
         return tmp
 
     def get_point(self,forecasts, **kwargs):

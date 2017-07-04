@@ -44,9 +44,13 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
         self.has_seasonality = True
         self.has_probability_forecasting = True
 
+    def update_uod(self, data):
+        self.original_max = max(self.indexer.get_data(data))
+        self.original_min = min(self.indexer.get_data(data))
+
     def train(self, data, sets, order=1, parameters=None):
-        self.original_max = max(data)
-        self.original_min = min(data)
+        self.original_max = max(self.indexer.get_data(data))
+        self.original_min = min(self.indexer.get_data(data))
 
         num_cores = multiprocessing.cpu_count()
 
@@ -76,7 +80,9 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
 
             tmp = self.get_models_forecasts(data.ix[k])
 
-            dist = ProbabilityDistribution.ProbabilityDistribution("KDE",h=h,uod=[self.original_min, self.original_max])
+            tmp = np.ravel(tmp).tolist()
+
+            dist = ProbabilityDistribution.ProbabilityDistribution("KDE",h=h,uod=[self.original_min, self.original_max], data=tmp)
 
             ret.append(dist)
 

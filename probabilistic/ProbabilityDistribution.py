@@ -11,25 +11,20 @@ class ProbabilityDistribution(object):
     If type is histogram, the PDF is discrete
     If type is KDE the PDF is continuous
     """
-    def __init__(self,type, **kwargs):
+    def __init__(self,type = "KDE", **kwargs):
         self.uod = kwargs.get("uod", None)
 
-        if type is None:
-            self.type = "KDE"
+        self.type = type
+        if self.type == "KDE":
             self.kde = kde.KernelSmoothing(kwargs.get("h", 10), kwargs.get("method", "epanechnikov"))
-        else:
-            self.type = type
 
-        self.description = kwargs.get("description", None)
         self.nbins = kwargs.get("num_bins", 100)
 
-        if self.type == "histogram":
-
-            self.bins = kwargs.get("bins", None)
-            self.labels = kwargs.get("bins_labels", None)
+        self.bins = kwargs.get("bins", None)
+        self.labels = kwargs.get("bins_labels", None)
 
         if self.bins is None:
-            self.bins = np.linspace(self.uod[0], self.uod[1], self.nbins).tolist()
+            self.bins = np.linspace(int(self.uod[0]), int(self.uod[1]), int(self.nbins)).tolist()
             self.labels = [str(k) for k in self.bins]
 
         self.index = SortedCollection.SortedCollection(iterable=sorted(self.bins))
@@ -37,7 +32,14 @@ class ProbabilityDistribution(object):
         self.count = 0
         for k in self.bins: self.distribution[k] = 0
 
-        self.data = kwargs.get("data",None)
+        self.data = []
+
+        data = kwargs.get("data",None)
+
+        if data is not None:
+            self.append(data)
+
+        self.name = kwargs.get("name", "")
 
     def append(self, values):
         if self.type == "histogram":
@@ -50,7 +52,7 @@ class ProbabilityDistribution(object):
             self.distribution = {}
             dens = self.density(self.bins)
             for v,d in enumerate(dens):
-                self.distribution[v] = d
+                self.distribution[self.bins[v]] = d
 
     def density(self, values):
         ret = []

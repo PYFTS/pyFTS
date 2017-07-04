@@ -104,8 +104,8 @@ class FCMPartitioner(partitioner.Partitioner):
     """
     
     """
-    def __init__(self, data,npart,func = Membership.trimf, transformation=None):
-        super(FCMPartitioner, self).__init__("FCM", data, npart, func=func, transformation=transformation)
+    def __init__(self, data,npart,func = Membership.trimf, transformation=None, indexer=None):
+        super(FCMPartitioner, self).__init__("FCM", data, npart, func=func, transformation=transformation, indexer=indexer)
 
     def build(self,data):
         sets = []

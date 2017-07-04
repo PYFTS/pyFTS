@@ -78,8 +78,8 @@ def c_means(k, dados, tam):
 
 
 class CMeansPartitioner(partitioner.Partitioner):
-    def __init__(self, data, npart, func = Membership.trimf, transformation=None):
-        super(CMeansPartitioner, self).__init__("CMeans", data, npart, func=func, transformation=transformation)
+    def __init__(self, data, npart, func = Membership.trimf, transformation=None, indexer=None):
+        super(CMeansPartitioner, self).__init__("CMeans", data, npart, func=func, transformation=transformation, indexer=indexer)
 
     def build(self, data):
         sets = []
