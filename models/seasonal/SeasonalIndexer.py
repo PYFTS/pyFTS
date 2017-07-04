@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from enum import Enum
 
 
@@ -27,8 +28,8 @@ class SeasonalIndexer(object):
 
 
 class LinearSeasonalIndexer(SeasonalIndexer):
-    def __init__(self,seasons,units,ignore=None,**kwargs):
-        super(LinearSeasonalIndexer, self).__init__(len(seasons),kwargs)
+    def __init__(self,seasons,units,ignore=None, **kwargs):
+        super(LinearSeasonalIndexer, self).__init__(len(seasons), **kwargs)
         self.seasons = seasons
         self.units = units
         self.ignore = ignore
@@ -78,7 +79,7 @@ class LinearSeasonalIndexer(SeasonalIndexer):
 
 class DataFrameSeasonalIndexer(SeasonalIndexer):
     def __init__(self,index_fields,index_seasons, data_fields,**kwargs):
-        super(DataFrameSeasonalIndexer, self).__init__(len(index_seasons),kwargs)
+        super(DataFrameSeasonalIndexer, self).__init__(len(index_seasons), **kwargs)
         self.fields = index_fields
         self.seasons = index_seasons
         self.data_fields = data_fields
@@ -133,7 +134,7 @@ class DateTime(Enum):
 
 class DateTimeSeasonalIndexer(SeasonalIndexer):
     def __init__(self,date_field, index_fields, index_seasons, data_fields,**kwargs):
-        super(DateTimeSeasonalIndexer, self).__init__(len(index_seasons), kwargs)
+        super(DateTimeSeasonalIndexer, self).__init__(len(index_seasons), **kwargs)
         self.fields = index_fields
         self.seasons = index_seasons
         self.data_fields = data_fields
@@ -163,14 +164,24 @@ class DateTimeSeasonalIndexer(SeasonalIndexer):
             return  tmp // resolution
 
     def get_season_of_data(self, data):
-        # data = data.copy()
+
         ret = []
-        for ix in data.index:
-            date = data[self.date_field][ix]
+
+        if isinstance(data, pd.DataFrame):
+            for ix in data.index:
+                date = data[self.date_field][ix]
+                season = []
+                for c, f in enumerate(self.fields, start=0):
+                    season.append(self.strip_datepart(date, f, self.seasons[c]))
+                ret.append(season)
+
+        elif isinstance(data, pd.Series):
+            date = data[self.date_field]
             season = []
             for c, f in enumerate(self.fields, start=0):
-               season.append( self.strip_datepart(date, f, self.seasons[c]) )
+                season.append(self.strip_datepart(date, f, self.seasons[c]))
             ret.append(season)
+
         return ret
 
     def get_season_by_index(self, index):

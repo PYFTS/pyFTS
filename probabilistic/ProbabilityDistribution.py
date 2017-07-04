@@ -16,24 +16,26 @@ class ProbabilityDistribution(object):
 
         if type is None:
             self.type = "KDE"
-            self.kde = kde.KernelSmoothing(kwargs.get("h", 1), kwargs.get("method", "epanechnikov"))
+            self.kde = kde.KernelSmoothing(kwargs.get("h", 10), kwargs.get("method", "epanechnikov"))
         else:
             self.type = type
+
         self.description = kwargs.get("description", None)
+        self.nbins = kwargs.get("num_bins", 100)
 
         if self.type == "histogram":
-            self.nbins = kwargs.get("num_bins", None)
+
             self.bins = kwargs.get("bins", None)
             self.labels = kwargs.get("bins_labels", None)
 
-            if self.bins is None:
-                self.bins = np.linspace(self.uod[0], self.uod[1], self.nbins).tolist()
-                self.labels = [str(k) for k in self.bins]
+        if self.bins is None:
+            self.bins = np.linspace(self.uod[0], self.uod[1], self.nbins).tolist()
+            self.labels = [str(k) for k in self.bins]
 
-            self.index = SortedCollection.SortedCollection(iterable=sorted(self.bins))
-            self.distribution = {}
-            self.count = 0
-            for k in self.bins: self.distribution[k] = 0
+        self.index = SortedCollection.SortedCollection(iterable=sorted(self.bins))
+        self.distribution = {}
+        self.count = 0
+        for k in self.bins: self.distribution[k] = 0
 
         self.data = kwargs.get("data",None)
 
@@ -45,6 +47,10 @@ class ProbabilityDistribution(object):
                 self.count += 1
         else:
             self.data.extend(values)
+            self.distribution = {}
+            dens = self.density(self.bins)
+            for v,d in enumerate(dens):
+                self.distribution[v] = d
 
     def density(self, values):
         ret = []
@@ -111,7 +117,10 @@ class ProbabilityDistribution(object):
             fig = plt.figure(figsize=tam)
             axis = fig.add_subplot(111)
 
-        ys = [self.distribution[k]/self.count for k in self.bins]
+        if self.type == "histogram":
+            ys = [self.distribution[k]/self.count for k in self.bins]
+        else:
+            ys = [self.distribution[k] for k in self.bins]
 
         axis.plot(self.bins, ys,c=color, label=self.name)
 

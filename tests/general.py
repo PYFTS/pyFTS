@@ -74,6 +74,7 @@ sonda.index = np.arange(0,len(sonda.index))
 sonda_treino = sonda[:1051200]
 sonda_teste = sonda[1051201:]
 
+'''
 from pyFTS.models.seasonal import SeasonalIndexer
 
 indexers = []
@@ -93,16 +94,18 @@ for max_part in [10, 20, 30, 40, 50, 60]:
         print(obj)
 
 
-from pyFTS import ensemble
+from pyFTS.ensemble import ensemble, multiseasonal
 
-fts = ensemble.SeasonalEnsembleFTS("")
+fts = multiseasonal.SeasonalEnsembleFTS("")
 
 fts.indexers = indexers
 fts.partitioners = partitioners
 
 fts.train(sonda_treino, sets=None)
+'''
+ftse = cUtil.load_obj("models/sonda_msfts_ensemble.pkl")
 
-cUtil.persist_obj(fts, "models/msfts_ensemble_sonda_grid.pkl")
+tmp = ftse.forecastDistribution(sonda_teste)
 
 from pyFTS.benchmarks import benchmarks as bchmk
 #from pyFTS.benchmarks import distributed_benchmarks as bchmk

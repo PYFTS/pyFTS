@@ -20,15 +20,16 @@ import multiprocessing
 
 def train_individual_model(partitioner, train_data, indexer):
     pttr = str(partitioner.__module__).split('.')[-1]
-    _key = "msfts_" + pttr + str(partitioner.partitions) + "_" + indexer.name
+    diff = "_diff" if partitioner.transformation is not None else ""
+    _key = "msfts_" + pttr + str(partitioner.partitions) + diff + "_" + indexer.name
+
+    print(_key)
 
     model = msfts.MultiSeasonalFTS(_key, indexer=indexer)
     model.appendTransformation(partitioner.transformation)
     model.train(train_data, partitioner.sets, order=1)
 
     cUtil.persist_obj(model, "models/"+_key+".pkl")
-
-    print(_key)
 
     return model
 
@@ -54,11 +55,16 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
         for ix in self.indexers:
             for pt in self.partitioners:
                 pool[count] = {'ix': ix, 'pt': pt}
+                count += 1
 
-        results = Parallel(n_jobs=num_cores)(delayed(train_individual_model)(deepcopy(pool[m]['pt']), deepcopy(data), deepcopy(pool[m]['ix'])) for m in pool.keys())
+        results = Parallel(n_jobs=num_cores)(
+            delayed(train_individual_model)(deepcopy(pool[m]['pt']), data, deepcopy(pool[m]['ix']))
+            for m in pool.keys())
 
         for tmp in results:
             self.appendModel(tmp)
+
+        cUtil.persist_obj(self, "models/"+self.name+".pkl")
 
     def forecastDistribution(self, data, **kwargs):
 
@@ -66,11 +72,11 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
 
         h = kwargs.get("h",10)
 
-        for k in data:
+        for k in data.index:
 
-            tmp = self.get_models_forecasts(k)
+            tmp = self.get_models_forecasts(data.ix[k])
 
-            dist = ProbabilityDistribution.ProbabilityDistribution("KDE",h)
+            dist = ProbabilityDistribution.ProbabilityDistribution("KDE",h=h,uod=[self.original_min, self.original_max])
 
             ret.append(dist)
 

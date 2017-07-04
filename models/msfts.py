@@ -46,7 +46,7 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
         index = self.indexer.get_season_of_data(data)
         ndata = self.indexer.get_data(data)
 
-        for k in np.arange(1, len(data)):
+        for k in np.arange(0, len(index)):
 
             flrg = self.flrgs[str(index[k])]
 
@@ -54,7 +54,7 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
 
             ret.append(sum(mp) / len(mp))
 
-        ret = self.doInverseTransformations(ret, params=[ndata[self.order - 1:]])
+        ret = self.doInverseTransformations(ret, params=[ndata])
 
         return ret
 

@@ -50,12 +50,15 @@ class EnsembleFTS(fts.FTS):
     def get_models_forecasts(self,data):
         tmp = []
         for model in self.models:
-            sample = data[-model.order:]
-            forecast = model.forecast(sample)
-            if isinstance(forecast, (list,np.ndarray)) and len(forecast) > 0:
-                forecast = int(forecast[-1])
-            elif isinstance(forecast, (list,np.ndarray)) and len(forecast) == 0:
-                forecast = np.nan
+            if self.is_multivariate or self.has_seasonality:
+                forecast = model.forecast(data)
+            else:
+                sample = data[-model.order:]
+                forecast = model.forecast(sample)
+                if isinstance(forecast, (list,np.ndarray)) and len(forecast) > 0:
+                    forecast = int(forecast[-1])
+                elif isinstance(forecast, (list,np.ndarray)) and len(forecast) == 0:
+                    forecast = np.nan
             tmp.append(forecast)
         return tmp
 

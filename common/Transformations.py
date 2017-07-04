@@ -57,6 +57,9 @@ class Differential(Transformation):
         if not isinstance(data, list):
             data = [data]
 
+        if not isinstance(param, list):
+            param = [param]
+
         n = len(data)
 
         if not interval:
