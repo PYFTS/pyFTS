@@ -62,7 +62,7 @@ def generateRecurrentFLRs(fuzzyData):
     return flrs
 
 
-def generateIndexedFLRs(sets, indexer, data):
+def generateIndexedFLRs(sets, indexer, data, transformation=None):
     """
     Create a season-indexed ordered FLR set from a list of fuzzy sets with recurrence
     :param sets: fuzzy sets
@@ -73,7 +73,9 @@ def generateIndexedFLRs(sets, indexer, data):
     flrs = []
     index = indexer.get_season_of_data(data)
     ndata = indexer.get_data(data)
-    for k in np.arange(1,len(data)):
+    if transformation is not None:
+        ndata = transformation.apply(ndata)
+    for k in np.arange(1,len(ndata)):
         lhs = FuzzySet.getMaxMembershipFuzzySet(ndata[k-1],sets)
         rhs = FuzzySet.getMaxMembershipFuzzySet(ndata[k], sets)
         season = index[k]

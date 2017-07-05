@@ -234,7 +234,7 @@ def get_point_statistics(data, model, indexer=None):
     """Condensate all measures for point forecasters"""
 
     if indexer is not None:
-        ndata = np.array(indexer.get_data(data[model.order:]))
+        ndata = np.array(indexer.get_data(data))
     else:
         ndata = np.array(data[model.order:])
 

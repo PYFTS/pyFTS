@@ -62,22 +62,43 @@ DATASETS
 
 #print(lag)
 #print(a)
-
-sonda = pd.read_csv("DataSets/SONDA_BSB_MOD.csv", sep=";")
+#'''
+sonda = pd.read_csv("DataSets/SONDA_BSB_15MIN_AVG.csv", sep=";")
 
 sonda['data'] = pd.to_datetime(sonda['data'])
 
-sonda = sonda[:][527041:]
+#sonda = sonda[:][527041:].dropna()
 
 sonda.index = np.arange(0,len(sonda.index))
 
-sonda_treino = sonda[:1051200]
-sonda_teste = sonda[1051901:1051910]
+sonda_treino = sonda[:105313].dropna()
+sonda_teste = sonda[105314:].dropna()
 
-ix_m15 = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.minute],[15],'glo_avg', name='m15')
+#ix_m15 = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.minute],[15],'glo_avg', name='m15')
 
-fs1 = Grid.GridPartitioner(sonda_treino,50,transformation=diff, indexer=ix_m15)
+#fs1 = Grid.GridPartitioner(sonda_treino, 50, transformation=diff, indexer=ix_m15)
 
+#ix = cUtil.load_obj("models/sonda_ix_Mhm15.pkl")
+
+#fs = cUtil.load_obj("models/sonda_fs_Entropy40_diff.pkl")
+
+#from pyFTS.models import msfts
+
+#obj = msfts.MultiSeasonalFTS("sonda_msfts_Entropy40_Mhm15", indexer=ix)
+
+#obj.appendTransformation(diff)
+
+#obj.train(sonda_treino, fs.sets)
+
+#cUtil.persist_obj(obj, "models/sonda_msfts_Entropy40_Mhm15.pkl")
+
+ftse = cUtil.load_obj("models/sonda_ensemble_msfts.pkl")
+
+tmp = ftse.forecastDistribution(sonda_teste[850:860],  h=0.5, method="gaussian")
+
+print(tmp[0])
+
+#'''
 
 '''
 from pyFTS.models.seasonal import SeasonalIndexer
@@ -223,7 +244,7 @@ bchmk.ahead_sliding_window(sonda, 10000, steps=10, resolution=10, train=0.2, inc
                      dump=True, save=True, file="experiments/sondawind_ahead_analytic_diff.csv",
                      nodes=['192.168.0.106', '192.168.0.108', '192.168.0.109']) #, depends=[hofts, ifts])
 
-"""
+
 
 from pyFTS import pwfts
 from pyFTS.common import Transformations
@@ -240,7 +261,7 @@ from pyFTS.partitioners import Grid
 #bchmk.plot_compared_intervals_ahead(best[1600:1700],[model], ['blue','red'],
 #                                    distributions=[True], save=True, file="pictures/best_ahead_forecasts",
 #                                    time_from=40, time_to=60, resolution=100)
-'''
+
 experiments = [
     ["experiments/taiex_point_synthetic_diff.csv","experiments/taiex_point_analytic_diff.csv",16],
     ["experiments/nasdaq_point_synthetic_diff.csv","experiments/nasdaq_point_analytic_diff.csv", 11],
@@ -320,7 +341,6 @@ diff = Transformations.Differential(1)
 fs = Grid.GridPartitioner(sonda[:9000], 10, transformation=diff)
 
 
-'''
 tmp = sfts.SeasonalFTS("")
 tmp.indexer = ix
 tmp.appendTransformation(diff)

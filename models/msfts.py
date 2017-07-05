@@ -13,10 +13,10 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
         self.shortname = "MSFTS " + name
         self.detail = ""
         self.seasonality = 1
-        self.hasSeasonality = True
-        self.hasPointForecasting = True
-        self.isHighOrder = True
-        self.isMultivariate = True
+        self.has_seasonality = True
+        self.has_point_forecasting = True
+        self.is_high_order = False
+        self.is_multivariate = True
         self.indexer = indexer
         self.flrgs = {}
 

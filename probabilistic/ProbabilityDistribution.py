@@ -123,8 +123,11 @@ class ProbabilityDistribution(object):
             ys = [self.distribution[k]/self.count for k in self.bins]
         else:
             ys = [self.distribution[k] for k in self.bins]
+            yp = [0 for k in self.data]
+            axis.plot(self.data, yp, c="red")
 
-        axis.plot(self.bins, ys,c=color, label=self.name)
+
+        axis.plot(self.bins, ys, c=color, label=self.name)
 
         axis.set_xlabel('Universe of Discourse')
         axis.set_ylabel('Probability')
@@ -134,5 +137,8 @@ class ProbabilityDistribution(object):
         body = '|'
         for k in sorted(self.distribution.keys()):
             head += str(round(k,2)) + '\t|'
-            body += str(round(self.distribution[k]  / self.count,3)) + '\t|'
+            if self.type == "histogram":
+                body += str(round(self.distribution[k]  / self.count,3)) + '\t|'
+            else:
+                body += str(round(self.distribution[k], 3)) + '\t|'
         return head + '\n' + body
