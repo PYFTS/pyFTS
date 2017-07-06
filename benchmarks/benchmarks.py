@@ -826,6 +826,25 @@ def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to
     cb.set_label('Density')
 
 
+def plot_probabilitydistribution_density(ax, cmap, probabilitydist, fig, time_from):
+    from matplotlib.patches import Rectangle
+    from matplotlib.collections import PatchCollection
+    from  matplotlib.colorbar import ColorbarPatch
+    patches = []
+    colors = []
+    for ct, dt in enumerate(probabilitydist):
+        for y in dt.bins:
+            s = Rectangle((time_from+ct, y), 1, dt.resolution, fill=True, lw = 0)
+            patches.append(s)
+            colors.append(dt.distribution[y]*5)
+    pc = PatchCollection(patches=patches, match_original=True)
+    pc.set_clim([0, 1])
+    pc.set_cmap(cmap)
+    pc.set_array(np.array(colors))
+    ax.add_collection(pc)
+    cb = fig.colorbar(pc, ax=ax)
+    cb.set_label('Density')
+
 
 def plotCompared(original, forecasts, labels, title):
     fig = plt.figure(figsize=[13, 6])

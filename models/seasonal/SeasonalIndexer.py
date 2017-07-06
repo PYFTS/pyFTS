@@ -26,6 +26,9 @@ class SeasonalIndexer(object):
     def get_data(self, data):
         pass
 
+    def get_index(self, data):
+        pass
+
 
 class LinearSeasonalIndexer(SeasonalIndexer):
     def __init__(self,seasons,units,ignore=None, **kwargs):
@@ -195,6 +198,9 @@ class DateTimeSeasonalIndexer(SeasonalIndexer):
 
     def get_data(self, data):
         return data[self.data_fields].tolist()
+
+    def get_index(self, data):
+        return data[self.date_field]
 
     def set_data(self, data, value):
         raise Exception("Operation not available!")

@@ -25,6 +25,7 @@ class ProbabilityDistribution(object):
 
         if self.bins is None:
             self.bins = np.linspace(int(self.uod[0]), int(self.uod[1]), int(self.nbins)).tolist()
+            self.resolution = (self.uod[1] - self.uod[0])/self.nbins
             self.labels = [str(k) for k in self.bins]
 
         self.index = SortedCollection.SortedCollection(iterable=sorted(self.bins))
@@ -127,7 +128,8 @@ class ProbabilityDistribution(object):
             axis.plot(self.data, yp, c="red")
 
 
-        axis.plot(self.bins, ys, c=color, label=self.name)
+        axis.plot(self.bins, ys, c=color)
+        axis.set_title(self.name)
 
         axis.set_xlabel('Universe of Discourse')
         axis.set_ylabel('Probability')

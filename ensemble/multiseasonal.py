@@ -82,8 +82,10 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
 
             tmp = np.ravel(tmp).tolist()
 
-            dist = ProbabilityDistribution.ProbabilityDistribution("KDE", uod=[self.original_min, self.original_max], data=tmp,
-                                                                   **kwargs)
+            name = str(self.indexer.get_index(data.ix[k]))
+
+            dist = ProbabilityDistribution.ProbabilityDistribution("KDE", uod=[self.original_min, self.original_max],
+                                                                   data=tmp, name=name, **kwargs)
 
             ret.append(dist)
 
