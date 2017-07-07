@@ -1,2 +1,2 @@
-# pyFTS
-Python Fuzzy Time Series API
+# pyFTSpackage
+pyFTS repository for pyPI package
