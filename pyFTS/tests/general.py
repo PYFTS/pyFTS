@@ -5,11 +5,11 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib as plt
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 #from mpl_toolkits.mplot3d import Axes3D
 
 import pandas as pd
-from pyFTS.partitioners import Grid, Entropy, FCM, Huarng
+from pyF import Grid, Entropy, FCM, Huarng
 from pyFTS.common import FLR,FuzzySet,Membership,Transformations, Util as cUtil
 from pyFTS import fts,hofts,ifts,pwfts,tree, chen
 #from pyFTS.benchmarks import benchmarks as bchmk
