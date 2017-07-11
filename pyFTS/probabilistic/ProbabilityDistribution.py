@@ -3,7 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pyFTS.common import FuzzySet,SortedCollection
 from pyFTS.probabilistic import kde
-
+from pyFTS import tree
+from pyFTS.common import SortedCollection
 
 class ProbabilityDistribution(object):
     """
@@ -42,6 +43,10 @@ class ProbabilityDistribution(object):
 
         self.name = kwargs.get("name", "")
 
+    def set(self, value, density):
+        k = self.index.find_ge(value)
+        self.distribution[k] = density
+
     def append(self, values):
         if self.type == "histogram":
             for k in values:
@@ -55,20 +60,46 @@ class ProbabilityDistribution(object):
             for v,d in enumerate(dens):
                 self.distribution[self.bins[v]] = d
 
+    def appendInterval(self, intervals):
+        if self.type == "histogram":
+            for interval in intervals:
+                for k in self.index.inside(interval[0], interval[1]):
+                    self.distribution[k] += 1
+                    self.count += 1
+
     def density(self, values):
         ret = []
         for k in values:
             if self.type == "histogram":
                 v = self.index.find_ge(k)
                 ret.append(self.distribution[v] / self.count)
-            else:
+            elif self.type == "KDE":
                 v = self.kde.probability(k, self.data)
                 ret.append(v)
+            else:
+                v = self.index.find_ge(k)
+                ret.append(self.distribution[v])
+        return ret
+
+    def cdf(self, value):
+        ret = 0
+        for k in self.bins:
+            if k < value:
+               ret += self.distribution[k]
+            else:
+                return ret
+
         return ret
 
 
     def cummulative(self, values):
-        pass
+        if isinstance(values, list):
+            ret = []
+            for k in values:
+                ret.append(self.cdf(k))
+        else:
+            return self.cdf(values)
+
 
     def quantile(self, qt):
         pass

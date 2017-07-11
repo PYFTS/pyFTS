@@ -7,6 +7,7 @@ from statsmodels.tsa.arima_model import ARIMA as stats_arima
 import scipy.stats as st
 from pyFTS import fts
 from pyFTS.common import SortedCollection
+from pyFTS.probabilistic import ProbabilityDistribution
 
 
 class ARIMA(fts.FTS):
@@ -148,29 +149,55 @@ class ARIMA(fts.FTS):
     def empty_grid(self, resolution):
         return self.get_empty_grid(-(self.original_max*2), self.original_max*2, resolution)
 
+    def forecastDistribution(self, data, **kwargs):
+
+        sigma = np.sqrt(self.model_fit.sigma2)
+
+        l = len(data)
+
+        ret = []
+
+        for k in np.arange(self.order, l + 1):
+            tmp = []
+
+            sample = [data[i] for i in np.arange(k - self.order, k)]
+
+            mean = self.forecast(sample)
+
+            if isinstance(mean, (list, np.ndarray)):
+                mean = mean[0]
+
+            dist = ProbabilityDistribution.ProbabilityDistribution(type="histogram", uod=[self.original_min, self.original_max])
+            intervals = []
+            for alpha in np.arange(0.05, 0.5, 0.05):
+
+                qt1 = mean + st.norm.ppf(alpha) * sigma
+                qt2 = mean + st.norm.ppf(1 - alpha) * sigma
+
+                intervals.append([qt1, qt2])
+
+            dist.appendInterval(intervals)
+
+            ret.append(dist)
+
+        return ret
+
+
     def forecastAheadDistribution(self, data, steps, **kwargs):
         smoothing = kwargs.get("smoothing", 0.5)
 
         sigma = np.sqrt(self.model_fit.sigma2)
 
-        ndata = np.array(self.doTransformations(data))
-
-        l = len(ndata)
-
-        percentile_size = (self.original_max - self.original_min)/100
-
-        resolution = kwargs.get('resolution', percentile_size)
-
-        grid = self.empty_grid(resolution)
-
-        index = SortedCollection.SortedCollection(iterable=grid.keys())
+        l = len(data)
 
         ret = []
 
-        nmeans = self.forecastAhead(ndata, steps, **kwargs)
+        nmeans = self.forecastAhead(data, steps, **kwargs)
 
         for k in np.arange(0, steps):
-            grid = self.empty_grid(resolution)
+            dist = ProbabilityDistribution.ProbabilityDistribution(type="histogram",
+                                                                   uod=[self.original_min, self.original_max])
+            intervals = []
             for alpha in np.arange(0.05, 0.5, 0.05):
                 tmp = []
 
@@ -179,12 +206,10 @@ class ARIMA(fts.FTS):
                 tmp.append(nmeans[k] + st.norm.ppf(alpha) * hsigma)
                 tmp.append(nmeans[k] + st.norm.ppf(1 - alpha) * hsigma)
 
-                grid = self.gridCount(grid, resolution, index, tmp)
+                intervals.append(tmp)
 
-            tmp = np.array([grid[i] for i in sorted(grid)])
+            dist.appendInterval(intervals)
 
-            ret.append(tmp / sum(tmp))
+            ret.append(dist)
 
-        grid = self.empty_grid(resolution)
-        df = pd.DataFrame(ret, columns=sorted(grid))
-        return df
+        return ret

@@ -89,19 +89,15 @@ class FTS(object):
         :param kwargs: 
         :return: 
         """
-        ndata = [k for k in self.doTransformations(data[- self.order:])]
-
         ret = []
         for k in np.arange(0,steps):
-            tmp = self.forecast(ndata[-self.order:], **kwargs)
+            tmp = self.forecast(data[-self.order:], **kwargs)
 
             if isinstance(tmp,(list, np.ndarray)):
                 tmp = tmp[0]
 
             ret.append(tmp)
-            ndata.append(tmp)
-
-        ret = self.doInverseTransformations(ret, params=[ndata[self.order - 1:]])
+            data.append(tmp)
 
         return ret
 

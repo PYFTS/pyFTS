@@ -8,6 +8,7 @@ import time
 import numpy as np
 import pandas as pd
 from pyFTS.common import FuzzySet,SortedCollection
+from pyFTS.probabilistic import ProbabilityDistribution
 
 
 def acf(data, k):
@@ -154,7 +155,7 @@ def resolution(forecasts):
 
 
 def coverage(targets, forecasts):
-    """Percent of"""
+    """Percent of target values that fall inside forecasted interval"""
     preds = []
     for i in np.arange(0, len(forecasts)):
         if targets[i] >= forecasts[i][0] and targets[i] <= forecasts[i][1]:
@@ -218,14 +219,25 @@ def heavyside_cdf(bins, targets):
 
 def crps(targets, densities):
     """Continuous Ranked Probability Score"""
-    l = len(densities.columns)
-    n = len(densities.index)
-    Ff = pmf_to_cdf(densities)
-    Fa = heavyside_cdf(densities.columns, targets)
-
     _crps = float(0.0)
-    for k in densities.index:
-        _crps += sum([ (Ff[col][k]-Fa[col][k])**2 for col in densities.columns])
+    if isinstance(densities, pd.DataFrame):
+        l = len(densities.columns)
+        n = len(densities.index)
+        Ff = pmf_to_cdf(densities)
+        Fa = heavyside_cdf(densities.columns, targets)
+        for k in densities.index:
+            _crps += sum([ (Ff[col][k]-Fa[col][k])**2 for col in densities.columns])
+    elif isinstance(densities, ProbabilityDistribution):
+        l = len(densities.bins)
+        n = 1
+        Fa = heavyside_cdf(densities.bin, targets)
+        _crps = sum([(densities.cdf(val) - Fa[val][0]) ** 2 for val in densities.bins])
+    elif isinstance(densities, list):
+        l = len(densities[0].bins)
+        n = len(densities)
+        Fa = heavyside_cdf(densities[0].bin, targets)
+        for df in densities:
+            _crps += sum([(df.cdf(val) - Fa[val][0]) ** 2 for val in df.bins])
 
     return _crps / float(l * n)
 
