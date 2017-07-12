@@ -227,15 +227,15 @@ def crps(targets, densities):
         Fa = heavyside_cdf(densities.columns, targets)
         for k in densities.index:
             _crps += sum([ (Ff[col][k]-Fa[col][k])**2 for col in densities.columns])
-    elif isinstance(densities, ProbabilityDistribution):
+    elif isinstance(densities, ProbabilityDistribution.ProbabilityDistribution):
         l = len(densities.bins)
         n = 1
-        Fa = heavyside_cdf(densities.bin, targets)
+        Fa = heavyside_cdf(densities.bins, targets)
         _crps = sum([(densities.cdf(val) - Fa[val][0]) ** 2 for val in densities.bins])
     elif isinstance(densities, list):
         l = len(densities[0].bins)
         n = len(densities)
-        Fa = heavyside_cdf(densities[0].bin, targets)
+        Fa = heavyside_cdf(densities[0].bins, targets)
         for df in densities:
             _crps += sum([(df.cdf(val) - Fa[val][0]) ** 2 for val in df.bins])
 

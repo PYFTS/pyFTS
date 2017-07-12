@@ -69,6 +69,12 @@ class ProbabilityDistribution(object):
 
     def density(self, values):
         ret = []
+        scalar = False
+
+        if not isinstance(values, list):
+            values = [values]
+            scalar = True
+
         for k in values:
             if self.type == "histogram":
                 v = self.index.find_ge(k)
@@ -79,6 +85,10 @@ class ProbabilityDistribution(object):
             else:
                 v = self.index.find_ge(k)
                 ret.append(self.distribution[v])
+
+        if scalar:
+            return ret[0]
+
         return ret
 
     def cdf(self, value):

@@ -825,6 +825,7 @@ def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to
     cb = fig.colorbar(pc, ax=ax)
     cb.set_label('Density')
 
+from pyFTS.common import Transformations
 
 def plot_probabilitydistribution_density(ax, cmap, probabilitydist, fig, time_from):
     from matplotlib.patches import Rectangle
@@ -836,7 +837,9 @@ def plot_probabilitydistribution_density(ax, cmap, probabilitydist, fig, time_fr
         for y in dt.bins:
             s = Rectangle((time_from+ct, y), 1, dt.resolution, fill=True, lw = 0)
             patches.append(s)
-            colors.append(dt.distribution[y]*5)
+            colors.append(dt.density(y))
+    scale = Transformations.Scale()
+    colors = scale.apply(colors)
     pc = PatchCollection(patches=patches, match_original=True)
     pc.set_clim([0, 1])
     pc.set_cmap(cmap)

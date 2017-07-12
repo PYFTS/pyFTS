@@ -7,7 +7,7 @@ from statsmodels.regression.quantile_regression import QuantReg
 from statsmodels.tsa.tsatools import lagmat
 from pyFTS import fts
 from pyFTS.common import SortedCollection
-
+from pyFTS.probabilistic import ProbabilityDistribution
 
 class QuantileRegression(fts.FTS):
     """Façade for statsmodels.regression.quantile_regression"""
@@ -31,6 +31,9 @@ class QuantileRegression(fts.FTS):
 
     def train(self, data, sets, order=1, parameters=None):
         self.order = order
+
+        if self.indexer is not None and isinstance(data, pd.DataFrame):
+            data = self.indexer.get_data(data)
 
         tmp = np.array(self.doTransformations(data, updateUoD=True))
 
@@ -75,6 +78,10 @@ class QuantileRegression(fts.FTS):
         return [lo, up]
 
     def forecast(self, data, **kwargs):
+
+        if self.indexer is not None and isinstance(data, pd.DataFrame):
+            data = self.indexer.get_data(data)
+
         ndata = np.array(self.doTransformations(data))
         l = len(ndata)
 
@@ -91,6 +98,9 @@ class QuantileRegression(fts.FTS):
 
     def forecastInterval(self, data, **kwargs):
 
+        if self.indexer is not None and isinstance(data, pd.DataFrame):
+            data = self.indexer.get_data(data)
+
         ndata = np.array(self.doTransformations(data))
 
         l = len(ndata)
@@ -106,6 +116,10 @@ class QuantileRegression(fts.FTS):
         return ret
 
     def forecastAheadInterval(self, data, steps, **kwargs):
+
+        if self.indexer is not None and isinstance(data, pd.DataFrame):
+            data = self.indexer.get_data(data)
+
         ndata = np.array(self.doTransformations(data))
 
         smoothing = kwargs.get("smoothing", 0.9)
@@ -128,35 +142,50 @@ class QuantileRegression(fts.FTS):
 
         return ret[-steps:]
 
-    def forecastAheadDistribution(self, data, steps, **kwargs):
+    def forecastDistribution(self, data, **kwargs):
+
+        if self.indexer is not None and isinstance(data, pd.DataFrame):
+            data = self.indexer.get_data(data)
+
         ndata = np.array(self.doTransformations(data))
 
-        percentile_size = (self.original_max - self.original_min) / 100
+        ret = []
 
-        resolution = kwargs.get('resolution', percentile_size)
+        l = len(data)
 
-        grid = self.get_empty_grid(self.original_min, self.original_max, resolution)
+        for k in np.arange(self.order, l + 1):
+            dist = ProbabilityDistribution.ProbabilityDistribution(type="histogram",
+                                                                   uod=[self.original_min, self.original_max])
+            intervals = []
+            for qt in self.dist_qt:
+                sample = ndata[k - self.order: k]
+                intl = self.point_to_interval(sample, qt[0], qt[1])
+                intervals.append(intl)
 
-        index = SortedCollection.SortedCollection(iterable=grid.keys())
+            dist.appendInterval(intervals)
+
+            ret.append(dist)
+
+        return ret
+
+    def forecastAheadDistribution(self, data, steps, **kwargs):
+
+        if self.indexer is not None and isinstance(data, pd.DataFrame):
+            data = self.indexer.get_data(data)
+
+        ndata = np.array(self.doTransformations(data))
 
         ret = []
-        tmps = []
 
-        grids = {}
         for k in np.arange(self.order, steps + self.order):
-            grids[k] = self.get_empty_grid(self.original_min, self.original_max, resolution)
-
-        for qt in self.dist_qt:
+            dist = ProbabilityDistribution.ProbabilityDistribution(type="histogram",
+                                                                   uod=[self.original_min, self.original_max])
             intervals = [[k, k] for k in ndata[-self.order:]]
-            for k in np.arange(self.order, steps + self.order):
+            for qt in self.dist_qt:
                 intl = self.interval_to_interval([intervals[x] for x in np.arange(k - self.order, k)], qt[0], qt[1])
                 intervals.append(intl)
-                grids[k] = self.gridCount(grids[k], resolution, index, intl)
+            dist.appendInterval(intervals)
 
-        for k in np.arange(self.order, steps + self.order):
-            tmp = np.array([grids[k][i] for i in sorted(grids[k])])
-            ret.append(tmp / sum(tmp))
+            ret.append(dist)
 
-        grid = self.get_empty_grid(self.original_min, self.original_max, resolution)
-        df = pd.DataFrame(ret, columns=sorted(grid))
-        return df
+        return ret

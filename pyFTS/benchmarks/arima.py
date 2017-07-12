@@ -40,6 +40,9 @@ class ARIMA(fts.FTS):
         self.order = self.p + self.q
         self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ") - " + str(self.alpha)
 
+        if self.indexer is not None:
+            data = self.indexer.get_data(data)
+
         data = self.doTransformations(data, updateUoD=True)
 
         old_fit = self.model_fit
@@ -59,6 +62,9 @@ class ARIMA(fts.FTS):
     def forecast(self, data, **kwargs):
         if self.model_fit is None:
             return np.nan
+
+        if self.indexer is not None and isinstance(data, pd.DataFrame):
+            data = self.indexer.get_data(data)
 
         ndata = np.array(self.doTransformations(data))
 
@@ -150,6 +156,9 @@ class ARIMA(fts.FTS):
         return self.get_empty_grid(-(self.original_max*2), self.original_max*2, resolution)
 
     def forecastDistribution(self, data, **kwargs):
+
+        if self.indexer is not None and isinstance(data, pd.DataFrame):
+            data = self.indexer.get_data(data)
 
         sigma = np.sqrt(self.model_fit.sigma2)
 

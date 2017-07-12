@@ -8,7 +8,6 @@ import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from checkbox_support.parsers.tests.test_modinfo import testMultipleModinfoParser
 #from mpl_toolkits.mplot3d import Axes3D
 
 
