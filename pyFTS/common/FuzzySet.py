@@ -19,6 +19,8 @@ class FuzzySet:
         self.mf = mf
         self.parameters = parameters
         self.centroid = centroid
+        ":param Z: Partition function in respect to the membership function"
+        self.Z = None
         if self.mf == Membership.trimf:
             self.lower = min(parameters)
             self.upper = max(parameters)
@@ -33,6 +35,14 @@ class FuzzySet:
         :return: membership value of x at this fuzzy set
         """
         return self.mf(x, self.parameters)
+
+    def partition_function(self,uod=None, nbins=100):
+        if self.Z is None and uod is not None:
+            self.Z = 0.0
+            for k in np.linspace(uod[0], uod[1], nbins):
+                self.Z += self.membership(k)
+        else:
+            return self.Z
 
     def __str__(self):
         return self.name + ": " + str(self.mf.__name__) + "(" + str(self.parameters) + ")"
