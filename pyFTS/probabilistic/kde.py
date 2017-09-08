@@ -15,11 +15,26 @@ class KernelSmoothing(object):
 
     def kernel(self, u):
         if self.method == "epanechnikov":
-            return (3/4)*(1 - u**2)
+            tmp = (3/4)*(1.0 - u**2)
+            return tmp if tmp > 0 else 0
         elif self.method == "gaussian":
-            return (1/np.sqrt(2*np.pi))*np.exp(-0.5*u**2)
+            return (1.0/np.sqrt(2*np.pi))*np.exp(-0.5*u**2)
         elif self.method == "uniform":
             return 0.5
+        elif self.method == "triangular":
+            tmp = 1.0 - np.abs(u)
+            return tmp if tmp > 0 else 0
+        elif self.method == "logistic":
+            return 1.0/(np.exp(u)+2+np.exp(-u))
+        elif self.method == "cosine":
+            return (np.pi/4.0)*np.cos((np.pi/2.0)*u)
+        elif self.method == "sigmoid":
+            return (2.0/np.pi)*(1.0/(np.exp(u)+np.exp(-u)))
+        elif self.method == "tophat":
+            return 1 if np.abs(u) < 0.5 else 0
+        elif self.method == "exponential":
+            return 0.5 * np.exp(-np.abs(u))
+
 
     def probability(self, x, data):
         l = len(data)

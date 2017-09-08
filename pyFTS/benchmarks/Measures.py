@@ -267,17 +267,17 @@ def get_point_statistics(data, model, indexer=None):
     try:
         ret.append(np.round(rmse(ndata, nforecasts), 2))
     except Exception as ex:
-        print(ex)
+        print('Error in RMSE: {}'.format(ex))
         ret.append(np.nan)
     try:
         ret.append(np.round(smape(ndata, nforecasts), 2))
     except Exception as ex:
-        print(ex)
+        print('Error in SMAPE: {}'.format(ex))
         ret.append(np.nan)
     try:
         ret.append(np.round(UStatistic(ndata, nforecasts), 2))
     except Exception as ex:
-        print(ex)
+        print('Error in U: {}'.format(ex))
         ret.append(np.nan)
 
     return ret

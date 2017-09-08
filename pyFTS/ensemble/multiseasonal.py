@@ -11,7 +11,7 @@ from pyFTS.benchmarks import arima, quantreg
 from pyFTS.common import Transformations, Util as cUtil
 import scipy.stats as st
 from pyFTS.ensemble import ensemble
-from pyFTS.models import msfts
+from pyFTS.models import msfts, cmsfts
 from pyFTS.probabilistic import ProbabilityDistribution, kde
 from copy import deepcopy
 from joblib import Parallel, delayed
@@ -25,7 +25,7 @@ def train_individual_model(partitioner, train_data, indexer):
 
     print(_key)
 
-    model = msfts.MultiSeasonalFTS(_key, indexer=indexer)
+    model = cmsfts.ContextualMultiSeasonalFTS(_key, indexer=indexer)
     model.appendTransformation(partitioner.transformation)
     model.train(train_data, partitioner.sets, order=1)
 
@@ -74,17 +74,22 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
 
         ret = []
 
-        h = kwargs.get("h",10)
+        smooth = kwargs.get("smooth", "KDE")
+        alpha = kwargs.get("alpha", None)
 
         for k in data.index:
 
             tmp = self.get_models_forecasts(data.ix[k])
 
-            tmp = np.ravel(tmp).tolist()
+            if alpha is None:
+                tmp = np.ravel(tmp).tolist()
+            else:
+                tmp = self.get_distribution_interquantile( np.ravel(tmp).tolist(), alpha)
 
             name = str(self.indexer.get_index(data.ix[k]))
 
-            dist = ProbabilityDistribution.ProbabilityDistribution("KDE", uod=[self.original_min, self.original_max],
+            dist = ProbabilityDistribution.ProbabilityDistribution(smooth,
+                                                                   uod=[self.original_min, self.original_max],
                                                                    data=tmp, name=name, **kwargs)
 
             ret.append(dist)

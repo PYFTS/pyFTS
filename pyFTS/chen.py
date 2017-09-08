@@ -34,7 +34,7 @@ class ConventionalFLRG(object):
 class ConventionalFTS(fts.FTS):
     """Conventional Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(ConventionalFTS, self).__init__(1, "CFTS " + name)
+        super(ConventionalFTS, self).__init__(1, "CFTS " + name, **kwargs)
         self.name = "Conventional FTS"
         self.detail = "Chen"
         self.flrgs = {}

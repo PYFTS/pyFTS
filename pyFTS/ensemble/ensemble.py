@@ -92,6 +92,15 @@ class EnsembleFTS(fts.FTS):
 
         return ret
 
+    def get_distribution_interquantile(self,forecasts, alpha):
+        size = len(forecasts)
+        qt_lower = int(np.ceil(size * alpha)) - 1
+        qt_upper = int(np.ceil(size * (1- alpha))) - 1
+
+        ret = sorted(forecasts)[qt_lower : qt_upper]
+
+        return ret
+
     def forecast(self, data, **kwargs):
 
         if "method" in kwargs:

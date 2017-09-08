@@ -33,7 +33,7 @@ class FTS(object):
         self.transformations_param = []
         self.original_max = 0
         self.original_min = 0
-        self.partitioner = None
+        self.partitioner = kwargs.get("partitioner", None)
         self.auto_update = False
         self.benchmark_only = False
         self.indexer = None
@@ -218,6 +218,9 @@ class FTS(object):
             k = index.find_ge(p)
             grid[k] += 1
         return grid
+
+    def get_UoD(self):
+        return [self.original_min, self.original_max]
 
 
 

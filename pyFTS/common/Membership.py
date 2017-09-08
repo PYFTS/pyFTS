@@ -10,7 +10,7 @@ def trimf(x, parameters):
     :param parameters: a list with 3 real values
     :return: the membership value of x given the parameters
     """
-    xx = round(x, 3)
+    xx = np.round(x, 3)
     if xx < parameters[0]:
         return 0
     elif parameters[0] <= xx < parameters[1]:

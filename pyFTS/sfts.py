@@ -37,7 +37,7 @@ class SeasonalFLRG(FLR.FLR):
 class SeasonalFTS(fts.FTS):
     """First Order Seasonal Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(SeasonalFTS, self).__init__(1, "SFTS")
+        super(SeasonalFTS, self).__init__(1, "SFTS", **kwargs)
         self.name = "Seasonal FTS"
         self.detail = "Chen"
         self.seasonality = 1

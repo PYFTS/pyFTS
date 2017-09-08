@@ -44,7 +44,7 @@ class ProbabilityDistribution(object):
         self.name = kwargs.get("name", "")
 
     def set(self, value, density):
-        k = self.index.find_ge(value)
+        k = self.index.find_ge(np.round(value,3))
         self.distribution[k] = density
 
     def append(self, values):
@@ -95,7 +95,7 @@ class ProbabilityDistribution(object):
         ret = 0
         for k in self.bins:
             if k < value:
-               ret += self.distribution[k]
+               ret += self.density(k)
             else:
                 return ret
 
@@ -156,7 +156,7 @@ class ProbabilityDistribution(object):
                 _s += np.log(k)
         return _s / len(data)
 
-    def plot(self,axis=None,color="black",tam=[10, 6]):
+    def plot(self,axis=None,color="black",tam=[10, 6], title = None):
         if axis is None:
             fig = plt.figure(figsize=tam)
             axis = fig.add_subplot(111)
@@ -168,9 +168,10 @@ class ProbabilityDistribution(object):
             yp = [0 for k in self.data]
             axis.plot(self.data, yp, c="red")
 
-
+        if title is None:
+            title = self.name
         axis.plot(self.bins, ys, c=color)
-        axis.set_title(self.name)
+        axis.set_title(title)
 
         axis.set_xlabel('Universe of Discourse')
         axis.set_ylabel('Probability')

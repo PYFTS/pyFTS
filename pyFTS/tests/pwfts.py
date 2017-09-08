@@ -35,13 +35,28 @@ from pyFTS import pwfts
 from pyFTS import tree
 from pyFTS.benchmarks import benchmarks as bchmk
 
-enrollments_fs1 = Grid.GridPartitioner(enrollments, 6).sets
-for s in enrollments_fs1:
-    print(s)
+uod = [10162, 21271]
 
-pfts1_enrollments = pwfts.ProbabilisticWeightedFTS("1")
-pfts1_enrollments.train(enrollments, enrollments_fs1, 1)
+enrollments_fs1 = Grid.GridPartitioner(enrollments, 6)
+for s in enrollments_fs1.sets:
+    print(s.partition_function(uod, 100))
+
+pfts1_enrollments = pwfts.ProbabilisticWeightedFTS("1", partitioner=enrollments_fs1)
+pfts1_enrollments.train(enrollments, None, 1)
 pfts1_enrollments.shortname = "1st Order"
+
+print(pfts1_enrollments)
+
+#pfts1_enrollments.AprioriPDF
+norm = pfts1_enrollments.global_frequency_count
+uod = pfts1_enrollments.get_UoD()
+print(uod)
+for k in sorted(pfts1_enrollments.flrgs.keys()):
+    flrg = pfts1_enrollments.flrgs[k]
+    #tmp = flrg.get_LHSprobability(15000, norm, uod, 100)
+    print(flrg.partition_function(uod,100))
+
+'''
 pfts2_enrollments = pwfts.ProbabilisticWeightedFTS("2")
 pfts2_enrollments.dump = False
 pfts2_enrollments.shortname = "2nd Order"
@@ -55,7 +70,7 @@ bchmk.plot_compared_series(enrollments,[pfts1_enrollments,pfts2_enrollments, pft
                            ["red","blue","green"], linewidth=2,
                          typeonlegend=True,save=False,file="pictures/pwfts_enrollments_interval.png",
                            tam=[20,7],points=False, intervals=True)
-
+'''
 
 
 

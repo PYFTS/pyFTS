@@ -49,7 +49,7 @@ class HighOrderFLRG(object):
 class HighOrderFTS(fts.FTS):
     """Conventional High Order Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(HighOrderFTS, self).__init__(1, "HOFTS" + name)
+        super(HighOrderFTS, self).__init__(1, "HOFTS" + name, **kwargs)
         self.name = "High Order FTS"
         self.shortname = "HOFTS" + name
         self.detail = "Chen"

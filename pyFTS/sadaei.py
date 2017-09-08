@@ -47,7 +47,7 @@ class ExponentialyWeightedFLRG(object):
 class ExponentialyWeightedFTS(fts.FTS):
     """First Order Exponentialy Weighted Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(ExponentialyWeightedFTS, self).__init__(1, "EWFTS")
+        super(ExponentialyWeightedFTS, self).__init__(1, "EWFTS", **kwargs)
         self.name = "Exponentialy Weighted FTS"
         self.detail = "Sadaei"
         self.c = 1

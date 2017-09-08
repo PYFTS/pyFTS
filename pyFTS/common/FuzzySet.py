@@ -37,12 +37,18 @@ class FuzzySet:
         return self.mf(x, self.parameters)
 
     def partition_function(self,uod=None, nbins=100):
+        """
+        Calculate the partition function over the membership function.
+        :param uod:
+        :param nbins:
+        :return:
+        """
         if self.Z is None and uod is not None:
             self.Z = 0.0
             for k in np.linspace(uod[0], uod[1], nbins):
                 self.Z += self.membership(k)
-        else:
-            return self.Z
+
+        return self.Z
 
     def __str__(self):
         return self.name + ": " + str(self.mf.__name__) + "(" + str(self.parameters) + ")"

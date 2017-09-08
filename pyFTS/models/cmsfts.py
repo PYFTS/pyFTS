@@ -30,7 +30,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
     """
     Contextual Multi-Seasonal Fuzzy Time Series
     """
-    def __init__(self, order, name, indexer, **kwargs):
+    def __init__(self, name, indexer, **kwargs):
         super(ContextualMultiSeasonalFTS, self).__init__("CMSFTS")
         self.name = "Contextual Multi Seasonal FTS"
         self.shortname = "CMSFTS " + name
@@ -75,7 +75,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
         index = self.indexer.get_season_of_data(data)
         ndata = self.indexer.get_data(data)
 
-        for k in np.arange(1, len(data)):
+        for k in np.arange(0, len(data)):
 
             flrg = self.flrgs[str(index[k])]
 
@@ -85,7 +85,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
 
             ret.append(sum(mp) / len(mp))
 
-        ret = self.doInverseTransformations(ret, params=[ndata[self.order - 1:]])
+        ret = self.doInverseTransformations(ret, params=[ndata])
 
         return ret
 

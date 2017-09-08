@@ -200,7 +200,7 @@ class DateTimeSeasonalIndexer(SeasonalIndexer):
         return data[self.data_fields].tolist()
 
     def get_index(self, data):
-        return data[self.date_field]
+        return data[self.date_field].tolist() if isinstance(data, pd.DataFrame) else data[self.date_field]
 
     def set_data(self, data, value):
         raise Exception("Operation not available!")

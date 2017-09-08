@@ -12,7 +12,7 @@ from pyFTS import fts
 class ConventionalFTS(fts.FTS):
     """Traditional Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(ConventionalFTS, self).__init__(1, "FTS " + name)
+        super(ConventionalFTS, self).__init__(1, "FTS " + name, **kwargs)
         self.name = "Traditional FTS"
         self.detail = "Song & Chissom"
         self.R = None

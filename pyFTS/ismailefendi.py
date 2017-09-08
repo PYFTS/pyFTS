@@ -43,7 +43,7 @@ class ImprovedWeightedFLRG(object):
 class ImprovedWeightedFTS(fts.FTS):
     """First Order Improved Weighted Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(ImprovedWeightedFTS, self).__init__(1, "IWFTS " + name)
+        super(ImprovedWeightedFTS, self).__init__(1, "IWFTS " + name, **kwargs)
         self.name = "Improved Weighted FTS"
         self.detail = "Ismail & Efendi"
         self.setsDict = {}
