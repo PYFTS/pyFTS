@@ -35,16 +35,30 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
     def get_RHSprobability(self, c):
         return self.RHS[c] / self.frequency_count
 
-    def get_LHSprobability(self, x, norm, uod, nbins):
+    def lhs_probability(self, x, norm, uod, nbins):
         pk = self.frequency_count / norm
-        mv = []
-        for set in self.LHS:
-            mv.append( set.membership(x) )
 
-        min_mv = np.prod(mv)
-        tmp = pk * (min_mv / self.partition_function(uod, nbins=nbins))
+        tmp = pk * (self.lhs_membership(x) / self.partition_function(uod, nbins=nbins))
 
         return tmp
+
+    def rhs_conditional_probability(self, x, sets, uod, nbins):
+        total = 0.0
+        for rhs in self.RHS:
+            set = sets[rhs]
+            wi = self.get_RHSprobability(rhs)
+            mv = set.membership(x) / set.partition_function(uod, nbins=nbins)
+            total += wi * mv
+
+        return total
+
+    def lhs_membership(self,x):
+        mv = []
+        for set in self.LHS:
+            mv.append(set.membership(x))
+
+        min_mv = np.prod(mv)
+        return  min_mv
 
     def partition_function(self, uod, nbins=100):
         if self.Z is None:
@@ -466,29 +480,40 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def forecastDistribution(self, data, **kwargs):
 
+        smooth = kwargs.get("smooth", "histogram")
+        nbins = kwargs.get("num_bins", 100)
+
+        ndata = np.array(self.doTransformations(data))
+
+        l = len(ndata)
+
         ret = []
+        uod = self.get_UoD()
+        _keys = sorted(self.flrgs.keys())
+        _bins = np.linspace(uod[0], uod[1], nbins)
 
-        smooth = kwargs.get("smooth", "KDE")
-        alpha = kwargs.get("alpha", None)
+        for k in np.arange(self.order - 1, l):
+            sample = ndata[k - (self.order - 1): k + 1]
+            dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
 
-        for k in data.index:
+            for bin in _bins:
+                num = []
+                den = []
+                for s in _keys:
+                    flrg = self.flrgs[s]
+                    pk = flrg.lhs_probability(sample, self.global_frequency_count, uod, nbins)
+                    wi = flrg.rhs_conditional_probability(bin, self.setsDict, uod, nbins)
+                    num.append(wi * pk)
+                    den.append(pk)
+                pf = sum(num) / sum(den)
 
-            tmp = self.get_models_forecasts(data.ix[k])
-
-            if alpha is None:
-                tmp = np.ravel(tmp).tolist()
-            else:
-                tmp = self.get_distribution_interquantile( np.ravel(tmp).tolist(), alpha)
-
-            name = str(self.indexer.get_index(data.ix[k]))
-
-            dist = ProbabilityDistribution.ProbabilityDistribution(smooth,
-                                                                   uod=[self.original_min, self.original_max],
-                                                                   data=tmp, name=name, **kwargs)
+                dist.set(bin, pf)
 
             ret.append(dist)
 
         return ret
+
+
 
     def forecastAhead(self, data, steps, **kwargs):
         ret = [data[k] for k in np.arange(len(data) - self.order, len(data))]

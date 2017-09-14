@@ -31,5 +31,6 @@ class GridPartitioner(partitioner.Partitioner):
                     FuzzySet.FuzzySet(self.prefix + str(count), Membership.trapmf, [c - partlen, c - q, c + q, c + partlen], c))
             count += 1
 
+        self.min = self.min - partlen
 
         return sets
