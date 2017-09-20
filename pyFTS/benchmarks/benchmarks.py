@@ -497,6 +497,20 @@ def print_interval_statistics(original, models):
     print(ret)
 
 
+def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False, ls='-', linewidth=1):
+    lower = [kk[0] for kk in intervals]
+    upper = [kk[1] for kk in intervals]
+    mi = min(lower) * 0.95
+    ma = max(upper) * 1.05
+    for k in np.arange(0, order):
+        lower.insert(0, None)
+        upper.insert(0, None)
+    if typeonlegend: label += " (Interval)"
+    axis.plot(lower, color=color, label=label, ls=ls,linewidth=linewidth)
+    axis.plot(upper, color=color, ls=ls,linewidth=linewidth)
+    return [mi, ma]
+
+
 def plot_compared_series(original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5],
                          points=True, intervals=True, linewidth=1.5):
     """
@@ -526,34 +540,28 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
 
     for count, fts in enumerate(models, start=0):
         if fts.has_point_forecasting and points:
-            forecasted = fts.forecast(original)
-            if isinstance(forecasted, np.ndarray):
-                forecasted = forecasted.tolist()
-            mi.append(min(forecasted) * 0.95)
-            ma.append(max(forecasted) * 1.05)
+            forecasts = fts.forecast(original)
+            if isinstance(forecasts, np.ndarray):
+                forecasts = forecasts.tolist()
+            mi.append(min(forecasts) * 0.95)
+            ma.append(max(forecasts) * 1.05)
             for k in np.arange(0, fts.order):
-                forecasted.insert(0, None)
+                forecasts.insert(0, None)
             lbl = fts.shortname + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
             if typeonlegend: lbl += " (Point)"
-            ax.plot(forecasted, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
+            ax.plot(forecasts, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
 
         if fts.has_interval_forecasting and intervals:
-            forecasted = fts.forecastInterval(original)
-            lower = [kk[0] for kk in forecasted]
-            upper = [kk[1] for kk in forecasted]
-            mi.append(min(lower) * 0.95)
-            ma.append(max(upper) * 1.05)
-            for k in np.arange(0, fts.order):
-                lower.insert(0, None)
-                upper.insert(0, None)
+            forecasts = fts.forecastInterval(original)
             lbl = fts.shortname + " " + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
-            if typeonlegend: lbl += " (Interval)"
             if not points and intervals:
                 ls = "-"
             else:
                 ls = "--"
-            ax.plot(lower, color=colors[count], label=lbl, ls=ls,linewidth=linewidth)
-            ax.plot(upper, color=colors[count], ls=ls,linewidth=linewidth)
+            tmpmi, tmpma = plot_interval(ax, forecasts, fts.order, label=lbl, typeonlegend=typeonlegend,
+                                         color=colors[count], ls=ls, linewidth=linewidth)
+            mi.append(tmpmi)
+            ma.append(tmpma)
 
         handles0, labels0 = ax.get_legend_handles_labels()
         lgd = ax.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
@@ -825,7 +833,9 @@ def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to
     cb = fig.colorbar(pc, ax=ax)
     cb.set_label('Density')
 
+
 from pyFTS.common import Transformations
+
 
 def plot_probabilitydistribution_density(ax, cmap, probabilitydist, fig, time_from):
     from matplotlib.patches import Rectangle

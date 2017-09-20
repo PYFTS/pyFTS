@@ -38,19 +38,24 @@ from pyFTS.benchmarks import benchmarks as bchmk
 #uod = [10162, 21271]
 
 enrollments_fs1 = Grid.GridPartitioner(enrollments, 6)
-for s in enrollments_fs1.sets:
-    print(s) #.partition_function(uod, 100))
+#for s in enrollments_fs1.sets:
+#    print(s) #.partition_function(uod, 100))
 
 pfts1_enrollments = pwfts.ProbabilisticWeightedFTS("1", partitioner=enrollments_fs1)
 pfts1_enrollments.train(enrollments, None, 1)
 pfts1_enrollments.shortname = "1st Order"
 
-print(pfts1_enrollments)
+#print(pfts1_enrollments)
+
+tmp = pfts1_enrollments.forecastDistribution([15000])
+#print(tmp[0])
+
+print(tmp[0].quantile([0.05, 0.95]))
 
 #pfts1_enrollments.AprioriPDF
-norm = pfts1_enrollments.global_frequency_count
-uod = pfts1_enrollments.get_UoD()
-print(uod)
+#norm = pfts1_enrollments.global_frequency_count
+#uod = pfts1_enrollments.get_UoD()
+
 #for k in sorted(pfts1_enrollments.flrgs.keys())
 #    flrg = pfts1_enrollments.flrgs[k]
 #    tmp = flrg.get_LHSprobability(15000, norm, uod, 100)
@@ -62,23 +67,7 @@ print(uod)
     #print(flrg.get_LHSprobability(15000, norm, uod, 100))
 #    print(sum([flrg.get_LHSprobability(k, norm, uod, 100) for k in np.linspace(uod[0],uod[1],100)]))
 
-print("P(T+1 | T")
-sets = pfts1_enrollments.setsDict
-t = 15000
-pf = 0.0
-for t1 in np.linspace(uod[0], uod[1], 100):
-    num = []
-    den = []
-    for s in sorted(pfts1_enrollments.flrgs.keys()):
-        flrg = pfts1_enrollments.flrgs[s]
-        pk = flrg.get_LHSprobability(t, norm, uod, 100)
-        wi = flrg.get_RHS_conditional_probability(t1, sets, uod, 100)
-        num.append(wi * pk)
-        den.append(pk)
-    pt1 = sum(num)/sum(den)
-    pf += pt1
-    print(str(round(t1,0)) + ": " + str(round(pt1, 3))) #/sum(den))
-print(pf)
+
 
 '''
 pfts2_enrollments = pwfts.ProbabilisticWeightedFTS("2")

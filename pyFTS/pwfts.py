@@ -54,8 +54,8 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
     def lhs_membership(self,x):
         mv = []
-        for set in self.LHS:
-            mv.append(set.membership(x))
+        for count, set in enumerate(self.LHS):
+            mv.append(set.membership(x[count]))
 
         min_mv = np.prod(mv)
         return  min_mv
@@ -92,6 +92,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         self.has_probability_forecasting = True
         self.is_high_order = True
         self.auto_update = kwargs.get('update',False)
+        self.interval_method = kwargs.get('interval_method','extremum')
+        self.alpha = kwargs.get('alpha', 0.05)
 
     def train(self, data, sets, order=1,parameters='Fuzzy'):
 
@@ -374,6 +376,12 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def forecastInterval(self, data, **kwargs):
 
+        if 'method' in kwargs:
+            self.interval_method = kwargs.get('method','quantile')
+
+        if 'alpha' in kwargs:
+            self.alpha = kwargs.get('alpha', 0.05)
+
         ndata = np.array(self.doTransformations(data))
 
         l = len(ndata)
@@ -382,105 +390,112 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         for k in np.arange(self.order - 1, l):
 
-            # print(k)
-
-            affected_flrgs = []
-            affected_flrgs_memberships = []
-            norms = []
-
-            up = []
-            lo = []
-
-            # Find the sets which membership > 0 for each lag
-            count = 0
-            lags = {}
-            if self.order > 1:
-                subset = ndata[k - (self.order - 1): k + 1]
-
-                for instance in subset:
-                    mb = FuzzySet.fuzzyInstance(instance, self.sets)
-                    tmp = np.argwhere(mb)
-                    idx = np.ravel(tmp)  # flatten the array
-
-                    if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                        if math.isclose(instance, self.sets[0].lower) or instance < self.sets[0].lower:
-                            idx = [0]
-                        elif math.isclose(instance, self.sets[-1].upper) or instance > self.sets[-1].upper:
-                            idx = [len(self.sets) - 1]
-                        else:
-                            raise Exception("Data exceed the known bounds [%s, %s] of universe of discourse: %s" %
-                                            (self.sets[0].lower, self.sets[-1].upper, instance))
-
-                    lags[count] = idx
-                    count += 1
-
-                # Build the tree with all possible paths
-
-                root = tree.FLRGTreeNode(None)
-
-                self.buildTree(root, lags, 0)
-
-                # Trace the possible paths and build the PFLRG's
-
-                for p in root.paths():
-                    path = list(reversed(list(filter(None.__ne__, p))))
-                    flrg = hofts.HighOrderFLRG(self.order)
-                    for kk in path: flrg.appendLHS(self.sets[kk])
-
-                    assert len(flrg.LHS) == subset.size, str(subset) + " -> " + str([s.name for s in flrg.LHS])
-
-                    ##
-                    affected_flrgs.append(flrg)
-
-                    # Find the general membership of FLRG
-                    affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
-
+            if self.interval_method == 'extremum':
+                self.interval_extremum(k, ndata, ret)
             else:
-
-                mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)  # get all membership values
-                tmp = np.argwhere(mv)  # get the indices of values > 0
-                idx = np.ravel(tmp)  # flatten the array
-
-                if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                    if math.isclose(ndata[k], self.sets[0].lower) or ndata[k] < self.sets[0].lower:
-                        idx = [0]
-                    elif math.isclose(ndata[k], self.sets[-1].upper) or ndata[k] > self.sets[-1].upper:
-                        idx = [len(self.sets) - 1]
-                    else:
-                        raise Exception("Data exceed the known bounds [%s, %s] of universe of discourse: %s" %
-                                        (self.sets[0].lower, self.sets[-1].upper, ndata[k]))
-
-                for kk in idx:
-                    flrg = hofts.HighOrderFLRG(self.order)
-                    flrg.appendLHS(self.sets[kk])
-                    affected_flrgs.append(flrg)
-                    affected_flrgs_memberships.append(mv[kk])
-
-            for count, flrg in enumerate(affected_flrgs):
-                # achar o os bounds de cada FLRG, ponderados pela probabilidade e pertinência
-                norm = self.get_flrg_global_probability(flrg) * affected_flrgs_memberships[count]
-                if norm == 0:
-                    norm = self.get_flrg_global_probability(flrg)  # * 0.001
-                up.append(norm * self.getUpper(flrg))
-                lo.append(norm * self.getLower(flrg))
-                norms.append(norm)
-
-            # gerar o intervalo
-            norm = sum(norms)
-            if norm == 0:
-                ret.append([0, 0])
-            else:
-                lo_ = sum(lo) / norm
-                up_ = sum(up) / norm
-                ret.append([lo_, up_])
+                self.interval_quantile(k, ndata, ret)
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
 
         return ret
 
+    def interval_quantile(self, k, ndata, ret):
+        dist = self.forecastDistribution(ndata)
+        lo_qt = dist[0].quantile(self.alpha)
+        up_qt = dist[0].quantile(1.0 - self.alpha)
+        ret.append([lo_qt, up_qt])
+
+    def interval_extremum(self, k, ndata, ret):
+        affected_flrgs = []
+        affected_flrgs_memberships = []
+        norms = []
+        up = []
+        lo = []
+        # Find the sets which membership > 0 for each lag
+        count = 0
+        lags = {}
+        if self.order > 1:
+            subset = ndata[k - (self.order - 1): k + 1]
+
+            for instance in subset:
+                mb = FuzzySet.fuzzyInstance(instance, self.sets)
+                tmp = np.argwhere(mb)
+                idx = np.ravel(tmp)  # flatten the array
+
+                if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
+                    if math.isclose(instance, self.sets[0].lower) or instance < self.sets[0].lower:
+                        idx = [0]
+                    elif math.isclose(instance, self.sets[-1].upper) or instance > self.sets[-1].upper:
+                        idx = [len(self.sets) - 1]
+                    else:
+                        raise Exception("Data exceed the known bounds [%s, %s] of universe of discourse: %s" %
+                                        (self.sets[0].lower, self.sets[-1].upper, instance))
+
+                lags[count] = idx
+                count += 1
+
+            # Build the tree with all possible paths
+
+            root = tree.FLRGTreeNode(None)
+
+            self.buildTree(root, lags, 0)
+
+            # Trace the possible paths and build the PFLRG's
+
+            for p in root.paths():
+                path = list(reversed(list(filter(None.__ne__, p))))
+                flrg = hofts.HighOrderFLRG(self.order)
+                for kk in path: flrg.appendLHS(self.sets[kk])
+
+                assert len(flrg.LHS) == subset.size, str(subset) + " -> " + str([s.name for s in flrg.LHS])
+
+                ##
+                affected_flrgs.append(flrg)
+
+                # Find the general membership of FLRG
+                affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
+
+        else:
+
+            mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)  # get all membership values
+            tmp = np.argwhere(mv)  # get the indices of values > 0
+            idx = np.ravel(tmp)  # flatten the array
+
+            if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
+                if math.isclose(ndata[k], self.sets[0].lower) or ndata[k] < self.sets[0].lower:
+                    idx = [0]
+                elif math.isclose(ndata[k], self.sets[-1].upper) or ndata[k] > self.sets[-1].upper:
+                    idx = [len(self.sets) - 1]
+                else:
+                    raise Exception("Data exceed the known bounds [%s, %s] of universe of discourse: %s" %
+                                    (self.sets[0].lower, self.sets[-1].upper, ndata[k]))
+
+            for kk in idx:
+                flrg = hofts.HighOrderFLRG(self.order)
+                flrg.appendLHS(self.sets[kk])
+                affected_flrgs.append(flrg)
+                affected_flrgs_memberships.append(mv[kk])
+        for count, flrg in enumerate(affected_flrgs):
+            # achar o os bounds de cada FLRG, ponderados pela probabilidade e pertinência
+            norm = self.get_flrg_global_probability(flrg) * affected_flrgs_memberships[count]
+            if norm == 0:
+                norm = self.get_flrg_global_probability(flrg)  # * 0.001
+            up.append(norm * self.getUpper(flrg))
+            lo.append(norm * self.getLower(flrg))
+            norms.append(norm)
+
+        # gerar o intervalo
+        norm = sum(norms)
+        if norm == 0:
+            ret.append([0, 0])
+        else:
+            lo_ = sum(lo) / norm
+            up_ = sum(up) / norm
+            ret.append([lo_, up_])
+
     def forecastDistribution(self, data, **kwargs):
 
-        smooth = kwargs.get("smooth", "histogram")
+        smooth = kwargs.get("smooth", "none")
         nbins = kwargs.get("num_bins", 100)
 
         ndata = np.array(self.doTransformations(data))
@@ -512,8 +527,6 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             ret.append(dist)
 
         return ret
-
-
 
     def forecastAhead(self, data, steps, **kwargs):
         ret = [data[k] for k in np.arange(len(data) - self.order, len(data))]
