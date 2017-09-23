@@ -566,23 +566,27 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         ret = []
 
-        resolution = kwargs.get('resolution',100)
+        method = kwargs.get('method', 2)
+        smooth = "KDE" if method != 4 else "none"
+        nbins = kwargs.get("num_bins", 100)
 
-        method = kwargs.get('method',2)
+        uod = self.get_UoD()
+        _bins = np.linspace(uod[0], uod[1], nbins).tolist()
 
-        intervals = self.forecastAheadInterval(data, steps)
+        if method != 4:
+            intervals = self.forecastAheadInterval(data, steps)
+        else:
+            l = len(data)
+            for k in np.arange(l - self.order, l):
+                dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
+                dist.set(data[k], 1.0)
+                ret.append(dist)
 
-        grid = self.getGridClean(resolution)
+        for k in np.arange(self.order, steps + self.order):
 
-        index = SortedCollection.SortedCollection(iterable=grid.keys())
+            data = []
 
-        if method == 1:
-
-            grids = []
-            for k in np.arange(0, steps):
-                grids.append(self.getGridClean(resolution))
-
-            for k in np.arange(self.order, steps + self.order):
+            if method == 1:
 
                 lags = {}
 
@@ -612,139 +616,74 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 self.buildTreeWithoutOrder(root, lags, 0)
 
                 # Trace the possible paths
-
                 for p in root.paths():
                     path = list(reversed(list(filter(None.__ne__, p))))
 
-                    qtle = self.forecastInterval(path)
+                    qtle = np.ravel(self.forecastInterval(path))
 
-                    grids[k - self.order] = self.gridCount(grids[k - self.order], resolution, index, np.ravel(qtle))
+                    data.extend(np.linspace(qtle[0],qtle[1],100).tolist())
 
-            for k in np.arange(0, steps):
-                tmp = np.array([grids[k][q] for q in sorted(grids[k])])
-                ret.append(tmp / sum(tmp))
-
-        elif method == 2:
-
-            ret = []
-
-            for k in np.arange(self.order, steps + self.order):
-
-                grid = self.getGridClean(resolution)
-                grid = self.gridCount(grid, resolution, index, intervals[k])
+            elif method == 2:
 
                 for qt in np.arange(0, 50, 1):
                     # print(qt)
                     qtle_lower = self.forecastInterval(
                         [intervals[x][0] + qt * ((intervals[x][1] - intervals[x][0]) / 100) for x in
                          np.arange(k - self.order, k)])
-                    grid = self.gridCount(grid, resolution, index, np.ravel(qtle_lower))
+                    qtle_lower = np.ravel(qtle_lower)
+                    data.extend(np.linspace(qtle_lower[0], qtle_lower[1], 100).tolist())
                     qtle_upper = self.forecastInterval(
                         [intervals[x][1] - qt * ((intervals[x][1] - intervals[x][0]) / 100) for x in
                          np.arange(k - self.order, k)])
-                    grid = self.gridCount(grid, resolution, index, np.ravel(qtle_upper))
+                    qtle_upper = np.ravel(qtle_upper)
+                    data.extend(np.linspace(qtle_upper[0], qtle_upper[1], 100).tolist())
                 qtle_mid = self.forecastInterval(
                     [intervals[x][0] + (intervals[x][1] - intervals[x][0]) / 2 for x in np.arange(k - self.order, k)])
-                grid = self.gridCount(grid, resolution, index, np.ravel(qtle_mid))
+                qtle_mid = np.ravel(qtle_mid)
+                data.extend(np.linspace(qtle_mid[0], qtle_mid[1], 100).tolist())
 
-                tmp = np.array([grid[k] for k in sorted(grid) if not np.isnan(grid[k])])
-                try:
-                    ret.append(tmp / sum(tmp))
-                except Exception as ex:
-                    ret.append(0)
+            elif method == 3:
+                i = intervals[k]
 
-        else:
-            ret = []
+                data = np.linspace(i[0],i[1],100).tolist()
 
-            for k in np.arange(self.order, steps + self.order):
-                grid = self.getGridClean(resolution)
-                grid = self.gridCount(grid, resolution, index, intervals[k])
-
-                tmp = np.array([grid[k] for k in sorted(grid)])
-
-                ret.append(tmp / sum(tmp))
-
-        grid = self.getGridClean(resolution)
-        df = pd.DataFrame(ret, columns=sorted(grid))
-        return df
-
-    def density(self, x, num_bins=100):
-        affected_flrgs = []
-        affected_flrgs_memberships = []
-        mv = FuzzySet.fuzzyInstance(x, self.sets)
-        tmp = np.argwhere(mv)
-        idx = np.ravel(tmp)
-
-        if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-            if x <= self.sets[0].lower:
-                idx = [0]
-            elif x >= self.sets[-1].upper:
-                idx = [len(self.sets) - 1]
             else:
-                raise Exception(x)
+                dist = ProbabilityDistribution.ProbabilityDistribution(smooth, bins=_bins,
+                                                                       uod=uod, **kwargs)
+                lags = {}
 
-        for kk in idx:
-            flrg = ProbabilisticWeightedFLRG(self.order)
-            flrg.appendLHS(self.sets[kk])
-            affected_flrgs.append(flrg)
-            affected_flrgs_memberships.append(mv[kk])
+                cc = 0
 
-        total_prob = 0.0
+                for dd in ret[k - self.order: k]:
+                    vals = [float(v) for v in dd.bins if round(dd.density(v),4) > 0]
+                    lags[cc] = sorted(vals)
+                    cc += 1
 
-        for count, flrg in enumerate(affected_flrgs):
-            _flrg = self.flrgs[flrg.strLHS()]
-            pk = _flrg.frequency_count / self.global_frequency_count
-            priori = pk * (affected_flrgs_memberships[count]) # / _flrg.partition_function(uod=self.get_UoD(), nbins=num_bins))
-            #print(flrg.strLHS() + ": PK=" + str(pk) + " Priori=" + str(priori))
-            #posteriori = self.get_conditional_probability(k, flrg) * priori
-            total_prob += priori
+                root = tree.FLRGTreeNode(None)
 
-        return total_prob
+                self.buildTreeWithoutOrder(root, lags, 0)
 
-    def AprioriPDF(self, **kwargs):
-        nbins = kwargs.get('num_bins', 100)
-        pdf = ProbabilityDistribution.ProbabilityDistribution(uod=[self.original_min, self.original_max], num_bins=nbins)
-        t = 0.0
+                # Trace the possible paths
+                for p in root.paths():
+                    path = list(reversed(list(filter(None.__ne__, p))))
 
-        for k in pdf.bins:
-            #print("BIN: " + str(k) )
-            affected_flrgs = []
-            affected_flrgs_memberships = []
+                    pk = np.prod([ret[k - self.order + o].density(path[o])
+                                  for o in np.arange(0,self.order)])
 
-            mv = FuzzySet.fuzzyInstance(k, self.sets)
-            tmp = np.argwhere(mv)
-            idx = np.ravel(tmp)
+                    d = self.forecastDistribution(path)[0]
 
-            if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                if k <= self.sets[0].lower:
-                    idx = [0]
-                elif k >= self.sets[-1].upper:
-                    idx = [len(self.sets) - 1]
-                else:
-                    raise Exception(k)
+                    for bin in _bins:
+                        dist.set(bin, dist.density(bin) + pk * d.density(bin))
 
-            for kk in idx:
-                flrg = ProbabilisticWeightedFLRG(self.order)
-                flrg.appendLHS(self.sets[kk])
-                affected_flrgs.append(flrg)
-                affected_flrgs_memberships.append(mv[kk])
+            if method != 4:
+                dist = ProbabilityDistribution.ProbabilityDistribution(smooth, bins=_bins, data=data,
+                                                                       uod=uod, **kwargs)
 
-            total_prob = 0.0
+            ret.append(dist)
 
-            for count, flrg in enumerate(affected_flrgs):
-                _flrg = self.flrgs[flrg.strLHS()]
-                pk = _flrg.frequency_count / self.global_frequency_count
-                priori = pk * (affected_flrgs_memberships[count] / _flrg.partition_function(uod=self.get_UoD()))
-                #print(flrg.strLHS() + ": PK=" + str(pk) + " Priori=" + str(priori))
-                posteriori = self.get_conditional_probability(k, flrg) * priori
-                total_prob += posteriori
+        return ret
 
-            t += total_prob
-            pdf.set(k, total_prob)
 
-        print(t)
-
-        return pdf
 
     def __str__(self):
         tmp = self.name + ":\n"

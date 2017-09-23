@@ -22,8 +22,15 @@ from numpy import random
 
 os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
+'''
 enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
 enrollments = np.array(enrollments["Enrollments"])
+'''
+
+taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
+data = np.array(taiexpd["avg"][:5000])
+del(taiexpd)
+
 
 import importlib
 import pandas as pd
@@ -37,20 +44,20 @@ from pyFTS.benchmarks import benchmarks as bchmk
 
 #uod = [10162, 21271]
 
-enrollments_fs1 = Grid.GridPartitioner(enrollments, 6)
+fs1 = Grid.GridPartitioner(data[:3000], 30)
 #for s in enrollments_fs1.sets:
 #    print(s) #.partition_function(uod, 100))
 
-pfts1_enrollments = pwfts.ProbabilisticWeightedFTS("1", partitioner=enrollments_fs1)
-pfts1_enrollments.train(enrollments, None, 1)
-pfts1_enrollments.shortname = "1st Order"
+pfts1 = pwfts.ProbabilisticWeightedFTS("1", partitioner=fs1)
+pfts1.train(data, None, 1)
+pfts1.shortname = "1st Order"
 
 #print(pfts1_enrollments)
 
-tmp = pfts1_enrollments.forecastDistribution([15000])
-#print(tmp[0])
+tmp = pfts1.forecastAheadDistribution(data[3000:3020],20, method=3, h=0.45, kernel="gaussian")
+print(tmp[0])
 
-print(tmp[0].quantile([0.05, 0.95]))
+#print(tmp[0].quantile([0.05, 0.95]))
 
 #pfts1_enrollments.AprioriPDF
 #norm = pfts1_enrollments.global_frequency_count

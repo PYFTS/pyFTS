@@ -17,7 +17,7 @@ class ProbabilityDistribution(object):
 
         self.type = type
         if self.type == "KDE":
-            self.kde = kde.KernelSmoothing(kwargs.get("h", 10), kwargs.get("method", "epanechnikov"))
+            self.kde = kde.KernelSmoothing(kwargs.get("h", 0.5), kwargs.get("kernel", "epanechnikov"))
 
         self.nbins = kwargs.get("num_bins", 100)
 

@@ -77,6 +77,8 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
         smooth = kwargs.get("smooth", "KDE")
         alpha = kwargs.get("alpha", None)
 
+        uod = self.get_UoD()
+
         for k in data.index:
 
             tmp = self.get_models_forecasts(data.ix[k])
@@ -88,9 +90,8 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
 
             name = str(self.indexer.get_index(data.ix[k]))
 
-            dist = ProbabilityDistribution.ProbabilityDistribution(smooth,
-                                                                   uod=[self.original_min, self.original_max],
-                                                                   data=tmp, name=name, **kwargs)
+            dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, data=tmp,
+                                                                   name=name, **kwargs)
 
             ret.append(dist)
 
