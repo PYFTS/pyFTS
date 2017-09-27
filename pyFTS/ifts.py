@@ -7,7 +7,12 @@ from pyFTS import hofts, fts, tree
 
 
 class IntervalFTS(hofts.HighOrderFTS):
-    """High Order Interval Fuzzy Time Series"""
+    """
+    High Order Interval Fuzzy Time Series
+
+    SILVA, Petrônio CL; SADAEI, Hossein Javedani; GUIMARÃES, Frederico Gadelha. Interval Forecasting with Fuzzy Time Series.
+    In: Computational Intelligence (SSCI), 2016 IEEE Symposium Series on. IEEE, 2016. p. 1-8.
+    """
     def __init__(self, name, **kwargs):
         super(IntervalFTS, self).__init__(name="IFTS " + name, **kwargs)
         self.shortname = "IFTS " + name

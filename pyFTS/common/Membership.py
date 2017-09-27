@@ -1,3 +1,7 @@
+"""
+Membership functions for Fuzzy Sets
+"""
+
 import numpy as np
 import math
 from pyFTS import *

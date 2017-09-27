@@ -3,7 +3,7 @@ from pyFTS import *
 from pyFTS.common import Membership
 
 
-class FuzzySet:
+class FuzzySet(object):
     """
     Fuzzy Set
     """
