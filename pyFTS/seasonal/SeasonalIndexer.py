@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from enum import Enum
+from pyFTS.seasonal import common
 
 
 class SeasonalIndexer(object):
@@ -124,17 +125,6 @@ class DataFrameSeasonalIndexer(SeasonalIndexer):
         return data
 
 
-class DateTime(Enum):
-    year = 1
-    month = 2
-    day_of_month = 3
-    day_of_year = 4
-    day_of_week = 5
-    hour = 6
-    minute = 7
-    second = 8
-
-
 class DateTimeSeasonalIndexer(SeasonalIndexer):
     def __init__(self,date_field, index_fields, index_seasons, data_fields,**kwargs):
         super(DateTimeSeasonalIndexer, self).__init__(len(index_seasons), **kwargs)
@@ -142,29 +132,6 @@ class DateTimeSeasonalIndexer(SeasonalIndexer):
         self.seasons = index_seasons
         self.data_fields = data_fields
         self.date_field = date_field
-
-    def strip_datepart(self, date, date_part, resolution):
-        if date_part == DateTime.year:
-            tmp = date.year
-        elif date_part == DateTime.month:
-            tmp = date.month
-        elif date_part == DateTime.day_of_year:
-            tmp = date.timetuple().tm_yday
-        elif date_part == DateTime.day_of_month:
-            tmp = date.day
-        elif date_part == DateTime.day_of_week:
-            tmp = date.weekday()
-        elif date_part == DateTime.hour:
-            tmp = date.hour
-        elif date_part == DateTime.minute:
-            tmp = date.minute
-        elif date_part == DateTime.second:
-            tmp = date.second
-
-        if resolution is None:
-            return tmp
-        else:
-            return  tmp // resolution
 
     def get_season_of_data(self, data):
 
@@ -175,7 +142,10 @@ class DateTimeSeasonalIndexer(SeasonalIndexer):
                 date = data[self.date_field][ix]
                 season = []
                 for c, f in enumerate(self.fields, start=0):
-                    season.append(self.strip_datepart(date, f, self.seasons[c]))
+                    tmp = common.strip_datepart(date, f)
+                    if self.seasons[c] is not None:
+                        tmp = tmp // self.seasons[c]
+                    season.append(tmp)
                 ret.append(season)
 
         elif isinstance(data, pd.Series):

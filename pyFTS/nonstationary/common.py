@@ -1,10 +1,33 @@
+"""
+Non Stationary Fuzzy Sets
+
+GARIBALDI, Jonathan M.; JAROSZEWSKI, Marcin; MUSIKASUWAN, Salang. Nonstationary fuzzy sets.
+IEEE Transactions on Fuzzy Systems, v. 16, n. 4, p. 1072-1086, 2008.
+"""
+
 import numpy as np
 from pyFTS import *
 from pyFTS.common import FuzzySet, Membership
 
 
-class NonStationaryMembershipFunction(object):
+class MembershipFunction(object):
+    """
+    Non Stationary Membership Function
+    """
     def __init__(self, name, mf, parameters, **kwargs):
+        """
+        Non Stationary Membership Function
+        :param name:
+        :param mf:
+        :param parameters:
+        :param kwargs:
+            - location: Pertubation function that affects the location of the membership function
+            - location_params: Parameters for location pertubation function
+            - width: Pertubation function that affects the width of the membership function
+            - width_params: Parameters for width pertubation function
+            - noise: Pertubation function that adds noise on the membership function
+            - noise_params: Parameters for noise pertubation function
+        """
         self.mf = mf
         self.parameters = parameters
         self.location = kwargs.get("location", None)
@@ -73,12 +96,9 @@ class NonStationaryMembershipFunction(object):
         return tmp
 
 
-class NonStationaryFuzzySet(FuzzySet.FuzzySet):
+class FuzzySet(FuzzySet.FuzzySet):
     """
     Non Stationary Fuzzy Sets
-
-    GARIBALDI, Jonathan M.; JAROSZEWSKI, Marcin; MUSIKASUWAN, Salang. Nonstationary fuzzy sets.
-    IEEE Transactions on Fuzzy Systems, v. 16, n. 4, p. 1072-1086, 2008.
     """
 
     def __init__(self, name, mf, **kwargs):
@@ -88,5 +108,8 @@ class NonStationaryFuzzySet(FuzzySet.FuzzySet):
         :param mf: NonStationary Membership Function
         """
         super(FuzzySet, self).__init__(name=name, mf=mf, parameters=None, centroid=None)
+
+    def membership(self, x, t):
+        return self.mf.membership(x,t)
 
 
