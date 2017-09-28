@@ -88,5 +88,5 @@ class NonStationaryFuzzySet(FuzzySet.FuzzySet):
         :param mf: NonStationary Membership Function
         """
         super(FuzzySet, self).__init__(name=name, mf=mf, parameters=None, centroid=None)
-        
+
 
