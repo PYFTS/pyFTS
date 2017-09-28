@@ -52,12 +52,23 @@ def gaussmf(x, parameters):
     :return: the membership value of x given the parameters
     """
     return math.exp((-(x - parameters[0])**2)/(2 * parameters[1]**2))
-    #return math.exp(-0.5 * ((x - parameters[0]) / parameters[1]) ** 2)
 
 
 def bellmf(x, parameters):
+    """
+    Bell shaped membership function
+    :param x:
+    :param parameters:
+    :return:
+    """
     return 1 / (1 + abs((x - parameters[2]) / parameters[0]) ** (2 * parameters[1]))
 
 
 def sigmf(x, parameters):
+    """
+    Sigmoid / Logistic membership function
+    :param x:
+    :param parameters: an list with 2 real values (smoothness and midpoint)
+    :return:
+    """
     return 1 / (1 + math.exp(-parameters[0] * (x - parameters[1])))
