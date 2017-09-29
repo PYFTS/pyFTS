@@ -36,12 +36,19 @@ class MembershipFunction(object):
         self.width_params = kwargs.get("width_params", None)
         self.noise = kwargs.get("noise", None)
         self.noise_params = kwargs.get("noise_params", None)
+        self.cache = {}
 
     def perform_location(self, t, param):
         if self.location is None:
             return param
 
-        inc = self.location(t, self.location_params)
+        if not isinstance(self.location, (list,set)):
+            self.location = [self.location]
+            self.location_params = [self.location_params]
+
+        l = len(self.location)
+
+        inc = sum([self.location[k](t, self.location_params[k]) for k in np.arange(0,l)] )
 
         if self.mf == Membership.gaussmf:
             #changes only the mean parameter
@@ -59,7 +66,13 @@ class MembershipFunction(object):
         if self.width is None:
             return param
 
-        inc = self.width(t, self.width_params)
+        if not isinstance(self.width, (list, set)):
+            self.width = [self.width]
+            self.width_params = [self.width_params]
+
+        l = len(self.width)
+
+        inc = sum([self.width[k](t, self.width_params[k]) for k in np.arange(0, l)])
 
         if self.mf == Membership.gaussmf:
             #changes only the variance parameter
@@ -68,12 +81,12 @@ class MembershipFunction(object):
             #changes only the smooth parameter
             return [param[0] + inc, param[1]]
         elif self.mf == Membership.trimf:
-            return [param[0] + inc, param[1], param[2] - inc]
+            return [param[0] - inc, param[1], param[2] + inc]
         elif self.mf == Membership.trapmf:
             l = (param[3]-param[0])
             rab = (param[1] - param[0]) / l
             rcd = (param[3] - param[2]) / l
-            return [param[0] + inc, param[1] + inc*rab, param[2] - inc*rcd, param[3] - inc]
+            return [param[0] - inc, param[1] - inc*rab, param[2] + inc*rcd, param[3] + inc]
         else:
             return param
 
@@ -84,11 +97,13 @@ class MembershipFunction(object):
         :return: membership value of x at this fuzzy set
         """
 
-        param = self.parameters
-        param = self.perform_location(t, param)
-        param = self.perform_width(t, param)
+        if t not in self.cache:
+            param = self.parameters
+            param = self.perform_location(t, param)
+            param = self.perform_width(t, param)
+            self.cache[t] = param
 
-        tmp = self.mf(x, param)
+        tmp = self.mf(x, self.cache[t])
 
         if self.noise is not None:
             tmp += self.noise(t, self.noise_params)

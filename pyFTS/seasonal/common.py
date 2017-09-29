@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 from enum import Enum
-from pyFTS.common import FuzzySet
+from pyFTS.common import FuzzySet, Membership
+from pyFTS.partitioners import partitioner, Grid
 
 
 class DateTime(Enum):

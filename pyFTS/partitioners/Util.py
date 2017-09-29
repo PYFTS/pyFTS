@@ -11,6 +11,7 @@ all_methods = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitio
 
 mfs = [Membership.trimf, Membership.gaussmf, Membership.trapmf]
 
+
 def plot_sets(data, sets, titles, tam=[12, 10], save=False, file=None):
     num = len(sets)
     #fig = plt.figure(figsize=tam)
