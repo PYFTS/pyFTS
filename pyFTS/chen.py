@@ -14,6 +14,9 @@ class ConventionalFLRG(object):
     def __init__(self, LHS):
         self.LHS = LHS
         self.RHS = set()
+        self.midpoint = None
+        self.lower = None
+        self.upper = None
 
     def append(self, c):
         self.RHS.add(c)

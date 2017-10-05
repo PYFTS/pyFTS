@@ -7,7 +7,7 @@ IEEE Transactions on Fuzzy Systems, v. 16, n. 4, p. 1072-1086, 2008.
 
 import numpy as np
 from pyFTS import *
-from pyFTS.common import FuzzySet as FS, Membership
+from pyFTS.common import FuzzySet as FS, Membership, FLR
 from pyFTS.partitioners import partitioner
 from pyFTS.nonstationary import perturbation
 
@@ -278,4 +278,31 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
 
     def build(self, data):
         pass
+
+
+def fuzzify(inst, t, fuzzySets):
+    """
+    Calculate the membership values for a data point given nonstationary fuzzy sets
+    :param inst: data points
+    :param t: time displacement of the instance
+    :param fuzzySets: list of fuzzy sets
+    :return: array of membership values
+    """
+    ret = []
+    if not isinstance(inst, list):
+        inst = [inst]
+    for t, i in enumerate(inst):
+        mv = np.array([fs.membership(i, t) for fs in fuzzySets])
+        ret.append(mv)
+    return ret
+
+
+def fuzzySeries(data, fuzzySets):
+    fts = []
+    for t, i in enumerate(data):
+        mv = np.array([fs.membership(i, t) for fs in fuzzySets])
+        ix = np.ravel(np.argwhere(mv > 0.0))
+        sets = [fuzzySets[i] for i in ix]
+        fts.append(sets)
+    return fts
 

@@ -36,30 +36,38 @@ class IndexedFLR(FLR):
         return str(self.index) + ": "+ self.LHS.name + " -> " + self.RHS.name
 
 
-def generateNonRecurrentFLRs(fuzzyData):
-    """
-    Create a ordered FLR set from a list of fuzzy sets without recurrence
-    :param fuzzyData: ordered list of fuzzy sets
-    :return: ordered list of FLR 
-    """
-    flrs = {}
-    for i in range(2,len(fuzzyData)):
-        tmp = FLR(fuzzyData[i-1],fuzzyData[i])
-        flrs[str(tmp)] = tmp
-    ret = [value for key, value in flrs.items()]
-    return ret
-
-
 def generateRecurrentFLRs(fuzzyData):
     """
     Create a ordered FLR set from a list of fuzzy sets with recurrence
     :param fuzzyData: ordered list of fuzzy sets
-    :return: ordered list of FLR 
+    :return: ordered list of FLR
     """
     flrs = []
     for i in np.arange(1,len(fuzzyData)):
-        flrs.append(FLR(fuzzyData[i-1],fuzzyData[i]))
+        lhs = fuzzyData[i - 1]
+        rhs = fuzzyData[i]
+        if isinstance(lhs, list) and isinstance(rhs, list):
+            for l in lhs:
+                for r in rhs:
+                    tmp = FLR(l, r)
+                    flrs.append(tmp)
+        else:
+            tmp = FLR.FLR(lhs,rhs)
+            flrs.append(tmp)
     return flrs
+
+
+def generateNonRecurrentFLRs(fuzzyData):
+    """
+    Create a ordered FLR set from a list of fuzzy sets without recurrence
+    :param fuzzyData: ordered list of fuzzy sets
+    :return: ordered list of FLR
+    """
+    flrs = generateRecurrentFLRs(fuzzyData)
+    tmp = {}
+    for flr in flrs: tmp[str(flr)] = flr
+    ret = [value for key, value in tmp.items()]
+    return ret
 
 
 def generateIndexedFLRs(sets, indexer, data, transformation=None):
