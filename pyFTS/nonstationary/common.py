@@ -7,20 +7,21 @@ IEEE Transactions on Fuzzy Systems, v. 16, n. 4, p. 1072-1086, 2008.
 
 import numpy as np
 from pyFTS import *
-from pyFTS.common import FuzzySet, Membership
+from pyFTS.common import FuzzySet as FS, Membership
 from pyFTS.partitioners import partitioner
 from pyFTS.nonstationary import perturbation
 
 
-class MembershipFunction(object):
+class FuzzySet(FS.FuzzySet):
     """
-    Non Stationary Membership Function
+    Non Stationary Fuzzy Sets
     """
+
     def __init__(self, name, mf, parameters, **kwargs):
         """
-        Non Stationary Membership Function
+        Constructor
         :param name:
-        :param mf:
+        :param mf: Fuzzy Membership Function
         :param parameters:
         :param kwargs:
             - location: Pertubation function that affects the location of the membership function
@@ -30,8 +31,8 @@ class MembershipFunction(object):
             - noise: Pertubation function that adds noise on the membership function
             - noise_params: Parameters for noise pertubation function
         """
-        self.mf = mf
-        self.parameters = parameters
+        super(FuzzySet, self).__init__(name=name, mf=mf, parameters=parameters, centroid=None)
+    
         self.location = kwargs.get("location", None)
         self.location_params = kwargs.get("location_params", None)
         self.location_roots = kwargs.get("location_roots", 0)
@@ -41,97 +42,85 @@ class MembershipFunction(object):
         self.noise = kwargs.get("noise", None)
         self.noise_params = kwargs.get("noise_params", None)
         self.perturbated_parameters = {}
-
-        if self.location is not None and not isinstance(self.location, (list,set)):
+    
+        if self.location is not None and not isinstance(self.location, (list, set)):
             self.location = [self.location]
             self.location_params = [self.location_params]
             self.location_roots = [self.location_roots]
-
+    
         if self.width is not None and not isinstance(self.width, (list, set)):
             self.width = [self.width]
             self.width_params = [self.width_params]
             self.width_roots = [self.width_roots]
-
+    
     def perform_location(self, t, param):
         if self.location is None:
             return param
-
+    
         l = len(self.location)
-
-        inc = sum([self.location[k](t + self.location_roots[k], self.location_params[k]) for k in np.arange(0,l)] )
-
+    
+        inc = sum([self.location[k](t + self.location_roots[k], self.location_params[k]) for k in np.arange(0, l)])
+    
         if self.mf == Membership.gaussmf:
-            #changes only the mean parameter
+            # changes only the mean parameter
             return [param[0] + inc, param[1]]
         elif self.mf == Membership.sigmf:
-            #changes only the midpoint parameter
+            # changes only the midpoint parameter
             return [param[0], param[1] + inc]
         elif self.mf == Membership.bellmf:
             return [param[0], param[1], param[2] + inc]
         else:
-            #translate all parameters
+            # translate all parameters
             return [k + inc for k in param]
-
+    
     def perform_width(self, t, param):
         if self.width is None:
             return param
-
+    
         l = len(self.width)
-
+    
         inc = sum([self.width[k](t + self.width_roots[k], self.width_params[k]) for k in np.arange(0, l)])
-
+    
         if self.mf == Membership.gaussmf:
-            #changes only the variance parameter
+            # changes only the variance parameter
             return [param[0], param[1] + inc]
         elif self.mf == Membership.sigmf:
-            #changes only the smooth parameter
+            # changes only the smooth parameter
             return [param[0] + inc, param[1]]
         elif self.mf == Membership.trimf:
-            tmp = inc/2
+            tmp = inc / 2
             return [param[0] - tmp, param[1], param[2] + tmp]
         elif self.mf == Membership.trapmf:
-            l = (param[3]-param[0])
+            l = (param[3] - param[0])
             rab = (param[1] - param[0]) / l
             rcd = (param[3] - param[2]) / l
-            return [param[0] - inc, param[1] - inc*rab, param[2] + inc*rcd, param[3] + inc]
+            return [param[0] - inc, param[1] - inc * rab, param[2] + inc * rcd, param[3] + inc]
         else:
             return param
-
+    
     def membership(self, x, t):
         """
         Calculate the membership value of a given input
         :param x: input value
         :return: membership value of x at this fuzzy set
         """
-
+    
         self.perturbate_parameters(t)
-
+    
         tmp = self.mf(x, self.perturbated_parameters[t])
-
+    
         if self.noise is not None:
             tmp += self.noise(t, self.noise_params)
-
+    
         return tmp
-
+    
     def perturbate_parameters(self, t):
         if t not in self.perturbated_parameters:
             param = self.parameters
             param = self.perform_location(t, param)
             param = self.perform_width(t, param)
             self.perturbated_parameters[t] = param
-
-    def __str__(self):
-        tmp = ""
-        if self.location is not None:
-            tmp += "Loc. Pert.: "
-            for ct, f in enumerate(self.location):
-                tmp += str(f.__name__) + "(" + str(self.location_params[ct]) + ") "
-        if self.width is not None:
-            tmp += "Wid. Pert.: "
-            for ct, f in enumerate(self.width):
-                tmp += str(f.__name__) + "(" + str(self.width_params[ct]) + ") "
-        return str(self.mf.__name__) + "(" + str(self.parameters) + ") " + tmp
-
+            
     def get_midpoint(self, t):
 
         self.perturbate_parameters(t)
@@ -180,26 +169,17 @@ class MembershipFunction(object):
         else:
             return param
 
-
-
-class FuzzySet(FuzzySet.FuzzySet):
-    """
-    Non Stationary Fuzzy Sets
-    """
-
-    def __init__(self, name, mf, **kwargs):
-        """
-        Constructor
-        :param name: Fuzzy Set name
-        :param mf: NonStationary Membership Function
-        """
-        super(FuzzySet, self).__init__(name=name, mf=mf, parameters=None, centroid=None)
-
-    def membership(self, x, t):
-        return self.mf.membership(x,t)
-
     def __str__(self):
-        return self.name + ": " + str(self.mf)
+        tmp = ""
+        if self.location is not None:
+            tmp += "Loc. Pert.: "
+            for ct, f in enumerate(self.location):
+                tmp += str(f.__name__) + "(" + str(self.location_params[ct]) + ") "
+        if self.width is not None:
+            tmp += "Wid. Pert.: "
+            for ct, f in enumerate(self.width):
+                tmp += str(f.__name__) + "(" + str(self.width_params[ct]) + ") "
+        return self.name + ": " + str(self.mf.__name__) + "(" + str(self.parameters) + ") " + tmp
 
 
 class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
@@ -221,14 +201,13 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
         for ct, set in enumerate(part.sets):
             loc_roots = np.roots(loc_params[ct])[0]
             wid_roots = np.roots(wid_params[ct])[0]
-            mf = MembershipFunction(name=set.name, mf=set.mf, parameters=set.parameters,
-                                    location=perturbation.polynomial,
-                                    location_params=loc_params[ct],
-                                    location_roots=loc_roots, #**kwargs)
-                                    width=perturbation.polynomial,
-                                    width_params=wid_params[ct],
-                                    width_roots=wid_roots, **kwargs)
-            tmp = FuzzySet(set.name, mf, **kwargs)
+            tmp = FuzzySet(set.name, set.mf, set.parameters,
+                           location=perturbation.polynomial,
+                           location_params=loc_params[ct],
+                           location_roots=loc_roots, #**kwargs)
+                           width=perturbation.polynomial,
+                           width_params=wid_params[ct],
+                           width_roots=wid_roots, **kwargs)
 
             self.sets.append(tmp)
 

@@ -12,9 +12,9 @@ def plot_sets(uod, sets, start=0, end=10, tam=[5, 5], colors=None, save=False, f
     for t in np.arange(start,end,1):
         for ct, set in enumerate(sets):
             set.membership(0, t)
-            param = set.mf.perturbated_parameters[t]
+            param = set.perturbated_parameters[t]
 
-            if set.mf.mf == Membership.trimf:
+            if set.mf == Membership.trimf:
                 axes.plot([t, t+1, t], param)
 
         ticks.extend(["t+"+str(t),""])
