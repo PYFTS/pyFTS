@@ -8,15 +8,11 @@ from pyFTS.common import FuzzySet, Membership
 
 
 def linear(x, parameters):
-    return parameters[0]*x + parameters[1]
+    return np.polyval(parameters, x)
 
 
 def polynomial(x, parameters):
-    n = len(parameters)
-    tmp = 0.0
-    for k in np.arange(0,n):
-        tmp += parameters[k] * x**k
-    return tmp
+        return np.polyval(parameters, x)
 
 
 def exponential(x, parameters):
@@ -24,4 +20,4 @@ def exponential(x, parameters):
 
 
 def periodic(x, parameters):
-    return np.sin(x * parameters[0] + parameters[1])
+    return parameters[0] * np.sin(x * parameters[1])

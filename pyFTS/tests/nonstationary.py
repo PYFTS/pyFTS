@@ -1,20 +1,38 @@
 import numpy as np
 from pyFTS.common import Membership
-from pyFTS.nonstationary import common,pertubation,util
-import importlib
+from pyFTS.nonstationary import common,perturbation,util
+from pyFTS.partitioners import Grid
 
-importlib.reload(util)
 
-uod = np.arange(0,20,0.1)
+def generate_heteroskedastic_linear(mu_ini, sigma_ini, mu_inc, sigma_inc, it=10, num=35):
+    mu = mu_ini
+    sigma = sigma_ini
+    ret = []
+    for k in np.arange(0,it):
+        ret.extend(np.random.normal(mu, sigma, num))
+        mu += mu_inc
+        sigma += sigma_inc
+    return ret
 
-kwargs = {'location': pertubation.linear, 'location_params': [1,0],
-          'width': pertubation.linear, 'width_params': [1,0]}
 
-mf1 = common.MembershipFunction('A1',Membership.trimf,[0,1,2], **kwargs)
-mf2 = common.MembershipFunction('A2',Membership.trimf,[1,2,3], **kwargs)
-mf3 = common.MembershipFunction('A3',Membership.trimf,[2,3,4], **kwargs)
-mf4 = common.MembershipFunction('A4',Membership.trimf,[3,4,5], **kwargs)
+lmv1 = generate_heteroskedastic_linear(1,0.1,1,0.3)
 
-sets = [mf1, mf2, mf3, mf4]
 
-util.plot_sets(uod, sets)
+
+ns = 5 #number of fuzzy sets
+ts = 200
+train = lmv1[:ts]
+w = 25
+deg = 4
+
+
+tmp_fs = Grid.GridPartitioner(train[:35], 10)
+
+fs = common.PolynomialNonStationaryPartitioner(train, tmp_fs, window_size=35, degree=1)
+
+uod = np.arange(0, 2, step=0.02)
+
+util.plot_sets(uod, fs.sets,tam=[15, 5], start=0, end=10)
+
+for set in fs.sets:
+    print(set)
