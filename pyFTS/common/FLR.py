@@ -52,7 +52,7 @@ def generateRecurrentFLRs(fuzzyData):
                     tmp = FLR(l, r)
                     flrs.append(tmp)
         else:
-            tmp = FLR.FLR(lhs,rhs)
+            tmp = FLR(lhs,rhs)
             flrs.append(tmp)
     return flrs
 

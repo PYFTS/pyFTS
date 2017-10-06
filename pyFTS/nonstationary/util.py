@@ -15,13 +15,19 @@ def plot_sets(uod, sets, start=0, end=10, tam=[5, 5], colors=None, save=False, f
             param = set.perturbated_parameters[t]
 
             if set.mf == Membership.trimf:
-                axes.plot([t, t+1, t], param)
+                if t == start:
+                    axes.plot([t, t+1, t], param, label=set.name)
+                else:
+                    axes.plot([t, t + 1, t], param)
 
         ticks.extend(["t+"+str(t),""])
 
     axes.set_ylabel("Universe of Discourse")
     axes.set_xlabel("Time")
-    plt.xticks([k for k in np.arange(0,2*end,1)], ticks, rotation='vertical')
+    plt.xticks([k for k in np.arange(0,end,1)], ticks, rotation='vertical')
+
+    handles0, labels0 = axes.get_legend_handles_labels()
+    lgd = axes.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
 
     plt.tight_layout()
 

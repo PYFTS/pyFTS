@@ -79,4 +79,4 @@ class Partitioner(object):
                 ax.plot(tmpx, tmpy)
 
     def __str__(self):
-        return self.name
+        return self.name + ":\n ".join([str(a) + "\n"  for a in self.sets])

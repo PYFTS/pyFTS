@@ -76,10 +76,20 @@ class NonStationaryFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
+            #print("input: " + str(ndata[k]))
+
             tdisp = k + time_displacement
 
             affected_sets = [ [set, set.membership(ndata[k], tdisp)]
                               for set in self.sets if set.membership(ndata[k], tdisp) > 0.0]
+
+            if len(affected_sets) == 0:
+                if self.sets[0].get_lower(tdisp) > ndata[k]:
+                    affected_sets.append([self.sets[0], 1.0])
+                elif self.sets[-1].get_upper(tdisp) < ndata[k]:
+                    affected_sets.append([self.sets[-1], 1.0])
+
+            #print(affected_sets)
 
             tmp = []
             for aset in affected_sets:
@@ -88,7 +98,11 @@ class NonStationaryFTS(fts.FTS):
                 else:
                     tmp.append(aset[0].get_midpoint(tdisp) * aset[1])
 
-            ret.append(sum(tmp))
+            pto = sum(tmp)
+
+            #print(pto)
+
+            ret.append(pto)
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 

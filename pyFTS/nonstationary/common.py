@@ -221,9 +221,9 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
     def get_polynomial_perturbations(self, data, **kwargs):
         w = kwargs.get("window_size", int(len(data) / 5))
         deg = kwargs.get("degree", 2)
-        xmax = [0]
+        xmax = [data[0]]
         tmax = [0]
-        xmin = [0]
+        xmin = [data[0]]
         tmin = [0]
         lengs = [0]
         tlengs = [0]
