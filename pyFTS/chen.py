@@ -6,17 +6,15 @@ S.-M. Chen, “Forecasting enrollments based on fuzzy time series,” Fuzzy Sets
 
 import numpy as np
 from pyFTS.common import FuzzySet, FLR
-from pyFTS import fts
+from pyFTS import fts,flrg
 
 
-class ConventionalFLRG(object):
+class ConventionalFLRG(flrg.FLRG):
     """First Order Conventional Fuzzy Logical Relationship Group"""
-    def __init__(self, LHS):
+    def __init__(self, LHS, **kwargs):
+        super(ConventionalFLRG, self).__init__(1, **kwargs)
         self.LHS = LHS
         self.RHS = set()
-        self.midpoint = None
-        self.lower = None
-        self.upper = None
 
     def append(self, c):
         self.RHS.add(c)
@@ -30,8 +28,7 @@ class ConventionalFLRG(object):
             tmp2 = tmp2 + c.name
         return tmp + tmp2
 
-    def __len__(self):
-        return len(self.RHS)
+
 
 
 class ConventionalFTS(fts.FTS):

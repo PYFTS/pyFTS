@@ -7,15 +7,15 @@ Fuzzy Sets Syst., vol. 81, no. 3, pp. 311–319, 1996.
 
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts
+from pyFTS import fts, flrg
 
 
-class HighOrderFLRG(object):
+class HighOrderFLRG(flrg.FLRG):
     """Conventional High Order Fuzzy Logical Relationship Group"""
-    def __init__(self, order):
+    def __init__(self, order, **kwargs):
+        super(HighOrderFLRG, self).__init__(order, **kwargs)
         self.LHS = []
         self.RHS = {}
-        self.order = order
         self.strlhs = ""
 
     def appendRHS(self, c):

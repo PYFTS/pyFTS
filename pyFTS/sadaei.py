@@ -7,16 +7,17 @@ refined exponentially weighted fuzzy time series and an improved harmony search,
 
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts
+from pyFTS import fts, flrg
 
 
-class ExponentialyWeightedFLRG(object):
+class ExponentialyWeightedFLRG(flrg.FLRG):
     """First Order Exponentialy Weighted Fuzzy Logical Relationship Group"""
-    def __init__(self, LHS, c):
+    def __init__(self, LHS, **kwargs):
+        super(ExponentialyWeightedFLRG, self).__init__(1, **kwargs)
         self.LHS = LHS
         self.RHS = []
         self.count = 0.0
-        self.c = c
+        self.c = kwargs.get("c",2.0)
 
     def append(self, c):
         self.RHS.append(c)

@@ -7,12 +7,13 @@ US Dollar to Ringgit Malaysia,” Int. J. Comput. Intell. Appl., vol. 12, no. 1,
 
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts
+from pyFTS import fts, flrg
 
 
-class ImprovedWeightedFLRG(object):
+class ImprovedWeightedFLRG(flrg.FLRG):
     """First Order Improved Weighted Fuzzy Logical Relationship Group"""
-    def __init__(self, LHS):
+    def __init__(self, LHS, **kwargs):
+        super(ImprovedWeightedFLRG, self).__init__(1, **kwargs)
         self.LHS = LHS
         self.RHS = {}
         self.count = 0.0

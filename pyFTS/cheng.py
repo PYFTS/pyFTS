@@ -15,7 +15,7 @@ class TrendWeightedFLRG(yu.WeightedFLRG):
     First Order Trend Weighted Fuzzy Logical Relationship Group
     """
     def __init__(self, LHS, **kwargs):
-        super(TrendWeightedFLRG, self).__init__(LHS)
+        super(TrendWeightedFLRG, self).__init__(LHS, **kwargs)
 
     def weights(self):
         count_nochange = 0.0

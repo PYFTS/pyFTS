@@ -1,28 +1,37 @@
 import numpy as np
 from pyFTS.common import FuzzySet, FLR
-from pyFTS import fts, chen
-from pyFTS.nonstationary import common, flrg
+from pyFTS import fts, hofts
+from pyFTS.nonstationary import common
 
 
-class ConventionalNonStationaryFLRG(flrg.NonStationaryFLRG):
+class HighOrderNonStationaryFLRG(hofts.HighOrderFLRG):
     """First Order NonStationary Fuzzy Logical Relationship Group"""
+    def __init__(self, order):
+        super(HighOrderNonStationaryFLRG, self).__init__(order)
 
-    def __init__(self, LHS, **kwargs):
-        super(ConventionalNonStationaryFLRG, self).__init__(1, **kwargs)
-        self.LHS = LHS
-        self.RHS = set()
+    def get_midpoint(self, t):
+        if self.midpoint is None:
+            tmp = []
+            for r in self.RHS:
+                tmp.append(r.get_midpoint(t))
+            self.midpoint = sum(tmp)/len(tmp)
+        return self.midpoint
 
-    def append(self, c):
-        self.RHS.add(c)
+    def get_lower(self, t):
+        if self.lower is None:
+            tmp = []
+            for r in self.RHS:
+                tmp.append(r.get_midpoint(t))
+            self.lower = min(tmp)
+        return self.lower
 
-    def __str__(self):
-        tmp = self.LHS.name + " -> "
-        tmp2 = ""
-        for c in sorted(self.RHS, key=lambda s: s.name):
-            if len(tmp2) > 0:
-                tmp2 = tmp2 + ","
-            tmp2 = tmp2 + c.name
-        return tmp + tmp2
+    def get_upper(self, t):
+        if self.upper is None:
+            tmp = []
+            for r in self.RHS:
+                tmp.append(r.get_midpoint(t))
+            self.upper = max(tmp)
+        return self.upper
 
 
 class NonStationaryFTS(fts.FTS):
@@ -39,7 +48,7 @@ class NonStationaryFTS(fts.FTS):
             if flr.LHS.name in flrgs:
                 flrgs[flr.LHS.name].append(flr.RHS)
             else:
-                flrgs[flr.LHS.name] = ConventionalNonStationaryFLRG(flr.LHS)
+                flrgs[flr.LHS.name] = NonStationaryFLRG(flr.LHS)
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 

@@ -7,12 +7,13 @@ Phys. A Stat. Mech. its Appl., vol. 349, no. 3, pp. 609–624, 2005.
 
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts
+from pyFTS import fts, flrg, chen
 
 
-class WeightedFLRG(object):
+class WeightedFLRG(flrg.FLRG):
     """First Order Weighted Fuzzy Logical Relationship Group"""
     def __init__(self, LHS, **kwargs):
+        super(WeightedFLRG, self).__init__(1, **kwargs)
         self.LHS = LHS
         self.RHS = []
         self.count = 1.0
