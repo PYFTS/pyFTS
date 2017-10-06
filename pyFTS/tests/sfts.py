@@ -13,12 +13,12 @@ import datetime
 import pandas as pd
 from pyFTS.partitioners import Grid, CMeans, FCM, Entropy
 from pyFTS.common import FLR,FuzzySet,Membership,Transformations,Util
-from pyFTS import fts,sfts
-from pyFTS.models import msfts
+from pyFTS import fts
+from pyFTS.seasonal import sfts, msfts
 from pyFTS.benchmarks import benchmarks as bchmk
 from pyFTS.benchmarks import Measures
 
-os.chdir("/home/petronio/dados/Dropbox/Doutorado/Disciplinas/AdvancedFuzzyTimeSeriesModels/")
+os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
 sonda = pd.read_csv("DataSets/SONDA_BSB_MOD.csv", sep=";")
 

@@ -17,7 +17,7 @@ class FLRG(object):
         return self.midpoint
 
     def get_midpoints(self):
-        if isinstance(self.RHS, list):
+        if isinstance(self.RHS, (list, set)):
             return np.array([s.centroid for s in self.RHS])
         elif isinstance(self.RHS, dict):
             return np.array([self.RHS[s].centroid for s in self.RHS.keys()])

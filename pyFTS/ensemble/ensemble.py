@@ -6,12 +6,12 @@ import pandas as pd
 import math
 from operator import itemgetter
 from pyFTS.common import FLR, FuzzySet, SortedCollection
-from pyFTS import fts, chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu, sfts
+from pyFTS import fts, chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu
 from pyFTS.benchmarks import arima, quantreg
 from pyFTS.common import Transformations
 import scipy.stats as st
 from pyFTS import tree
-from pyFTS.models import msfts
+from pyFTS.seasonal import sfts, msfts
 from pyFTS.probabilistic import ProbabilityDistribution, kde
 
 def sampler(data, quantiles):
@@ -226,7 +226,7 @@ class EnsembleFTS(fts.FTS):
 
 
 class AllMethodEnsembleFTS(EnsembleFTS):
-    def __init__(self, name, **kwargs):
+    def __init__(self, **kwargs):
         super(AllMethodEnsembleFTS, self).__init__(name="Ensemble FTS", **kwargs)
         self.min_order = 3
 
@@ -239,7 +239,7 @@ class AllMethodEnsembleFTS(EnsembleFTS):
         self.original_min = min(data)
 
         fo_methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, cheng.TrendWeightedFTS,
-                      sadaei.ExponentialyWeightedFTS,  ismailefendi.ImprovedWeightedFTS, sfts.SeasonalFTS]
+                      sadaei.ExponentialyWeightedFTS,  ismailefendi.ImprovedWeightedFTS]
 
         ho_methods = [hofts.HighOrderFTS, hwang.HighOrderFTS]
 

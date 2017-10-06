@@ -16,25 +16,27 @@ class ImprovedWeightedFLRG(flrg.FLRG):
         super(ImprovedWeightedFLRG, self).__init__(1, **kwargs)
         self.LHS = LHS
         self.RHS = {}
+        self.rhs_counts = {}
         self.count = 0.0
 
     def append(self, c):
         if c.name not in self.RHS:
-            self.RHS[c.name] = 1.0
+            self.RHS[c.name] = c
+            self.rhs_counts[c.name] = 1.0
         else:
-            self.RHS[c.name] = self.RHS[c.name] + 1.0
-        self.count = self.count + 1.0
+            self.rhs_counts[c.name] += 1.0
+        self.count += 1.0
 
     def weights(self):
-        return np.array([self.RHS[c] / self.count for c in self.RHS.keys()])
+        return np.array([self.rhs_counts[c] / self.count for c in self.RHS.keys()])
 
     def __str__(self):
         tmp = self.LHS.name + " -> "
         tmp2 = ""
-        for c in sorted(self.RHS):
+        for c in sorted(self.RHS.keys()):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ","
-            tmp2 = tmp2 + c + "(" + str(round(self.RHS[c] / self.count, 3)) + ")"
+            tmp2 = tmp2 + c + "(" + str(round(self.rhs_counts[c] / self.count, 3)) + ")"
         return tmp + tmp2
 
     def __len__(self):

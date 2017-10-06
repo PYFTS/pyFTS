@@ -59,7 +59,7 @@ class ExponentialyWeightedFTS(fts.FTS):
             if flr.LHS.name in flrgs:
                 flrgs[flr.LHS.name].append(flr.RHS)
             else:
-                flrgs[flr.LHS.name] = ExponentialyWeightedFLRG(flr.LHS, c);
+                flrgs[flr.LHS.name] = ExponentialyWeightedFLRG(flr.LHS, c=c);
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 

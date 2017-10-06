@@ -54,6 +54,12 @@ pfts1.shortname = "1st Order"
 
 #print(pfts1_enrollments)
 
+tmp = pfts1.forecast(data[3000:3020])
+
+tmp = pfts1.forecastInterval(data[3000:3020])
+
+tmp = pfts1.forecastAheadInterval(data[3000:3020],20)
+
 tmp = pfts1.forecastAheadDistribution(data[3000:3020],20, method=3, h=0.45, kernel="gaussian")
 print(tmp[0])
 

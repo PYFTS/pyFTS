@@ -73,15 +73,15 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
         return self.Z
 
     def get_midpoint(self):
-        return sum(np.array([self.get_RHSprobability(s.name) * self.RHS[s].centroid
+        return sum(np.array([self.get_RHSprobability(s) * self.RHS[s].centroid
                              for s in self.RHS.keys()]))
 
     def get_upper(self):
-        return sum(np.array([self.get_RHSprobability(s.name) * self.RHS[s].upper
+        return sum(np.array([self.get_RHSprobability(s) * self.RHS[s].upper
                              for s in self.RHS.keys()]))
 
     def get_lower(self):
-        return sum(np.array([self.get_RHSprobability(s.name) * self.RHS[s].lower
+        return sum(np.array([self.get_RHSprobability(s) * self.RHS[s].lower
                              for s in self.RHS.keys()]))
 
     def __str__(self):
@@ -96,7 +96,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     """High Order Probabilistic Weighted Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(ProbabilisticWeightedFTS, self).__init__(order=1, name=name, **kwargs)
+        super(ProbabilisticWeightedFTS, self).__init__(name=name, **kwargs)
         self.shortname = "PWFTS " + name
         self.name = "Probabilistic FTS"
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."

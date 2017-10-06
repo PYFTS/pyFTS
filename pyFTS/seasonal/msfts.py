@@ -1,6 +1,6 @@
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts, sfts
+from pyFTS.seasonal import sfts
 
 
 class MultiSeasonalFTS(sfts.SeasonalFTS):
