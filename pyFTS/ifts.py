@@ -23,27 +23,27 @@ class IntervalFTS(hofts.HighOrderFTS):
         self.has_interval_forecasting = True
         self.is_high_order = True
 
-    def getUpper(self, flrg):
+    def get_upper(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
-            ret = max(np.array([self.setsDict[s].upper for s in tmp.RHS]))
+            ret = tmp.get_upper()
         else:
             ret = flrg.LHS[-1].upper
         return ret
 
-    def getLower(self, flrg):
+    def get_lower(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
-            ret = min(np.array([self.setsDict[s].lower for s in tmp.RHS]))
+            ret = tmp.get_lower()
         else:
             ret = flrg.LHS[-1].lower
         return ret
 
-    def getSequenceMembership(self, data, fuzzySets):
+    def get_sequence_membership(self, data, fuzzySets):
         mb = [fuzzySets[k].membership(data[k]) for k in np.arange(0, len(data))]
         return mb
 
-    def buildTree(self, node, lags, level):
+    def build_tree(self, node, lags, level):
         if level >= self.order:
             return
 
@@ -51,7 +51,7 @@ class IntervalFTS(hofts.HighOrderFTS):
             node.appendChild(tree.FLRGTreeNode(s))
 
         for child in node.getChildren():
-            self.buildTree(child, lags, level + 1)
+            self.build_tree(child, lags, level + 1)
 
     def forecastInterval(self, data, **kwargs):
 
@@ -96,7 +96,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 
                 root = tree.FLRGTreeNode(None)
 
-                self.buildTree(root, lags, 0)
+                self.build_tree(root, lags, 0)
 
                 # Traça os possíveis caminhos e costrói as HOFLRG's
 
@@ -132,8 +132,8 @@ class IntervalFTS(hofts.HighOrderFTS):
             count = 0
             for flrg in affected_flrgs:
                 # achar o os bounds de cada FLRG, ponderados pela pertinência
-                up.append(affected_flrgs_memberships[count] * self.getUpper(flrg))
-                lo.append(affected_flrgs_memberships[count] * self.getLower(flrg))
+                up.append(affected_flrgs_memberships[count] * self.get_upper(flrg))
+                lo.append(affected_flrgs_memberships[count] * self.get_lower(flrg))
                 count = count + 1
 
             # gerar o intervalo

@@ -1,55 +1,64 @@
 import numpy as np
 from pyFTS.common import FuzzySet, FLR
 from pyFTS import fts, hofts
-from pyFTS.nonstationary import common
+from pyFTS.nonstationary import common, flrg
 
 
-class HighOrderNonStationaryFLRG(hofts.HighOrderFLRG):
+class HighOrderNonStationaryFLRG(flrg.NonStationaryFLRG):
     """First Order NonStationary Fuzzy Logical Relationship Group"""
-    def __init__(self, order):
-        super(HighOrderNonStationaryFLRG, self).__init__(order)
+    def __init__(self, order, **kwargs):
+        super(HighOrderNonStationaryFLRG, self).__init__(order, **kwargs)
 
-    def get_midpoint(self, t):
-        if self.midpoint is None:
-            tmp = []
-            for r in self.RHS:
-                tmp.append(r.get_midpoint(t))
-            self.midpoint = sum(tmp)/len(tmp)
-        return self.midpoint
+        self.LHS = []
+        self.RHS = {}
+        self.strlhs = ""
 
-    def get_lower(self, t):
-        if self.lower is None:
-            tmp = []
-            for r in self.RHS:
-                tmp.append(r.get_midpoint(t))
-            self.lower = min(tmp)
-        return self.lower
+    def appendRHS(self, c):
+        if c.name not in self.RHS:
+            self.RHS[c.name] = c
 
-    def get_upper(self, t):
-        if self.upper is None:
-            tmp = []
-            for r in self.RHS:
-                tmp.append(r.get_midpoint(t))
-            self.upper = max(tmp)
-        return self.upper
+    def strLHS(self):
+        if len(self.strlhs) == 0:
+            for c in self.LHS:
+                if len(self.strlhs) > 0:
+                    self.strlhs += ", "
+                self.strlhs = self.strlhs + c.name
+        return self.strlhs
+
+    def appendLHS(self, c):
+        self.LHS.append(c)
+
+    def __str__(self):
+        tmp = ""
+        for c in sorted(self.RHS):
+            if len(tmp) > 0:
+                tmp = tmp + ","
+            tmp = tmp + c
+        return self.strLHS() + " -> " + tmp
 
 
-class NonStationaryFTS(fts.FTS):
+class HighOrderNonStationaryFTS(hofts.HighOrderFLRG):
     """NonStationaryFTS Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
-        super(NonStationaryFTS, self).__init__(1, "NSFTS " + name, **kwargs)
-        self.name = "Non Stationary FTS"
+        super(HighOrderNonStationaryFTS, self).__init__(1, "HONSFTS " + name, **kwargs)
+        self.name = "High Order Non Stationary FTS"
         self.detail = ""
         self.flrgs = {}
 
     def generateFLRG(self, flrs):
         flrgs = {}
-        for flr in flrs:
-            if flr.LHS.name in flrgs:
-                flrgs[flr.LHS.name].append(flr.RHS)
+        l = len(flrs)
+        for k in np.arange(self.order + 1, l):
+            flrg = HighOrderNonStationaryFLRG(self.order)
+
+            for kk in np.arange(k - self.order, k):
+                flrg.appendLHS(flrs[kk].LHS)
+
+            if flrg.strLHS() in flrgs:
+                flrgs[flrg.strLHS()].appendRHS(flrs[k].RHS)
             else:
-                flrgs[flr.LHS.name] = NonStationaryFLRG(flr.LHS)
-                flrgs[flr.LHS.name].append(flr.RHS)
+                flrgs[flrg.strLHS()] = flrg;
+                flrgs[flrg.strLHS()].appendRHS(flrs[k].RHS)
         return (flrgs)
 
     def train(self, data, sets=None,order=1,parameters=None):

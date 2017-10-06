@@ -11,24 +11,16 @@ class NonStationaryFLRG(flrg.FLRG):
 
     def get_midpoint(self, t):
         if self.midpoint is None:
-            tmp = []
-            for r in self.RHS:
-                tmp.append(r.get_midpoint(t))
+            tmp = [r.get_midpoint(t) for r in self.RHS]
             self.midpoint = sum(tmp) / len(tmp)
         return self.midpoint
 
     def get_lower(self, t):
         if self.lower is None:
-            tmp = []
-            for r in self.RHS:
-                tmp.append(r.get_midpoint(t))
-            self.lower = min(tmp)
+            self.lower = min([r.get_lower(t) for r in self.RHS])
         return self.lower
 
     def get_upper(self, t):
         if self.upper is None:
-            tmp = []
-            for r in self.RHS:
-                tmp.append(r.get_midpoint(t))
-            self.upper = max(tmp)
+            self.upper = min([r.get_upper(t) for r in self.RHS])
         return self.upper

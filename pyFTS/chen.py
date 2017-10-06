@@ -29,8 +29,6 @@ class ConventionalFLRG(flrg.FLRG):
         return tmp + tmp2
 
 
-
-
 class ConventionalFTS(fts.FTS):
     """Conventional Fuzzy Time Series"""
     def __init__(self, name, **kwargs):
@@ -74,9 +72,8 @@ class ConventionalFTS(fts.FTS):
                 ret.append(actual.centroid)
             else:
                 flrg = self.flrgs[actual.name]
-                mp = self.getMidpoints(flrg)
 
-                ret.append(sum(mp) / len(mp))
+                ret.append(flrg.get_midpoint())
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 

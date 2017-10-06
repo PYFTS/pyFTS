@@ -84,7 +84,7 @@ class WeightedFTS(fts.FTS):
                 ret.append(actual.centroid)
             else:
                 flrg = self.flrgs[actual.name]
-                mp = self.getMidpoints(flrg)
+                mp = flrg.get_midpoints()
 
                 ret.append(mp.dot(flrg.weights()))
 

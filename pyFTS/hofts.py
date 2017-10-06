@@ -84,10 +84,6 @@ class HighOrderFTS(fts.FTS):
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
-    def getMidpoints(self, flrg):
-        ret = np.array([self.setsDict[s].centroid for s in flrg.RHS])
-        return ret
-
     def forecast(self, data, **kwargs):
 
         ret = []
@@ -109,9 +105,7 @@ class HighOrderFTS(fts.FTS):
                 ret.append(tmpdata[-1].centroid)
             else:
                 flrg = self.flrgs[tmpflrg.strLHS()]
-                mp = self.getMidpoints(flrg)
-
-                ret.append(sum(mp) / len(mp))
+                ret.append(flrg.get_midpoint())
 
         ret = self.doInverseTransformations(ret, params=[data[self.order-1:]])
 

@@ -132,10 +132,6 @@ class FTS(object):
         """
         pass
 
-    def getMidpoints(self, flrg):
-        ret = np.array([s.centroid for s in flrg.RHS])
-        return ret
-
     def appendTransformation(self, transformation):
         if transformation is not None:
             self.transformations.append(transformation)

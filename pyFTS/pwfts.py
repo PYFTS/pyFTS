@@ -15,25 +15,28 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
     def __init__(self, order):
         super(ProbabilisticWeightedFLRG, self).__init__(order)
         self.RHS = {}
+        self.rhs_count = {}
         self.frequency_count = 0.0
         self.Z = None
 
     def appendRHS(self, c):
         self.frequency_count += 1.0
         if c.name in self.RHS:
-            self.RHS[c.name] += 1.0
+            self.rhs_count[c.name] += 1.0
         else:
-            self.RHS[c.name] = 1.0
+            self.RHS[c.name] = c
+            self.rhs_count[c.name] = 1.0
 
     def appendRHSFuzzy(self, c, mv):
         self.frequency_count += mv
         if c.name in self.RHS:
-            self.RHS[c.name] += mv
+            self.rhs_count[c.name] += mv
         else:
-            self.RHS[c.name] = mv
+            self.RHS[c.name] = c
+            self.rhs_count[c.name] = mv
 
     def get_RHSprobability(self, c):
-        return self.RHS[c] / self.frequency_count
+        return self.rhs_count[c] / self.frequency_count
 
     def lhs_probability(self, x, norm, uod, nbins):
         pk = self.frequency_count / norm
@@ -44,8 +47,8 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
     def rhs_conditional_probability(self, x, sets, uod, nbins):
         total = 0.0
-        for rhs in self.RHS:
-            set = sets[rhs]
+        for rhs in self.RHS.keys():
+            set = self.RHS[rhs]
             wi = self.get_RHSprobability(rhs)
             mv = set.membership(x) / set.partition_function(uod, nbins=nbins)
             total += wi * mv
@@ -58,7 +61,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
             mv.append(set.membership(x[count]))
 
         min_mv = np.prod(mv)
-        return  min_mv
+        return min_mv
 
     def partition_function(self, uod, nbins=100):
         if self.Z is None:
@@ -69,12 +72,24 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
         return self.Z
 
+    def get_midpoint(self):
+        return sum(np.array([self.get_RHSprobability(s.name) * self.RHS[s].centroid
+                             for s in self.RHS.keys()]))
+
+    def get_upper(self):
+        return sum(np.array([self.get_RHSprobability(s.name) * self.RHS[s].upper
+                             for s in self.RHS.keys()]))
+
+    def get_lower(self):
+        return sum(np.array([self.get_RHSprobability(s.name) * self.RHS[s].lower
+                             for s in self.RHS.keys()]))
+
     def __str__(self):
         tmp2 = ""
-        for c in sorted(self.RHS):
+        for c in sorted(self.RHS.keys()):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ", "
-            tmp2 = tmp2 + "(" + str(round(self.RHS[c] / self.frequency_count, 3)) + ")" + c
+            tmp2 = tmp2 + "(" + str(round(self.rhs_count[c] / self.frequency_count, 3)) + ")" + c
         return self.strLHS() + " -> " + tmp2
 
 
@@ -136,7 +151,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             root = tree.FLRGTreeNode(None)
 
-            self.buildTreeWithoutOrder(root, lags, 0)
+            self.build_tree_without_order(root, lags, 0)
 
             # Trace the possible paths
             for p in root.paths():
@@ -214,10 +229,10 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             self.add_new_PWFLGR(flrg)
             return self.get_flrg_global_probability(flrg)
 
-    def getMidpoints(self, flrg):
+    def get_midpoint(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
-            ret = sum(np.array([tmp.get_RHSprobability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
+            ret = tmp.get_midpoint() #sum(np.array([tmp.get_RHSprobability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
         else:
             pi = 1 / len(flrg.LHS)
             ret = sum(np.array([pi * s.centroid for s in flrg.LHS]))
@@ -241,25 +256,25 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             ret = sum(np.array([pi * self.setsDict[s].membership(x) for s in flrg.LHS]))
         return ret
 
-    def getUpper(self, flrg):
+    def get_upper(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
-            ret = sum(np.array([tmp.get_RHSprobability(s) * self.setsDict[s].upper for s in tmp.RHS]))
+            ret = tmp.get_upper()
         else:
             pi = 1 / len(flrg.LHS)
             ret = sum(np.array([pi * s.upper for s in flrg.LHS]))
         return ret
 
-    def getLower(self, flrg):
+    def get_lower(self, flrg):
         if flrg.strLHS() in self.flrgs:
             tmp = self.flrgs[flrg.strLHS()]
-            ret = sum(np.array([tmp.get_RHSprobability(s) * self.setsDict[s].lower for s in tmp.RHS]))
+            ret = tmp.get_lower()
         else:
             pi = 1 / len(flrg.LHS)
             ret = sum(np.array([pi * s.lower for s in flrg.LHS]))
         return ret
 
-    def buildTreeWithoutOrder(self, node, lags, level):
+    def build_tree_without_order(self, node, lags, level):
 
         if level not in lags:
             return
@@ -268,7 +283,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             node.appendChild(tree.FLRGTreeNode(s))
 
         for child in node.getChildren():
-            self.buildTreeWithoutOrder(child, lags, level + 1)
+            self.build_tree_without_order(child, lags, level + 1)
 
 
     def forecast(self, data, **kwargs):
@@ -316,7 +331,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 root = tree.FLRGTreeNode(None)
 
-                self.buildTree(root, lags, 0)
+                self.build_tree(root, lags, 0)
 
                 # Trace the possible paths and build the PFLRG's
 
@@ -331,7 +346,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                     affected_flrgs.append(flrg)
 
                     # Find the general membership of FLRG
-                    affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
+                    affected_flrgs_memberships.append(min(self.get_sequence_membership(subset, flrg.LHS)))
 
             else:
 
@@ -358,7 +373,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 norm = self.get_flrg_global_probability(flrg) * affected_flrgs_memberships[count]
                 if norm == 0:
                     norm = self.get_flrg_global_probability(flrg)  # * 0.001
-                mp.append(norm * self.getMidpoints(flrg))
+                mp.append(norm * self.get_midpoint(flrg))
                 norms.append(norm)
 
             # gerar o intervalo
@@ -438,7 +453,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             root = tree.FLRGTreeNode(None)
 
-            self.buildTree(root, lags, 0)
+            self.build_tree(root, lags, 0)
 
             # Trace the possible paths and build the PFLRG's
 
@@ -453,7 +468,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 affected_flrgs.append(flrg)
 
                 # Find the general membership of FLRG
-                affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
+                affected_flrgs_memberships.append(min(self.get_sequence_membership(subset, flrg.LHS)))
 
         else:
 
@@ -480,8 +495,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             norm = self.get_flrg_global_probability(flrg) * affected_flrgs_memberships[count]
             if norm == 0:
                 norm = self.get_flrg_global_probability(flrg)  # * 0.001
-            up.append(norm * self.getUpper(flrg))
-            lo.append(norm * self.getLower(flrg))
+            up.append(norm * self.get_upper(flrg))
+            lo.append(norm * self.get_lower(flrg))
             norms.append(norm)
 
         # gerar o intervalo
@@ -613,7 +628,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 root = tree.FLRGTreeNode(None)
 
-                self.buildTreeWithoutOrder(root, lags, 0)
+                self.build_tree_without_order(root, lags, 0)
 
                 # Trace the possible paths
                 for p in root.paths():
@@ -661,7 +676,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 root = tree.FLRGTreeNode(None)
 
-                self.buildTreeWithoutOrder(root, lags, 0)
+                self.build_tree_without_order(root, lags, 0)
 
                 # Trace the possible paths
                 for p in root.paths():
@@ -682,8 +697,6 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             ret.append(dist)
 
         return ret
-
-
 
     def __str__(self):
         tmp = self.name + ":\n"

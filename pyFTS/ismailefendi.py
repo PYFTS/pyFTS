@@ -70,10 +70,6 @@ class ImprovedWeightedFTS(fts.FTS):
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
-    def getMidpoints(self, flrg):
-        ret = np.array([self.setsDict[s].centroid for s in flrg.RHS])
-        return ret
-
     def forecast(self, data, **kwargs):
         l = 1
 
@@ -94,7 +90,7 @@ class ImprovedWeightedFTS(fts.FTS):
                 ret.append(actual.centroid)
             else:
                 flrg = self.flrgs[actual.name]
-                mp = self.getMidpoints(flrg)
+                mp = flrg.get_midpoints()
 
                 ret.append(mp.dot(flrg.weights()))
 
