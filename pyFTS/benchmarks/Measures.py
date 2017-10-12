@@ -35,6 +35,10 @@ def rmse(targets, forecasts):
     :param forecasts: 
     :return: 
     """
+    if isinstance(targets, list):
+        targets = np.array(targets)
+    if isinstance(forecasts, list):
+        forecasts = np.array(forecasts)
     return np.sqrt(np.nanmean((targets - forecasts) ** 2))
 
 
@@ -56,6 +60,10 @@ def mape(targets, forecasts):
     :param forecasts: 
     :return: 
     """
+    if isinstance(targets, list):
+        targets = np.array(targets)
+    if isinstance(forecasts, list):
+        forecasts = np.array(forecasts)
     return np.mean(np.abs(targets - forecasts) / targets) * 100
 
 
@@ -67,6 +75,10 @@ def smape(targets, forecasts, type=2):
     :param type: 
     :return: 
     """
+    if isinstance(targets, list):
+        targets = np.array(targets)
+    if isinstance(forecasts, list):
+        forecasts = np.array(forecasts)
     if type == 1:
         return np.mean(np.abs(forecasts - targets) / ((forecasts + targets)/2))
     elif type == 2:
@@ -88,6 +100,11 @@ def UStatistic(targets, forecasts):
     :return: 
     """
     l = len(targets)
+    if isinstance(targets, list):
+        targets = np.array(targets)
+    if isinstance(forecasts, list):
+        forecasts = np.array(forecasts)
+
     naive = []
     y = []
     for k in np.arange(0,l-1):

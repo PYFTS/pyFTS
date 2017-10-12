@@ -172,14 +172,15 @@ class FuzzySet(FS.FuzzySet):
     def __str__(self):
         tmp = ""
         if self.location is not None:
-            tmp += "Loc. Pert.: "
+            tmp += "Location: "
             for ct, f in enumerate(self.location):
-                tmp += str(f.__name__) + "(" + str(self.location_params[ct]) + ") "
+                tmp += str(f.__name__) + "(" + str(["{0:.2f}".format(p) for p in self.location_params[ct]]) + ") "
         if self.width is not None:
-            tmp += "Wid. Pert.: "
+            tmp += "Width: "
             for ct, f in enumerate(self.width):
-                tmp += str(f.__name__) + "(" + str(self.width_params[ct]) + ") "
-        return self.name + ": " + str(self.mf.__name__) + "(" + str(self.parameters) + ") " + tmp
+                tmp += str(f.__name__) + "(" + str(["{0:.2f}".format(p) for p in self.width_params[ct]]) + ") "
+        tmp = "(" + str(["{0:.2f}".format(p) for p in self.parameters]) + ") " + tmp
+        return self.name + ": " + str(self.mf.__name__) + tmp
 
 
 class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
@@ -218,6 +219,14 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
         tmp = np.polyfit(rng, diff, deg=deg)
         return tmp
 
+    def scale_up(self,x,pct):
+        if x > 0: return x*(1+pct)
+        else: return x*pct
+
+    def scale_down(self,x,pct):
+        if x > 0: return x*pct
+        else: return x*(1+pct)
+
     def get_polynomial_perturbations(self, data, **kwargs):
         w = kwargs.get("window_size", int(len(data) / 5))
         deg = kwargs.get("degree", 2)
@@ -225,8 +234,7 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
         tmax = [0]
         xmin = [data[0]]
         tmin = [0]
-        lengs = [0]
-        tlengs = [0]
+
         l = len(data)
 
         for i in np.arange(0, l, w):
@@ -237,15 +245,9 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
             tn = min(sample)
             xmin.append(tn)
             tmin.append(np.ravel(np.argwhere(data == tn)).tolist()[0])
-            lengs.append((tx - tn)/self.partitions)
-            tlengs.append(i)
-
 
         cmax = np.polyfit(tmax, xmax, deg=deg)
-        #cmax = cmax.tolist()
         cmin = np.polyfit(tmin, xmin, deg=deg)
-        #cmin = cmin.tolist()
-
 
         cmed = []
 
@@ -297,12 +299,37 @@ def fuzzify(inst, t, fuzzySets):
     return ret
 
 
-def fuzzySeries(data, fuzzySets):
+def fuzzySeries(data, fuzzySets, window_size=1, method='fuzzy'):
     fts = []
     for t, i in enumerate(data):
-        mv = np.array([fs.membership(i, t) for fs in fuzzySets])
-        ix = np.ravel(np.argwhere(mv > 0.0))
-        sets = [fuzzySets[i] for i in ix]
+        tdisp = window_index(t, window_size)
+        mv = np.array([fs.membership(i, tdisp) for fs in fuzzySets])
+        if len(mv) == 0:
+            sets = [check_bounds(i, fuzzySets, tdisp)]
+        else:
+            if method == 'fuzzy':
+                ix = np.ravel(np.argwhere(mv > 0.0))
+            elif method == 'maximum':
+                mx = max(mv)
+                ix = np.ravel(np.argwhere(mv == mx))
+            sets = [fuzzySets[i] for i in ix]
         fts.append(sets)
     return fts
 
+
+def window_index(t, window_size):
+    return t - (t % window_size)
+
+
+def check_bounds(data, sets, t):
+    if data < sets[0].get_lower(t):
+        return sets[0]
+    elif data > sets[-1].get_upper(t):
+        return sets[-1]
+
+
+def check_bounds_index(data, sets, t):
+    if data < sets[0].get_lower(t):
+        return 0
+    elif data > sets[-1].get_upper(t):
+        return len(sets) -1

@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from pyFTS.common import Membership
-from pyFTS.nonstationary import common,perturbation,util,nsfts
+from pyFTS.nonstationary import common,perturbation,util,nsfts, honsfts
 from pyFTS.partitioners import Grid
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -50,27 +50,33 @@ print(tmp)
 passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
 passengers = np.array(passengers["Passengers"])
 
-ts = 80
+ts = 100
+ws=12
 
 trainp = passengers[:ts]
 testp = passengers[ts:]
 
-tmp_fsp = Grid.GridPartitioner(trainp[:50], 10)
+tmp_fsp = Grid.GridPartitioner(trainp[:ws], 15)
 
-fsp = common.PolynomialNonStationaryPartitioner(trainp, tmp_fsp, window_size=20, degree=1)
+fsp = common.PolynomialNonStationaryPartitioner(trainp, tmp_fsp, window_size=ws, degree=1)
 
-nsftsp = nsfts.NonStationaryFTS("", partitioner=fsp)
 
-nsftsp.train(trainp[:50])
+#nsftsp = honsfts.HighOrderNonStationaryFTS("", partitioner=fsp)
+nsftsp = nsfts.NonStationaryFTS("", partitioner=fsp, method='fuzzy')
+
+#nsftsp.train(trainp, order=1, parameters=ws)
 
 print(fsp)
 
-print(nsftsp)
+#print(nsftsp)
 
-tmpp = nsftsp.forecast(testp, time_displacement=ts)
+#tmpp = nsftsp.forecast(passengers[55:65], time_displacement=55, window_size=ws)
 
-print(testp)
-print(tmpp)
+#print(passengers[100:120])
+#print(tmpp)
+
+#util.plot_sets(fsp.sets,tam=[10, 5], start=0, end=100, step=2, data=passengers[:100],
+#               window_size=ws, only_lines=False)
 
 #fig, axes = plt.subplots(nrows=1, ncols=1, figsize=[15,5])
 

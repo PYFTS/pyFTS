@@ -1,5 +1,6 @@
 
 from pyFTS import flrg
+from pyFTS.nonstationary import common
 
 
 class NonStationaryFLRG(flrg.FLRG):
@@ -9,18 +10,41 @@ class NonStationaryFLRG(flrg.FLRG):
         self.LHS = LHS
         self.RHS = set()
 
-    def get_midpoint(self, t):
-        if self.midpoint is None:
-            tmp = [r.get_midpoint(t) for r in self.RHS]
-            self.midpoint = sum(tmp) / len(tmp)
-        return self.midpoint
+    def get_membership(self, data, t, window_size=1):
+        ret = 0.0
+        if isinstance(self.LHS, (list, set)):
+            assert len(self.LHS) == len(data)
 
-    def get_lower(self, t):
+            ret = min([self.LHS[ct].membership(dat, common.window_index(t - (self.order - ct), window_size))
+                       for ct, dat in enumerate(data)])
+        else:
+            ret = self.LHS.membership(data, common.window_index(t, window_size))
+        return ret
+
+    def get_midpoint(self, t, window_size=1):
+        if len(self.RHS) > 0:
+            if isinstance(self.RHS, (list,set)):
+                tmp = [r.get_midpoint(common.window_index(t, window_size)) for r in self.RHS]
+            elif isinstance(self.RHS, dict):
+                tmp = [self.RHS[r].get_midpoint(common.window_index(t, window_size)) for r in self.RHS.keys()]
+            return sum(tmp) / len(tmp)
+        else:
+            return self.LHS[-1].get_midpoint(common.window_index(t, window_size))
+
+
+    def get_lower(self, t, window_size=1):
         if self.lower is None:
-            self.lower = min([r.get_lower(t) for r in self.RHS])
+            if len(self.RHS) > 0:
+                self.lower = min([r.get_lower(common.window_index(t, window_size)) for r in self.RHS])
+            else:
+                self.lower = self.LHS[-1].get_lower(common.window_index(t, window_size))
+
         return self.lower
 
-    def get_upper(self, t):
+    def get_upper(self, t, window_size=1):
         if self.upper is None:
-            self.upper = min([r.get_upper(t) for r in self.RHS])
+            if len(self.RHS) > 0:
+                self.upper = min([r.get_upper(common.window_index(t, window_size)) for r in self.RHS])
+            else:
+                self.upper = self.LHS[-1].get_upper(common.window_index(t, window_size))
         return self.upper

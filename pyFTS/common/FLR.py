@@ -35,6 +35,25 @@ class IndexedFLR(FLR):
     def __str__(self):
         return str(self.index) + ": "+ self.LHS.name + " -> " + self.RHS.name
 
+def generate_high_order_recurrent_flr(fuzzyData):
+    """
+    Create a ordered FLR set from a list of fuzzy sets with recurrence
+    :param fuzzyData: ordered list of fuzzy sets
+    :return: ordered list of FLR
+    """
+    flrs = []
+    for i in np.arange(1,len(fuzzyData)):
+        lhs = fuzzyData[i - 1]
+        rhs = fuzzyData[i]
+        if isinstance(lhs, list) and isinstance(rhs, list):
+            for l in lhs:
+                for r in rhs:
+                    tmp = FLR(l, r)
+                    flrs.append(tmp)
+        else:
+            tmp = FLR(lhs,rhs)
+            flrs.append(tmp)
+    return flrs
 
 def generateRecurrentFLRs(fuzzyData):
     """

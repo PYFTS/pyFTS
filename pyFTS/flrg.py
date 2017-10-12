@@ -11,6 +11,16 @@ class FLRG(object):
         self.lower = None
         self.upper = None
 
+    def get_membership(self, data):
+        ret = 0.0
+        if isinstance(self.LHS, (list, set)):
+            assert len(self.LHS) == len(data)
+            ret = min([self.LHS[ct].membership(dat) for ct, dat in enumerate(data)])
+        else:
+            ret = self.LHS.membership(data)
+        return ret
+
+
     def get_midpoint(self):
         if self.midpoint is None:
             self.midpoint = sum(self.get_midpoints())/len(self.RHS)

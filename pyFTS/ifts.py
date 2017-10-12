@@ -43,16 +43,6 @@ class IntervalFTS(hofts.HighOrderFTS):
         mb = [fuzzySets[k].membership(data[k]) for k in np.arange(0, len(data))]
         return mb
 
-    def build_tree(self, node, lags, level):
-        if level >= self.order:
-            return
-
-        for s in lags[level]:
-            node.appendChild(tree.FLRGTreeNode(s))
-
-        for child in node.getChildren():
-            self.build_tree(child, lags, level + 1)
-
     def forecastInterval(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))

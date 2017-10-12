@@ -127,9 +127,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             flrs = FLR.generateRecurrentFLRs(tmpdata)
             self.flrgs = self.generateFLRG(flrs)
         else:
-            self.flrgs = self.generateFLRGfuzzy(data)
+            self.flrgs = self.generate_flrg(data)
 
-    def generateFLRGfuzzy(self, data):
+    def generate_flrg(self, data):
         flrgs = {}
         l = len(data)
         for k in np.arange(self.order, l):
@@ -175,7 +175,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 self.global_frequency_count = self.global_frequency_count + tmp_fq
 
-        return (flrgs)
+        return flrgs
 
     def generateFLRG(self, flrs):
         flrgs = {}
@@ -274,18 +274,6 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             ret = sum(np.array([pi * s.lower for s in flrg.LHS]))
         return ret
 
-    def build_tree_without_order(self, node, lags, level):
-
-        if level not in lags:
-            return
-
-        for s in lags[level]:
-            node.appendChild(tree.FLRGTreeNode(s))
-
-        for child in node.getChildren():
-            self.build_tree_without_order(child, lags, level + 1)
-
-
     def forecast(self, data, **kwargs):
 
         ndata = np.array(self.doTransformations(data))
@@ -299,19 +287,17 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             # print(k)
 
             affected_flrgs = []
-            affected_rhs = []
             affected_flrgs_memberships = []
             norms = []
 
             mp = []
 
             # Find the sets which membership > 0 for each lag
-            count = 0
             lags = {}
             if self.order > 1:
                 subset = ndata[k - (self.order - 1): k + 1]
 
-                for instance in subset:
+                for count, instance in enumerate(subset):
                     mb = FuzzySet.fuzzyInstance(instance, self.sets)
                     tmp = np.argwhere(mb)
                     idx = np.ravel(tmp)  # flatten the array
@@ -325,7 +311,6 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                             raise Exception(instance)
 
                     lags[count] = idx
-                    count = count + 1
 
                 # Build the tree with all possible paths
 
@@ -346,7 +331,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                     affected_flrgs.append(flrg)
 
                     # Find the general membership of FLRG
-                    affected_flrgs_memberships.append(min(self.get_sequence_membership(subset, flrg.LHS)))
+                    affected_flrgs_memberships.append(flrg.get_membership())
 
             else:
 

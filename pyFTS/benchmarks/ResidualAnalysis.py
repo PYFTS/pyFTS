@@ -128,3 +128,29 @@ def plot_residuals(targets, models, tam=[8, 8], save=False, file=None):
     plt.tight_layout()
 
     Util.showAndSaveImage(fig, file, save)
+
+
+def single_plot_residuals(targets, forecasts, order, tam=[8, 8], save=False, file=None):
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=tam)
+
+    ax = axes
+    res = residuals(targets, forecasts, order)
+
+    ax[0].set_title("Residuals", size='large')
+    ax[0].set_ylabel("Model", size='large')
+    ax[0].set_xlabel(' ')
+    ax[0].plot(res)
+
+    ax[1].set_title("Residuals Autocorrelation", size='large')
+    ax[1].set_ylabel('ACS')
+    ax[1].set_xlabel('Lag')
+    ax[1].acorr(res)
+
+    ax[2].set_title("Residuals Histogram", size='large')
+    ax[2].set_ylabel('Freq')
+    ax[2].set_xlabel('Bins')
+    ax[2].hist(res)
+
+    plt.tight_layout()
+
+    Util.showAndSaveImage(fig, file, save)

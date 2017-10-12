@@ -27,6 +27,7 @@ class FuzzySet(object):
         elif self.mf == Membership.gaussmf:
             self.lower = parameters[0] - parameters[1]*3
             self.upper = parameters[0] + parameters[1]*3
+        self.metadata = {}
 
     def membership(self, x):
         """
@@ -88,6 +89,7 @@ def getMaxMembershipFuzzySet(inst, fuzzySets):
     """
     mv = fuzzyInstance(inst, fuzzySets)
     return fuzzySets[np.argwhere(mv == max(mv))[0, 0]]
+
 
 def getMaxMembershipFuzzySetIndex(inst, fuzzySets):
     """

@@ -7,7 +7,7 @@ Fuzzy Sets Syst., vol. 81, no. 3, pp. 311–319, 1996.
 
 import numpy as np
 from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts, flrg
+from pyFTS import fts, flrg, tree
 
 
 class HighOrderFLRG(flrg.FLRG):
@@ -57,6 +57,27 @@ class HighOrderFTS(fts.FTS):
         self.setsDict = {}
         self.is_high_order = True
 
+    def build_tree(self, node, lags, level):
+        if level >= self.order:
+            return
+
+        for s in lags[level]:
+            node.appendChild(tree.FLRGTreeNode(s))
+
+        for child in node.getChildren():
+            self.build_tree(child, lags, level + 1)
+
+    def build_tree_without_order(self, node, lags, level):
+
+        if level not in lags:
+            return
+
+        for s in lags[level]:
+            node.appendChild(tree.FLRGTreeNode(s))
+
+        for child in node.getChildren():
+            self.build_tree_without_order(child, lags, level + 1)
+
     def generateFLRG(self, flrs):
         flrgs = {}
         l = len(flrs)
@@ -73,6 +94,43 @@ class HighOrderFTS(fts.FTS):
                 flrgs[flrg.strLHS()].appendRHS(flrs[k].RHS)
         return (flrgs)
 
+    def generate_flrg(self, data):
+        flrgs = {}
+        l = len(data)
+        for k in np.arange(self.order, l):
+            if self.dump: print("FLR: " + str(k))
+
+            sample = data[k - self.order: k]
+
+            rhs = [set for set in self.sets if set.membership(data[k]) > 0.0]
+
+            lags = {}
+
+            for o in np.arange(0, self.order):
+                lhs = [set for set in self.sets if set.membership(sample[o]) > 0.0]
+
+                lags[o] = lhs
+
+            root = tree.FLRGTreeNode(None)
+
+            self.build_tree_without_order(root, lags, 0)
+
+            # Trace the possible paths
+            for p in root.paths():
+                flrg = HighOrderFLRG(self.order)
+                path = list(reversed(list(filter(None.__ne__, p))))
+
+                for lhs in enumerate(path, start=0):
+                    flrg.appendLHS(lhs)
+
+                if flrg.strLHS() not in flrgs:
+                    flrgs[flrg.strLHS()] = flrg;
+
+                for st in rhs:
+                    flrgs[flrg.strLHS()].appendRHS(st)
+
+        return flrgs
+
     def train(self, data, sets, order=1,parameters=None):
 
         data = self.doTransformations(data, updateUoD=True)
@@ -80,9 +138,7 @@ class HighOrderFTS(fts.FTS):
         self.order = order
         self.sets = sets
         for s in self.sets:    self.setsDict[s.name] = s
-        tmpdata = FuzzySet.fuzzySeries(data, sets)
-        flrs = FLR.generateRecurrentFLRs(tmpdata)
-        self.flrgs = self.generateFLRG(flrs)
+        self.flrgs = self.generate_flrg(data)
 
     def forecast(self, data, **kwargs):
 

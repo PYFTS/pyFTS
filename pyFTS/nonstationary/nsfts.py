@@ -32,8 +32,9 @@ class NonStationaryFTS(fts.FTS):
         self.name = "Non Stationary FTS"
         self.detail = ""
         self.flrgs = {}
+        self.method = kwargs.get("method",'fuzzy')
 
-    def generateFLRG(self, flrs):
+    def generate_flrg(self, flrs, **kwargs):
         flrgs = {}
         for flr in flrs:
             if flr.LHS.name in flrgs:
@@ -41,9 +42,9 @@ class NonStationaryFTS(fts.FTS):
             else:
                 flrgs[flr.LHS.name] = ConventionalNonStationaryFLRG(flr.LHS)
                 flrgs[flr.LHS.name].append(flr.RHS)
-        return (flrgs)
+        return flrgs
 
-    def train(self, data, sets=None,order=1,parameters=None):
+    def train(self, data, sets=None, order=1, parameters=None):
 
         if sets is not None:
             self.sets = sets
@@ -51,13 +52,18 @@ class NonStationaryFTS(fts.FTS):
             self.sets = self.partitioner.sets
 
         ndata = self.doTransformations(data)
-        tmpdata = common.fuzzySeries(ndata, self.sets)
-        flrs = FLR.generateNonRecurrentFLRs(tmpdata)
-        self.flrgs = self.generateFLRG(flrs)
+        window_size = parameters if parameters is not None else 1
+        tmpdata = common.fuzzySeries(ndata, self.sets, window_size, method=self.method)
+        #print([k[0].name for k in tmpdata])
+        flrs = FLR.generateRecurrentFLRs(tmpdata)
+        #print([str(k) for k in flrs])
+        self.flrgs = self.generate_flrg(flrs)
 
     def forecast(self, data, **kwargs):
 
         time_displacement = kwargs.get("time_displacement",0)
+
+        window_size = kwargs.get("window_size", 1)
 
         ndata = np.array(self.doTransformations(data))
 
@@ -69,25 +75,38 @@ class NonStationaryFTS(fts.FTS):
 
             #print("input: " + str(ndata[k]))
 
-            tdisp = k + time_displacement
+            tdisp = common.window_index(k + time_displacement, window_size)
 
-            affected_sets = [ [set, set.membership(ndata[k], tdisp)]
-                              for set in self.sets if set.membership(ndata[k], tdisp) > 0.0]
+            if self.method == 'fuzzy':
+                affected_sets = [ [set, set.membership(ndata[k], tdisp)]
+                                  for set in self.sets if set.membership(ndata[k], tdisp) > 0.0]
+            elif self.method == 'maximum':
+                mv = [set.membership(ndata[k], tdisp) for set in self.sets]
+                ix = np.ravel(np.argwhere(mv == max(mv)))
+                affected_sets = [self.sets[x] for x in ix]
 
             if len(affected_sets) == 0:
-                if self.sets[0].get_lower(tdisp) > ndata[k]:
-                    affected_sets.append([self.sets[0], 1.0])
-                elif self.sets[-1].get_upper(tdisp) < ndata[k]:
-                    affected_sets.append([self.sets[-1], 1.0])
+                if self.method == 'fuzzy':
+                    affected_sets.append([common.check_bounds(ndata[k], self.sets, tdisp), 1.0])
+                else:
+                    affected_sets.append(common.check_bounds(ndata[k], self.sets, tdisp))
 
             #print(affected_sets)
 
             tmp = []
-            for aset in affected_sets:
-                if aset[0] in self.flrgs:
-                    tmp.append(self.flrgs[aset[0].name].get_midpoint(tdisp) * aset[1])
-                else:
-                    tmp.append(aset[0].get_midpoint(tdisp) * aset[1])
+
+            if len(affected_sets) == 1 and self.method == 'fuzzy':
+                tmp.append(affected_sets[0][0].get_midpoint(tdisp))
+            else:
+                for aset in affected_sets:
+                    if self.method == 'fuzzy':
+                        if aset[0].name in self.flrgs:
+                            tmp.append(self.flrgs[aset[0].name].get_midpoint(tdisp) * aset[1])
+                    elif self.method == 'maximum':
+                        if aset.name in self.flrgs:
+                            tmp.append(self.flrgs[aset.name].get_midpoint(tdisp))
+                        else:
+                            tmp.append(aset.get_midpoint(tdisp))
 
             pto = sum(tmp)
 
@@ -103,6 +122,8 @@ class NonStationaryFTS(fts.FTS):
 
         time_displacement = kwargs.get("time_displacement",0)
 
+        window_size = kwargs.get("window_size", 1)
+
         ndata = np.array(self.doTransformations(data))
 
         l = len(ndata)
@@ -111,7 +132,7 @@ class NonStationaryFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
-            tdisp = k + time_displacement
+            tdisp = common.window_index(k + time_displacement, window_size)
 
             affected_sets = [ [set.name, set.membership(ndata[k], tdisp)]
                               for set in self.sets if set.membership(ndata[k], tdisp) > 0.0]

@@ -6,28 +6,47 @@ import matplotlib.pyplot as plt
 from pyFTS.common import Membership, Util
 
 
-def plot_sets(uod, sets, start=0, end=10, tam=[5, 5], colors=None, save=False, file=None):
+def plot_sets(sets, start=0, end=10, step=1, tam=[5, 5], colors=None,
+              save=False, file=None, axes=None, data=None, window_size = 1, only_lines=False):
+
+    range = np.arange(start,end,step)
     ticks = []
-    fig, axes = plt.subplots(nrows=1, ncols=1, figsize=tam)
-    for t in np.arange(start,end,1):
-        for ct, set in enumerate(sets):
-            set.membership(0, t)
-            param = set.perturbated_parameters[t]
+    if axes is None:
+        fig, axes = plt.subplots(nrows=1, ncols=1, figsize=tam)
 
-            if set.mf == Membership.trimf:
-                if t == start:
-                    axes.plot([t, t+1, t], param, label=set.name)
-                else:
-                    axes.plot([t, t + 1, t], param)
+    for ct, set in enumerate(sets):
+        if not only_lines:
+            for t in range:
+                tdisp = t - (t % window_size)
+                set.membership(0, tdisp)
+                param = set.perturbated_parameters[tdisp]
 
-        ticks.extend(["t+"+str(t),""])
+                if set.mf == Membership.trimf:
+                    if t == start:
+                        line = axes.plot([t, t+1, t], param, label=set.name)
+                        set.metadata['color'] = line[0].get_color()
+                    else:
+                        axes.plot([t, t + 1, t], param,c=set.metadata['color'])
+
+                ticks.extend(["t+"+str(t),""])
+        else:
+            tmp = []
+            for t in range:
+                tdisp = t - (t % window_size)
+                set.membership(0, tdisp)
+                param = set.perturbated_parameters[tdisp]
+                tmp.append(np.polyval(param, tdisp))
+            axes.plot(range, tmp, ls="--", c="blue")
 
     axes.set_ylabel("Universe of Discourse")
     axes.set_xlabel("Time")
-    plt.xticks([k for k in np.arange(0,end,1)], ticks, rotation='vertical')
+    plt.xticks([k for k in range], ticks, rotation='vertical')
 
     handles0, labels0 = axes.get_legend_handles_labels()
     lgd = axes.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
+
+    if data is not None:
+        axes.plot(np.arange(start, start + len(data), 1), data,c="black")
 
     plt.tight_layout()
 
