@@ -56,24 +56,28 @@ ws=12
 trainp = passengers[:ts]
 testp = passengers[ts:]
 
-tmp_fsp = Grid.GridPartitioner(trainp[:ws], 15)
+tmp_fsp = Grid.GridPartitioner(trainp[:50], 10)
+
 
 fsp = common.PolynomialNonStationaryPartitioner(trainp, tmp_fsp, window_size=ws, degree=1)
 
 
-#nsftsp = honsfts.HighOrderNonStationaryFTS("", partitioner=fsp)
-nsftsp = nsfts.NonStationaryFTS("", partitioner=fsp, method='fuzzy')
+nsftsp = honsfts.HighOrderNonStationaryFTS("", partitioner=fsp)
+#nsftsp = nsfts.NonStationaryFTS("", partitioner=fsp, method='fuzzy')
 
-#nsftsp.train(trainp, order=1, parameters=ws)
+nsftsp.train(trainp, order=2, parameters=ws)
 
-print(fsp)
+#print(fsp)
 
 #print(nsftsp)
 
-#tmpp = nsftsp.forecast(passengers[55:65], time_displacement=55, window_size=ws)
+tmpp = nsftsp.forecast(passengers[101:104], time_displacement=101, window_size=ws)
+tmpi = nsftsp.forecastInterval(passengers[101:104], time_displacement=101, window_size=ws)
 
-#print(passengers[100:120])
-#print(tmpp)
+#print(passengers[101:104])
+print([k[0] for k in tmpi])
+print(tmpp)
+print([k[1] for k in tmpi])
 
 #util.plot_sets(fsp.sets,tam=[10, 5], start=0, end=100, step=2, data=passengers[:100],
 #               window_size=ws, only_lines=False)

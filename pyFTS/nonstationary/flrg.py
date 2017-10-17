@@ -13,7 +13,7 @@ class NonStationaryFLRG(flrg.FLRG):
     def get_membership(self, data, t, window_size=1):
         ret = 0.0
         if isinstance(self.LHS, (list, set)):
-            assert len(self.LHS) == len(data)
+            #assert len(self.LHS) == len(data)
 
             ret = min([self.LHS[ct].membership(dat, common.window_index(t - (self.order - ct), window_size))
                        for ct, dat in enumerate(data)])
@@ -31,20 +31,20 @@ class NonStationaryFLRG(flrg.FLRG):
         else:
             return self.LHS[-1].get_midpoint(common.window_index(t, window_size))
 
-
     def get_lower(self, t, window_size=1):
-        if self.lower is None:
-            if len(self.RHS) > 0:
-                self.lower = min([r.get_lower(common.window_index(t, window_size)) for r in self.RHS])
-            else:
-                self.lower = self.LHS[-1].get_lower(common.window_index(t, window_size))
-
-        return self.lower
+        if len(self.RHS) > 0:
+            if isinstance(self.RHS, (list, set)):
+                return min([r.get_lower(common.window_index(t, window_size)) for r in self.RHS])
+            elif isinstance(self.RHS, dict):
+                return min([self.RHS[r].get_lower(common.window_index(t, window_size)) for r in self.RHS.keys()])
+        else:
+            return self.LHS[-1].get_lower(common.window_index(t, window_size))
 
     def get_upper(self, t, window_size=1):
-        if self.upper is None:
-            if len(self.RHS) > 0:
-                self.upper = min([r.get_upper(common.window_index(t, window_size)) for r in self.RHS])
-            else:
-                self.upper = self.LHS[-1].get_upper(common.window_index(t, window_size))
-        return self.upper
+        if len(self.RHS) > 0:
+            if isinstance(self.RHS, (list, set)):
+                return max([r.get_upper(common.window_index(t, window_size)) for r in self.RHS])
+            elif isinstance(self.RHS, dict):
+                return max([self.RHS[r].get_upper(common.window_index(t, window_size)) for r in self.RHS.keys()])
+        else:
+            return self.LHS[-1].get_upper(common.window_index(t, window_size))

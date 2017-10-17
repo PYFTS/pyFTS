@@ -124,18 +124,18 @@ class FuzzySet(FS.FuzzySet):
     def get_midpoint(self, t):
 
         self.perturbate_parameters(t)
+        param = self.perturbated_parameters[t]
 
         if self.mf == Membership.gaussmf:
-            return self.perturbated_parameters[t][0]
+            return param[0]
         elif self.mf == Membership.sigmf:
-            return self.perturbated_parameters[t][1]
+            return param[1]
         elif self.mf == Membership.trimf:
-            return self.perturbated_parameters[t][1]
+            return param[1]
         elif self.mf == Membership.trapmf:
-            param = self.perturbated_parameters[t]
             return (param[2] - param[1]) / 2
         else:
-            return self.perturbated_parameters[t]
+            return param
 
     def get_lower(self, t):
 

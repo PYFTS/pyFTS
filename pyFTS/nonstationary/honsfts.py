@@ -91,6 +91,8 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
                 for st in rhs:
                     flrgs[flrg.strLHS()].appendRHS(st)
 
+        # flrgs = sorted(flrgs, key=lambda flrg: flrg.get_midpoint(0, window_size=1))
+
         return flrgs
 
     def train(self, data, sets=None, order=2, parameters=None):
@@ -108,6 +110,65 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
         window_size = parameters if parameters is not None else 1
         self.flrgs = self.generate_flrg(ndata, window_size=window_size)
 
+    def _affected_flrgs(self, sample, k, time_displacement, window_size):
+        # print("input: " + str(ndata[k]))
+
+        affected_flrgs = []
+        affected_flrgs_memberships = []
+
+        lags = {}
+
+        for ct, dat in enumerate(sample):
+            tdisp = common.window_index((k + time_displacement) - (self.order - ct), window_size)
+            sel = [ct for ct, set in enumerate(self.sets) if set.membership(dat, tdisp) > 0.0]
+
+            if len(sel) == 0:
+                sel.append(common.check_bounds_index(dat, self.sets, tdisp))
+
+            lags[ct] = sel
+
+        # Build the tree with all possible paths
+
+        root = tree.FLRGTreeNode(None)
+
+        self.build_tree(root, lags, 0)
+
+        # Trace the possible paths and build the PFLRG's
+
+        for p in root.paths():
+            path = list(reversed(list(filter(None.__ne__, p))))
+            flrg = HighOrderNonStationaryFLRG(self.order)
+
+            for kk in path:
+                flrg.appendLHS(self.sets[kk])
+
+            affected_flrgs.append(flrg)
+            # affected_flrgs_memberships.append(flrg.get_membership(sample, disp))
+
+            #                print(flrg.strLHS())
+
+            # the FLRG is here because of the bounds verification
+            mv = []
+            for ct, dat in enumerate(sample):
+                td = common.window_index((k + time_displacement) - (self.order - ct), window_size)
+                tmp = flrg.LHS[ct].membership(dat, td)
+                # print('td',td)
+                # print('dat',dat)
+                # print(flrg.LHS[ct].name, flrg.LHS[ct].perturbated_parameters[td])
+                # print(tmp)
+
+                if (tmp == 0.0 and flrg.LHS[ct].name == self.sets[0].name and dat < self.sets[0].get_lower(td)) \
+                        or (tmp == 0.0 and flrg.LHS[ct].name == self.sets[-1].name and dat > self.sets[-1].get_upper(
+                            td)):
+                    mv.append(1.0)
+                else:
+                    mv.append(tmp)
+            # print(mv)
+
+            affected_flrgs_memberships.append(np.prod(mv))
+
+        return [affected_flrgs, affected_flrgs_memberships]
+
     def forecast(self, data, **kwargs):
 
         time_displacement = kwargs.get("time_displacement",0)
@@ -122,54 +183,32 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
         for k in np.arange(self.order, l+1):
 
-            #print("input: " + str(ndata[k]))
-
-            disp = common.window_index(k + time_displacement, window_size)
-
-            affected_flrgs = []
-            affected_flrgs_memberships = []
-
-            lags = {}
-
             sample = ndata[k - self.order: k]
 
-            for ct, dat in enumerate(sample):
-                tdisp = common.window_index((k + time_displacement) - (self.order - ct), window_size)
-                sel = [ct for ct, set in enumerate(self.sets) if set.membership(dat, tdisp) > 0.0]
+            affected_flrgs, affected_flrgs_memberships = self._affected_flrgs(sample, k,
+                                                                              time_displacement, window_size)
 
-                if len(sel) == 0:
-                    sel.append(common.check_bounds_index(dat, self.sets, tdisp))
-
-                lags[ct] = sel
-
-            # Build the tree with all possible paths
-
-            root = tree.FLRGTreeNode(None)
-
-            self.build_tree(root, lags, 0)
-
-            # Trace the possible paths and build the PFLRG's
-
-            for p in root.paths():
-                path = list(reversed(list(filter(None.__ne__, p))))
-                flrg = HighOrderNonStationaryFLRG(self.order)
-
-                for kk in path:
-                    flrg.appendLHS(self.sets[kk])
-
-                affected_flrgs.append(flrg)
-                affected_flrgs_memberships.append(flrg.get_membership(ndata[k - self.order: k], disp))
-
-            #print(affected_sets)
+            #print([str(k) for k in affected_flrgs])
+            #print(affected_flrgs_memberships)
 
             tmp = []
-            for ct, aset in enumerate(affected_flrgs):
-                if aset.strLHS() in self.flrgs:
-                    tmp.append(self.flrgs[aset.strLHS()].get_midpoint(tdisp) *
-                               affected_flrgs_memberships[ct])
+            tdisp = common.window_index(k + time_displacement, window_size)
+            if len(affected_flrgs) == 0:
+                tmp.append(common.check_bounds(sample[-1], self.sets, tdisp))
+            elif len(affected_flrgs) == 1:
+                if affected_flrgs[0].strLHS() in self.flrgs:
+                    flrg = affected_flrgs[0]
+                    tmp.append(self.flrgs[flrg.strLHS()].get_midpoint(tdisp))
                 else:
-                    tmp.append(aset.LHS[-1].get_midpoint(tdisp))
-
+                    tmp.append(flrg.LHS[-1].get_midpoint(tdisp))
+            else:
+                for ct, aset in enumerate(affected_flrgs):
+                    if aset.strLHS() in self.flrgs:
+                        tmp.append(self.flrgs[aset.strLHS()].get_midpoint(tdisp) *
+                                   affected_flrgs_memberships[ct])
+                    else:
+                        tmp.append(aset.LHS[-1].get_midpoint(tdisp)*
+                                   affected_flrgs_memberships[ct])
             pto = sum(tmp)
 
             #print(pto)
@@ -182,7 +221,9 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
     def forecastInterval(self, data, **kwargs):
 
-        time_displacement = kwargs.get("time_displacement",0)
+        time_displacement = kwargs.get("time_displacement", 0)
+
+        window_size = kwargs.get("window_size", 1)
 
         ndata = np.array(self.doTransformations(data))
 
@@ -190,20 +231,47 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
         ret = []
 
-        for k in np.arange(0, l):
+        for k in np.arange(self.order, l + 1):
 
-            tdisp = k + time_displacement
+            sample = ndata[k - self.order: k]
 
-            affected_sets = [ [set.name, set.membership(ndata[k], tdisp)]
-                              for set in self.sets if set.membership(ndata[k], tdisp) > 0.0]
+            affected_flrgs, affected_flrgs_memberships = self._affected_flrgs(sample, k,
+                                                                              time_displacement, window_size)
+
+            # print([str(k) for k in affected_flrgs])
+            # print(affected_flrgs_memberships)
 
             upper = []
             lower = []
-            for aset in affected_sets:
-                lower.append(self.flrgs[aset[0]].get_lower(tdisp) * aset[1])
-                upper.append(self.flrgs[aset[0]].get_upper(tdisp) * aset[1])
+
+            tdisp = common.window_index(k + time_displacement, window_size)
+            if len(affected_flrgs) == 0:
+                aset = common.check_bounds(sample[-1], self.sets, tdisp)
+                lower.append(aset.get_lower(tdisp))
+                upper.append(aset.get_upper(tdisp))
+            elif len(affected_flrgs) == 1:
+                if affected_flrgs[0].strLHS() in self.flrgs:
+                    flrg = affected_flrgs[0]
+                    lower.append(self.flrgs[flrg.strLHS()].get_lower(tdisp))
+                    upper.append(self.flrgs[flrg.strLHS()].get_upper(tdisp))
+                else:
+                    lower.append(flrg.LHS[-1].get_lower(tdisp))
+                    upper.append(flrg.LHS[-1].get_upper(tdisp))
+            else:
+                for ct, aset in enumerate(affected_flrgs):
+                    if aset.strLHS() in self.flrgs:
+                        lower.append(self.flrgs[aset.strLHS()].get_lower(tdisp) *
+                                   affected_flrgs_memberships[ct])
+                        upper.append(self.flrgs[aset.strLHS()].get_upper(tdisp) *
+                                   affected_flrgs_memberships[ct])
+                    else:
+                        lower.append(aset.LHS[-1].get_lower(tdisp) *
+                                   affected_flrgs_memberships[ct])
+                        upper.append(aset.LHS[-1].get_upper(tdisp) *
+                                   affected_flrgs_memberships[ct])
 
             ret.append([sum(lower), sum(upper)])
+
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 

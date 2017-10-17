@@ -60,7 +60,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
         for count, set in enumerate(self.LHS):
             mv.append(set.membership(x[count]))
 
-        min_mv = np.prod(mv)
+        min_mv = np.min(mv)
         return min_mv
 
     def partition_function(self, uod, nbins=100):
@@ -73,6 +73,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
         return self.Z
 
     def get_midpoint(self):
+        '''Return the expectation of the PWFLRG, the weighted sum'''
         return sum(np.array([self.get_RHSprobability(s) * self.RHS[s].centroid
                              for s in self.RHS.keys()]))
 
@@ -494,6 +495,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             ret.append([lo_, up_])
 
     def forecastDistribution(self, data, **kwargs):
+
+        if not isinstance(data, (list, set, np.ndarray)):
+            data = [data]
 
         smooth = kwargs.get("smooth", "none")
         nbins = kwargs.get("num_bins", 100)

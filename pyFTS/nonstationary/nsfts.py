@@ -96,12 +96,18 @@ class NonStationaryFTS(fts.FTS):
             tmp = []
 
             if len(affected_sets) == 1 and self.method == 'fuzzy':
-                tmp.append(affected_sets[0][0].get_midpoint(tdisp))
+                aset = affected_sets[0][0]
+                if aset.name in self.flrgs:
+                    tmp.append(self.flrgs[aset.name].get_midpoint(tdisp))
+                else:
+                    tmp.append(aset.get_midpoint(tdisp))
             else:
                 for aset in affected_sets:
                     if self.method == 'fuzzy':
                         if aset[0].name in self.flrgs:
                             tmp.append(self.flrgs[aset[0].name].get_midpoint(tdisp) * aset[1])
+                        else:
+                            tmp.append(aset[0].get_midpoint(tdisp) * aset[1])
                     elif self.method == 'maximum':
                         if aset.name in self.flrgs:
                             tmp.append(self.flrgs[aset.name].get_midpoint(tdisp))
@@ -120,7 +126,7 @@ class NonStationaryFTS(fts.FTS):
 
     def forecastInterval(self, data, **kwargs):
 
-        time_displacement = kwargs.get("time_displacement",0)
+        time_displacement = kwargs.get("time_displacement", 0)
 
         window_size = kwargs.get("window_size", 1)
 
@@ -132,16 +138,46 @@ class NonStationaryFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
+            # print("input: " + str(ndata[k]))
+
             tdisp = common.window_index(k + time_displacement, window_size)
 
-            affected_sets = [ [set.name, set.membership(ndata[k], tdisp)]
-                              for set in self.sets if set.membership(ndata[k], tdisp) > 0.0]
+            if self.method == 'fuzzy':
+                affected_sets = [[set, set.membership(ndata[k], tdisp)]
+                                 for set in self.sets if set.membership(ndata[k], tdisp) > 0.0]
+            elif self.method == 'maximum':
+                mv = [set.membership(ndata[k], tdisp) for set in self.sets]
+                ix = np.ravel(np.argwhere(mv == max(mv)))
+                affected_sets = [self.sets[x] for x in ix]
+
+            if len(affected_sets) == 0:
+                if self.method == 'fuzzy':
+                    affected_sets.append([common.check_bounds(ndata[k], self.sets, tdisp), 1.0])
+                else:
+                    affected_sets.append(common.check_bounds(ndata[k], self.sets, tdisp))
 
             upper = []
             lower = []
-            for aset in affected_sets:
-                lower.append(self.flrgs[aset[0]].get_lower(tdisp) * aset[1])
-                upper.append(self.flrgs[aset[0]].get_upper(tdisp) * aset[1])
+
+            if len(affected_sets) == 1:
+                #print(2)
+                aset = affected_sets[0][0]
+                if aset.name in self.flrgs:
+                    lower.append(self.flrgs[aset.name].get_lower(tdisp))
+                    upper.append(self.flrgs[aset.name].get_upper(tdisp))
+                else:
+                    lower.append(aset.get_lower(tdisp))
+                    upper.append(aset.get_upper(tdisp))
+            else:
+                for aset in affected_sets:
+                    #print(aset)
+                    if aset[0].name in self.flrgs:
+                        lower.append(self.flrgs[aset[0].name].get_lower(tdisp) * aset[1])
+                        upper.append(self.flrgs[aset[0].name].get_upper(tdisp) * aset[1])
+                    else:
+                        lower.append(aset[0].get_lower(tdisp) * aset[1])
+                        upper.append(aset[0].get_upper(tdisp) * aset[1])
+
 
             ret.append([sum(lower), sum(upper)])
 

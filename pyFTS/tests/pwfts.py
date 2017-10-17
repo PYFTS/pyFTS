@@ -54,20 +54,28 @@ pfts1.shortname = "1st Order"
 
 #print(pfts1_enrollments)
 
-tmp = pfts1.forecast(data[3000:3020])
+#tmp = pfts1.forecast(data[3000:3020])
 
-tmp = pfts1.forecastInterval(data[3000:3020])
+#tmp = pfts1.forecastInterval(data[3000:3020])
 
-tmp = pfts1.forecastAheadInterval(data[3000:3020],20)
+tmp = pfts1.forecastDistribution(data[3500])
 
-tmp = pfts1.forecastAheadDistribution(data[3000:3020],20, method=3, h=0.45, kernel="gaussian")
-print(tmp[0])
+p = 0
+for b in tmp[0].bins:
+    p += tmp[0].density(b)
+
+print(p)
+
+#tmp = pfts1.forecastAheadInterval(data[3000:3020],20)
+
+#tmp = pfts1.forecastAheadDistribution(data[3000:3020],20, method=3, h=0.45, kernel="gaussian")
+#print(tmp[0])
 
 #print(tmp[0].quantile([0.05, 0.95]))
 
 #pfts1_enrollments.AprioriPDF
 #norm = pfts1_enrollments.global_frequency_count
-#uod = pfts1_enrollments.get_UoD()
+#uod = pfts1.get_UoD()
 
 #for k in sorted(pfts1_enrollments.flrgs.keys())
 #    flrg = pfts1_enrollments.flrgs[k]
