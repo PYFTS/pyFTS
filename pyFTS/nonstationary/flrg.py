@@ -23,7 +23,7 @@ class NonStationaryFLRG(flrg.FLRG):
 
     def get_midpoint(self, t, window_size=1):
         if len(self.RHS) > 0:
-            if isinstance(self.RHS, (list,set)):
+            if isinstance(self.RHS, (list, set)):
                 tmp = [r.get_midpoint(common.window_index(t, window_size)) for r in self.RHS]
             elif isinstance(self.RHS, dict):
                 tmp = [self.RHS[r].get_midpoint(common.window_index(t, window_size)) for r in self.RHS.keys()]

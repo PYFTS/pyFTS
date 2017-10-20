@@ -70,6 +70,14 @@ def generateRecurrentFLRs(fuzzyData):
                 for r in rhs:
                     tmp = FLR(l, r)
                     flrs.append(tmp)
+        elif isinstance(lhs, list) and not isinstance(rhs, list):
+            for l in lhs:
+                tmp = FLR(l, rhs)
+                flrs.append(tmp)
+        elif not isinstance(lhs, list) and isinstance(rhs, list):
+            for r in rhs:
+                tmp = FLR(lhs, r)
+                flrs.append(tmp)
         else:
             tmp = FLR(lhs,rhs)
             flrs.append(tmp)

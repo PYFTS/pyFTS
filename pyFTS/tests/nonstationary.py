@@ -1,13 +1,14 @@
 import os
 import numpy as np
-from pyFTS.common import Membership
-from pyFTS.nonstationary import common,perturbation,util,nsfts, honsfts
+from pyFTS.common import Membership, Transformations
+from pyFTS.nonstationary import common,perturbation, partitioners, util,nsfts, honsfts, cvfts
 from pyFTS.partitioners import Grid
 import matplotlib.pyplot as plt
 import pandas as pd
 os.chdir("/home/petronio/Dropbox/Doutorado/Codigos/")
 
-"""
+diff = Transformations.Differential(1)
+
 def generate_heteroskedastic_linear(mu_ini, sigma_ini, mu_inc, sigma_inc, it=10, num=35):
     mu = mu_ini
     sigma = sigma_ini
@@ -19,34 +20,55 @@ def generate_heteroskedastic_linear(mu_ini, sigma_ini, mu_inc, sigma_inc, it=10,
     return ret
 
 
-lmv1 = generate_heteroskedastic_linear(1,0.1,1,0.3)
-#lmv1 = generate_heteroskedastic_linear(5,0.1,0,0.2)
+#lmv1 = generate_heteroskedastic_linear(1,0.1,1,0.3)
+lmv1 = generate_heteroskedastic_linear(5,0.1,0,0.2)
 #lmv1 = generate_heteroskedastic_linear(1,0.3,1,0)
 
-ns = 5 #number of fuzzy sets
+lmv1 = diff.apply(lmv1)
+
+ns = 10 #number of fuzzy sets
 ts = 200
 train = lmv1[:ts]
 test = lmv1[ts:]
 w = 25
 deg = 4
 
-tmp_fs = Grid.GridPartitioner(train[:35], 10)
+tmp_fs = Grid.GridPartitioner(train, 10)
 
-fs = common.PolynomialNonStationaryPartitioner(train, tmp_fs, window_size=35, degree=1)
-
-nsfts1 = nsfts.NonStationaryFTS("", partitioner=fs)
-
-nsfts1.train(train[:100])
-
-print(fs)
-
-print(nsfts1)
-
-tmp = nsfts1.forecast(test[:10], time_displacement=200)
-
-print(tmp)
+#fs = partitioners.PolynomialNonStationaryPartitioner(train, tmp_fs, window_size=35, degree=1)
+fs = partitioners.ConstantNonStationaryPartitioner(train, tmp_fs,
+                                                   location=perturbation.polynomial,
+                                                   location_params=[1,0],
+                                                   location_roots=0,
+                                                   width=perturbation.polynomial,
+                                                   width_params=[1,0],
+                                                   width_roots=0)
 """
+perturb = [0.5, 0.25]
+for i in [0,1]:
+    print(fs.sets[i].parameters)
+    fs.sets[i].perturbate_parameters(perturb[i])
+for i in [0,1]:
+    print(fs.sets[i].perturbated_parameters[perturb[i]])
+"""
+#nsfts1 = nsfts.NonStationaryFTS("", partitioner=fs)
 
+nsfts1 = cvfts.ConditionalVarianceFTS("", partitioner=fs)
+
+nsfts1.train(train)
+
+#print(fs)
+
+#print(nsfts1)
+
+#tmp = nsfts1.forecast(test[50:60])
+
+#print(tmp)
+#print(test[50:60])
+
+util.plot_sets_conditional(nsfts1, test, end=150, step=1,tam=[10, 5])
+print('')
+"""
 passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
 passengers = np.array(passengers["Passengers"])
 
@@ -83,6 +105,7 @@ print([k[1] for k in tmpi])
 #               window_size=ws, only_lines=False)
 
 #fig, axes = plt.subplots(nrows=1, ncols=1, figsize=[15,5])
+"""
 
 """
 axes.plot(testp, label="Original")

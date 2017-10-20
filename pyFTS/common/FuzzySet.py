@@ -102,8 +102,40 @@ def getMaxMembershipFuzzySetIndex(inst, fuzzySets):
     return np.argwhere(mv == max(mv))[0, 0]
 
 
-def fuzzySeries(data, fuzzySets):
+def fuzzySeries(data, fuzzySets, method='maximum'):
     fts = []
     for item in data:
         fts.append(getMaxMembershipFuzzySet(item, fuzzySets))
     return fts
+
+
+def fuzzifySeries(data, fuzzySets, method='maximum'):
+    fts = []
+    for t, i in enumerate(data):
+        mv = np.array([fs.membership(i) for fs in fuzzySets])
+        if len(mv) == 0:
+            sets = check_bounds(i, fuzzySets)
+        else:
+            if method == 'fuzzy':
+                ix = np.ravel(np.argwhere(mv > 0.0))
+                sets = [fuzzySets[i] for i in ix]
+            elif method == 'maximum':
+                mx = max(mv)
+                ix = np.ravel(np.argwhere(mv == mx))
+                sets = fuzzySets[ix[0]]
+        fts.append(sets)
+    return fts
+
+
+def check_bounds(data, sets):
+    if data < sets[0].get_lower():
+        return sets[0]
+    elif data > sets[-1].get_upper():
+        return sets[-1]
+
+
+def check_bounds_index(data, sets):
+    if data < sets[0].get_lower():
+        return 0
+    elif data > sets[-1].get_upper():
+        return len(sets) -1
