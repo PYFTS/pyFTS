@@ -8,15 +8,14 @@ class Transformation(object):
     Data transformation used to pre and post processing of the FTS
     """
 
-    def __init__(self, parameters):
-        self.isInversible = True
-        self.parameters = parameters
-        self.minimalLength = 1
+    def __init__(self, **kwargs):
+        self.is_invertible = True
+        self.minimal_length = 1
 
-    def apply(self,data,param,**kwargs):
+    def apply(self, data, param, **kwargs):
         pass
 
-    def inverse(self,data, param,**kwargs):
+    def inverse(self,data, param, **kwargs):
         pass
 
     def __str__(self):
@@ -28,11 +27,11 @@ class Differential(Transformation):
     Differentiation data transform
     """
     def __init__(self, parameters):
-        super(Differential, self).__init__(parameters)
+        super(Differential, self).__init__()
         self.lag = parameters
-        self.minimalLength = 2
+        self.minimal_length = 2
 
-    def apply(self, data, param=None,**kwargs):
+    def apply(self, data, param=None, **kwargs):
         if param is not None:
             self.lag = param
 
@@ -75,7 +74,7 @@ class Differential(Transformation):
 
 class Scale(Transformation):
     def __init__(self, min=0, max=1):
-        super(Scale, self).__init__([min, max])
+        super(Scale, self).__init__()
         self.data_max = None
         self.data_min = None
         self.transf_max = max
@@ -117,7 +116,7 @@ class AdaptiveExpectation(Transformation):
         self.h = parameters
 
     def apply(self, data, param=None,**kwargs):
-        return  data
+        return data
 
     def inverse(self, data, param,**kwargs):
         n = len(data)
@@ -130,13 +129,24 @@ class AdaptiveExpectation(Transformation):
             return inc
 
 
-def boxcox(original, plambda):
-    n = len(original)
-    if plambda != 0:
-        modified = [(original[t] ** plambda - 1) / plambda for t in np.arange(0, n)]
-    else:
-        modified = [math.log(original[t]) for t in np.arange(0, n)]
-    return np.array(modified)
+class BoxCox(Transformation):
+    def __init__(self, plambda):
+        super(BoxCox, self).__init__()
+        self.plambda = plambda
+
+    def apply(self, data, param=None, **kwargs):
+        if self.plambda != 0:
+            modified = [(dat ** self.plambda - 1) / self.plambda for dat in data]
+        else:
+            modified = [np.log(dat) for dat in data]
+        return np.array(modified)
+
+    def inverse(self, data, param=None, **kwargs):
+        if self.plambda != 0:
+            modified = [np.exp(np.log(dat * self.plambda + 1) ) / self.plambda for dat in data]
+        else:
+            modified = [np.exp(dat) for dat in data]
+        return np.array(modified)
 
 
 def Z(original):
