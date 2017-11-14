@@ -20,7 +20,6 @@ class FLRG(object):
             ret = self.LHS.membership(data)
         return ret
 
-
     def get_midpoint(self):
         if self.midpoint is None:
             self.midpoint = sum(self.get_midpoints())/len(self.RHS)

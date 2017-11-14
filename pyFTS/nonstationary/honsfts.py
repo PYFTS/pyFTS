@@ -196,8 +196,8 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
             if len(affected_flrgs) == 0:
                 tmp.append(common.check_bounds(sample[-1], self.sets, tdisp))
             elif len(affected_flrgs) == 1:
-                if affected_flrgs[0].strLHS() in self.flrgs:
-                    flrg = affected_flrgs[0]
+                flrg = affected_flrgs[0]
+                if flrg.strLHS() in self.flrgs:
                     tmp.append(self.flrgs[flrg.strLHS()].get_midpoint(tdisp))
                 else:
                     tmp.append(flrg.LHS[-1].get_midpoint(tdisp))
@@ -250,13 +250,13 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
                 lower.append(aset.get_lower(tdisp))
                 upper.append(aset.get_upper(tdisp))
             elif len(affected_flrgs) == 1:
-                if affected_flrgs[0].strLHS() in self.flrgs:
-                    flrg = affected_flrgs[0]
-                    lower.append(self.flrgs[flrg.strLHS()].get_lower(tdisp))
-                    upper.append(self.flrgs[flrg.strLHS()].get_upper(tdisp))
+                _flrg = affected_flrgs[0]
+                if _flrg.strLHS() in self.flrgs:
+                    lower.append(self.flrgs[_flrg.strLHS()].get_lower(tdisp))
+                    upper.append(self.flrgs[_flrg.strLHS()].get_upper(tdisp))
                 else:
-                    lower.append(flrg.LHS[-1].get_lower(tdisp))
-                    upper.append(flrg.LHS[-1].get_upper(tdisp))
+                    lower.append(_flrg.LHS[-1].get_lower(tdisp))
+                    upper.append(_flrg.LHS[-1].get_upper(tdisp))
             else:
                 for ct, aset in enumerate(affected_flrgs):
                     if aset.strLHS() in self.flrgs:

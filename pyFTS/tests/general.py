@@ -9,17 +9,18 @@ import matplotlib as plt
 #from mpl_toolkits.mplot3d import Axes3D
 
 import pandas as pd
-from pyF import Grid, Entropy, FCM, Huarng
+from pyFTS.partitioners import Grid, Entropy, FCM, Huarng
 from pyFTS.common import FLR,FuzzySet,Membership,Transformations, Util as cUtil
 from pyFTS import fts,hofts,ifts,pwfts,tree, chen
 #from pyFTS.benchmarks import benchmarks as bchmk
 from pyFTS.benchmarks import naive, arima
 from pyFTS.benchmarks import Measures
 from numpy import random
-from pyFTS.models.seasonal import SeasonalIndexer
+from pyFTS.seasonal import SeasonalIndexer
 
 os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
+bc = Transformations.BoxCox(0)
 diff = Transformations.Differential(1)
 #ix = SeasonalIndexer.LinearSeasonalIndexer([12, 24], [720, 1],[False, False])
 
@@ -30,8 +31,8 @@ DATASETS
 #enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
 #enrollments = np.array(enrollments["Enrollments"])
 
-#passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
-#passengers = np.array(passengers["Passengers"])
+passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
+passengers = np.array(passengers["Passengers"])
 
 #sunspots = pd.read_csv("DataSets/sunspots.csv", sep=",")
 #sunspots = np.array(sunspots["SUNACTIVITY"])
@@ -63,16 +64,42 @@ DATASETS
 #print(lag)
 #print(a)
 #'''
+'''
 sonda = pd.read_csv("DataSets/SONDA_BSB_15MIN_AVG.csv", sep=";")
 
 sonda['data'] = pd.to_datetime(sonda['data'])
 
-#sonda = sonda[:][527041:].dropna()
+sonda = sonda[:][527041:].dropna()
 
 sonda.index = np.arange(0,len(sonda.index))
 
 sonda_treino = sonda[:105313].dropna()
 sonda_teste = sonda[105314:].dropna()
+'''
+
+from pyFTS.partitioners import Grid
+from pyFTS import song, chen, yu, sadaei, ismailefendi, cheng
+
+train = passengers[:100]
+test = passengers[100:]
+
+fs = Grid.GridPartitioner(train, 10, transformation=bc)
+
+methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, sadaei.ExponentialyWeightedFTS,
+           ismailefendi.ImprovedWeightedFTS, cheng.TrendWeightedFTS]
+
+#fig, axes = plt.subplots(nrows=1, ncols=1, figsize=[15, 5])
+
+#axes.plot(test, label="Original")
+
+for method in methods:
+    model = method("")
+    model.appendTransformation(bc)
+    model.train(train, sets=fs.sets)
+
+    forecasts = model.forecast(test)
+
+    print(forecasts)
 
 #ix_m15 = SeasonalIndexer.DateTimeSeasonalIndexer('data',[SeasonalIndexer.DateTime.minute],[15],'glo_avg', name='m15')
 
@@ -92,11 +119,11 @@ sonda_teste = sonda[105314:].dropna()
 
 #cUtil.persist_obj(obj, "models/sonda_msfts_Entropy40_Mhm15.pkl")
 
-ftse = cUtil.load_obj("models/sonda_ensemble_msfts.pkl")
+#ftse = cUtil.load_obj("models/sonda_ensemble_msfts.pkl")
 
-tmp = ftse.forecastDistribution(sonda_teste[850:860],  h=0.5, method="gaussian")
+#tmp = ftse.forecastDistribution(sonda_teste[850:860],  h=0.5, method="gaussian")
 
-print(tmp[0])
+#print(tmp[0])
 
 #'''
 

@@ -68,7 +68,6 @@ class ConventionalFTS(fts.FTS):
 
                 ret.append( sum(mp)/len(mp))
 
-
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
         return ret

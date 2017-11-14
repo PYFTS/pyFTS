@@ -159,15 +159,17 @@ class FTS(object):
         return ndata
 
     def doInverseTransformations(self, data, params=None, **kwargs):
-        ndata = data
         if len(self.transformations) > 0:
             if params is None:
                 params = [None for k in self.transformations]
 
             for c, t in enumerate(reversed(self.transformations), start=0):
-                ndata = t.inverse(ndata, params[c], **kwargs)
+                print(c)
+                ndata = t.inverse(data, params[c], **kwargs)
 
-        return ndata
+            return ndata
+        else:
+            return data
 
     def __str__(self):
         tmp = self.name + ":\n"

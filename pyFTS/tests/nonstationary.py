@@ -4,9 +4,22 @@ from pyFTS.common import Membership, Transformations
 from pyFTS.nonstationary import common,perturbation, partitioners, util,nsfts, honsfts, cvfts
 from pyFTS.partitioners import Grid
 import matplotlib.pyplot as plt
+from pyFTS.common import Util as cUtil
 import pandas as pd
 os.chdir("/home/petronio/Dropbox/Doutorado/Codigos/")
 
+data = pd.read_csv("DataSets/synthetic_nonstationary_dataset_A.csv", sep=";")
+data = np.array(data["0"][:])
+
+for ct, train, test in cUtil.sliding_window(data, 300):
+    for partition in np.arange(10,50):
+        print(partition)
+        tmp_fsp = Grid.GridPartitioner(train, partition)
+        print(len(tmp_fsp.sets))
+
+        fsp = partitioners.PolynomialNonStationaryPartitioner(train, tmp_fsp, window_size=35, degree=1)
+
+'''
 diff = Transformations.Differential(1)
 
 def generate_heteroskedastic_linear(mu_ini, sigma_ini, mu_inc, sigma_inc, it=10, num=35):
@@ -43,6 +56,7 @@ fs = partitioners.ConstantNonStationaryPartitioner(train, tmp_fs,
                                                    width=perturbation.polynomial,
                                                    width_params=[1,0],
                                                    width_roots=0)
+'''
 """
 perturb = [0.5, 0.25]
 for i in [0,1]:
@@ -51,6 +65,7 @@ for i in [0,1]:
 for i in [0,1]:
     print(fs.sets[i].perturbated_parameters[perturb[i]])
 """
+'''
 #nsfts1 = nsfts.NonStationaryFTS("", partitioner=fs)
 
 nsfts1 = cvfts.ConditionalVarianceFTS("", partitioner=fs)
@@ -114,3 +129,4 @@ axes.plot(testp, label="Original")
 handles0, labels0 = axes.get_legend_handles_labels()
 lgd = axes.legend(handles0, labels0, loc=2)
 """
+'''

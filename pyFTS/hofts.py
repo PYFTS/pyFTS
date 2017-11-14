@@ -27,7 +27,7 @@ class HighOrderFLRG(flrg.FLRG):
             for c in self.LHS:
                 if len(self.strlhs) > 0:
                     self.strlhs += ", "
-                self.strlhs = self.strlhs + c.name
+                self.strlhs = self.strlhs + str(c)
         return self.strlhs
 
     def appendLHS(self, c):

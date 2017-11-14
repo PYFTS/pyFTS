@@ -71,9 +71,9 @@ class ConventionalFTS(fts.FTS):
             if actual.name not in self.flrgs:
                 ret.append(actual.centroid)
             else:
-                flrg = self.flrgs[actual.name]
+                _flrg = self.flrgs[actual.name]
 
-                ret.append(flrg.get_midpoint())
+                ret.append(_flrg.get_midpoint())
 
         ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
 
