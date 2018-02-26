@@ -1,6 +1,6 @@
 import numpy as np
 from pyFTS.partitioners import partitioner
-from pyFTS.nonstationary import common, perturbation
+from pyFTS.models.nonstationary import common, perturbation
 
 
 class PolynomialNonStationaryPartitioner(partitioner.Partitioner):

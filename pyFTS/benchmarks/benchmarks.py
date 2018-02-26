@@ -13,14 +13,14 @@ import matplotlib.cm as cmx
 import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 #from mpl_toolkits.mplot3d import Axes3D
 
 from pyFTS.probabilistic import ProbabilityDistribution
-from pyFTS import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, ensemble, hwang
+from pyFTS.models import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, hwang
+from pyFTS.models.ensemble import ensemble
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, quantreg
 from pyFTS.benchmarks import Util as bUtil
-from pyFTS.common import Transformations, Util
+from pyFTS.common import Util
 # from sklearn.cross_validation import KFold
 from pyFTS.partitioners import Grid
 from matplotlib import rc
@@ -817,7 +817,6 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
 def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to):
     from matplotlib.patches import Rectangle
     from matplotlib.collections import PatchCollection
-    from  matplotlib.colorbar import ColorbarPatch
     patches = []
     colors = []
     for x in density.index:
@@ -840,7 +839,6 @@ from pyFTS.common import Transformations
 def plot_probabilitydistribution_density(ax, cmap, probabilitydist, fig, time_from):
     from matplotlib.patches import Rectangle
     from matplotlib.collections import PatchCollection
-    from  matplotlib.colorbar import ColorbarPatch
     patches = []
     colors = []
     for ct, dt in enumerate(probabilitydist):

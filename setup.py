@@ -2,11 +2,12 @@ from distutils.core import setup
 
 setup(
     name='pyFTS',
-    packages=['pyFTS', 'pyFTS.benchmarks', 'pyFTS.common', 'pyFTS.data', 'pyFTS.ensemble',
-              'pyFTS.models', 'pyFTS.seasonal', 'pyFTS.partitioners', 'pyFTS.probabilistic',
-              'pyFTS.tests', 'pyFTS.nonstationary'],
-    package_data={'benchmarks': ['*'], 'common': ['*'], 'data': ['*'], 'ensemble': ['*'], 'models': ['*'],
-                  'seasonal': ['*'], 'partitioners': ['*'], 'probabilistic': ['*'], 'tests': ['*']},
+    packages=['pyFTS', 'pyFTS.benchmarks', 'pyFTS.common', 'pyFTS.data', 'pyFTS.models.ensemble',
+              'pyFTS.models', 'pyFTS.models.seasonal', 'pyFTS.partitioners', 'pyFTS.probabilistic',
+              'pyFTS.tests', 'pyFTS.models.nonstationary'],
+    package_data={'benchmarks': ['*'], 'common': ['*'], 'data': ['*'],
+                  'models': ['*'], 'seasonal': ['*'], 'ensemble': ['*'],
+                  'partitioners': ['*'], 'probabilistic': ['*'], 'tests': ['*']},
     version='1.1.1',
     description='Fuzzy Time Series for Python',
     author='Petronio Candido L. e Silva',

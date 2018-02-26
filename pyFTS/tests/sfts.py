@@ -3,20 +3,10 @@
 
 import os
 import numpy as np
-import pandas as pd
-import matplotlib as plt
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
-import datetime
 
 import pandas as pd
-from pyFTS.partitioners import Grid, CMeans, FCM, Entropy
-from pyFTS.common import FLR,FuzzySet,Membership,Transformations,Util
-from pyFTS import fts
-from pyFTS.seasonal import sfts, msfts
+from pyFTS.common import Util
 from pyFTS.benchmarks import benchmarks as bchmk
-from pyFTS.benchmarks import Measures
 
 os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
@@ -37,10 +27,6 @@ sonda_teste = sonda[1051201:]
 #                              sfts.SeasonalFTS,np.arange(3,30),[1],parameters=1440,
 #                              tam=[15,8], plotforecasts=False,elev=45, azim=40,
 #                               save=False,file="pictures/sonda_sfts_error_surface", intervals=False)
-
-from pyFTS.models.seasonal import SeasonalIndexer
-from pyFTS.models import msfts
-from pyFTS.common import FLR
 
 partitions = ['grid','entropy']
 

@@ -2,8 +2,8 @@
 # -*- coding: utf8 -*-
 
 import numpy as np
-from pyFTS.common import FuzzySet,FLR
-from pyFTS import hofts, fts, tree
+from pyFTS.common import FuzzySet, FLR, fts, tree
+from pyFTS.models import hofts
 
 
 class IntervalFTS(hofts.HighOrderFTS):

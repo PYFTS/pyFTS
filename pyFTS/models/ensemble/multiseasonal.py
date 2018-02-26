@@ -2,17 +2,10 @@
 # -*- coding: utf8 -*-
 
 import numpy as np
-import pandas as pd
-import math
-from operator import itemgetter
-from pyFTS.common import FLR, FuzzySet, SortedCollection
-from pyFTS import fts, chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu, sfts
-from pyFTS.benchmarks import arima, quantreg
-from pyFTS.common import Transformations, Util as cUtil
-import scipy.stats as st
-from pyFTS.ensemble import ensemble
-from pyFTS.models import msfts, cmsfts
-from pyFTS.probabilistic import ProbabilityDistribution, kde
+from pyFTS.common import Util as cUtil
+from pyFTS.models.ensemble import ensemble
+from pyFTS.models.seasonal import cmsfts
+from pyFTS.probabilistic import ProbabilityDistribution
 from copy import deepcopy
 from joblib import Parallel, delayed
 import multiprocessing

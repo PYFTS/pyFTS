@@ -1,7 +1,7 @@
 import numpy as np
-from pyFTS import fts, flrg, chen
-from pyFTS.nonstationary import common, perturbation, nsfts
-from pyFTS.common import Transformations, FuzzySet, FLR
+from pyFTS.models import chen
+from pyFTS.models.nonstationary import common,nsfts
+from pyFTS.common import FLR
 
 
 class ConditionalVarianceFTS(chen.ConventionalFTS):

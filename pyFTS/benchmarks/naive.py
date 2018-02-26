@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
-from pyFTS import fts
+from pyFTS.common import fts
 
 
 class Naive(fts.FTS):

@@ -5,8 +5,7 @@ import numpy as np
 import pandas as pd
 from statsmodels.tsa.arima_model import ARIMA as stats_arima
 import scipy.stats as st
-from pyFTS import fts
-from pyFTS.common import SortedCollection
+from pyFTS.common import SortedCollection, fts
 from pyFTS.probabilistic import ProbabilityDistribution
 
 

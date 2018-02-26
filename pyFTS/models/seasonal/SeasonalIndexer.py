@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
-from enum import Enum
-from pyFTS.seasonal import common
+from pyFTS.models.seasonal import common
 
 
 class SeasonalIndexer(object):

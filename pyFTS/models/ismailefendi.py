@@ -6,8 +6,7 @@ US Dollar to Ringgit Malaysia,” Int. J. Comput. Intell. Appl., vol. 12, no. 1,
 """
 
 import numpy as np
-from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts, flrg
+from pyFTS.common import FuzzySet, FLR, fts, flrg
 
 
 class ImprovedWeightedFLRG(flrg.FLRG):

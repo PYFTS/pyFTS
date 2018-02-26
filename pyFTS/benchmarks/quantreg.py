@@ -5,8 +5,7 @@ import numpy as np
 import pandas as pd
 from statsmodels.regression.quantile_regression import QuantReg
 from statsmodels.tsa.tsatools import lagmat
-from pyFTS import fts
-from pyFTS.common import SortedCollection
+from pyFTS.common import SortedCollection, fts
 from pyFTS.probabilistic import ProbabilityDistribution
 
 class QuantileRegression(fts.FTS):

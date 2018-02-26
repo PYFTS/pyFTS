@@ -1,8 +1,7 @@
 import numpy as np
-from pyFTS.common import FuzzySet, FLR
-from pyFTS import fts, hofts
+from pyFTS.common import FuzzySet, FLR, fts, tree
+from pyFTS.models import hofts
 from pyFTS.nonstationary import common, flrg
-from pyFTS import tree
 
 
 class HighOrderNonStationaryFLRG(flrg.NonStationaryFLRG):

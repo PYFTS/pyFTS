@@ -1,7 +1,8 @@
 import os
 import numpy as np
 from pyFTS.common import Membership, Transformations
-from pyFTS.nonstationary import common,perturbation, partitioners, util,nsfts, honsfts, cvfts
+from pyFTS.nonstationary import common,perturbation, partitioners, util, honsfts, cvfts
+from pyFTS.models.nonstationary import nsfts
 from pyFTS.partitioners import Grid
 import matplotlib.pyplot as plt
 from pyFTS.common import Util as cUtil

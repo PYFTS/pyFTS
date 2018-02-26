@@ -6,8 +6,8 @@ Phys. A Stat. Mech. its Appl., vol. 349, no. 3, pp. 609–624, 2005.
 """
 
 import numpy as np
-from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts, flrg, chen
+from pyFTS.common import FuzzySet, FLR, fts, flrg
+from pyFTS.models import chen
 
 
 class WeightedFLRG(flrg.FLRG):

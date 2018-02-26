@@ -1,6 +1,6 @@
 
-from pyFTS import flrg
-from pyFTS.nonstationary import common
+from pyFTS.common import flrg
+from pyFTS.models.nonstationary import common
 
 
 class NonStationaryFLRG(flrg.FLRG):

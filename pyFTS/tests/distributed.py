@@ -1,13 +1,14 @@
 from pyFTS.partitioners import Grid
-from pyFTS import fts, flrg, song, chen, yu, sadaei, ismailefendi, cheng, hofts
+from pyFTS.models import chen
 from pyFTS.benchmarks import Measures
-from pyFTS.common import Util as cUtil
+from pyFTS.common import Util as cUtil, fts
 import pandas as pd
 import numpy as np
 import os
 from pyFTS.common import Transformations
 from copy import deepcopy
-from pyFTS.nonstationary import common, flrg, util, perturbation, nsfts, honsfts, partitioners
+from pyFTS.nonstationary import flrg, util, honsfts, partitioners
+from pyFTS.models.nonstationary import nsfts
 
 bc = Transformations.BoxCox(0)
 
@@ -19,10 +20,8 @@ os.chdir("/home/petronio/Dropbox/Doutorado/Codigos/")
 
 def evaluate_individual_model(model, partitioner, train, test, window_size, time_displacement):
     import numpy as np
-    from pyFTS.common import FLR, FuzzySet
     from pyFTS.partitioners import Grid
     from pyFTS.benchmarks import Measures
-    from pyFTS.nonstationary import common, flrg, util, perturbation, nsfts, honsfts, partitioners
 
     try:
         model.train(train, sets=partitioner.sets, order=model.order, parameters=window_size)

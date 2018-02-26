@@ -8,13 +8,12 @@ python3 /usr/local/bin/dispynode.py -i [local IP] -d
 
 import datetime
 import time
-from copy import deepcopy
 
 import dispy
 import dispy.httpd
 import numpy as np
 
-from pyFTS.benchmarks import benchmarks, Util as bUtil, naive, quantreg, arima
+from pyFTS.benchmarks import benchmarks, Util as bUtil, quantreg, arima
 from pyFTS.common import Util
 from pyFTS.partitioners import Grid
 
@@ -32,7 +31,8 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
     :return: a dictionary with the benchmark results 
     """
     import time
-    from pyFTS import yu,chen,hofts,ifts,pwfts,ismailefendi,sadaei, song, cheng, hwang
+    from pyFTS import yu, hofts, pwfts,ismailefendi,sadaei, song, cheng, hwang
+    from pyFTS.models import chen
     from pyFTS.partitioners import Grid, Entropy, FCM
     from pyFTS.benchmarks import Measures, naive, arima, quantreg
     from pyFTS.common import Transformations
@@ -424,9 +424,10 @@ def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, windo
     """
     import time
     import numpy as np
-    from pyFTS import hofts, ifts, pwfts, ensemble
+    from pyFTS import hofts, ifts, pwfts
+    from pyFTS.models import ensemble
     from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures, arima, quantreg
+    from pyFTS.benchmarks import Measures, arima
     from pyFTS.models.seasonal import SeasonalIndexer
 
     tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA, ensemble.AllMethodEnsembleFTS]

@@ -6,8 +6,7 @@ refined exponentially weighted fuzzy time series and an improved harmony search,
 """
 
 import numpy as np
-from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts, flrg
+from pyFTS.common import FuzzySet,FLR,fts, flrg
 
 
 class ExponentialyWeightedFLRG(flrg.FLRG):

@@ -5,8 +5,7 @@ S.-M. Chen, “Forecasting enrollments based on fuzzy time series,” Fuzzy Sets
 """
 
 import numpy as np
-from pyFTS.common import FuzzySet, FLR
-from pyFTS import fts,flrg
+from pyFTS.common import FuzzySet, FLR, fts, flrg
 
 
 class ConventionalFLRG(flrg.FLRG):

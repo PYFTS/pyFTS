@@ -1,6 +1,7 @@
 import numpy as np
-from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts, sfts, chen
+from pyFTS.common import FuzzySet, FLR
+from pyFTS.models.seasonal import sfts
+from pyFTS.models import chen
 
 
 class ContextualSeasonalFLRG(object):

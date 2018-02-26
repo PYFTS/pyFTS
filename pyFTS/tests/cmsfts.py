@@ -12,8 +12,8 @@ import datetime
 
 import pandas as pd
 from pyFTS.partitioners import Grid, CMeans, FCM, Entropy
-from pyFTS.common import FLR,FuzzySet,Membership,Transformations,Util
-from pyFTS import fts,sfts
+from pyFTS.common import FLR, FuzzySet, Membership, Transformations, Util, fts
+from pyFTS import sfts
 from pyFTS.models import msfts
 from pyFTS.benchmarks import benchmarks as bchmk
 from pyFTS.benchmarks import Measures

@@ -5,8 +5,7 @@ Q. Song and B. S. Chissom, “Fuzzy time series and its models,” Fuzzy Sets Sy
 """
 
 import numpy as np
-from pyFTS.common import FuzzySet, FLR
-from pyFTS import fts
+from pyFTS.common import FuzzySet, FLR, fts
 
 
 class ConventionalFTS(fts.FTS):

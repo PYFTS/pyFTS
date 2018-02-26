@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 import math
 from operator import itemgetter
-from pyFTS.common import FLR, FuzzySet, SortedCollection
-from pyFTS import hofts, ifts, tree
+from pyFTS.common import FLR, FuzzySet, tree
+from pyFTS.models import hofts, ifts
 from pyFTS.probabilistic import ProbabilityDistribution
 
 

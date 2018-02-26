@@ -1,6 +1,5 @@
 import numpy as np
-from pyFTS.common import FuzzySet, FLR
-from pyFTS import fts, chen
+from pyFTS.common import FLR, fts
 from pyFTS.nonstationary import common, flrg
 
 

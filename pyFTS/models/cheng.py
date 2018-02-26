@@ -6,8 +6,8 @@ Expert Syst. Appl., vol. 36, no. 2, pp. 1826–1832, 2009.
 """
 
 import numpy as np
-from pyFTS.common import FuzzySet,FLR
-from pyFTS import fts, yu
+from pyFTS.common import FuzzySet, FLR, fts
+from pyFTS.models import yu
 
 
 class TrendWeightedFLRG(yu.WeightedFLRG):

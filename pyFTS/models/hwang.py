@@ -6,8 +6,7 @@ Fuzzy Sets Syst., no. 100, pp. 217–228, 1998.
 """
 
 import numpy as np
-from pyFTS.common import FuzzySet,FLR,Transformations
-from pyFTS import fts
+from pyFTS.common import FuzzySet, FLR, Transformations, fts
 
 
 class HighOrderFTS(fts.FTS):

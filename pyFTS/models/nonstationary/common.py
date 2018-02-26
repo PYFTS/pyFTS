@@ -9,7 +9,7 @@ import numpy as np
 from pyFTS import *
 from pyFTS.common import FuzzySet as FS, Membership, FLR
 from pyFTS.partitioners import partitioner
-from pyFTS.nonstationary import perturbation
+from pyFTS.models.nonstationary import perturbation
 
 
 class FuzzySet(FS.FuzzySet):

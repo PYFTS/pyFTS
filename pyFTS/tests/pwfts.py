@@ -9,11 +9,9 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 import pandas as pd
-from pyFTS.partitioners import Grid
-from pyFTS.common import FLR,FuzzySet,Membership,Transformations
-from pyFTS import fts,hofts,ifts,pwfts,tree, chen
+from pyFTS.common import FLR, FuzzySet, Membership, Transformations, fts
+from pyFTS.models import chen
 from pyFTS.benchmarks import benchmarks as bchmk
-from pyFTS.benchmarks import Measures
 from numpy import random
 
 #gauss_treino = random.normal(0,1.0,1600)

@@ -3,20 +3,13 @@
 
 import os
 import numpy as np
-import pandas as pd
-import matplotlib as plt
 #import matplotlib.pyplot as plt
 #from mpl_toolkits.mplot3d import Axes3D
 
 import pandas as pd
-from pyFTS.partitioners import Grid, Entropy, FCM, Huarng
-from pyFTS.common import FLR,FuzzySet,Membership,Transformations, Util as cUtil
-from pyFTS import fts,hofts,ifts,pwfts,tree, chen
+from pyFTS.common import Transformations
+
 #from pyFTS.benchmarks import benchmarks as bchmk
-from pyFTS.benchmarks import naive, arima
-from pyFTS.benchmarks import Measures
-from numpy import random
-from pyFTS.seasonal import SeasonalIndexer
 
 os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
 
