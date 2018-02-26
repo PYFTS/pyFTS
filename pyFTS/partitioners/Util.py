@@ -38,7 +38,7 @@ def plot_sets(data, sets, titles, tam=[12, 10], save=False, file=None):
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def plot_partitioners(data, objs, tam=[12, 10], save=False, file=None):

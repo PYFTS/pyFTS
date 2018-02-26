@@ -133,7 +133,7 @@ class HighOrderFTS(fts.FTS):
 
     def train(self, data, sets, order=1,parameters=None):
 
-        data = self.doTransformations(data, updateUoD=True)
+        data = self.apply_transformations(data, updateUoD=True)
 
         self.order = order
         self.sets = sets
@@ -149,10 +149,10 @@ class HighOrderFTS(fts.FTS):
         if l <= self.order:
             return data
 
-        ndata = self.doTransformations(data)
+        ndata = self.apply_transformations(data)
 
         for k in np.arange(self.order, l+1):
-            tmpdata = FuzzySet.fuzzySeries(ndata[k - self.order: k], self.sets)
+            tmpdata = FuzzySet.fuzzyfy_series_old(ndata[k - self.order: k], self.sets)
             tmpflrg = HighOrderFLRG(self.order)
 
             for s in tmpdata: tmpflrg.appendLHS(s)
@@ -163,6 +163,6 @@ class HighOrderFTS(fts.FTS):
                 flrg = self.flrgs[tmpflrg.strLHS()]
                 ret.append(flrg.get_midpoint())
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order-1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

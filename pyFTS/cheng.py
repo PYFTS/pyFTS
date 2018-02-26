@@ -49,7 +49,7 @@ class TrendWeightedFTS(yu.WeightedFTS):
         self.detail = "Cheng"
         self.is_high_order = False
 
-    def generateFLRG(self, flrs):
+    def generate_FLRG(self, flrs):
         flrgs = {}
         for flr in flrs:
             if flr.LHS.name in flrgs:

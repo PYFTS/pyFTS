@@ -66,8 +66,8 @@ class ExponentialyWeightedFTS(fts.FTS):
     def train(self, data, sets,order=1,parameters=1.05):
         self.c = parameters
         self.sets = sets
-        ndata = self.doTransformations(data)
-        tmpdata = FuzzySet.fuzzySeries(ndata, sets)
+        ndata = self.apply_transformations(data)
+        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, sets)
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs, self.c)
 
@@ -76,7 +76,7 @@ class ExponentialyWeightedFTS(fts.FTS):
 
         data = np.array(data)
 
-        ndata = self.doTransformations(data)
+        ndata = self.apply_transformations(data)
 
         l = len(ndata)
 
@@ -84,7 +84,7 @@ class ExponentialyWeightedFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
-            mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)
+            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)
 
             actual = self.sets[np.argwhere(mv == max(mv))[0, 0]]
 
@@ -96,6 +96,6 @@ class ExponentialyWeightedFTS(fts.FTS):
 
                 ret.append(mp.dot(flrg.weights()))
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

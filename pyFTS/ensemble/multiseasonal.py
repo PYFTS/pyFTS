@@ -26,7 +26,7 @@ def train_individual_model(partitioner, train_data, indexer):
     print(_key)
 
     model = cmsfts.ContextualMultiSeasonalFTS(_key, indexer=indexer)
-    model.appendTransformation(partitioner.transformation)
+    model.append_transformation(partitioner.transformation)
     model.train(train_data, partitioner.sets, order=1)
 
     cUtil.persist_obj(model, "models/"+_key+".pkl")
@@ -70,7 +70,7 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
 
         cUtil.persist_obj(self, "models/"+self.name+".pkl")
 
-    def forecastDistribution(self, data, **kwargs):
+    def forecast_distribution(self, data, **kwargs):
 
         ret = []
 

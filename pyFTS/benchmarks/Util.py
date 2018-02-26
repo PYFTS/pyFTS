@@ -317,7 +317,7 @@ def unified_scaled_point(experiments, tam, save=False, file=None,
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
@@ -372,7 +372,7 @@ def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam, save=F
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def check_replace_list(m, replace):
@@ -640,7 +640,7 @@ def unified_scaled_interval(experiments, tam, save=False, file=None,
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def plot_dataframe_interval(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
@@ -695,7 +695,7 @@ def plot_dataframe_interval(file_synthetic, file_analytic, experiments, tam, sav
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def unified_scaled_interval_pinball(experiments, tam, save=False, file=None,
@@ -793,7 +793,7 @@ def unified_scaled_interval_pinball(experiments, tam, save=False, file=None,
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 def plot_dataframe_interval_pinball(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
                                     sort_columns=['COVAVG','SHARPAVG','COVSTD','SHARPSTD'],
@@ -843,7 +843,7 @@ def plot_dataframe_interval_pinball(file_synthetic, file_analytic, experiments, 
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, synthetic):
@@ -1067,7 +1067,7 @@ def unified_scaled_ahead(experiments, tam, save=False, file=None,
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def plot_dataframe_ahead(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
@@ -1110,5 +1110,5 @@ def plot_dataframe_ahead(file_synthetic, file_analytic, experiments, tam, save=F
     axes[1].boxplot(crps2, labels=labels, autorange=True, showmeans=True)
 
     plt.tight_layout()
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 

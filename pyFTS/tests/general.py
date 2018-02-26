@@ -94,7 +94,7 @@ methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, sadaei.Ex
 
 for method in methods:
     model = method("")
-    model.appendTransformation(bc)
+    model.append_transformation(bc)
     model.train(train, sets=fs.sets)
 
     forecasts = model.forecast(test)
@@ -113,7 +113,7 @@ for method in methods:
 
 #obj = msfts.MultiSeasonalFTS("sonda_msfts_Entropy40_Mhm15", indexer=ix)
 
-#obj.appendTransformation(diff)
+#obj.append_transformation(diff)
 
 #obj.train(sonda_treino, fs.sets)
 
@@ -121,7 +121,7 @@ for method in methods:
 
 #ftse = cUtil.load_obj("models/sonda_ensemble_msfts.pkl")
 
-#tmp = ftse.forecastDistribution(sonda_teste[850:860],  h=0.5, method="gaussian")
+#tmp = ftse.forecast_distribution(sonda_teste[850:860],  h=0.5, method="gaussian")
 
 #print(tmp[0])
 
@@ -168,7 +168,7 @@ fts.train(sonda_treino, sets=None)
 
 #ftse.update_uod(sonda_treino)
 
-#tmp = ftse.forecastDistribution(sonda_teste,h=1)
+#tmp = ftse.forecast_distribution(sonda_teste,h=1)
 
 #tmp = ftse.forecast(sonda_teste,h=1)
 
@@ -187,27 +187,27 @@ from pyFTS.benchmarks import arima, quantreg, Measures
 #Util.plot_dataframe_point("experiments/taiex_point_sintetic.csv","experiments/taiex_point_analitic.csv",11)
 """
 arima100 = arima.ARIMA("", alpha=0.25)
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 arima100.train(passengers, None, order=(1,0,0))
 
 arima101 = arima.ARIMA("", alpha=0.25)
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 arima101.train(passengers, None, order=(1,0,1))
 
 arima200 = arima.ARIMA("", alpha=0.25)
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 arima200.train(passengers, None, order=(2,0,0))
 
 arima201 = arima.ARIMA("", alpha=0.25)
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 arima201.train(passengers, None, order=(2,0,1))
 
 
 #tmp = quantreg.QuantileRegression("", alpha=0.25, dist=True)
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 #tmp.train(sunspots[:150], None, order=1)
-#teste = tmp.forecastAheadInterval(sunspots[150:155], 5)
-#teste = tmp.forecastAheadDistribution(nasdaq[1600:1604], steps=5, resolution=50)
+#teste = tmp.forecast_ahead_interval(sunspots[150:155], 5)
+#teste = tmp.forecast_ahead_distribution(nasdaq[1600:1604], steps=5, resolution=50)
 
 bchmk.plot_compared_series(enrollments,[tmp], ['blue','red'], points=False, intervals=True)
 
@@ -282,7 +282,7 @@ from pyFTS.partitioners import Grid
 
 
 #model = pwfts.ProbabilisticWeightedFTS("FTS 1")
-#model.appendTransformation(diff)
+#model.append_transformation(diff)
 #model.train(best[0:1600],fs.sets, order=3)
 
 #bchmk.plot_compared_intervals_ahead(best[1600:1700],[model], ['blue','red'],
@@ -370,11 +370,11 @@ fs = Grid.GridPartitioner(sonda[:9000], 10, transformation=diff)
 
 tmp = sfts.SeasonalFTS("")
 tmp.indexer = ix
-tmp.appendTransformation(diff)
+tmp.append_transformation(diff)
 
 #tmp = pwfts.ProbabilisticWeightedFTS("")
 
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 
 tmp.train(sonda[:9000], fs.sets, order=1)
 

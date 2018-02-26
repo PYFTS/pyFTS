@@ -43,7 +43,7 @@ class ARIMA(fts.FTS):
         if self.indexer is not None:
             data = self.indexer.get_data(data)
 
-        data = self.doTransformations(data, updateUoD=True)
+        data = self.apply_transformations(data, updateUoD=True)
 
         old_fit = self.model_fit
         try:
@@ -66,7 +66,7 @@ class ARIMA(fts.FTS):
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -86,18 +86,18 @@ class ARIMA(fts.FTS):
         else:
             ret = ar
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret
 
-    def forecastInterval(self, data, **kwargs):
+    def forecast_interval(self, data, **kwargs):
 
         if self.model_fit is None:
             return np.nan
 
         sigma = np.sqrt(self.model_fit.sigma2)
 
-        #ndata = np.array(self.doTransformations(data))
+        #ndata = np.array(self.apply_transformations(data))
 
         l = len(data)
 
@@ -118,11 +118,11 @@ class ARIMA(fts.FTS):
 
             ret.append(tmp)
 
-        #ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], point_to_interval=True)
+        #ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], point_to_interval=True)
 
         return ret
 
-    def forecastAheadInterval(self, data, steps, **kwargs):
+    def forecast_ahead_interval(self, data, steps, **kwargs):
         if self.model_fit is None:
             return np.nan
 
@@ -130,11 +130,11 @@ class ARIMA(fts.FTS):
 
         sigma = np.sqrt(self.model_fit.sigma2)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
-        nmeans = self.forecastAhead(ndata, steps, **kwargs)
+        nmeans = self.forecast_ahead(ndata, steps, **kwargs)
 
         ret = []
 
@@ -148,14 +148,14 @@ class ARIMA(fts.FTS):
 
             ret.append(tmp)
 
-        ret = self.doInverseTransformations(ret, params=[[data[-1] for a in np.arange(0,steps)]], interval=True)
+        ret = self.apply_inverse_transformations(ret, params=[[data[-1] for a in np.arange(0, steps)]], interval=True)
 
         return ret
 
     def empty_grid(self, resolution):
         return self.get_empty_grid(-(self.original_max*2), self.original_max*2, resolution)
 
-    def forecastDistribution(self, data, **kwargs):
+    def forecast_distribution(self, data, **kwargs):
 
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
@@ -185,14 +185,14 @@ class ARIMA(fts.FTS):
 
                 intervals.append([qt1, qt2])
 
-            dist.appendInterval(intervals)
+            dist.append_interval(intervals)
 
             ret.append(dist)
 
         return ret
 
 
-    def forecastAheadDistribution(self, data, steps, **kwargs):
+    def forecast_ahead_distribution(self, data, steps, **kwargs):
         smoothing = kwargs.get("smoothing", 0.5)
 
         sigma = np.sqrt(self.model_fit.sigma2)
@@ -201,7 +201,7 @@ class ARIMA(fts.FTS):
 
         ret = []
 
-        nmeans = self.forecastAhead(data, steps, **kwargs)
+        nmeans = self.forecast_ahead(data, steps, **kwargs)
 
         for k in np.arange(0, steps):
             dist = ProbabilityDistribution.ProbabilityDistribution(type="histogram",
@@ -217,7 +217,7 @@ class ARIMA(fts.FTS):
 
                 intervals.append(tmp)
 
-            dist.appendInterval(intervals)
+            dist.append_interval(intervals)
 
             ret.append(dist)
 

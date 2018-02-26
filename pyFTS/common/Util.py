@@ -15,7 +15,7 @@ def uniquefilename(name):
         return name + str(current_milli_time())
 
 
-def showAndSaveImage(fig,file,flag,lgd=None):
+def show_and_save_image(fig, file, flag, lgd=None):
     """
     Show and image and save on file
     :param fig: Matplotlib Figure object

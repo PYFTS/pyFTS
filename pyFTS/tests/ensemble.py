@@ -34,7 +34,7 @@ ho_methods = [hofts.HighOrderFTS, hwang.HighOrderFTS]
 
 fs = Grid.GridPartitioner(passengers, 10, transformation=diff)
 
-e.appendTransformation(diff)
+e.append_transformation(diff)
 
 e.train(passengers, fs.sets, order=3)
 
@@ -42,7 +42,7 @@ e.train(passengers, fs.sets, order=3)
 
 for method in fo_methods:
     model = method("")
-    model.appendTransformation(diff)
+    model.append_transformation(diff)
     model.train(passengers, fs.sets)
     e.appendModel(model)
 
@@ -50,25 +50,25 @@ for method in fo_methods:
 for method in ho_methods:
     for order in [1,2,3]:
         model = method("")
-        model.appendTransformation(diff)
+        model.append_transformation(diff)
         model.train(passengers, fs.sets, order=order)
         e.appendModel(model)
 
 
 arima100 = arima.ARIMA("", alpha=0.25)
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 arima100.train(passengers, None, order=(1,0,0))
 
 arima101 = arima.ARIMA("", alpha=0.25)
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 arima101.train(passengers, None, order=(1,0,1))
 
 arima200 = arima.ARIMA("", alpha=0.25)
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 arima200.train(passengers, None, order=(2,0,0))
 
 arima201 = arima.ARIMA("", alpha=0.25)
-#tmp.appendTransformation(diff)
+#tmp.append_transformation(diff)
 arima201.train(passengers, None, order=(2,0,1))
 
 
@@ -87,34 +87,34 @@ _median = e.forecast(passengers, method="median")
 print(_median)
 """
 """
-_extremum = e.forecastInterval(passengers, method="extremum")
+_extremum = e.forecast_interval(passengers, method="extremum")
 print(_extremum)
 
-_quantile = e.forecastInterval(passengers, method="quantile", alpha=0.25)
+_quantile = e.forecast_interval(passengers, method="quantile", alpha=0.25)
 print(_quantile)
 
 
-_normal = e.forecastInterval(passengers, method="normal", alpha=0.25)
+_normal = e.forecast_interval(passengers, method="normal", alpha=0.25)
 print(_normal)
 """
 
 #"""
-_extremum = e.forecastAheadInterval(passengers, 10, method="extremum")
+_extremum = e.forecast_ahead_interval(passengers, 10, method="extremum")
 print(_extremum)
 
-_quantile = e.forecastAheadInterval(passengers[:50], 10, method="quantile", alpha=0.05)
+_quantile = e.forecast_ahead_interval(passengers[:50], 10, method="quantile", alpha=0.05)
 print(_quantile)
 
-_quantile = e.forecastAheadInterval(passengers[:50], 10, method="quantile", alpha=0.25)
+_quantile = e.forecast_ahead_interval(passengers[:50], 10, method="quantile", alpha=0.25)
 print(_quantile)
 
-_normal = e.forecastAheadInterval(passengers[:50], 10, method="normal", alpha=0.05)
+_normal = e.forecast_ahead_interval(passengers[:50], 10, method="normal", alpha=0.05)
 print(_normal)
-_normal = e.forecastAheadInterval(passengers[:50], 10, method="normal", alpha=0.25)
+_normal = e.forecast_ahead_interval(passengers[:50], 10, method="normal", alpha=0.25)
 print(_normal)
 #"""
 
-#dist = e.forecastAheadDistribution(passengers, 20)
+#dist = e.forecast_ahead_distribution(passengers, 20)
 
 #print(dist)
 

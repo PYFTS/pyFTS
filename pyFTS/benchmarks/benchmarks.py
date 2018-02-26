@@ -87,7 +87,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
         mfts.partitioner = partitioner
         if transformation is not None:
-            mfts.appendTransformation(transformation)
+            mfts.append_transformation(transformation)
 
     _start = time.time()
     mfts.train(train_data, partitioner.sets, order=mfts.order)
@@ -272,7 +272,7 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
     for count, model in enumerate(models, start=0):
         #print(model)
         if transformation is not None:
-            model.appendTransformation(transformation)
+            model.append_transformation(transformation)
         model.train(data_train, data_train_fs.sets, order=model.order)
         objs.append(model)
         lcolors.append( colors[count % ncol] )
@@ -380,7 +380,7 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                             times[_key] = []
 
                         if transformation is not None:
-                            mfts.appendTransformation(transformation)
+                            mfts.append_transformation(transformation)
 
                         _start = time.time()
                         mfts.train(training, data_train_fs.sets)
@@ -414,7 +414,7 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                                     times[_key] = []
 
                                 if transformation is not None:
-                                    mfts.appendTransformation(transformation)
+                                    mfts.append_transformation(transformation)
 
                                 _start = time.time()
                                 mfts.train(training, data_train_fs.sets, order=order)
@@ -473,7 +473,7 @@ def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save
 
     for count, model in Util.enumerate2(models, start=0, step=2):
         if transformation is not None:
-            model.appendTransformation(transformation)
+            model.append_transformation(transformation)
             model.train(data_train, data_train_fs, order=model.order)
         objs.append(model)
         lcolors.append( colors[count % ncol] )
@@ -552,7 +552,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
             ax.plot(forecasts, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
 
         if fts.has_interval_forecasting and intervals:
-            forecasts = fts.forecastInterval(original)
+            forecasts = fts.forecast_interval(original)
             lbl = fts.shortname + " " + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
             if not points and intervals:
                 ls = "-"
@@ -573,7 +573,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
-    Util.showAndSaveImage(fig, file, save, lgd=legends)
+    Util.show_and_save_image(fig, file, save, lgd=legends)
 
 
 def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
@@ -627,7 +627,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
                             times2[_key] = []
 
                         if transformation is not None:
-                            mfts.appendTransformation(transformation)
+                            mfts.append_transformation(transformation)
 
                         _start = time.time()
                         mfts.train(train, data_train_fs.sets)
@@ -662,7 +662,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
                                     times2[_key] = []
 
                                 if transformation is not None:
-                                    mfts.appendTransformation(transformation)
+                                    mfts.append_transformation(transformation)
 
                                 _start = time.time()
                                 mfts.train(train, data_train_fs.sets, order=order)
@@ -699,7 +699,7 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
         mfts = model("")
         if not mfts.is_high_order:
             if transformation is not None:
-                mfts.appendTransformation(transformation)
+                mfts.append_transformation(transformation)
             mfts.train(data_train, data_train_fs)
             objs.append(mfts)
             lcolors.append( colors[count % ncol] )
@@ -708,7 +708,7 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
                 if order >= mfts.min_order:
                     mfts = model(" n = " + str(order))
                     if transformation is not None:
-                        mfts.appendTransformation(transformation)
+                        mfts.append_transformation(transformation)
                     mfts.train(data_train, data_train_fs, order=order)
                     objs.append(mfts)
                     lcolors.append(colors[count % ncol])
@@ -771,14 +771,14 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
 
     for count, fts in enumerate(models, start=0):
         if fts.has_probability_forecasting and distributions[count]:
-            density = fts.forecastAheadDistribution(original[time_from - fts.order:time_from], time_to,
-                                                    resolution=resolution)
+            density = fts.forecast_ahead_distribution(original[time_from - fts.order:time_from], time_to,
+                                                      resolution=resolution)
 
             #plot_density_scatter(ax, cmap, density, fig, resolution, time_from, time_to)
             plot_density_rectange(ax, cm, density, fig, resolution, time_from, time_to)
 
         if fts.has_interval_forecasting and intervals:
-            forecasts = fts.forecastAheadInterval(original[time_from - fts.order:time_from], time_to)
+            forecasts = fts.forecast_ahead_interval(original[time_from - fts.order:time_from], time_to)
             lower = [kk[0] for kk in forecasts]
             upper = [kk[1] for kk in forecasts]
             mi.append(min(lower))
@@ -811,7 +811,7 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
-    Util.showAndSaveImage(fig, file, save, lgd=lgd)
+    Util.show_and_save_image(fig, file, save, lgd=lgd)
 
 
 def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to):
@@ -1043,7 +1043,7 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
         sets = partitioner(train, p, transformation=transformation).sets
         for oc, o in enumerate(orders, start=0):
             fts = model("q = " + str(p) + " n = " + str(o))
-            fts.appendTransformation(transformation)
+            fts.append_transformation(transformation)
             fts.train(train, sets, o, parameters=parameters)
             if not intervals:
                 forecasted = fts.forecast(test)
@@ -1055,7 +1055,7 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
                     forecasted.insert(0, None)
                 if plotforecasts: ax0.plot(forecasted, label=fts.name)
             else:
-                forecasted = fts.forecastInterval(test)
+                forecasted = fts.forecast_interval(test)
                 error = 1.0 - Measures.rmse_interval(np.array(test[o:]), np.array(forecasted[:-1]))
             errors[oc, pc] = error
             if error < min_rmse:
@@ -1090,7 +1090,7 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
 
     # plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
     return ret
 
@@ -1131,7 +1131,7 @@ def sliding_window_simple_search(data, windowsize, model, partitions, orders, sa
                         forecasted.insert(0, None)
                     if plotforecasts: ax0.plot(forecasted, label=fts.name)
                 else:
-                    forecasted = fts.forecastInterval(test)
+                    forecasted = fts.forecast_interval(test)
                     _error.append( 1.0 - Measures.rmse_interval(np.array(test[o:]), np.array(forecasted[:-1])) )
             error = np.nanmean(_error)
             errors[oc, pc] = error
@@ -1166,7 +1166,7 @@ def sliding_window_simple_search(data, windowsize, model, partitions, orders, sa
 
     # plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
     return ret
 
@@ -1185,7 +1185,7 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
         fts.shortname = "n = " + str(order)
         fts.train(data, data_fs1, order=order)
         point_forecasts = fts.forecast(data)
-        interval_forecasts = fts.forecastInterval(data)
+        interval_forecasts = fts.forecast_interval(data)
         lower = [kk[0] for kk in interval_forecasts]
         upper = [kk[1] for kk in interval_forecasts]
         mi.append(min(lower) * 0.95)
@@ -1207,7 +1207,7 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
         fts.shortname = "q = " + str(partitions)
         fts.train(data, data_fs, 1)
         point_forecasts = fts.forecast(data)
-        interval_forecasts = fts.forecastInterval(data)
+        interval_forecasts = fts.forecast_interval(data)
         lower = [kk[0] for kk in interval_forecasts]
         upper = [kk[1] for kk in interval_forecasts]
         mi.append(min(lower) * 0.95)
@@ -1230,5 +1230,5 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 

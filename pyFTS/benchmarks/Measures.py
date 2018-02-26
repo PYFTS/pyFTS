@@ -303,7 +303,7 @@ def get_point_statistics(data, model, indexer=None):
 def get_interval_statistics(original, model):
     """Condensate all measures for point_to_interval forecasters"""
     ret = list()
-    forecasts = model.forecastInterval(original)
+    forecasts = model.forecast_interval(original)
     ret.append(round(sharpness(forecasts), 2))
     ret.append(round(resolution(forecasts), 2))
     ret.append(round(coverage(original[model.order:], forecasts[:-1]), 2))
@@ -318,7 +318,7 @@ def get_distribution_statistics(original, model, steps, resolution):
     ret = list()
     try:
         _s1 = time.time()
-        densities1 = model.forecastAheadDistribution(original, steps, parameters=3)
+        densities1 = model.forecast_ahead_distribution(original, steps, parameters=3)
         _e1 = time.time()
         ret.append(round(crps(original, densities1), 3))
         ret.append(round(_e1 - _s1, 3))
@@ -329,7 +329,7 @@ def get_distribution_statistics(original, model, steps, resolution):
 
     try:
         _s2 = time.time()
-        densities2 = model.forecastAheadDistribution(original, steps, parameters=2)
+        densities2 = model.forecast_ahead_distribution(original, steps, parameters=2)
         _e2 = time.time()
         ret.append( round(crps(original, densities2), 3))
         ret.append(round(_e2 - _s2, 3))

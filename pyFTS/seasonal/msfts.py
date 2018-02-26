@@ -54,11 +54,11 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
 
             ret.append(sum(mp) / len(mp))
 
-        ret = self.doInverseTransformations(ret, params=[ndata])
+        ret = self.apply_inverse_transformations(ret, params=[ndata])
 
         return ret
 
-    def forecastAhead(self, data, steps, **kwargs):
+    def forecast_ahead(self, data, steps, **kwargs):
         ret = []
         for i in steps:
             flrg = self.flrgs[str(i)]
@@ -67,6 +67,6 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
 
             ret.append(sum(mp) / len(mp))
 
-        ret = self.doInverseTransformations(ret, params=data)
+        ret = self.apply_inverse_transformations(ret, params=data)
 
         return ret

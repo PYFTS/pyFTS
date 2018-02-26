@@ -65,7 +65,7 @@ class ProbabilityDistribution(object):
             for v,d in enumerate(dens):
                 self.distribution[self.bins[v]] = d
 
-    def appendInterval(self, intervals):
+    def append_interval(self, intervals):
         if self.type == "histogram":
             for interval in intervals:
                 for k in self.bin_index.inside(interval[0], interval[1]):

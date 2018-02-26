@@ -10,14 +10,14 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
         self.name = "Conditional Variance FTS"
         self.detail = ""
         self.flrgs = {}
-        #self.appendTransformation(Transformations.Differential(1))
+        #self.append_transformation(Transformations.Differential(1))
         if self.partitioner is None:
             self.min_tx = None
             self.max_tx = None
         else:
             self.min_tx = self.partitioner.min
             self.max_tx = self.partitioner.max
-            self.appendTransformation(self.partitioner.transformation)
+            self.append_transformation(self.partitioner.transformation)
 
         self.min_stack = [0,0,0]
         self.max_stack = [0,0,0]
@@ -28,7 +28,7 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
         else:
             self.sets = self.partitioner.sets
 
-        ndata = self.doTransformations(data)
+        ndata = self.apply_transformations(data)
 
         self.min_tx = min(ndata)
         self.max_tx = max(ndata)
@@ -89,7 +89,7 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
         return affected_sets
 
     def forecast(self, data, **kwargs):
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -127,13 +127,13 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
 
             ret.append(pto)
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret
 
 
-    def forecastInterval(self, data, **kwargs):
-        ndata = np.array(self.doTransformations(data))
+    def forecast_interval(self, data, **kwargs):
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -175,6 +175,6 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
 
             ret.append(itvl)
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

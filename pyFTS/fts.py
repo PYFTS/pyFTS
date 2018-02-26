@@ -54,6 +54,32 @@ class FTS(object):
 
         return best
 
+    def predict(self, data, **kwargs):
+        """
+        Forecast using trained model
+        :param data: time series with minimal length to the order of the model
+        :param kwargs:
+        :return:
+        """
+        type = kwargs.get("type", 'point')
+        steps_ahead = kwargs.get("steps_ahead", None)
+
+        if type == 'point' and steps_ahead == None:
+            return self.forecast(data, **kwargs)
+        elif type == 'point' and steps_ahead != None:
+            return self.forecast_ahead(data, steps_ahead, **kwargs)
+        elif type == 'interval' and steps_ahead == None:
+            return self.forecast_interval(data, **kwargs)
+        elif type == 'interval' and steps_ahead != None:
+            return self.forecast_ahead_interval(data, steps_ahead, **kwargs)
+        elif type == 'distribution' and steps_ahead == None:
+            return self.forecast_distribution(data, **kwargs)
+        elif type == 'distribution' and steps_ahead != None:
+            return self.forecast_ahead_distribution(data, steps_ahead, **kwargs)
+        else:
+            raise ValueError('The argument \'type\' has an unknown value.')
+
+
     def forecast(self, data, **kwargs):
         """
         Point forecast one step ahead 
@@ -61,27 +87,27 @@ class FTS(object):
         :param kwargs: 
         :return: 
         """
-        pass
+        raise NotImplementedError('This model do not perform one step ahead point forecasts!')
 
-    def forecastInterval(self, data, **kwargs):
+    def forecast_interval(self, data, **kwargs):
         """
         Interval forecast one step ahead
         :param data: 
         :param kwargs: 
         :return: 
         """
-        pass
+        raise NotImplementedError('This model do not perform one step ahead interval forecasts!')
 
-    def forecastDistribution(self, data, **kwargs):
+    def forecast_distribution(self, data, **kwargs):
         """
         Probabilistic forecast one step ahead
         :param data: 
         :param kwargs: 
         :return: 
         """
-        pass
+        raise NotImplementedError('This model do not perform one step ahead distribution forecasts!')
 
-    def forecastAhead(self, data, steps, **kwargs):
+    def forecast_ahead(self, data, steps, **kwargs):
         """
         Point forecast n steps ahead
         :param data: 
@@ -101,7 +127,7 @@ class FTS(object):
 
         return ret
 
-    def forecastAheadInterval(self, data, steps, **kwargs):
+    def forecast_ahead_interval(self, data, steps, **kwargs):
         """
         Interval forecast n steps ahead
         :param data: 
@@ -109,9 +135,9 @@ class FTS(object):
         :param kwargs: 
         :return: 
         """
-        pass
+        raise NotImplementedError('This model do not perform multi step ahead interval forecasts!')
 
-    def forecastAheadDistribution(self, data, steps, **kwargs):
+    def forecast_ahead_distribution(self, data, steps, **kwargs):
         """
         Probabilistic forecast n steps ahead
         :param data: 
@@ -119,7 +145,7 @@ class FTS(object):
         :param kwargs: 
         :return: 
         """
-        pass
+        raise NotImplementedError('This model do not perform multi step ahead distribution forecasts!')
 
     def train(self, data, sets, order=1, parameters=None):
         """
@@ -132,11 +158,20 @@ class FTS(object):
         """
         pass
 
-    def appendTransformation(self, transformation):
+    def fit(self, data, **kwargs):
+        """
+
+        :param data:
+        :param kwargs:
+        :return:
+        """
+        self.train(data, sets=None)
+
+    def append_transformation(self, transformation):
         if transformation is not None:
             self.transformations.append(transformation)
 
-    def doTransformations(self,data,params=None,updateUoD=False, **kwargs):
+    def apply_transformations(self, data, params=None, updateUoD=False, **kwargs):
         ndata = data
         if updateUoD:
             if min(data) < 0:
@@ -158,7 +193,7 @@ class FTS(object):
 
         return ndata
 
-    def doInverseTransformations(self, data, params=None, **kwargs):
+    def apply_inverse_transformations(self, data, params=None, **kwargs):
         if len(self.transformations) > 0:
             if params is None:
                 params = [None for k in self.transformations]

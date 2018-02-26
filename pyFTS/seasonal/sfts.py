@@ -63,14 +63,14 @@ class SeasonalFTS(fts.FTS):
 
     def train(self, data, sets, order=1, parameters=None):
         self.sets = sets
-        ndata = self.doTransformations(data)
-        tmpdata = FuzzySet.fuzzySeries(ndata, sets)
+        ndata = self.apply_transformations(data)
+        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, sets)
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
     def forecast(self, data, **kwargs):
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -86,6 +86,6 @@ class SeasonalFTS(fts.FTS):
 
             ret.append(np.percentile(mp, 50))
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

@@ -79,7 +79,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
 
             flrg = self.flrgs[str(index[k])]
 
-            d = FuzzySet.getMaxMembershipFuzzySet(ndata[k], self.sets)
+            d = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets)
 
             mp = self.getMidpoints(flrg, d)
 

@@ -56,9 +56,9 @@ pfts1.shortname = "1st Order"
 
 #tmp = pfts1.forecast(data[3000:3020])
 
-#tmp = pfts1.forecastInterval(data[3000:3020])
+#tmp = pfts1.forecast_interval(data[3000:3020])
 
-tmp = pfts1.forecastDistribution(data[3500])
+tmp = pfts1.forecast_distribution(data[3500])
 
 p = 0
 for b in tmp[0].bins:
@@ -66,9 +66,9 @@ for b in tmp[0].bins:
 
 print(p)
 
-#tmp = pfts1.forecastAheadInterval(data[3000:3020],20)
+#tmp = pfts1.forecast_ahead_interval(data[3000:3020],20)
 
-#tmp = pfts1.forecastAheadDistribution(data[3000:3020],20, method=3, h=0.45, kernel="gaussian")
+#tmp = pfts1.forecast_ahead_distribution(data[3000:3020],20, method=3, h=0.45, kernel="gaussian")
 #print(tmp[0])
 
 #print(tmp[0].quantile([0.05, 0.95]))

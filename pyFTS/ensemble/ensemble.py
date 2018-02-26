@@ -117,7 +117,7 @@ class EnsembleFTS(fts.FTS):
 
         return ret
 
-    def forecastInterval(self, data, **kwargs):
+    def forecast_interval(self, data, **kwargs):
 
         if "method" in kwargs:
             self.interval_method = kwargs.get('method','quantile')
@@ -139,7 +139,7 @@ class EnsembleFTS(fts.FTS):
 
         return ret
 
-    def forecastAheadInterval(self, data, steps, **kwargs):
+    def forecast_ahead_interval(self, data, steps, **kwargs):
 
         if 'method' in kwargs:
             self.interval_method = kwargs.get('method','quantile')
@@ -180,7 +180,7 @@ class EnsembleFTS(fts.FTS):
     def empty_grid(self, resolution):
         return self.get_empty_grid(-(self.original_max*2), self.original_max*2, resolution)
 
-    def forecastAheadDistribution(self, data, steps, **kwargs):
+    def forecast_ahead_distribution(self, data, steps, **kwargs):
         if 'method' in kwargs:
             self.point_method = kwargs.get('method','mean')
 
@@ -232,7 +232,7 @@ class AllMethodEnsembleFTS(EnsembleFTS):
 
     def set_transformations(self, model):
         for t in self.transformations:
-            model.appendTransformation(t)
+            model.append_transformation(t)
 
     def train(self, data, sets, order=1, parameters=None):
         self.original_max = max(data)

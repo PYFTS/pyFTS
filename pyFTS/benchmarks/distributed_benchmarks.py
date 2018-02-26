@@ -57,7 +57,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
         mfts.partitioner = partitioner
 
     if transformation is not None:
-        mfts.appendTransformation(transformation)
+        mfts.append_transformation(transformation)
 
     _start = time.time()
     mfts.train(train_data, partitioner.sets, order=mfts.order)
@@ -243,7 +243,7 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, tran
         mfts.partitioner = partitioner
 
     if transformation is not None:
-        mfts.appendTransformation(transformation)
+        mfts.append_transformation(transformation)
 
     _start = time.time()
     mfts.train(train_data, partitioner.sets, order=mfts.order)
@@ -443,7 +443,7 @@ def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, windo
         mfts.partitioner = partitioner
 
     if transformation is not None:
-        mfts.appendTransformation(transformation)
+        mfts.append_transformation(transformation)
 
     if mfts.has_seasonality:
         mfts.indexer = indexer

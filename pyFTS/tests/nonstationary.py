@@ -109,7 +109,7 @@ nsftsp.train(trainp, order=2, parameters=ws)
 #print(nsftsp)
 
 tmpp = nsftsp.forecast(passengers[101:104], time_displacement=101, window_size=ws)
-tmpi = nsftsp.forecastInterval(passengers[101:104], time_displacement=101, window_size=ws)
+tmpi = nsftsp.forecast_interval(passengers[101:104], time_displacement=101, window_size=ws)
 
 #print(passengers[101:104])
 print([k[0] for k in tmpi])

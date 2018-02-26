@@ -55,7 +55,7 @@ class FuzzySet(object):
         return self.name + ": " + str(self.mf.__name__) + "(" + str(self.parameters) + ")"
 
 
-def fuzzyInstance(inst, fuzzySets):
+def fuzzyfy_instance(inst, fuzzySets):
     """
     Calculate the membership values for a data point given fuzzy sets
     :param inst: data point
@@ -66,7 +66,7 @@ def fuzzyInstance(inst, fuzzySets):
     return mv
 
 
-def fuzzyInstances(data, fuzzySets):
+def fuzzyfy_instances(data, fuzzySets):
     """
     Calculate the membership values for a data point given fuzzy sets
     :param inst: data point
@@ -80,36 +80,36 @@ def fuzzyInstances(data, fuzzySets):
     return ret
 
 
-def getMaxMembershipFuzzySet(inst, fuzzySets):
+def get_maximum_membership_fuzzyset(inst, fuzzySets):
     """
     Fuzzify a data point, returning the fuzzy set with maximum membership value
     :param inst: data point
     :param fuzzySets: list of fuzzy sets 
     :return: fuzzy set with maximum membership
     """
-    mv = fuzzyInstance(inst, fuzzySets)
+    mv = fuzzyfy_instance(inst, fuzzySets)
     return fuzzySets[np.argwhere(mv == max(mv))[0, 0]]
 
 
-def getMaxMembershipFuzzySetIndex(inst, fuzzySets):
+def get_maximum_membership_fuzzyset_index(inst, fuzzySets):
     """
     Fuzzify a data point, returning the fuzzy set with maximum membership value
     :param inst: data point
     :param fuzzySets: list of fuzzy sets 
     :return: fuzzy set with maximum membership
     """
-    mv = fuzzyInstance(inst, fuzzySets)
+    mv = fuzzyfy_instance(inst, fuzzySets)
     return np.argwhere(mv == max(mv))[0, 0]
 
 
-def fuzzySeries(data, fuzzySets, method='maximum'):
+def fuzzyfy_series_old(data, fuzzySets, method='maximum'):
     fts = []
     for item in data:
-        fts.append(getMaxMembershipFuzzySet(item, fuzzySets))
+        fts.append(get_maximum_membership_fuzzyset(item, fuzzySets))
     return fts
 
 
-def fuzzifySeries(data, fuzzySets, method='maximum'):
+def fuzzify_series(data, fuzzySets, method='maximum'):
     fts = []
     for t, i in enumerate(data):
         mv = np.array([fs.membership(i) for fs in fuzzySets])

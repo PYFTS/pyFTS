@@ -113,7 +113,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def train(self, data, sets, order=1,parameters='Fuzzy'):
 
-        data = self.doTransformations(data, updateUoD=True)
+        data = self.apply_transformations(data, updateUoD=True)
 
         self.order = order
         if sets is None and self.partitioner is not None:
@@ -124,7 +124,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             self.sets = sets
         for s in self.sets:    self.setsDict[s.name] = s
         if parameters == 'Monotonic':
-            tmpdata = FuzzySet.fuzzySeries(data, sets)
+            tmpdata = FuzzySet.fuzzyfy_series_old(data, sets)
             flrs = FLR.generateRecurrentFLRs(tmpdata)
             self.flrgs = self.generateFLRG(flrs)
         else:
@@ -138,10 +138,10 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             sample = data[k - self.order: k]
 
-            mvs = FuzzySet.fuzzyInstances(sample, self.sets)
+            mvs = FuzzySet.fuzzyfy_instances(sample, self.sets)
             lags = {}
 
-            mv = FuzzySet.fuzzyInstance(data[k], self.sets)
+            mv = FuzzySet.fuzzyfy_instance(data[k], self.sets)
             tmp = np.argwhere(mv)
             idx = np.ravel(tmp)  # flatten the array
 
@@ -201,7 +201,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def update_model(self,data):
 
-        fzzy = FuzzySet.fuzzySeries(data, self.sets)
+        fzzy = FuzzySet.fuzzyfy_series_old(data, self.sets)
 
         flrg = ProbabilisticWeightedFLRG(self.order)
 
@@ -277,7 +277,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def forecast(self, data, **kwargs):
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -299,7 +299,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 subset = ndata[k - (self.order - 1): k + 1]
 
                 for count, instance in enumerate(subset):
-                    mb = FuzzySet.fuzzyInstance(instance, self.sets)
+                    mb = FuzzySet.fuzzyfy_instance(instance, self.sets)
                     tmp = np.argwhere(mb)
                     idx = np.ravel(tmp)  # flatten the array
 
@@ -332,11 +332,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                     affected_flrgs.append(flrg)
 
                     # Find the general membership of FLRG
-                    affected_flrgs_memberships.append(flrg.get_membership())
+                    affected_flrgs_memberships.append(flrg.get_membership(subset))
 
             else:
 
-                mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)  # get all membership values
+                mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)  # get all membership values
                 tmp = np.argwhere(mv)  # get the indices of values > 0
                 idx = np.ravel(tmp)  # flatten the array
 
@@ -371,11 +371,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         if self.auto_update and k > self.order+1: self.update_model(ndata[k - self.order - 1 : k])
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret
 
-    def forecastInterval(self, data, **kwargs):
+    def forecast_interval(self, data, **kwargs):
 
         if 'method' in kwargs:
             self.interval_method = kwargs.get('method','quantile')
@@ -383,7 +383,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         if 'alpha' in kwargs:
             self.alpha = kwargs.get('alpha', 0.05)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -396,12 +396,12 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             else:
                 self.interval_quantile(k, ndata, ret)
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], interval=True)
 
         return ret
 
     def interval_quantile(self, k, ndata, ret):
-        dist = self.forecastDistribution(ndata)
+        dist = self.forecast_distribution(ndata)
         lo_qt = dist[0].quantile(self.alpha)
         up_qt = dist[0].quantile(1.0 - self.alpha)
         ret.append([lo_qt, up_qt])
@@ -419,7 +419,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             subset = ndata[k - (self.order - 1): k + 1]
 
             for instance in subset:
-                mb = FuzzySet.fuzzyInstance(instance, self.sets)
+                mb = FuzzySet.fuzzyfy_instance(instance, self.sets)
                 tmp = np.argwhere(mb)
                 idx = np.ravel(tmp)  # flatten the array
 
@@ -458,7 +458,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         else:
 
-            mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)  # get all membership values
+            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)  # get all membership values
             tmp = np.argwhere(mv)  # get the indices of values > 0
             idx = np.ravel(tmp)  # flatten the array
 
@@ -494,7 +494,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             up_ = sum(up) / norm
             ret.append([lo_, up_])
 
-    def forecastDistribution(self, data, **kwargs):
+    def forecast_distribution(self, data, **kwargs):
 
         if not isinstance(data, (list, set, np.ndarray)):
             data = [data]
@@ -502,7 +502,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         smooth = kwargs.get("smooth", "none")
         nbins = kwargs.get("num_bins", 100)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -532,7 +532,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         return ret
 
-    def forecastAhead(self, data, steps, **kwargs):
+    def forecast_ahead(self, data, steps, **kwargs):
         ret = [data[k] for k in np.arange(len(data) - self.order, len(data))]
 
         for k in np.arange(self.order - 1, steps):
@@ -546,7 +546,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         return ret
 
-    def forecastAheadInterval(self, data, steps, **kwargs):
+    def forecast_ahead_interval(self, data, steps, **kwargs):
 
         l = len(data)
 
@@ -559,14 +559,14 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 1] >= self.original_max):
                 ret.append(ret[-1])
             else:
-                lower = self.forecastInterval([ret[x][0] for x in np.arange(k - self.order, k)])
-                upper = self.forecastInterval([ret[x][1] for x in np.arange(k - self.order, k)])
+                lower = self.forecast_interval([ret[x][0] for x in np.arange(k - self.order, k)])
+                upper = self.forecast_interval([ret[x][1] for x in np.arange(k - self.order, k)])
 
                 ret.append([np.min(lower), np.max(upper)])
 
         return ret
 
-    def forecastAheadDistribution(self, data, steps, **kwargs):
+    def forecast_ahead_distribution(self, data, steps, **kwargs):
 
         ret = []
 
@@ -578,7 +578,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         _bins = np.linspace(uod[0], uod[1], nbins).tolist()
 
         if method != 4:
-            intervals = self.forecastAheadInterval(data, steps)
+            intervals = self.forecast_ahead_interval(data, steps)
         else:
             l = len(data)
             for k in np.arange(l - self.order, l):
@@ -623,7 +623,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 for p in root.paths():
                     path = list(reversed(list(filter(None.__ne__, p))))
 
-                    qtle = np.ravel(self.forecastInterval(path))
+                    qtle = np.ravel(self.forecast_interval(path))
 
                     data.extend(np.linspace(qtle[0],qtle[1],100).tolist())
 
@@ -631,17 +631,17 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 for qt in np.arange(0, 50, 1):
                     # print(qt)
-                    qtle_lower = self.forecastInterval(
+                    qtle_lower = self.forecast_interval(
                         [intervals[x][0] + qt * ((intervals[x][1] - intervals[x][0]) / 100) for x in
                          np.arange(k - self.order, k)])
                     qtle_lower = np.ravel(qtle_lower)
                     data.extend(np.linspace(qtle_lower[0], qtle_lower[1], 100).tolist())
-                    qtle_upper = self.forecastInterval(
+                    qtle_upper = self.forecast_interval(
                         [intervals[x][1] - qt * ((intervals[x][1] - intervals[x][0]) / 100) for x in
                          np.arange(k - self.order, k)])
                     qtle_upper = np.ravel(qtle_upper)
                     data.extend(np.linspace(qtle_upper[0], qtle_upper[1], 100).tolist())
-                qtle_mid = self.forecastInterval(
+                qtle_mid = self.forecast_interval(
                     [intervals[x][0] + (intervals[x][1] - intervals[x][0]) / 2 for x in np.arange(k - self.order, k)])
                 qtle_mid = np.ravel(qtle_mid)
                 data.extend(np.linspace(qtle_mid[0], qtle_mid[1], 100).tolist())
@@ -674,7 +674,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                     pk = np.prod([ret[k - self.order + o].density(path[o])
                                   for o in np.arange(0,self.order)])
 
-                    d = self.forecastDistribution(path)[0]
+                    d = self.forecast_distribution(path)[0]
 
                     for bin in _bins:
                         dist.set(bin, dist.density(bin) + pk * d.density(bin))

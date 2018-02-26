@@ -94,7 +94,7 @@ def plotResiduals(targets, models, tam=[8, 8], save=False, file=None):
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def plot_residuals(targets, models, tam=[8, 8], save=False, file=None):
@@ -127,7 +127,7 @@ def plot_residuals(targets, models, tam=[8, 8], save=False, file=None):
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def single_plot_residuals(targets, forecasts, order, tam=[8, 8], save=False, file=None):
@@ -153,4 +153,4 @@ def single_plot_residuals(targets, forecasts, order, tam=[8, 8], save=False, fil
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)

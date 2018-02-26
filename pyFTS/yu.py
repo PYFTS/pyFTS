@@ -46,7 +46,7 @@ class WeightedFTS(fts.FTS):
         self.name = "Weighted FTS"
         self.detail = "Yu"
 
-    def generateFLRG(self, flrs):
+    def generate_FLRG(self, flrs):
         flrgs = {}
         for flr in flrs:
             if flr.LHS.name in flrgs:
@@ -58,17 +58,17 @@ class WeightedFTS(fts.FTS):
 
     def train(self, data, sets,order=1,parameters=None):
         self.sets = sets
-        ndata = self.doTransformations(data)
-        tmpdata = FuzzySet.fuzzySeries(ndata, sets)
+        ndata = self.apply_transformations(data)
+        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, sets)
         flrs = FLR.generateRecurrentFLRs(tmpdata)
-        self.flrgs = self.generateFLRG(flrs)
+        self.flrgs = self.generate_FLRG(flrs)
 
     def forecast(self, data, **kwargs):
         l = 1
 
         data = np.array(data)
 
-        ndata = self.doTransformations(data)
+        ndata = self.apply_transformations(data)
 
         l = len(ndata)
 
@@ -76,7 +76,7 @@ class WeightedFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
-            mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)
+            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)
 
             actual = self.sets[np.argwhere(mv == max(mv))[0, 0]]
 
@@ -88,6 +88,6 @@ class WeightedFTS(fts.FTS):
 
                 ret.append(mp.dot(flrg.weights()))
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

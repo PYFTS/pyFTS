@@ -31,7 +31,7 @@ def run_point(mfts, partitioner, train_data, test_data, transformation=None, ind
     _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
     mfts.partitioner = partitioner
     if transformation is not None:
-        mfts.appendTransformation(transformation)
+        mfts.append_transformation(transformation)
 
     try:
         _start = time.time()
@@ -157,7 +157,7 @@ def run_interval(mfts, partitioner, train_data, test_data, transformation=None, 
     _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
     mfts.partitioner = partitioner
     if transformation is not None:
-        mfts.appendTransformation(transformation)
+        mfts.append_transformation(transformation)
 
     try:
         _start = time.time()
@@ -285,7 +285,7 @@ def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, trans
     _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
     mfts.partitioner = partitioner
     if transformation is not None:
-        mfts.appendTransformation(transformation)
+        mfts.append_transformation(transformation)
 
     try:
         _start = time.time()

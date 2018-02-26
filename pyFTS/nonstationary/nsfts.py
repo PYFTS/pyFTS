@@ -51,7 +51,7 @@ class NonStationaryFTS(fts.FTS):
         else:
             self.sets = self.partitioner.sets
 
-        ndata = self.doTransformations(data)
+        ndata = self.apply_transformations(data)
         window_size = parameters if parameters is not None else 1
         tmpdata = common.fuzzySeries(ndata, self.sets, window_size, method=self.method)
         #print([k[0].name for k in tmpdata])
@@ -65,7 +65,7 @@ class NonStationaryFTS(fts.FTS):
 
         window_size = kwargs.get("window_size", 1)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -120,17 +120,17 @@ class NonStationaryFTS(fts.FTS):
 
             ret.append(pto)
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret
 
-    def forecastInterval(self, data, **kwargs):
+    def forecast_interval(self, data, **kwargs):
 
         time_displacement = kwargs.get("time_displacement", 0)
 
         window_size = kwargs.get("window_size", 1)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -181,6 +181,6 @@ class NonStationaryFTS(fts.FTS):
 
             ret.append([sum(lower), sum(upper)])
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

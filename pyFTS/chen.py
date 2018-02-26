@@ -49,14 +49,14 @@ class ConventionalFTS(fts.FTS):
 
     def train(self, data, sets,order=1,parameters=None):
         self.sets = sets
-        ndata = self.doTransformations(data)
-        tmpdata = FuzzySet.fuzzySeries(ndata, sets)
+        ndata = self.apply_transformations(data)
+        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, sets)
         flrs = FLR.generateNonRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
     def forecast(self, data, **kwargs):
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -64,7 +64,7 @@ class ConventionalFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
-            mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)
+            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)
 
             actual = self.sets[np.argwhere(mv == max(mv))[0, 0]]
 
@@ -75,6 +75,6 @@ class ConventionalFTS(fts.FTS):
 
                 ret.append(_flrg.get_midpoint())
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

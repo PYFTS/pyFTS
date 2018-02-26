@@ -35,7 +35,7 @@ class QuantileRegression(fts.FTS):
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
 
-        tmp = np.array(self.doTransformations(data, updateUoD=True))
+        tmp = np.array(self.apply_transformations(data, updateUoD=True))
 
         lagdata, ndata = lagmat(tmp, maxlag=order, trim="both", original='sep')
 
@@ -82,7 +82,7 @@ class QuantileRegression(fts.FTS):
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
         l = len(ndata)
 
         ret = []
@@ -92,16 +92,16 @@ class QuantileRegression(fts.FTS):
 
             ret.append(self.linearmodel(sample, self.mean_qt))
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret
 
-    def forecastInterval(self, data, **kwargs):
+    def forecast_interval(self, data, **kwargs):
 
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -111,16 +111,16 @@ class QuantileRegression(fts.FTS):
             sample = ndata[k - self.order: k]
             ret.append(self.point_to_interval(sample, self.lower_qt, self.upper_qt))
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], interval=True)
 
         return ret
 
-    def forecastAheadInterval(self, data, steps, **kwargs):
+    def forecast_ahead_interval(self, data, steps, **kwargs):
 
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         smoothing = kwargs.get("smoothing", 0.9)
 
@@ -128,7 +128,7 @@ class QuantileRegression(fts.FTS):
 
         ret = []
 
-        nmeans = self.forecastAhead(ndata, steps, **kwargs)
+        nmeans = self.forecast_ahead(ndata, steps, **kwargs)
 
         for k in np.arange(0, self.order):
             nmeans.insert(k,ndata[-(k+1)])
@@ -138,16 +138,16 @@ class QuantileRegression(fts.FTS):
 
             ret.append([intl[0]*(1 + k*smoothing), intl[1]*(1 + k*smoothing)])
 
-        ret = self.doInverseTransformations(ret, params=[[data[-1] for a in np.arange(0, steps + self.order)]], interval=True)
+        ret = self.apply_inverse_transformations(ret, params=[[data[-1] for a in np.arange(0, steps + self.order)]], interval=True)
 
         return ret[-steps:]
 
-    def forecastDistribution(self, data, **kwargs):
+    def forecast_distribution(self, data, **kwargs):
 
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         ret = []
 
@@ -162,18 +162,18 @@ class QuantileRegression(fts.FTS):
                 intl = self.point_to_interval(sample, qt[0], qt[1])
                 intervals.append(intl)
 
-            dist.appendInterval(intervals)
+            dist.append_interval(intervals)
 
             ret.append(dist)
 
         return ret
 
-    def forecastAheadDistribution(self, data, steps, **kwargs):
+    def forecast_ahead_distribution(self, data, steps, **kwargs):
 
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         ret = []
 
@@ -184,7 +184,7 @@ class QuantileRegression(fts.FTS):
             for qt in self.dist_qt:
                 intl = self.interval_to_interval([intervals[x] for x in np.arange(k - self.order, k)], qt[0], qt[1])
                 intervals.append(intl)
-            dist.appendInterval(intervals)
+            dist.append_interval(intervals)
 
             ret.append(dist)
 

@@ -43,9 +43,9 @@ class IntervalFTS(hofts.HighOrderFTS):
         mb = [fuzzySets[k].membership(data[k]) for k in np.arange(0, len(data))]
         return mb
 
-    def forecastInterval(self, data, **kwargs):
+    def forecast_interval(self, data, **kwargs):
 
-        ndata = np.array(self.doTransformations(data))
+        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -66,7 +66,7 @@ class IntervalFTS(hofts.HighOrderFTS):
                 subset = ndata[k - (self.order - 1): k + 1]
 
                 for instance in subset:
-                    mb = FuzzySet.fuzzyInstance(instance, self.sets)
+                    mb = FuzzySet.fuzzyfy_instance(instance, self.sets)
                     tmp = np.argwhere(mb)
                     idx = np.ravel(tmp)  # flat the array
 
@@ -101,7 +101,7 @@ class IntervalFTS(hofts.HighOrderFTS):
                     affected_flrgs_memberships.append(min(self.getSequenceMembership(subset, flrg.LHS)))
             else:
 
-                mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)
+                mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)
                 tmp = np.argwhere(mv)
                 idx = np.ravel(tmp)
 
@@ -132,6 +132,6 @@ class IntervalFTS(hofts.HighOrderFTS):
             up_ = sum(up) / norm
             ret.append([lo_, up_])
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]], interval=True)
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], interval=True)
 
         return ret

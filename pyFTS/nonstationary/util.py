@@ -50,7 +50,7 @@ def plot_sets(sets, start=0, end=10, step=1, tam=[5, 5], colors=None,
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)
 
 
 def plot_sets_conditional(model, data, start=0, end=10, step=1, tam=[5, 5], colors=None,
@@ -88,4 +88,4 @@ def plot_sets_conditional(model, data, start=0, end=10, step=1, tam=[5, 5], colo
 
     plt.tight_layout()
 
-    Util.showAndSaveImage(fig, file, save)
+    Util.show_and_save_image(fig, file, save)

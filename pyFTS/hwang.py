@@ -21,7 +21,7 @@ class HighOrderFTS(fts.FTS):
 
     def forecast(self, data, **kwargs):
 
-        ndata = self.doTransformations(data)
+        ndata = self.apply_transformations(data)
 
         cn = np.array([0.0 for k in range(len(self.sets))])
         ow = np.array([[0.0 for k in range(len(self.sets))] for z in range(self.order - 1)])
@@ -47,7 +47,7 @@ class HighOrderFTS(fts.FTS):
                     count += 1.0
             ret.append(out / count)
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret
 

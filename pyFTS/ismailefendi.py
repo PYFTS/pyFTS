@@ -66,9 +66,9 @@ class ImprovedWeightedFTS(fts.FTS):
 
         for s in self.sets:    self.setsDict[s.name] = s
 
-        ndata = self.doTransformations(data)
+        ndata = self.apply_transformations(data)
 
-        tmpdata = FuzzySet.fuzzySeries(ndata, self.sets)
+        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generateRecurrentFLRs(tmpdata)
         self.flrgs = self.generateFLRG(flrs)
 
@@ -76,7 +76,7 @@ class ImprovedWeightedFTS(fts.FTS):
         l = 1
 
         data = np.array(data)
-        ndata = self.doTransformations(data)
+        ndata = self.apply_transformations(data)
 
         l = len(ndata)
 
@@ -84,7 +84,7 @@ class ImprovedWeightedFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
-            mv = FuzzySet.fuzzyInstance(ndata[k], self.sets)
+            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)
 
             actual = self.sets[np.argwhere(mv == max(mv))[0, 0]]
 
@@ -96,6 +96,6 @@ class ImprovedWeightedFTS(fts.FTS):
 
                 ret.append(mp.dot(flrg.weights()))
 
-        ret = self.doInverseTransformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret
