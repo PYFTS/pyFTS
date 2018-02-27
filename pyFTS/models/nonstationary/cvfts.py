@@ -34,7 +34,7 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
         self.max_tx = max(ndata)
 
         tmpdata = common.fuzzySeries(ndata, self.sets, method='fuzzy', const_t=0)
-        flrs = FLR.generateNonRecurrentFLRs(tmpdata)
+        flrs = FLR.generate_non_recurrent_flrs(tmpdata)
         self.flrgs = self.generate_flrg(flrs)
 
     def generate_flrg(self, flrs, **kwargs):

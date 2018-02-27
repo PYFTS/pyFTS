@@ -36,7 +36,7 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
         self.sets = sets
         self.seasonality = parameters
         #ndata = self.indexer.set_data(data,self.doTransformations(self.indexer.get_data(data)))
-        flrs = FLR.generateIndexedFLRs(self.sets, self.indexer, data)
+        flrs = FLR.generate_indexed_flrs(self.sets, self.indexer, data)
         self.flrgs = self.generateFLRG(flrs)
 
     def forecast(self, data, **kwargs):

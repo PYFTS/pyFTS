@@ -54,7 +54,7 @@ class NonStationaryFTS(fts.FTS):
         window_size = parameters if parameters is not None else 1
         tmpdata = common.fuzzySeries(ndata, self.sets, window_size, method=self.method)
         #print([k[0].name for k in tmpdata])
-        flrs = FLR.generateRecurrentFLRs(tmpdata)
+        flrs = FLR.generate_recurrent_flrs(tmpdata)
         #print([str(k) for k in flrs])
         self.flrgs = self.generate_flrg(flrs)
 

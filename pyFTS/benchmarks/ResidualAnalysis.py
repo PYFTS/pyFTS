@@ -17,7 +17,7 @@ def residuals(targets, forecasts, order=1):
     return np.array(targets[order:]) - np.array(forecasts[:-1])
 
 
-def ChiSquared(q,h):
+def chi_squared(q, h):
     """
     Chi-Squared value
     :param q: 
@@ -28,7 +28,7 @@ def ChiSquared(q,h):
     return p
 
 
-def compareResiduals(data, models):
+def compare_residuals(data, models):
     """
     Compare residual's statistics of several models
     :param data: 
@@ -49,7 +49,7 @@ def compareResiduals(data, models):
         ret += str(round(q1,2)) + "		& "
         q2 = Measures.BoxLjungStatistic(res, 10)
         ret += str(round(q2,2)) + "		& "
-        ret += str(ChiSquared(q2, 10))
+        ret += str(chi_squared(q2, 10))
         ret += "	\\\\ \n"
     return ret
 
@@ -131,9 +131,8 @@ def plot_residuals(targets, models, tam=[8, 8], save=False, file=None):
 
 
 def single_plot_residuals(targets, forecasts, order, tam=[8, 8], save=False, file=None):
-    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=tam)
+    fig, ax = plt.subplots(nrows=1, ncols=3, figsize=tam)
 
-    ax = axes
     res = residuals(targets, forecasts, order)
 
     ax[0].set_title("Residuals", size='large')

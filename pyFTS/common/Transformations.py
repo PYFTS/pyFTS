@@ -46,7 +46,7 @@ class Differential(Transformation):
         for t in np.arange(0, self.lag): diff.insert(0, 0)
         return diff
 
-    def inverse(self,data, param, **kwargs):
+    def inverse(self, data, param, **kwargs):
 
         interval = kwargs.get("point_to_interval",False)
 
@@ -56,10 +56,10 @@ class Differential(Transformation):
         if not isinstance(data, list):
             data = [data]
 
-        if not isinstance(param, list):
-            param = [param]
-
         n = len(data)
+
+#        print(n)
+#        print(len(param))
 
         if not interval:
             inc = [data[t] + param[t] for t in np.arange(0, n)]

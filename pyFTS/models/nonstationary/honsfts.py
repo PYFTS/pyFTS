@@ -105,7 +105,7 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
         ndata = self.apply_transformations(data)
         #tmpdata = common.fuzzyfy_series_old(ndata, self.sets)
-        #flrs = FLR.generateRecurrentFLRs(ndata)
+        #flrs = FLR.generate_recurrent_flrs(ndata)
         window_size = parameters if parameters is not None else 1
         self.flrgs = self.generate_flrg(ndata, window_size=window_size)
 

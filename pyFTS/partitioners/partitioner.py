@@ -1,5 +1,6 @@
 from pyFTS.common import FuzzySet, Membership
 import numpy as np
+import matplotlib.pylab as plt
 
 
 class Partitioner(object):
@@ -70,6 +71,8 @@ class Partitioner(object):
         ax.set_title(self.name)
         ax.set_ylim([0, 1])
         ax.set_xlim([self.min, self.max])
+        ticks = []
+        x = []
         for s in self.sets:
             if s.mf == Membership.trimf:
                 ax.plot([s.parameters[0], s.parameters[1], s.parameters[2]], [0, 1, 0])
@@ -77,6 +80,10 @@ class Partitioner(object):
                 tmpx = [kk for kk in np.arange(s.lower, s.upper)]
                 tmpy = [s.membership(kk) for kk in np.arange(s.lower, s.upper)]
                 ax.plot(tmpx, tmpy)
+            ticks.append(str(round(s.centroid,0))+'\n'+s.name)
+            x.append(s.centroid)
+        plt.xticks(x,ticks)
+
 
     def __str__(self):
         tmp = self.name + ":\n"

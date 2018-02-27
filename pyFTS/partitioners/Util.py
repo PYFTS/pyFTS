@@ -21,11 +21,11 @@ def plot_sets(data, sets, titles, tam=[12, 10], save=False, file=None):
     #print(h)
     fig, axes = plt.subplots(nrows=num, ncols=1,figsize=tam)
     for k in np.arange(0,num):
-        #ax = fig.add_axes([0.05, 1-(k*h), 0.9, h*0.7])  # left, bottom, width, height
+        ticks = []
+        x = []
         ax = axes[k]
         ax.set_title(titles[k])
         ax.set_ylim([0, 1.1])
-        ax.set_xlim([minx, maxx])
         for s in sets[k]:
             if s.mf == Membership.trimf:
                 ax.plot(s.parameters,[0,1,0])
@@ -35,6 +35,10 @@ def plot_sets(data, sets, titles, tam=[12, 10], save=False, file=None):
                 ax.plot(tmpx, tmpy)
             elif s.mf == Membership.trapmf:
                 ax.plot(s.parameters, [0, 1, 1, 0])
+            ticks.append(str(round(s.centroid, 0)) + '\n' + s.name)
+            x.append(s.centroid)
+        ax.xaxis.set_ticklabels(ticks)
+        ax.xaxis.set_ticks(x)
 
     plt.tight_layout()
 
@@ -44,7 +48,7 @@ def plot_sets(data, sets, titles, tam=[12, 10], save=False, file=None):
 def plot_partitioners(data, objs, tam=[12, 10], save=False, file=None):
     sets = [k.sets for k in objs]
     titles = [k.name for k in objs]
-    plot_sets(data,sets,titles,tam,save,file)
+    plot_sets(data, sets, titles, tam, save, file)
 
 
 def explore_partitioners(data, npart, methods=None, mf=None, tam=[12, 10], save=False, file=None):
@@ -59,6 +63,9 @@ def explore_partitioners(data, npart, methods=None, mf=None, tam=[12, 10], save=
     for p in methods:
         for m in mf:
             obj = p(data, npart,m)
+            obj.name = obj.name  + " - " + obj.membership_function.__name__
             objs.append(obj)
 
     plot_partitioners(data, objs, tam, save, file)
+
+    return objs

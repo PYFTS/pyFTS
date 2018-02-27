@@ -31,8 +31,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
     :return: a dictionary with the benchmark results 
     """
     import time
-    from pyFTS import yu, hofts, pwfts,ismailefendi,sadaei, song, cheng, hwang
-    from pyFTS.models import chen
+    from pyFTS.models import yu, chen, hofts, pwfts,ismailefendi,sadaei, song, cheng, hwang
     from pyFTS.partitioners import Grid, Entropy, FCM
     from pyFTS.benchmarks import Measures, naive, arima, quantreg
     from pyFTS.common import Transformations
@@ -223,7 +222,7 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, tran
     :return: a dictionary with the benchmark results 
     """
     import time
-    from pyFTS import hofts,ifts,pwfts
+    from pyFTS.models import hofts,ifts,pwfts
     from pyFTS.partitioners import Grid, Entropy, FCM
     from pyFTS.benchmarks import Measures, arima, quantreg
 
@@ -424,8 +423,8 @@ def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, windo
     """
     import time
     import numpy as np
-    from pyFTS import hofts, ifts, pwfts
-    from pyFTS.models import ensemble
+    from pyFTS.models import hofts, ifts, pwfts
+    from pyFTS.models.ensemble import ensemble
     from pyFTS.partitioners import Grid, Entropy, FCM
     from pyFTS.benchmarks import Measures, arima
     from pyFTS.models.seasonal import SeasonalIndexer

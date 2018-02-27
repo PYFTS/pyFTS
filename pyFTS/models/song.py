@@ -38,10 +38,11 @@ class ConventionalFTS(fts.FTS):
         return r
 
     def train(self, data, sets,order=1,parameters=None):
-        self.sets = sets
+        if sets != None:
+            self.sets = sets
         ndata = self.apply_transformations(data)
-        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, sets)
-        flrs = FLR.generateNonRecurrentFLRs(tmpdata)
+        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
+        flrs = FLR.generate_non_recurrent_flrs(tmpdata)
         self.R = self.operation_matrix(flrs)
 
     def forecast(self, data, **kwargs):
@@ -67,6 +68,6 @@ class ConventionalFTS(fts.FTS):
 
                 ret.append( sum(mp)/len(mp))
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret

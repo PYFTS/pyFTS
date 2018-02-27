@@ -13,7 +13,7 @@ import matplotlib.cm as cmx
 import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 import numpy as np
-#from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d import Axes3D
 
 from pyFTS.probabilistic import ProbabilityDistribution
 from pyFTS.models import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, hwang
@@ -30,8 +30,8 @@ rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 #rc('font',**{'family':'serif','serif':['Palatino']})
 rc('text', usetex=True)
 
-colors = ['grey', 'rosybrown', 'maroon', 'red','orange', 'yellow', 'olive', 'green',
-          'cyan', 'blue', 'darkblue', 'purple', 'darkviolet']
+colors = ['grey', 'darkgrey', 'rosybrown', 'maroon', 'red','orange', 'gold', 'yellow', 'olive', 'green',
+          'darkgreen', 'cyan', 'lightblue','blue', 'darkblue', 'purple', 'darkviolet' ]
 
 ncol = len(colors)
 
@@ -281,7 +281,7 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
         print_point_statistics(data_test, objs)
 
     if residuals:
-        print(ResidualAnalysis.compareResiduals(data_test, objs))
+        print(ResidualAnalysis.compare_residuals(data_test, objs))
         ResidualAnalysis.plot_residuals(data_test, objs, save=save, file=file, tam=tam)
 
     if series:
@@ -302,6 +302,8 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
         print(getProbabilityDistributionStatistics(pmfs,data_test))
 
         plot_probability_distributions(pmfs, lcolors, tam=tam)
+
+    return models
 
 
 def print_point_statistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
@@ -539,29 +541,32 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
     ax.plot(original, color='black', label="Original", linewidth=linewidth*1.5)
 
     for count, fts in enumerate(models, start=0):
-        if fts.has_point_forecasting and points:
-            forecasts = fts.forecast(original)
-            if isinstance(forecasts, np.ndarray):
-                forecasts = forecasts.tolist()
-            mi.append(min(forecasts) * 0.95)
-            ma.append(max(forecasts) * 1.05)
-            for k in np.arange(0, fts.order):
-                forecasts.insert(0, None)
-            lbl = fts.shortname + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
-            if typeonlegend: lbl += " (Point)"
-            ax.plot(forecasts, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
+        try:
+            if fts.has_point_forecasting and points:
+                forecasts = fts.forecast(original)
+                if isinstance(forecasts, np.ndarray):
+                    forecasts = forecasts.tolist()
+                mi.append(min(forecasts) * 0.95)
+                ma.append(max(forecasts) * 1.05)
+                for k in np.arange(0, fts.order):
+                    forecasts.insert(0, None)
+                lbl = fts.shortname + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
+                if typeonlegend: lbl += " (Point)"
+                ax.plot(forecasts, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
 
-        if fts.has_interval_forecasting and intervals:
-            forecasts = fts.forecast_interval(original)
-            lbl = fts.shortname + " " + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
-            if not points and intervals:
-                ls = "-"
-            else:
-                ls = "--"
-            tmpmi, tmpma = plot_interval(ax, forecasts, fts.order, label=lbl, typeonlegend=typeonlegend,
-                                         color=colors[count], ls=ls, linewidth=linewidth)
-            mi.append(tmpmi)
-            ma.append(tmpma)
+            if fts.has_interval_forecasting and intervals:
+                forecasts = fts.forecast_interval(original)
+                lbl = fts.shortname + " " + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
+                if not points and intervals:
+                    ls = "-"
+                else:
+                    ls = "--"
+                tmpmi, tmpma = plot_interval(ax, forecasts, fts.order, label=lbl, typeonlegend=typeonlegend,
+                                             color=colors[count], ls=ls, linewidth=linewidth)
+                mi.append(tmpmi)
+                ma.append(tmpma)
+        except ValueError as ex:
+            print(fts.shortname)
 
         handles0, labels0 = ax.get_legend_handles_labels()
         lgd = ax.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
@@ -573,7 +578,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
-    Util.show_and_save_image(fig, file, save, lgd=legends)
+    #Util.show_and_save_image(fig, file, save, lgd=legends)
 
 
 def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
@@ -1022,7 +1027,10 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
                       partitioner=Grid.GridPartitioner,transformation=None,indexer=None):
     _3d = len(orders) > 1
     ret = []
-    errors = np.array([[0 for k in range(len(partitions))] for kk in range(len(orders))])
+    if _3d:
+        errors = np.array([[0 for k in range(len(partitions))] for kk in range(len(orders))])
+    else:
+        errors = []
     forecasted_best = []
     fig = plt.figure(figsize=tam)
     # fig.suptitle("Comparação de modelos ")
@@ -1055,7 +1063,10 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
             else:
                 forecasted = fts.forecast_interval(test)
                 error = 1.0 - Measures.rmse_interval(np.array(test[o:]), np.array(forecasted[:-1]))
-            errors[oc, pc] = error
+            if _3d:
+                errors[oc, pc] = error
+            else:
+                errors.append( error )
             if error < min_rmse:
                 min_rmse = error
                 best = fts
@@ -1067,9 +1078,8 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
         # ax0.legend(handles0, labels0)
         ax0.plot(test, label="Original", linewidth=3.0, color="black")
         if _3d: ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
-    if not plotforecasts: ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
-    # ax1 = fig.add_axes([0.6, 0.5, 0.45, 0.45], projection='3d')
-    if _3d:
+    if _3d and not plotforecasts:
+        ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
         ax1.set_title('Error Surface')
         ax1.set_ylabel('Model order')
         ax1.set_xlabel('Number of partitions')
@@ -1079,9 +1089,9 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
     else:
         ax1 = fig.add_axes([0, 1, 0.9, 0.9])
         ax1.set_title('Error Curve')
-        ax1.set_ylabel('Number of partitions')
-        ax1.set_xlabel('RMSE')
-        ax0.plot(errors,partitions)
+        ax1.set_xlabel('Number of partitions')
+        ax1.set_ylabel('RMSE')
+        ax1.plot(partitions, errors)
     ret.append(best)
     ret.append(forecasted_best)
     ret.append(min_rmse)

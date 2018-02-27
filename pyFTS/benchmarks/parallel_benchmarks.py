@@ -10,7 +10,7 @@ from copy import deepcopy
 import numpy as np
 from joblib import Parallel, delayed
 
-from pyFTS.benchmarks import benchmarks, Util
+from pyFTS.benchmarks import benchmarks, Util as bUtil
 from pyFTS.common import Util
 from pyFTS.partitioners import Grid
 

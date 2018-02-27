@@ -125,7 +125,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         for s in self.sets:    self.setsDict[s.name] = s
         if parameters == 'Monotonic':
             tmpdata = FuzzySet.fuzzyfy_series_old(data, sets)
-            flrs = FLR.generateRecurrentFLRs(tmpdata)
+            flrs = FLR.generate_recurrent_flrs(tmpdata)
             self.flrgs = self.generateFLRG(flrs)
         else:
             self.flrgs = self.generate_flrg(data)

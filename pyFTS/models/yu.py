@@ -60,7 +60,7 @@ class WeightedFTS(fts.FTS):
         self.sets = sets
         ndata = self.apply_transformations(data)
         tmpdata = FuzzySet.fuzzyfy_series_old(ndata, sets)
-        flrs = FLR.generateRecurrentFLRs(tmpdata)
+        flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.flrgs = self.generate_FLRG(flrs)
 
     def forecast(self, data, **kwargs):

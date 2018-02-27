@@ -35,6 +35,7 @@ class IndexedFLR(FLR):
     def __str__(self):
         return str(self.index) + ": "+ self.LHS.name + " -> " + self.RHS.name
 
+
 def generate_high_order_recurrent_flr(fuzzyData):
     """
     Create a ordered FLR set from a list of fuzzy sets with recurrence
@@ -55,7 +56,8 @@ def generate_high_order_recurrent_flr(fuzzyData):
             flrs.append(tmp)
     return flrs
 
-def generateRecurrentFLRs(fuzzyData):
+
+def generate_recurrent_flrs(fuzzyData):
     """
     Create a ordered FLR set from a list of fuzzy sets with recurrence
     :param fuzzyData: ordered list of fuzzy sets
@@ -84,20 +86,20 @@ def generateRecurrentFLRs(fuzzyData):
     return flrs
 
 
-def generateNonRecurrentFLRs(fuzzyData):
+def generate_non_recurrent_flrs(fuzzyData):
     """
     Create a ordered FLR set from a list of fuzzy sets without recurrence
     :param fuzzyData: ordered list of fuzzy sets
     :return: ordered list of FLR
     """
-    flrs = generateRecurrentFLRs(fuzzyData)
+    flrs = generate_recurrent_flrs(fuzzyData)
     tmp = {}
     for flr in flrs: tmp[str(flr)] = flr
     ret = [value for key, value in tmp.items()]
     return ret
 
 
-def generateIndexedFLRs(sets, indexer, data, transformation=None):
+def generate_indexed_flrs(sets, indexer, data, transformation=None):
     """
     Create a season-indexed ordered FLR set from a list of fuzzy sets with recurrence
     :param sets: fuzzy sets

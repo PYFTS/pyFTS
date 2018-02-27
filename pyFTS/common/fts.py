@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
-from pyFTS import tree
-from pyFTS.common import FuzzySet, SortedCollection
+from pyFTS.common import FuzzySet, SortedCollection, tree
 
 
 class FTS(object):
@@ -34,6 +33,8 @@ class FTS(object):
         self.original_max = 0
         self.original_min = 0
         self.partitioner = kwargs.get("partitioner", None)
+        if self.partitioner != None:
+            self.sets = self.partitioner.sets
         self.auto_update = False
         self.benchmark_only = False
         self.indexer = None
@@ -199,7 +200,6 @@ class FTS(object):
                 params = [None for k in self.transformations]
 
             for c, t in enumerate(reversed(self.transformations), start=0):
-                print(c)
                 ndata = t.inverse(data, params[c], **kwargs)
 
             return ndata

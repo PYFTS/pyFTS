@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from pyFTS.common import FuzzySet,SortedCollection
+from pyFTS.common import FuzzySet,SortedCollection,tree
 from pyFTS.probabilistic import kde
-from pyFTS import tree
-from pyFTS.common import SortedCollection
+
 
 class ProbabilityDistribution(object):
     """

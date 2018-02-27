@@ -59,7 +59,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
     def train(self, data, sets, order=1, parameters=None):
         self.sets = sets
         self.seasonality = parameters
-        flrs = FLR.generateIndexedFLRs(self.sets, self.indexer, data)
+        flrs = FLR.generate_indexed_flrs(self.sets, self.indexer, data)
         self.flrgs = self.generateFLRG(flrs)
 
     def getMidpoints(self, flrg, data):
