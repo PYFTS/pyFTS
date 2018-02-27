@@ -56,10 +56,11 @@ class WeightedFTS(fts.FTS):
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 
-    def train(self, data, sets,order=1,parameters=None):
-        self.sets = sets
+    def train(self, data, **kwargs):
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
         ndata = self.apply_transformations(data)
-        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, sets)
+        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.flrgs = self.generate_FLRG(flrs)
 
@@ -88,6 +89,6 @@ class WeightedFTS(fts.FTS):
 
                 ret.append(mp.dot(flrg.weights()))
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret

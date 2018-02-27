@@ -17,6 +17,7 @@ class ImprovedWeightedFLRG(flrg.FLRG):
         self.RHS = {}
         self.rhs_counts = {}
         self.count = 0.0
+        self.w = None
 
     def append(self, c):
         if c.name not in self.RHS:
@@ -27,7 +28,9 @@ class ImprovedWeightedFLRG(flrg.FLRG):
         self.count += 1.0
 
     def weights(self):
-        return np.array([self.rhs_counts[c] / self.count for c in self.RHS.keys()])
+        if self.w is None:
+            self.w = np.array([self.rhs_counts[c] / self.count for c in self.RHS.keys()])
+        return self.w
 
     def __str__(self):
         tmp = self.LHS.name + " -> "
@@ -50,7 +53,7 @@ class ImprovedWeightedFTS(fts.FTS):
         self.detail = "Ismail & Efendi"
         self.setsDict = {}
 
-    def generateFLRG(self, flrs):
+    def generate_flrg(self, flrs):
         flrgs = {}
         for flr in flrs:
             if flr.LHS.name in flrgs:
@@ -60,8 +63,9 @@ class ImprovedWeightedFTS(fts.FTS):
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 
-    def train(self, data, sets, order=1, parameters=None):
-        self.sets = sets
+    def train(self, data, **kwargs):
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
 
         for s in self.sets:    self.setsDict[s.name] = s
 
@@ -69,7 +73,7 @@ class ImprovedWeightedFTS(fts.FTS):
 
         tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generate_recurrent_flrs(tmpdata)
-        self.flrgs = self.generateFLRG(flrs)
+        self.flrgs = self.generate_flrg(flrs)
 
     def forecast(self, data, **kwargs):
         l = 1
@@ -95,6 +99,6 @@ class ImprovedWeightedFTS(fts.FTS):
 
                 ret.append(mp.dot(flrg.weights()))
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret

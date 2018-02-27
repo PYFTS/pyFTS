@@ -37,9 +37,9 @@ class ConventionalFTS(fts.FTS):
 
         return r
 
-    def train(self, data, sets,order=1,parameters=None):
-        if sets != None:
-            self.sets = sets
+    def train(self, data, **kwargs):
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
         ndata = self.apply_transformations(data)
         tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
@@ -71,3 +71,7 @@ class ConventionalFTS(fts.FTS):
         ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret
+
+    def __str__(self):
+        tmp = self.name + ":\n"
+        return tmp + str(self.R)

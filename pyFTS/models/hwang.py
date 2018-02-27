@@ -50,6 +50,7 @@ class HighOrderFTS(fts.FTS):
 
         return ret
 
-    def train(self, data, sets, order=1, parameters=None):
-        self.sets = sets
-        self.order = order
+    def train(self, data, **kwargs):
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
+        self.order = kwargs.get('order', 1)

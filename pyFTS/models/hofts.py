@@ -16,19 +16,19 @@ class HighOrderFLRG(flrg.FLRG):
         self.RHS = {}
         self.strlhs = ""
 
-    def appendRHS(self, c):
+    def append_rhs(self, c):
         if c.name not in self.RHS:
             self.RHS[c.name] = c
 
-    def strLHS(self):
+    def str_lhs(self):
         if len(self.strlhs) == 0:
             for c in self.LHS:
                 if len(self.strlhs) > 0:
                     self.strlhs += ", "
-                self.strlhs = self.strlhs + str(c)
+                self.strlhs = self.strlhs + str(c.name)
         return self.strlhs
 
-    def appendLHS(self, c):
+    def append_lhs(self, c):
         self.LHS.append(c)
 
     def __str__(self):
@@ -37,7 +37,7 @@ class HighOrderFLRG(flrg.FLRG):
             if len(tmp) > 0:
                 tmp = tmp + ","
             tmp = tmp + c
-        return self.strLHS() + " -> " + tmp
+        return self.str_lhs() + " -> " + tmp
 
 
     def __len__(self):
@@ -51,7 +51,7 @@ class HighOrderFTS(fts.FTS):
         self.name = "High Order FTS"
         self.shortname = "HOFTS" + name
         self.detail = "Chen"
-        self.order = 1
+        self.order = kwargs.get('order',1)
         self.setsDict = {}
         self.is_high_order = True
 
@@ -83,13 +83,13 @@ class HighOrderFTS(fts.FTS):
             flrg = HighOrderFLRG(self.order)
 
             for kk in np.arange(k - self.order, k):
-                flrg.appendLHS(flrs[kk].LHS)
+                flrg.append_lhs(flrs[kk].LHS)
 
-            if flrg.strLHS() in flrgs:
-                flrgs[flrg.strLHS()].appendRHS(flrs[k].RHS)
+            if flrg.str_lhs() in flrgs:
+                flrgs[flrg.str_lhs()].append_rhs(flrs[k].RHS)
             else:
-                flrgs[flrg.strLHS()] = flrg;
-                flrgs[flrg.strLHS()].appendRHS(flrs[k].RHS)
+                flrgs[flrg.str_lhs()] = flrg;
+                flrgs[flrg.str_lhs()].append_rhs(flrs[k].RHS)
         return (flrgs)
 
     def generate_flrg(self, data):
@@ -118,23 +118,25 @@ class HighOrderFTS(fts.FTS):
                 flrg = HighOrderFLRG(self.order)
                 path = list(reversed(list(filter(None.__ne__, p))))
 
-                for lhs in enumerate(path, start=0):
-                    flrg.appendLHS(lhs)
+                for lhs in path:
+                    flrg.append_lhs(lhs)
 
-                if flrg.strLHS() not in flrgs:
-                    flrgs[flrg.strLHS()] = flrg;
+                if flrg.str_lhs() not in flrgs:
+                    flrgs[flrg.str_lhs()] = flrg;
 
                 for st in rhs:
-                    flrgs[flrg.strLHS()].appendRHS(st)
+                    flrgs[flrg.str_lhs()].append_rhs(st)
 
         return flrgs
 
-    def train(self, data, sets, order=1,parameters=None):
+    def train(self, data, **kwargs):
 
         data = self.apply_transformations(data, updateUoD=True)
 
-        self.order = order
-        self.sets = sets
+        self.order = kwargs.get('order',2)
+
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
         for s in self.sets:    self.setsDict[s.name] = s
         self.flrgs = self.generate_flrg(data)
 
@@ -153,12 +155,12 @@ class HighOrderFTS(fts.FTS):
             tmpdata = FuzzySet.fuzzyfy_series_old(ndata[k - self.order: k], self.sets)
             tmpflrg = HighOrderFLRG(self.order)
 
-            for s in tmpdata: tmpflrg.appendLHS(s)
+            for s in tmpdata: tmpflrg.append_lhs(s)
 
-            if tmpflrg.strLHS() not in self.flrgs:
+            if tmpflrg.str_lhs() not in self.flrgs:
                 ret.append(tmpdata[-1].centroid)
             else:
-                flrg = self.flrgs[tmpflrg.strLHS()]
+                flrg = self.flrgs[tmpflrg.str_lhs()]
                 ret.append(flrg.get_midpoint())
 
         ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])

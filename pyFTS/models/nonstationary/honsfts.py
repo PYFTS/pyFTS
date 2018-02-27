@@ -88,7 +88,7 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
                     flrgs[flrg.strLHS()] = flrg;
 
                 for st in rhs:
-                    flrgs[flrg.strLHS()].appendRHS(st)
+                    flrgs[flrg.strLHS()].append_rhs(st)
 
         # flrgs = sorted(flrgs, key=lambda flrg: flrg.get_midpoint(0, window_size=1))
 
@@ -144,7 +144,7 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
             affected_flrgs.append(flrg)
             # affected_flrgs_memberships.append(flrg.get_membership(sample, disp))
 
-            #                print(flrg.strLHS())
+            #                print(flrg.str_lhs())
 
             # the FLRG is here because of the bounds verification
             mv = []
@@ -196,14 +196,14 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
                 tmp.append(common.check_bounds(sample[-1], self.sets, tdisp))
             elif len(affected_flrgs) == 1:
                 flrg = affected_flrgs[0]
-                if flrg.strLHS() in self.flrgs:
-                    tmp.append(self.flrgs[flrg.strLHS()].get_midpoint(tdisp))
+                if flrg.str_lhs() in self.flrgs:
+                    tmp.append(self.flrgs[flrg.str_lhs()].get_midpoint(tdisp))
                 else:
                     tmp.append(flrg.LHS[-1].get_midpoint(tdisp))
             else:
                 for ct, aset in enumerate(affected_flrgs):
-                    if aset.strLHS() in self.flrgs:
-                        tmp.append(self.flrgs[aset.strLHS()].get_midpoint(tdisp) *
+                    if aset.str_lhs() in self.flrgs:
+                        tmp.append(self.flrgs[aset.str_lhs()].get_midpoint(tdisp) *
                                    affected_flrgs_memberships[ct])
                     else:
                         tmp.append(aset.LHS[-1].get_midpoint(tdisp)*
@@ -250,19 +250,19 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
                 upper.append(aset.get_upper(tdisp))
             elif len(affected_flrgs) == 1:
                 _flrg = affected_flrgs[0]
-                if _flrg.strLHS() in self.flrgs:
-                    lower.append(self.flrgs[_flrg.strLHS()].get_lower(tdisp))
-                    upper.append(self.flrgs[_flrg.strLHS()].get_upper(tdisp))
+                if _flrg.str_lhs() in self.flrgs:
+                    lower.append(self.flrgs[_flrg.str_lhs()].get_lower(tdisp))
+                    upper.append(self.flrgs[_flrg.str_lhs()].get_upper(tdisp))
                 else:
                     lower.append(_flrg.LHS[-1].get_lower(tdisp))
                     upper.append(_flrg.LHS[-1].get_upper(tdisp))
             else:
                 for ct, aset in enumerate(affected_flrgs):
-                    if aset.strLHS() in self.flrgs:
-                        lower.append(self.flrgs[aset.strLHS()].get_lower(tdisp) *
-                                   affected_flrgs_memberships[ct])
-                        upper.append(self.flrgs[aset.strLHS()].get_upper(tdisp) *
-                                   affected_flrgs_memberships[ct])
+                    if aset.str_lhs() in self.flrgs:
+                        lower.append(self.flrgs[aset.str_lhs()].get_lower(tdisp) *
+                                     affected_flrgs_memberships[ct])
+                        upper.append(self.flrgs[aset.str_lhs()].get_upper(tdisp) *
+                                     affected_flrgs_memberships[ct])
                     else:
                         lower.append(aset.LHS[-1].get_lower(tdisp) *
                                    affected_flrgs_memberships[ct])

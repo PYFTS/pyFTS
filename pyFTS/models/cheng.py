@@ -16,28 +16,31 @@ class TrendWeightedFLRG(yu.WeightedFLRG):
     """
     def __init__(self, LHS, **kwargs):
         super(TrendWeightedFLRG, self).__init__(LHS, **kwargs)
+        self.w = None
 
     def weights(self):
-        count_nochange = 0.0
-        count_up = 0.0
-        count_down = 0.0
-        weights = []
+        if self.w is None:
+            count_nochange = 0.0
+            count_up = 0.0
+            count_down = 0.0
+            weights = []
 
-        for c in self.RHS:
-            tmp = 0
-            if self.LHS.centroid == c.centroid:
-                count_nochange += 1.0
-                tmp = count_nochange
-            elif self.LHS.centroid > c.centroid:
-                count_down += 1.0
-                tmp = count_down
-            else:
-                count_up += 1.0
-                tmp = count_up
-            weights.append(tmp)
+            for c in self.RHS:
+                tmp = 0
+                if self.LHS.centroid == c.centroid:
+                    count_nochange += 1.0
+                    tmp = count_nochange
+                elif self.LHS.centroid > c.centroid:
+                    count_down += 1.0
+                    tmp = count_down
+                else:
+                    count_up += 1.0
+                    tmp = count_up
+                weights.append(tmp)
 
-        tot = sum(weights)
-        return np.array([k / tot for k in weights])
+            tot = sum(weights)
+            self.w = np.array([k / tot for k in weights])
+        return self.w
 
 
 class TrendWeightedFTS(yu.WeightedFTS):

@@ -8,6 +8,8 @@ refined exponentially weighted fuzzy time series and an improved harmony search,
 import numpy as np
 from pyFTS.common import FuzzySet,FLR,fts, flrg
 
+default_c = 1.1
+
 
 class ExponentialyWeightedFLRG(flrg.FLRG):
     """First Order Exponentialy Weighted Fuzzy Logical Relationship Group"""
@@ -16,16 +18,19 @@ class ExponentialyWeightedFLRG(flrg.FLRG):
         self.LHS = LHS
         self.RHS = []
         self.count = 0.0
-        self.c = kwargs.get("c",2.0)
+        self.c = kwargs.get("c",default_c)
+        self.w = None
 
     def append(self, c):
         self.RHS.append(c)
         self.count = self.count + 1.0
 
     def weights(self):
-        wei = [self.c ** k for k in np.arange(0.0, self.count, 1.0)]
-        tot = sum(wei)
-        return np.array([k / tot for k in wei])
+        if self.w is None:
+            wei = [self.c ** k for k in np.arange(0.0, self.count, 1.0)]
+            tot = sum(wei)
+            self.w = np.array([k / tot for k in wei])
+        return self.w
 
     def __str__(self):
         tmp = self.LHS.name + " -> "
@@ -50,9 +55,9 @@ class ExponentialyWeightedFTS(fts.FTS):
         super(ExponentialyWeightedFTS, self).__init__(1, "EWFTS", **kwargs)
         self.name = "Exponentialy Weighted FTS"
         self.detail = "Sadaei"
-        self.c = 1
+        self.c = kwargs.get('c', default_c)
 
-    def generateFLRG(self, flrs, c):
+    def generate_flrg(self, flrs, c):
         flrgs = {}
         for flr in flrs:
             if flr.LHS.name in flrgs:
@@ -62,13 +67,14 @@ class ExponentialyWeightedFTS(fts.FTS):
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 
-    def train(self, data, sets,order=1,parameters=1.05):
-        self.c = parameters
-        self.sets = sets
+    def train(self, data, **kwargs):
+        self.c = kwargs.get('parameters', default_c)
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
         ndata = self.apply_transformations(data)
-        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, sets)
+        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generate_recurrent_flrs(tmpdata)
-        self.flrgs = self.generateFLRG(flrs, self.c)
+        self.flrgs = self.generate_flrg(flrs, self.c)
 
     def forecast(self, data, **kwargs):
         l = 1
@@ -95,6 +101,6 @@ class ExponentialyWeightedFTS(fts.FTS):
 
                 ret.append(mp.dot(flrg.weights()))
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret

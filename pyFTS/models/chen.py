@@ -36,7 +36,7 @@ class ConventionalFTS(fts.FTS):
         self.detail = "Chen"
         self.flrgs = {}
 
-    def generateFLRG(self, flrs):
+    def generate_flrg(self, flrs):
         flrgs = {}
         for flr in flrs:
             if flr.LHS.name in flrgs:
@@ -46,12 +46,13 @@ class ConventionalFTS(fts.FTS):
                 flrgs[flr.LHS.name].append(flr.RHS)
         return (flrgs)
 
-    def train(self, data, sets,order=1,parameters=None):
-        self.sets = sets
+    def train(self, data, **kwargs):
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
         ndata = self.apply_transformations(data)
-        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, sets)
+        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
-        self.flrgs = self.generateFLRG(flrs)
+        self.flrgs = self.generate_flrg(flrs)
 
     def forecast(self, data, **kwargs):
 
@@ -74,6 +75,6 @@ class ConventionalFTS(fts.FTS):
 
                 ret.append(_flrg.get_midpoint())
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
+        ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret

@@ -90,7 +90,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
             mfts.append_transformation(transformation)
 
     _start = time.time()
-    mfts.train(train_data, partitioner.sets, order=mfts.order)
+    mfts.train(train_data, sets=partitioner.sets, order=mfts.order)
     _end = time.time()
     times = _end - _start
 
@@ -273,7 +273,7 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
         #print(model)
         if transformation is not None:
             model.append_transformation(transformation)
-        model.train(data_train, data_train_fs.sets, order=model.order)
+        model.train(data_train, sets=data_train_fs.sets, order=model.order)
         objs.append(model)
         lcolors.append( colors[count % ncol] )
 
@@ -385,7 +385,7 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                             mfts.append_transformation(transformation)
 
                         _start = time.time()
-                        mfts.train(training, data_train_fs.sets)
+                        mfts.train(training, sets=data_train_fs.sets)
                         _end = time.time()
                         _tdiff = _end - _start
 
@@ -419,7 +419,7 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                                     mfts.append_transformation(transformation)
 
                                 _start = time.time()
-                                mfts.train(training, data_train_fs.sets, order=order)
+                                mfts.train(training, sets=data_train_fs.sets, order=order)
                                 _end = time.time()
 
                                 _tdiff = _end - _start
@@ -476,7 +476,7 @@ def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save
     for count, model in Util.enumerate2(models, start=0, step=2):
         if transformation is not None:
             model.append_transformation(transformation)
-            model.train(data_train, data_train_fs, order=model.order)
+            model.train(data_train, sets=data_train_fs, order=model.order)
         objs.append(model)
         lcolors.append( colors[count % ncol] )
 
@@ -635,7 +635,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
                             mfts.append_transformation(transformation)
 
                         _start = time.time()
-                        mfts.train(train, data_train_fs.sets)
+                        mfts.train(train, sets=data_train_fs.sets)
                         _end = time.time()
 
                         _tdiff = _end - _start
@@ -670,7 +670,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
                                     mfts.append_transformation(transformation)
 
                                 _start = time.time()
-                                mfts.train(train, data_train_fs.sets, order=order)
+                                mfts.train(train, sets=data_train_fs.sets, order=order)
                                 _end = time.time()
 
                                 _tdiff = _end - _start
@@ -705,7 +705,7 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
         if not mfts.is_high_order:
             if transformation is not None:
                 mfts.append_transformation(transformation)
-            mfts.train(data_train, data_train_fs)
+            mfts.train(data_train, sets=data_train_fs.sets)
             objs.append(mfts)
             lcolors.append( colors[count % ncol] )
         else:
@@ -714,7 +714,7 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
                     mfts = model(" n = " + str(order))
                     if transformation is not None:
                         mfts.append_transformation(transformation)
-                    mfts.train(data_train, data_train_fs, order=order)
+                    mfts.train(data_train, sets=data_train_fs.sets, order=order)
                     objs.append(mfts)
                     lcolors.append(colors[count % ncol])
 
@@ -896,7 +896,7 @@ def SelecaoSimples_MenorRMSE(original, parameters, modelo):
     for p in parameters:
         sets = Grid.GridPartitioner(original, p).sets
         fts = modelo(str(p) + " particoes")
-        fts.train(original, sets)
+        fts.train(original, sets=sets)
         # print(original)
         forecasted = fts.forecast(original)
         forecasted.insert(0, original[0])
@@ -936,7 +936,7 @@ def SelecaoSimples_MenorRMSE(original, parameters, modelo):
     for p in parameters:
         sets = Grid.GridPartitionerTrimf(difffts, p)
         fts = modelo(str(p) + " particoes")
-        fts.train(difffts, sets)
+        fts.train(difffts, sets=sets)
         forecasted = fts.forecast(difffts)
         forecasted.insert(0, difffts[0])
         ax2.plot(forecasted, label=fts.name)
@@ -1050,7 +1050,7 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
         for oc, o in enumerate(orders, start=0):
             fts = model("q = " + str(p) + " n = " + str(o))
             fts.append_transformation(transformation)
-            fts.train(train, sets, o, parameters=parameters)
+            fts.train(train, sets=sets, order=o, parameters=parameters)
             if not intervals:
                 forecasted = fts.forecast(test)
                 if not fts.has_seasonality:
@@ -1128,7 +1128,7 @@ def sliding_window_simple_search(data, windowsize, model, partitions, orders, sa
             _error = []
             for ct, train, test in Util.sliding_window(data, windowsize, 0.8):
                 fts = model("q = " + str(p) + " n = " + str(o))
-                fts.train(data, sets, o, parameters=parameters)
+                fts.train(data, sets=sets, order=o, parameters=parameters)
                 if not intervals:
                     forecasted = fts.forecast(test)
                     if not fts.has_seasonality:
@@ -1191,7 +1191,7 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
     for order in np.arange(1, 6):
         fts = pwfts.ProbabilisticWeightedFTS("")
         fts.shortname = "n = " + str(order)
-        fts.train(data, data_fs1, order=order)
+        fts.train(data, sets=data_fs1.sets, order=order)
         point_forecasts = fts.forecast(data)
         interval_forecasts = fts.forecast_interval(data)
         lower = [kk[0] for kk in interval_forecasts]
@@ -1213,7 +1213,7 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
         data_fs = Grid.GridPartitioner(data, partitions).sets
         fts = pwfts.ProbabilisticWeightedFTS("")
         fts.shortname = "q = " + str(partitions)
-        fts.train(data, data_fs, 1)
+        fts.train(data, sets=data_fs.sets, order=1)
         point_forecasts = fts.forecast(data)
         interval_forecasts = fts.forecast_interval(data)
         lower = [kk[0] for kk in interval_forecasts]

@@ -24,16 +24,16 @@ class IntervalFTS(hofts.HighOrderFTS):
         self.is_high_order = True
 
     def get_upper(self, flrg):
-        if flrg.strLHS() in self.flrgs:
-            tmp = self.flrgs[flrg.strLHS()]
+        if flrg.str_lhs() in self.flrgs:
+            tmp = self.flrgs[flrg.str_lhs()]
             ret = tmp.get_upper()
         else:
             ret = flrg.LHS[-1].upper
         return ret
 
     def get_lower(self, flrg):
-        if flrg.strLHS() in self.flrgs:
-            tmp = self.flrgs[flrg.strLHS()]
+        if flrg.str_lhs() in self.flrgs:
+            tmp = self.flrgs[flrg.str_lhs()]
             ret = tmp.get_lower()
         else:
             ret = flrg.LHS[-1].lower
@@ -93,7 +93,7 @@ class IntervalFTS(hofts.HighOrderFTS):
                 for p in root.paths():
                     path = list(reversed(list(filter(None.__ne__, p))))
                     flrg = hofts.HighOrderFLRG(self.order)
-                    for kk in path: flrg.appendLHS(self.sets[kk])
+                    for kk in path: flrg.append_lhs(self.sets[kk])
 
                     affected_flrgs.append(flrg)
 
@@ -115,7 +115,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 
                 for kk in idx:
                     flrg = hofts.HighOrderFLRG(self.order)
-                    flrg.appendLHS(self.sets[kk])
+                    flrg.append_lhs(self.sets[kk])
                     affected_flrgs.append(flrg)
                     affected_flrgs_memberships.append(mv[kk])
 

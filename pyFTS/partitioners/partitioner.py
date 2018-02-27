@@ -12,9 +12,9 @@ class Partitioner(object):
         """
         Universe of Discourse partitioner scheme. Split data on several fuzzy sets
         :param name: partitioner name
-        :param data: original data to be partitioned
-        :param npart: number of partitions 
-        :param func: membership function
+        :param data: Training data of which the universe of discourse will be extracted. The universe of discourse is the open interval between the minimum and maximum values of the training data.
+        :param npart: The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created
+        :param func: Fuzzy membership function (pyFTS.common.Membership)
         :param names: list of partitions names. If None is given the partitions will be auto named with prefix
         :param prefix: prefix of auto generated partition names
         :param transformation: data transformation to be applied on data

@@ -28,6 +28,7 @@ def generate_gaussian_linear(mu_ini, sigma_ini, mu_inc, sigma_inc, it=100, num=1
         sigma += sigma_inc
     return ret
 
+
 def generate_uniform_linear(min_ini, max_ini, min_inc, max_inc, it=100, num=10, vmin=None, vmax=None):
     """
     Generate data sampled from Uniform distribution, with constant or  linear changing bounds
@@ -54,3 +55,20 @@ def generate_uniform_linear(min_ini, max_ini, min_inc, max_inc, it=100, num=10, 
         _min += min_inc
         _max += max_inc
     return ret
+
+
+def white_noise(n=500):
+    return np.random.normal(0, 1, n)
+
+
+def random_walk(n=500, type='gaussian'):
+    if type == 'gaussian':
+        tmp = generate_gaussian_linear(0, 1, 0, 0, it=1, num=n)
+    else:
+        tmp = generate_uniform_linear(-1, 1, 0, 0, it=1, num=n)
+    ret = [0]
+    for i in range(n):
+        ret.append(tmp[i] + ret[i])
+
+    return ret
+

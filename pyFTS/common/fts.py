@@ -148,7 +148,7 @@ class FTS(object):
         """
         raise NotImplementedError('This model do not perform multi step ahead distribution forecasts!')
 
-    def train(self, data, sets, order=1, parameters=None):
+    def train(self, data, **kwargs):
         """
         
         :param data: 
@@ -166,7 +166,7 @@ class FTS(object):
         :param kwargs:
         :return:
         """
-        self.train(data, sets=None)
+        self.train(data, **kwargs)
 
     def append_transformation(self, transformation):
         if transformation is not None:
