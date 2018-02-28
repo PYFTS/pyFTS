@@ -7,7 +7,7 @@ class FuzzySet(object):
     """
     Fuzzy Set
     """
-    def __init__(self, name, mf, parameters, centroid):
+    def __init__(self, name, mf, parameters, centroid, alpha=1.0, type='common'):
         """
         Create a Fuzzy Set 
         :param name: fuzzy set name
@@ -19,6 +19,8 @@ class FuzzySet(object):
         self.mf = mf
         self.parameters = parameters
         self.centroid = centroid
+        self.alpha = alpha
+        self.type = type
         ":param Z: Partition function in respect to the membership function"
         self.Z = None
         if self.mf == Membership.trimf:
@@ -35,7 +37,7 @@ class FuzzySet(object):
         :param x: input value 
         :return: membership value of x at this fuzzy set
         """
-        return self.mf(x, self.parameters)
+        return self.mf(x, self.parameters) * self.alpha
 
     def partition_function(self,uod=None, nbins=100):
         """

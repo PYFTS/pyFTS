@@ -8,7 +8,8 @@ class Partitioner(object):
     Universe of Discourse partitioner. Split data on several fuzzy sets
     """
 
-    def __init__(self, name, data, npart, func=Membership.trimf, names=None, prefix="A", transformation=None, indexer=None):
+    def __init__(self, name, data, npart, func=Membership.trimf, names=None, prefix="A",
+                 transformation=None, indexer=None, preprocess=True):
         """
         Universe of Discourse partitioner scheme. Split data on several fuzzy sets
         :param name: partitioner name
@@ -28,31 +29,33 @@ class Partitioner(object):
         self.transformation = transformation
         self.indexer = indexer
 
-        if self.indexer is not None:
-            ndata = self.indexer.get_data(data)
-        else:
-            ndata = data
+        if preprocess:
 
-        if transformation is not None:
-            ndata = transformation.apply(ndata)
-        else:
-            ndata = data
+            if self.indexer is not None:
+                ndata = self.indexer.get_data(data)
+            else:
+                ndata = data
 
-        _min = min(ndata)
-        if _min < 0:
-            self.min = _min * 1.1
-        else:
-            self.min = _min * 0.9
+            if transformation is not None:
+                ndata = transformation.apply(ndata)
+            else:
+                ndata = data
 
-        _max = max(ndata)
-        if _max > 0:
-            self.max = _max * 1.1
-        else:
-            self.max = _max * 0.9
+            _min = min(ndata)
+            if _min < 0:
+                self.min = _min * 1.1
+            else:
+                self.min = _min * 0.9
 
-        self.sets = self.build(ndata)
+            _max = max(ndata)
+            if _max > 0:
+                self.max = _max * 1.1
+            else:
+                self.max = _max * 0.9
 
-        del(ndata)
+            self.sets = self.build(ndata)
+
+            del(ndata)
 
     def build(self, data):
         """
@@ -74,15 +77,24 @@ class Partitioner(object):
         ticks = []
         x = []
         for s in self.sets:
-            if s.mf == Membership.trimf:
-                ax.plot([s.parameters[0], s.parameters[1], s.parameters[2]], [0, 1, 0])
-            elif s.mf == Membership.gaussmf:
-                tmpx = [kk for kk in np.arange(s.lower, s.upper)]
-                tmpy = [s.membership(kk) for kk in np.arange(s.lower, s.upper)]
-                ax.plot(tmpx, tmpy)
+            if s.type == 'common':
+                self.plot_set(ax, s)
+            elif s.type == 'composite':
+                for ss in s.sets:
+                    self.plot_set(ax, ss)
             ticks.append(str(round(s.centroid,0))+'\n'+s.name)
             x.append(s.centroid)
         plt.xticks(x,ticks)
+
+    def plot_set(self, ax, s):
+        if s.mf == Membership.trimf:
+            ax.plot([s.parameters[0], s.parameters[1], s.parameters[2]], [0, s.alpha, 0])
+        elif s.mf == Membership.gaussmf:
+            tmpx = [kk for kk in np.arange(s.lower, s.upper)]
+            tmpy = [s.membership(kk) for kk in np.arange(s.lower, s.upper)]
+            ax.plot(tmpx, tmpy)
+        elif s.mf == Membership.trapmf:
+            ax.plot(s.parameters, [0, s.alpha, s.alpha, 0])
 
 
     def __str__(self):
