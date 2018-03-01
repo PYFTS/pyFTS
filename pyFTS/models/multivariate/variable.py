@@ -4,7 +4,19 @@ from pyFTS.models.multivariate import FLR as MVFLR
 
 
 class Variable:
+    """
+    A variable of a fuzzy time series multivariate model. Each variable contains its own
+    transformations and partitioners.
+    """
     def __init__(self, name, **kwargs):
+        """
+
+        :param name: Name of the variable
+        :param \**kwargs: See below
+
+        :Keyword Arguments:
+            * *alias* -- Alternative name for the variable
+        """
         self.name = name
         self.alias = kwargs.get('alias', self.name)
         self.data_label = kwargs.get('data_label', self.name)
