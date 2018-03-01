@@ -9,19 +9,20 @@ import matplotlib.pylab as plt
 class TimeGridPartitioner(partitioner.Partitioner):
     """Even Length DateTime Grid Partitioner"""
 
-    def __init__(self, data, npart, season, func=Membership.trimf, names=None):
+    def __init__(self, **kwargs):
         """
         Even Length Grid Partitioner
+        :param seasonality: Time granularity, from pyFTS.models.seasonal.common.DateTime
         :param data: Training data of which the universe of discourse will be extracted. The universe of discourse is the open interval between the minimum and maximum values of the training data.
         :param npart: The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created
         :param func: Fuzzy membership function (pyFTS.common.Membership)
         """
-        super(TimeGridPartitioner, self).__init__("TimeGrid", data, npart, func=func, names=names, transformation=None,
-                                                  indexer=None, preprocess=False)
+        super(TimeGridPartitioner, self).__init__(name="TimeGrid", **kwargs)
 
-        self.season = season
+        self.season = kwargs.get('seasonality', DateTime.day_of_year)
+        data = kwargs.get('data', None)
         if self.season == DateTime.year:
-            ndata = [strip_datepart(k, season) for k in data]
+            ndata = [strip_datepart(k, self.season) for k in data]
             self.min = min(ndata)
             self.max = max(ndata)
         else:
@@ -33,6 +34,8 @@ class TimeGridPartitioner(partitioner.Partitioner):
 
     def build(self, data):
         sets = []
+
+        kwargs = {'variable': self.variable}
 
         if self.season == DateTime.year:
             dlen = (self.max - self.min)
@@ -49,30 +52,37 @@ class TimeGridPartitioner(partitioner.Partitioner):
                     tmp = Composite(set_name, superset=True)
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
                                             [self.season.value - pl2, self.season.value,
-                                             self.season.value + 0.0000001], self.season.value, alpha=.5))
+                                             self.season.value + 0.0000001], self.season.value, alpha=.5,
+                                            **kwargs))
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
-                                            [c - partlen, c, c + partlen], c))
+                                            [c - partlen, c, c + partlen], c,
+                                            **kwargs))
                     tmp.centroid = c
                     sets.append(tmp)
                 else:
                     sets.append(FuzzySet(self.season, set_name, Membership.trimf,
-                                         [c - partlen, c, c + partlen], c))
+                                         [c - partlen, c, c + partlen], c,
+                                         **kwargs))
             elif self.membership_function == Membership.gaussmf:
-                sets.append(FuzzySet(self.season, set_name, Membership.gaussmf, [c, partlen / 3], c))
+                sets.append(FuzzySet(self.season, set_name, Membership.gaussmf, [c, partlen / 3], c,
+                                     **kwargs))
             elif self.membership_function == Membership.trapmf:
                 q = partlen / 4
                 if c == self.min:
                     tmp = Composite(set_name, superset=True)
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
                                             [self.season.value - pl2, self.season.value,
-                                             self.season.value + 0.0000001], 0))
+                                             self.season.value + 0.0000001], 0,
+                                            **kwargs))
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trapmf,
-                                            [c - partlen, c - q, c + q, c + partlen], c))
+                                            [c - partlen, c - q, c + q, c + partlen], c,
+                                            **kwargs))
                     tmp.centroid = c
                     sets.append(tmp)
                 else:
                     sets.append(FuzzySet(self.season, set_name, Membership.trapmf,
-                                         [c - partlen, c - q, c + q, c + partlen], c))
+                                         [c - partlen, c - q, c + q, c + partlen], c,
+                                         **kwargs))
             count += 1
 
         self.min = 0

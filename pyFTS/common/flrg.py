@@ -15,14 +15,14 @@ class FLRG(object):
         ret = 0.0
         if isinstance(self.LHS, (list, set)):
             assert len(self.LHS) == len(data)
-            ret = min([self.LHS[ct].membership(dat) for ct, dat in enumerate(data)])
+            ret = np.nanmin([self.LHS[ct].membership(dat) for ct, dat in enumerate(data)])
         else:
             ret = self.LHS.membership(data)
         return ret
 
     def get_midpoint(self):
         if self.midpoint is None:
-            self.midpoint = sum(self.get_midpoints())/len(self.RHS)
+            self.midpoint = np.nanmean(self.get_midpoints())
         return self.midpoint
 
     def get_midpoints(self):

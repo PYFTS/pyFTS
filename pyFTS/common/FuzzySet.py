@@ -7,7 +7,7 @@ class FuzzySet(object):
     """
     Fuzzy Set
     """
-    def __init__(self, name, mf, parameters, centroid, alpha=1.0, type='common'):
+    def __init__(self, name, mf, parameters, centroid, alpha=1.0, **kwargs):
         """
         Create a Fuzzy Set 
         :param name: fuzzy set name
@@ -20,7 +20,8 @@ class FuzzySet(object):
         self.parameters = parameters
         self.centroid = centroid
         self.alpha = alpha
-        self.type = type
+        self.type = kwargs.get('type', 'common')
+        self.variable = kwargs.get('variable',None)
         ":param Z: Partition function in respect to the membership function"
         self.Z = None
         if self.mf == Membership.trimf:

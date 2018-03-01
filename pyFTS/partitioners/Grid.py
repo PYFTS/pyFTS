@@ -9,7 +9,7 @@ from pyFTS.partitioners import partitioner
 class GridPartitioner(partitioner.Partitioner):
     """Even Length Grid Partitioner"""
 
-    def __init__(self, data, npart, func = Membership.trimf, transformation=None, indexer=None):
+    def __init__(self, **kwargs):
         """
         Even Length Grid Partitioner
         :param data: Training data of which the universe of discourse will be extracted. The universe of discourse is the open interval between the minimum and maximum values of the training data.
@@ -18,10 +18,12 @@ class GridPartitioner(partitioner.Partitioner):
         :param transformation: data transformation to be applied on data
         :param indexer:
         """
-        super(GridPartitioner, self).__init__("Grid", data, npart, func=func, transformation=transformation, indexer=indexer)
+        super(GridPartitioner, self).__init__(name="Grid", **kwargs)
 
     def build(self, data):
         sets = []
+
+        kwargs = {'type': self.type, 'variable': self.variable}
 
         dlen = self.max - self.min
         partlen = dlen / self.partitions
@@ -30,14 +32,14 @@ class GridPartitioner(partitioner.Partitioner):
         for c in np.arange(self.min, self.max, partlen):
             if self.membership_function == Membership.trimf:
                 sets.append(
-                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.trimf, [c - partlen, c, c + partlen],c))
+                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.trimf, [c - partlen, c, c + partlen],c,**kwargs))
             elif self.membership_function == Membership.gaussmf:
                 sets.append(
-                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.gaussmf, [c, partlen / 3], c))
+                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.gaussmf, [c, partlen / 3], c,**kwargs))
             elif self.membership_function == Membership.trapmf:
                 q = partlen / 2
                 sets.append(
-                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.trapmf, [c - partlen, c - q, c + q, c + partlen], c))
+                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.trapmf, [c - partlen, c - q, c + q, c + partlen], c,**kwargs))
             count += 1
 
         self.min = self.min - partlen

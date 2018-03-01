@@ -8,8 +8,7 @@ class Partitioner(object):
     Universe of Discourse partitioner. Split data on several fuzzy sets
     """
 
-    def __init__(self, name, data, npart, func=Membership.trimf, names=None, prefix="A",
-                 transformation=None, indexer=None, preprocess=True):
+    def __init__(self, **kwargs):
         """
         Universe of Discourse partitioner scheme. Split data on several fuzzy sets
         :param name: partitioner name
@@ -20,24 +19,28 @@ class Partitioner(object):
         :param prefix: prefix of auto generated partition names
         :param transformation: data transformation to be applied on data
         """
-        self.name = name
-        self.partitions = npart
+        self.name = kwargs.get('name',"")
+        self.partitions = kwargs.get('npart',10)
         self.sets = []
-        self.membership_function = func
-        self.setnames = names
-        self.prefix = prefix
-        self.transformation = transformation
-        self.indexer = indexer
+        self.membership_function = kwargs.get('func',Membership.trimf)
+        self.setnames = kwargs.get('names',None)
+        self.prefix = kwargs.get('prefix','A')
+        self.transformation = kwargs.get('transformation',None)
+        self.indexer = kwargs.get('indexer',None)
+        self.variable = kwargs.get('variable', None)
+        self.type = kwargs.get('type', 'common')
 
-        if preprocess:
+        if kwargs.get('preprocess',True):
+
+            data = kwargs.get('data',[None])
 
             if self.indexer is not None:
                 ndata = self.indexer.get_data(data)
             else:
                 ndata = data
 
-            if transformation is not None:
-                ndata = transformation.apply(ndata)
+            if self.transformation is not None:
+                ndata = self.transformation.apply(ndata)
             else:
                 ndata = data
 
@@ -84,7 +87,8 @@ class Partitioner(object):
                     self.plot_set(ax, ss)
             ticks.append(str(round(s.centroid,0))+'\n'+s.name)
             x.append(s.centroid)
-        plt.xticks(x,ticks)
+        ax.xaxis.set_ticklabels(ticks)
+        ax.xaxis.set_ticks(x)
 
     def plot_set(self, ax, s):
         if s.mf == Membership.trimf:

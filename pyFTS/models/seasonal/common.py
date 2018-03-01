@@ -87,8 +87,8 @@ class FuzzySet(FuzzySet.FuzzySet):
     Temporal/Seasonal Fuzzy Set
     """
 
-    def __init__(self, datepart, name, mf, parameters, centroid, alpha=1.0):
-        super(FuzzySet, self).__init__(name, mf, parameters, centroid, alpha)
+    def __init__(self, datepart, name, mf, parameters, centroid, alpha=1.0, **kwargs):
+        super(FuzzySet, self).__init__(name, mf, parameters, centroid, alpha, type = 'datetime', **kwargs)
         self.datepart = datepart
 
     def membership(self, x):

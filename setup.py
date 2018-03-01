@@ -4,11 +4,10 @@ setup(
     name='pyFTS',
     packages=['pyFTS', 'pyFTS.benchmarks', 'pyFTS.common', 'pyFTS.data', 'pyFTS.models.ensemble',
               'pyFTS.models', 'pyFTS.models.seasonal', 'pyFTS.partitioners', 'pyFTS.probabilistic',
-              'pyFTS.tests', 'pyFTS.models.nonstationary'],
+              'pyFTS.tests', 'pyFTS.models.nonstationary', 'pyFTS.models.multivariate'],
     #package_dir={}
     package_data={'benchmarks': ['*'], 'common': ['*'], 'data': ['*'],
-                  'models': ['*'], 'seasonal': ['*'], 'ensemble': ['*'],
-                  'partitioners': ['*'], 'probabilistic': ['*'], 'tests': ['*']},
+                  'models': ['*'],  'partitioners': ['*'], 'probabilistic': ['*'], 'tests': ['*']},
     #data_files=[('data', ['pyFTS/data/Enrollments.csv', 'pyFTS/data/AirPassengers.csv'])],
     include_package_data=True,
     version='1.1.1',

@@ -12,8 +12,8 @@ from pyFTS.partitioners import partitioner
 
 class HuarngPartitioner(partitioner.Partitioner):
     """Huarng Empirical Partitioner"""
-    def __init__(self, data,npart,func = Membership.trimf, transformation=None, indexer=None):
-        super(HuarngPartitioner, self).__init__("Huarng", data, npart, func=func, transformation=transformation, indexer=indexer)
+    def __init__(self, **kwargs):
+        super(HuarngPartitioner, self).__init__(name="Huarng", **kwargs)
 
     def build(self, data):
         diff = Transformations.Differential(1)

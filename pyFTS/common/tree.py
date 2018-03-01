@@ -53,7 +53,7 @@ def flat(dados):
             yield inst
 
 
-def buildTreeWithoutOrder(node, lags, level):
+def build_tree_without_order(node, lags, level):
 
     if level not in lags:
         return
@@ -62,4 +62,4 @@ def buildTreeWithoutOrder(node, lags, level):
         node.appendChild(FLRGTreeNode(s))
 
     for child in node.getChildren():
-        buildTreeWithoutOrder(child, lags, level + 1)
+        build_tree_without_order(child, lags, level + 1)

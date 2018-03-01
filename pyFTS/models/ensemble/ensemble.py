@@ -154,7 +154,7 @@ class EnsembleFTS(fts.FTS):
 
             root = tree.FLRGTreeNode(None)
 
-            tree.buildTreeWithoutOrder(root, lags, 0)
+            tree.build_tree_without_order(root, lags, 0)
 
             for p in root.paths():
                 path = list(reversed(list(filter(None.__ne__, p))))
@@ -199,7 +199,7 @@ class EnsembleFTS(fts.FTS):
 
             root = tree.FLRGTreeNode(None)
 
-            tree.buildTreeWithoutOrder(root, lags, 0)
+            tree.build_tree_without_order(root, lags, 0)
 
             for p in root.paths():
                 path = list(reversed(list(filter(None.__ne__, p))))
