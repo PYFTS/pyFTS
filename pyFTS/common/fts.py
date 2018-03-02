@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from pyFTS.common import FuzzySet, SortedCollection, tree
+from pyFTS.common import FuzzySet, SortedCollection, tree, Util
 
 
 class FTS(object):
@@ -164,9 +164,42 @@ class FTS(object):
 
         :param data:
         :param kwargs:
+
+        :keyword
+        num_batches: split the training data in num_batches to save memory during the training process
+        save_model: save final model on disk
+        batch_save: save the model between each batch
+        file_path: path to save the model
         :return:
         """
-        self.train(data, **kwargs)
+
+        num_batches = kwargs.get('num_batches', None)
+
+        save = kwargs.get('save_model', False)  # save model on disk
+
+        batch_save = kwargs.get('batch_save', True) #save model between batches
+
+        file_path = kwargs.get('file_path', None)
+
+        if num_batches is not None:
+            n = len(data)
+            batch_size = round(n / num_batches, 0)
+            for ct in range(self.order, n, batch_size):
+                if self.is_multivariate:
+                    ndata = data.iloc[ct - self.order:ct + batch_size]
+                else:
+                    ndata = data[ct - self.order : ct + batch_size]
+
+                self.train(ndata, **kwargs)
+
+                if batch_save:
+                    Util.persist_obj(self,file_path)
+
+        else:
+            self.train(data, **kwargs)
+
+        if save:
+            Util.persist_obj(self, file_path)
 
     def append_transformation(self, transformation):
         if transformation is not None:

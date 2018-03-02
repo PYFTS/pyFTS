@@ -31,7 +31,7 @@ class FuzzySet(FS.FuzzySet):
             - noise: Pertubation function that adds noise on the membership function
             - noise_params: Parameters for noise pertubation function
         """
-        super(FuzzySet, self).__init__(name=name, mf=mf, parameters=parameters, centroid=None)
+        super(FuzzySet, self).__init__(name=name, mf=mf, parameters=parameters, centroid=None, alpha=1.0, **kwargs)
     
         self.location = kwargs.get("location", None)
         self.location_params = kwargs.get("location_params", None)
@@ -42,6 +42,7 @@ class FuzzySet(FS.FuzzySet):
         self.noise = kwargs.get("noise", None)
         self.noise_params = kwargs.get("noise_params", None)
         self.perturbated_parameters = {}
+        self.type = 'nonstationary'
     
         if self.location is not None and not isinstance(self.location, (list, set)):
             self.location = [self.location]

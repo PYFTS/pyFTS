@@ -46,7 +46,6 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
         self.flrgs = {}
 
     def generate_flrg(self, data, **kwargs):
-        flrgs = {}
         l = len(data)
         window_size = kwargs.get("window_size", 1)
         for k in np.arange(self.order, l):
@@ -84,30 +83,27 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
                 for c, e in enumerate(path, start=0):
                     flrg.appendLHS(e)
 
-                if flrg.strLHS() not in flrgs:
-                    flrgs[flrg.strLHS()] = flrg;
+                if flrg.strLHS() not in self.flrgs:
+                    self.flrgs[flrg.strLHS()] = flrg;
 
                 for st in rhs:
-                    flrgs[flrg.strLHS()].append_rhs(st)
+                    self.flrgs[flrg.strLHS()].append_rhs(st)
 
         # flrgs = sorted(flrgs, key=lambda flrg: flrg.get_midpoint(0, window_size=1))
 
-        return flrgs
+    def train(self, data, **kwargs):
 
-    def train(self, data, sets=None, order=2, parameters=None):
+        if kwargs.get('order', None) is not None:
+            self.order = kwargs.get('order', 1)
 
-        self.order = order
-
-        if sets is not None:
-            self.sets = sets
-        else:
-            self.sets = self.partitioner.sets
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
 
         ndata = self.apply_transformations(data)
         #tmpdata = common.fuzzyfy_series_old(ndata, self.sets)
         #flrs = FLR.generate_recurrent_flrs(ndata)
-        window_size = parameters if parameters is not None else 1
-        self.flrgs = self.generate_flrg(ndata, window_size=window_size)
+        window_size = kwargs.get('parameters', 1)
+        self.generate_flrg(ndata, window_size=window_size)
 
     def _affected_flrgs(self, sample, k, time_displacement, window_size):
         # print("input: " + str(ndata[k]))

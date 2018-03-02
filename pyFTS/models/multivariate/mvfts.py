@@ -15,6 +15,7 @@ class MVFTS(fts.FTS):
         self.explanatory_variables = []
         self.target_variable = None
         self.flrgs = {}
+        self.is_multivariate = True
 
     def append_variable(self, var):
         self.explanatory_variables.append(var)
@@ -76,24 +77,21 @@ class MVFTS(fts.FTS):
         return flrs
 
     def generate_flrg(self, flrs):
-        flrgs = {}
-
         for flr in flrs:
             flrg = mvflrg.FLRG(lhs=flr.LHS)
 
-            if flrg.get_key() not in flrgs:
-                flrgs[flrg.get_key()] = flrg
+            if flrg.get_key() not in self.flrgs:
+                self.flrgs[flrg.get_key()] = flrg
 
-            flrgs[flrg.get_key()].append_rhs(flr.RHS)
+            self.flrgs[flrg.get_key()].append_rhs(flr.RHS)
 
-        return flrgs
 
     def train(self, data, **kwargs):
 
         ndata = self.apply_transformations(data)
 
         flrs = self.generate_flrs(ndata)
-        self.flrgs = self.generate_flrg(flrs)
+        self.generate_flrg(flrs)
 
     def forecast(self, data, **kwargs):
         ret = []

@@ -37,7 +37,7 @@ for method in fo_methods:
     model = method("")
     model.append_transformation(diff)
     model.train(passengers, fs.sets)
-    e.appendModel(model)
+    e.append_model(model)
 
 
 for method in ho_methods:
@@ -45,7 +45,7 @@ for method in ho_methods:
         model = method("")
         model.append_transformation(diff)
         model.train(passengers, fs.sets, order=order)
-        e.appendModel(model)
+        e.append_model(model)
 
 
 arima100 = arima.ARIMA("", alpha=0.25)
@@ -65,10 +65,10 @@ arima201 = arima.ARIMA("", alpha=0.25)
 arima201.train(passengers, None, order=(2,0,1))
 
 
-e.appendModel(arima100)
-e.appendModel(arima101)
-e.appendModel(arima200)
-e.appendModel(arima201)
+e.append_model(arima100)
+e.append_model(arima101)
+e.append_model(arima200)
+e.append_model(arima201)
 
 e.train(passengers, None)
 

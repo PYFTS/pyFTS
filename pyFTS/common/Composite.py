@@ -16,7 +16,7 @@ class FuzzySet(FuzzySet.FuzzySet):
         Create an empty composite fuzzy set
         :param name: fuzzy set name
         """
-        super(FuzzySet, self).__init__(self, name, None, None, None, type='composite')
+        super(FuzzySet, self).__init__(name, None, None, None, type='composite')
         self.superset = superset
         if self.superset:
             self.sets = []

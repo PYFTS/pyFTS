@@ -28,7 +28,7 @@ class DateTime(Enum):
     second_of_day = 86400
 
 
-def strip_datepart(self, date, date_part):
+def strip_datepart(date, date_part):
     if date_part == DateTime.year:
         tmp = date.year
     elif date_part == DateTime.month:
@@ -90,7 +90,8 @@ class FuzzySet(FuzzySet.FuzzySet):
     def __init__(self, datepart, name, mf, parameters, centroid, alpha=1.0, **kwargs):
         super(FuzzySet, self).__init__(name, mf, parameters, centroid, alpha, type = 'datetime', **kwargs)
         self.datepart = datepart
+        self.type = 'seasonal'
 
     def membership(self, x):
         dp = strip_datepart(x, self.datepart)
-        return self.mf.membership(dp)
+        return self.mf(dp, self.parameters) * self.alpha

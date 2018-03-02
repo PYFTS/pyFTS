@@ -14,7 +14,14 @@ class ConventionalFTS(fts.FTS):
         super(ConventionalFTS, self).__init__(1, "FTS " + name, **kwargs)
         self.name = "Traditional FTS"
         self.detail = "Song & Chissom"
+        if self.sets is not None and self.partitioner is not None:
+            self.sets = self.partitioner.sets
+
         self.R = None
+
+        if self.sets is not None:
+            self.R = np.zeros((len(self.sets),len(self.sets)))
+
 
     def flr_membership_matrix(self, flr):
         lm = [flr.LHS.membership(k.centroid) for k in self.sets]
@@ -28,14 +35,14 @@ class ConventionalFTS(fts.FTS):
         return r
 
     def operation_matrix(self, flrs):
-        r = np.zeros((len(self.sets),len(self.sets)))
+        if self.R is None:
+            self.R = np.zeros((len(self.sets), len(self.sets)))
         for k in flrs:
             mm = self.flr_membership_matrix(k)
             for k in range(0, len(self.sets)):
                 for l in range(0, len(self.sets)):
-                    r[k][l] = max(r[k][l], mm[k][l])
+                    self.R[k][l] = max(r[k][l], mm[k][l])
 
-        return r
 
     def train(self, data, **kwargs):
         if kwargs.get('sets', None) is not None:
@@ -43,7 +50,7 @@ class ConventionalFTS(fts.FTS):
         ndata = self.apply_transformations(data)
         tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
-        self.R = self.operation_matrix(flrs)
+        self.operation_matrix(flrs)
 
     def forecast(self, data, **kwargs):
 

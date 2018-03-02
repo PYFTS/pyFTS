@@ -22,11 +22,9 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
         self.min_stack = [0,0,0]
         self.max_stack = [0,0,0]
 
-    def train(self, data, sets = None, order=1,parameters=None):
-        if sets is not None:
-            self.sets = sets
-        else:
-            self.sets = self.partitioner.sets
+    def train(self, data, **kwargs):
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
 
         ndata = self.apply_transformations(data)
 
@@ -35,17 +33,15 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
 
         tmpdata = common.fuzzySeries(ndata, self.sets, method='fuzzy', const_t=0)
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
-        self.flrgs = self.generate_flrg(flrs)
+        self.generate_flrg(flrs)
 
     def generate_flrg(self, flrs, **kwargs):
-        flrgs = {}
         for flr in flrs:
-            if flr.LHS.name in flrgs:
-                flrgs[flr.LHS.name].append(flr.RHS)
+            if flr.LHS.name in self.flrgs:
+                self.flrgs[flr.LHS.name].append(flr.RHS)
             else:
-                flrgs[flr.LHS.name] = nsfts.ConventionalNonStationaryFLRG(flr.LHS)
-                flrgs[flr.LHS.name].append(flr.RHS)
-        return flrgs
+                self.flrgs[flr.LHS.name] = nsfts.ConventionalNonStationaryFLRG(flr.LHS)
+                self.flrgs[flr.LHS.name].append(flr.RHS)
 
     def _smooth(self, a):
         return .1 * a[0] + .3 * a[1] + .6 * a[2]

@@ -53,11 +53,9 @@ class TrendWeightedFTS(yu.WeightedFTS):
         self.is_high_order = False
 
     def generate_FLRG(self, flrs):
-        flrgs = {}
         for flr in flrs:
-            if flr.LHS.name in flrgs:
-                flrgs[flr.LHS.name].append(flr.RHS)
+            if flr.LHS.name in self.flrgs:
+                self.flrgs[flr.LHS.name].append(flr.RHS)
             else:
-                flrgs[flr.LHS.name] = TrendWeightedFLRG(flr.LHS)
-                flrgs[flr.LHS.name].append(flr.RHS)
-        return (flrgs)
+                self.flrgs[flr.LHS.name] = TrendWeightedFLRG(flr.LHS)
+                self.flrgs[flr.LHS.name].append(flr.RHS)

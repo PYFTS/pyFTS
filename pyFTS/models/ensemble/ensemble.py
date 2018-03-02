@@ -32,12 +32,12 @@ class EnsembleFTS(fts.FTS):
         self.point_method = kwargs.get('point_method', 'mean')
         self.interval_method = kwargs.get('interval_method', 'quantile')
 
-    def appendModel(self, model):
+    def append_model(self, model):
         self.models.append(model)
         if model.order > self.order:
             self.order = model.order
 
-    def train(self, data, sets, order=1,parameters=None):
+    def train(self, data, **kwargs):
         self.original_max = max(data)
         self.original_min = min(data)
 
@@ -228,9 +228,11 @@ class AllMethodEnsembleFTS(EnsembleFTS):
         for t in self.transformations:
             model.append_transformation(t)
 
-    def train(self, data, sets, order=1, parameters=None):
+    def train(self, data, **kwargs):
         self.original_max = max(data)
         self.original_min = min(data)
+
+        order = kwargs.get('order',2)
 
         fo_methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, cheng.TrendWeightedFTS,
                       sadaei.ExponentialyWeightedFTS, ismailefendi.ImprovedWeightedFTS]
@@ -240,16 +242,16 @@ class AllMethodEnsembleFTS(EnsembleFTS):
         for method in fo_methods:
             model = method("")
             self.set_transformations(model)
-            model.train(data, sets)
-            self.appendModel(model)
+            model.train(data, **kwargs)
+            self.append_model(model)
 
         for method in ho_methods:
             for o in np.arange(1, order+1):
                 model = method("")
                 if model.min_order >= o:
                     self.set_transformations(model)
-                    model.train(data, sets, order=o)
-                    self.appendModel(model)
+                    model.train(data, **kwargs)
+                    self.append_model(model)
 
 
 

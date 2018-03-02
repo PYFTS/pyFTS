@@ -47,14 +47,12 @@ class WeightedFTS(fts.FTS):
         self.detail = "Yu"
 
     def generate_FLRG(self, flrs):
-        flrgs = {}
         for flr in flrs:
-            if flr.LHS.name in flrgs:
-                flrgs[flr.LHS.name].append(flr.RHS)
+            if flr.LHS.name in self.flrgs:
+                self.flrgs[flr.LHS.name].append(flr.RHS)
             else:
-                flrgs[flr.LHS.name] = WeightedFLRG(flr.LHS);
-                flrgs[flr.LHS.name].append(flr.RHS)
-        return (flrgs)
+                self.flrgs[flr.LHS.name] = WeightedFLRG(flr.LHS);
+                self.flrgs[flr.LHS.name].append(flr.RHS)
 
     def train(self, data, **kwargs):
         if kwargs.get('sets', None) is not None:
@@ -62,7 +60,7 @@ class WeightedFTS(fts.FTS):
         ndata = self.apply_transformations(data)
         tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generate_recurrent_flrs(tmpdata)
-        self.flrgs = self.generate_FLRG(flrs)
+        self.generate_FLRG(flrs)
 
     def forecast(self, data, **kwargs):
         l = 1

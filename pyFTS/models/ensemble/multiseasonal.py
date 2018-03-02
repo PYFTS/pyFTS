@@ -41,7 +41,7 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
         self.original_max = max(self.indexer.get_data(data))
         self.original_min = min(self.indexer.get_data(data))
 
-    def train(self, data, sets, order=1, parameters=None):
+    def train(self, data, **kwargs):
         self.original_max = max(self.indexer.get_data(data))
         self.original_min = min(self.indexer.get_data(data))
 
@@ -59,7 +59,7 @@ class SeasonalEnsembleFTS(ensemble.EnsembleFTS):
             for m in pool.keys())
 
         for tmp in results:
-            self.appendModel(tmp)
+            self.append_model(tmp)
 
         cUtil.persist_obj(self, "models/"+self.name+".pkl")
 

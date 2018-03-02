@@ -44,25 +44,23 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
         self.indexer = indexer
         self.flrgs = {}
 
-    def generateFLRG(self, flrs):
-        flrgs = {}
-
+    def generate_flrg(self, flrs):
         for flr in flrs:
 
-            if str(flr.index) not in flrgs:
-                flrgs[str(flr.index)] = ContextualSeasonalFLRG(flr.index)
+            if str(flr.index) not in self.flrgs:
+                self.flrgs[str(flr.index)] = ContextualSeasonalFLRG(flr.index)
 
-            flrgs[str(flr.index)].append(flr)
+            self.flrgs[str(flr.index)].append(flr)
 
-        return (flrgs)
-
-    def train(self, data, sets, order=1, parameters=None):
-        self.sets = sets
-        self.seasonality = parameters
+    def train(self, data,  **kwargs):
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
+        if kwargs.get('parameters', None) is not None:
+            self.seasonality = kwargs.get('parameters', None)
         flrs = FLR.generate_indexed_flrs(self.sets, self.indexer, data)
-        self.flrgs = self.generateFLRG(flrs)
+        self.generate_flrg(flrs)
 
-    def getMidpoints(self, flrg, data):
+    def get_midpoints(self, flrg, data):
         if data.name in flrg.flrgs:
             ret = np.array([s.centroid for s in flrg.flrgs[data.name].RHS])
             return ret
@@ -82,7 +80,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
 
             d = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets)
 
-            mp = self.getMidpoints(flrg, d)
+            mp = self.get_midpoints(flrg, d)
 
             ret.append(sum(mp) / len(mp))
 
@@ -90,12 +88,12 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
 
         return ret
 
-    def forecastAhead(self, data, steps, **kwargs):
+    def forecast_ahead(self, data, steps, **kwargs):
         ret = []
         for i in steps:
             flrg = self.flrgs[str(i)]
 
-            mp = self.getMidpoints(flrg)
+            mp = self.get_midpoints(flrg)
 
             ret.append(sum(mp) / len(mp))
 

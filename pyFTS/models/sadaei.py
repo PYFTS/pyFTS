@@ -58,14 +58,12 @@ class ExponentialyWeightedFTS(fts.FTS):
         self.c = kwargs.get('c', default_c)
 
     def generate_flrg(self, flrs, c):
-        flrgs = {}
         for flr in flrs:
-            if flr.LHS.name in flrgs:
-                flrgs[flr.LHS.name].append(flr.RHS)
+            if flr.LHS.name in self.flrgs:
+                self.flrgs[flr.LHS.name].append(flr.RHS)
             else:
-                flrgs[flr.LHS.name] = ExponentialyWeightedFLRG(flr.LHS, c=c);
-                flrgs[flr.LHS.name].append(flr.RHS)
-        return (flrgs)
+                self.flrgs[flr.LHS.name] = ExponentialyWeightedFLRG(flr.LHS, c=c);
+                self.flrgs[flr.LHS.name].append(flr.RHS)
 
     def train(self, data, **kwargs):
         self.c = kwargs.get('parameters', default_c)
@@ -74,7 +72,7 @@ class ExponentialyWeightedFTS(fts.FTS):
         ndata = self.apply_transformations(data)
         tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generate_recurrent_flrs(tmpdata)
-        self.flrgs = self.generate_flrg(flrs, self.c)
+        self.generate_flrg(flrs, self.c)
 
     def forecast(self, data, **kwargs):
         l = 1

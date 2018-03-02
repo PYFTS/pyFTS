@@ -128,12 +128,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         if parameters == 'Monotonic':
             tmpdata = FuzzySet.fuzzyfy_series_old(data, self.sets)
             flrs = FLR.generate_recurrent_flrs(tmpdata)
-            self.flrgs = self.generateFLRG(flrs)
+            self.generateFLRG(flrs)
         else:
-            self.flrgs = self.generate_flrg(data)
+            self.generate_flrg(data)
 
     def generate_flrg(self, data):
-        flrgs = {}
         l = len(data)
         for k in np.arange(self.order, l):
             if self.dump: print("FLR: " + str(k))
@@ -168,20 +167,17 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 lhs_mv = np.prod(tmp_path)
 
-                if flrg.str_lhs() not in flrgs:
-                    flrgs[flrg.str_lhs()] = flrg;
+                if flrg.str_lhs() not in self.flrgs:
+                    self.flrgs[flrg.str_lhs()] = flrg;
 
                 for st in idx:
-                    flrgs[flrg.str_lhs()].appendRHSFuzzy(self.sets[st], lhs_mv * mv[st])
+                    self.flrgs[flrg.str_lhs()].appendRHSFuzzy(self.sets[st], lhs_mv * mv[st])
 
                 tmp_fq = sum([lhs_mv*kk for kk in mv if kk > 0])
 
                 self.global_frequency_count = self.global_frequency_count + tmp_fq
 
-        return flrgs
-
     def generateFLRG(self, flrs):
-        flrgs = {}
         l = len(flrs)
         for k in np.arange(self.order, l+1):
             if self.dump: print("FLR: " + str(k))
@@ -191,15 +187,14 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 flrg.append_lhs(flrs[kk].LHS)
                 if self.dump: print("LHS: " + str(flrs[kk]))
 
-            if flrg.str_lhs() in flrgs:
-                flrgs[flrg.str_lhs()].append_rhs(flrs[k - 1].RHS)
+            if flrg.str_lhs() in self.flrgs:
+                self.flrgs[flrg.str_lhs()].append_rhs(flrs[k - 1].RHS)
             else:
-                flrgs[flrg.str_lhs()] = flrg
-                flrgs[flrg.str_lhs()].append_rhs(flrs[k - 1].RHS)
+                self.flrgs[flrg.str_lhs()] = flrg
+                self.flrgs[flrg.str_lhs()].append_rhs(flrs[k - 1].RHS)
             if self.dump: print("RHS: " + str(flrs[k-1]))
 
             self.global_frequency_count += 1
-        return (flrgs)
 
     def update_model(self,data):
 

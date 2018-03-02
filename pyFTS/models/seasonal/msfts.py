@@ -20,24 +20,22 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
         self.indexer = indexer
         self.flrgs = {}
 
-    def generateFLRG(self, flrs):
-        flrgs = {}
-
+    def generate_flrg(self, flrs):
         for flr in flrs:
 
             if str(flr.index) not in self.flrgs:
-                flrgs[str(flr.index)] = sfts.SeasonalFLRG(flr.index)
+                self.flrgs[str(flr.index)] = sfts.SeasonalFLRG(flr.index)
 
-            flrgs[str(flr.index)].append(flr.RHS)
+            self.flrgs[str(flr.index)].append(flr.RHS)
 
-        return (flrgs)
-
-    def train(self, data, sets, order=1, parameters=None):
-        self.sets = sets
-        self.seasonality = parameters
+    def train(self, data,  **kwargs):
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
+        if kwargs.get('parameters', None) is not None:
+            self.seasonality = kwargs.get('parameters', None)
         #ndata = self.indexer.set_data(data,self.doTransformations(self.indexer.get_data(data)))
         flrs = FLR.generate_indexed_flrs(self.sets, self.indexer, data)
-        self.flrgs = self.generateFLRG(flrs)
+        self.generate_flrg(flrs)
 
     def forecast(self, data, **kwargs):
 

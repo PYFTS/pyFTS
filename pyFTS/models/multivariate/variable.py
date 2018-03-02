@@ -33,9 +33,10 @@ class Variable:
         mf = kwargs.get('func', Membership.trimf)
         np = kwargs.get('npart', 10)
         data = kwargs.get('data', None)
+        kw = kwargs.get('partitioner_specific', {})
         self.partitioner = fs(data=data[self.data_label].values, npart=np, func=mf,
                               transformation=self.transformation, prefix=self.alias,
-                              variable=self.name)
+                              variable=self.name, **kw)
 
         self.partitioner.name = self.name + " " + self.partitioner.name
 

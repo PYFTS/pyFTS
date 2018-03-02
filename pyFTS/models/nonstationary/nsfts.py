@@ -1,6 +1,6 @@
 import numpy as np
 from pyFTS.common import FLR, fts
-from pyFTS.nonstationary import common, flrg
+from pyFTS.models.nonstationary import common, flrg
 
 
 class ConventionalNonStationaryFLRG(flrg.NonStationaryFLRG):
@@ -34,29 +34,25 @@ class NonStationaryFTS(fts.FTS):
         self.method = kwargs.get("method",'fuzzy')
 
     def generate_flrg(self, flrs, **kwargs):
-        flrgs = {}
         for flr in flrs:
-            if flr.LHS.name in flrgs:
-                flrgs[flr.LHS.name].append(flr.RHS)
+            if flr.LHS.name in self.flrgs:
+                self.flrgs[flr.LHS.name].append(flr.RHS)
             else:
-                flrgs[flr.LHS.name] = ConventionalNonStationaryFLRG(flr.LHS)
-                flrgs[flr.LHS.name].append(flr.RHS)
-        return flrgs
+                self.flrgs[flr.LHS.name] = ConventionalNonStationaryFLRG(flr.LHS)
+                self.flrgs[flr.LHS.name].append(flr.RHS)
 
-    def train(self, data, sets=None, order=1, parameters=None):
+    def train(self, data, **kwargs):
 
-        if sets is not None:
-            self.sets = sets
-        else:
-            self.sets = self.partitioner.sets
+        if kwargs.get('sets', None) is not None:
+            self.sets = kwargs.get('sets', None)
 
         ndata = self.apply_transformations(data)
-        window_size = parameters if parameters is not None else 1
+        window_size = kwargs.get('parameters', 1)
         tmpdata = common.fuzzySeries(ndata, self.sets, window_size, method=self.method)
         #print([k[0].name for k in tmpdata])
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         #print([str(k) for k in flrs])
-        self.flrgs = self.generate_flrg(flrs)
+        self.generate_flrg(flrs)
 
     def forecast(self, data, **kwargs):
 

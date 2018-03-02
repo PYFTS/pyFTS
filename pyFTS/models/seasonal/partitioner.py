@@ -17,7 +17,7 @@ class TimeGridPartitioner(partitioner.Partitioner):
         :param npart: The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created
         :param func: Fuzzy membership function (pyFTS.common.Membership)
         """
-        super(TimeGridPartitioner, self).__init__(name="TimeGrid", **kwargs)
+        super(TimeGridPartitioner, self).__init__(name="TimeGrid", preprocess=False, **kwargs)
 
         self.season = kwargs.get('seasonality', DateTime.day_of_year)
         data = kwargs.get('data', None)
@@ -101,11 +101,12 @@ class TimeGridPartitioner(partitioner.Partitioner):
         ticks = []
         x = []
         for s in self.sets:
-            if s.type == 'common':
-                self.plot_set(ax, s)
-            elif s.type == 'composite':
+            if s.type == 'composite':
                 for ss in s.sets:
                     self.plot_set(ax, ss)
-#            ticks.append(str(round(s.centroid, 0)) + '\n' + s.name)
-#            x.append(s.centroid)
-#        plt.xticks(x, ticks)
+            else:
+                self.plot_set(ax, s)
+            ticks.append(str(round(s.centroid, 0)) + '\n' + s.name)
+            x.append(s.centroid)
+        ax.xaxis.set_ticklabels(ticks)
+        ax.xaxis.set_ticks(x)

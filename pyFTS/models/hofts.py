@@ -77,7 +77,6 @@ class HighOrderFTS(fts.FTS):
             self.build_tree_without_order(child, lags, level + 1)
 
     def generateFLRG(self, flrs):
-        flrgs = {}
         l = len(flrs)
         for k in np.arange(self.order + 1, l):
             flrg = HighOrderFLRG(self.order)
@@ -85,15 +84,13 @@ class HighOrderFTS(fts.FTS):
             for kk in np.arange(k - self.order, k):
                 flrg.append_lhs(flrs[kk].LHS)
 
-            if flrg.str_lhs() in flrgs:
-                flrgs[flrg.str_lhs()].append_rhs(flrs[k].RHS)
+            if flrg.str_lhs() in self.flrgs:
+                self.flrgs[flrg.str_lhs()].append_rhs(flrs[k].RHS)
             else:
-                flrgs[flrg.str_lhs()] = flrg;
-                flrgs[flrg.str_lhs()].append_rhs(flrs[k].RHS)
-        return (flrgs)
+                self.flrgs[flrg.str_lhs()] = flrg;
+                self.flrgs[flrg.str_lhs()].append_rhs(flrs[k].RHS)
 
     def generate_flrg(self, data):
-        flrgs = {}
         l = len(data)
         for k in np.arange(self.order, l):
             if self.dump: print("FLR: " + str(k))
@@ -121,13 +118,12 @@ class HighOrderFTS(fts.FTS):
                 for lhs in path:
                     flrg.append_lhs(lhs)
 
-                if flrg.str_lhs() not in flrgs:
-                    flrgs[flrg.str_lhs()] = flrg;
+                if flrg.str_lhs() not in self.flrgs:
+                    self.flrgs[flrg.str_lhs()] = flrg;
 
                 for st in rhs:
-                    flrgs[flrg.str_lhs()].append_rhs(st)
+                    self.flrgs[flrg.str_lhs()].append_rhs(st)
 
-        return flrgs
 
     def train(self, data, **kwargs):
 
@@ -138,7 +134,7 @@ class HighOrderFTS(fts.FTS):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
         for s in self.sets:    self.setsDict[s.name] = s
-        self.flrgs = self.generate_flrg(data)
+        self.generate_flrg(data)
 
     def forecast(self, data, **kwargs):
 
