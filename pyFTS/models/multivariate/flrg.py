@@ -25,7 +25,7 @@ class FLRG(flg.FLRG):
             _str = ""
             for k in self.LHS.keys():
                 _str += "," if len(_str) > 0 else ""
-                _str += k + ":" + self.LHS[k].name
+                _str += self.LHS[k].name
             self.key = _str
 
         return self.key

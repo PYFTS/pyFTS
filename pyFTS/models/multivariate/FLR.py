@@ -19,7 +19,7 @@ class FLR(object):
         self.RHS = set
 
     def __str__(self):
-        return str([k +":"+self.LHS[k].name for k in self.LHS.keys()]) + " -> " + self.RHS.name
+        return str([self.LHS[k].name for k in self.LHS.keys()]) + " -> " + self.RHS.name
 
 
 

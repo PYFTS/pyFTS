@@ -62,7 +62,7 @@ def explore_partitioners(data, npart, methods=None, mf=None, tam=[12, 10], save=
 
     for p in methods:
         for m in mf:
-            obj = p(data, npart,m)
+            obj = p(data=data, npart=npart, func=m)
             obj.name = obj.name  + " - " + obj.membership_function.__name__
             objs.append(obj)
 

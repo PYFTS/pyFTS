@@ -182,7 +182,7 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
 
             for partitioner in partitioners:
 
-                data_train_fs = partitioner(train, partition, transformation=transformation)
+                data_train_fs = partitioner(data=train, npart=partition, transformation=transformation)
 
                 for _id, m in enumerate(pool,start=0):
                     if m.benchmark_only and m.shortname in benchmarks_only:
@@ -263,7 +263,7 @@ def all_point_forecasters(data_train, data_test, partitions, max_order=3, statis
 
     objs = []
 
-    data_train_fs = Grid.GridPartitioner(data_train, partitions, transformation=transformation)
+    data_train_fs = Grid.GridPartitioner(data=data_train, npart=partitions, transformation=transformation)
 
     count = 1
 
@@ -361,7 +361,7 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
         for partition in partitions:
             for partitioner in partitioners:
                 pttr = str(partitioner.__module__).split('.')[-1]
-                data_train_fs = partitioner(training, partition, transformation=transformation)
+                data_train_fs = partitioner(data=training, npart=partition, transformation=transformation)
 
                 for count, model in enumerate(models, start=0):
 
@@ -468,7 +468,7 @@ def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save
                              benchmark_models=None, benchmark_models_parameters=None):
     models = build_model_pool_interval(models, max_order, benchmark_models, benchmark_models_parameters)
 
-    data_train_fs = Grid.GridPartitioner(data_train, partitions, transformation=transformation).sets
+    data_train_fs = Grid.GridPartitioner(data=data_train, npart=partitions, transformation=transformation).sets
 
     lcolors = []
     objs = []
@@ -611,7 +611,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
         for partition in partitions:
             for partitioner in partitioners:
                 pttr = str(partitioner.__module__).split('.')[-1]
-                data_train_fs = partitioner(train, partition, transformation=transformation)
+                data_train_fs = partitioner(data=train, npart=partition, transformation=transformation)
 
                 for count, model in enumerate(models, start=0):
 
@@ -697,7 +697,7 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
 
     objs = []
 
-    data_train_fs = Grid.GridPartitioner(data_train, partitions, transformation=transformation).sets
+    data_train_fs = Grid.GridPartitioner(data=data_train, npart=partitions, transformation=transformation).sets
     lcolors = []
 
     for count, model in Util.enumerate2(models, start=0, step=2):
@@ -894,7 +894,7 @@ def SelecaoSimples_MenorRMSE(original, parameters, modelo):
     min_rmse = 100000.0
     best = None
     for p in parameters:
-        sets = Grid.GridPartitioner(original, p).sets
+        sets = Grid.GridPartitioner(data=original, npart=p).sets
         fts = modelo(str(p) + " particoes")
         fts.train(original, sets=sets)
         # print(original)
@@ -934,7 +934,7 @@ def SelecaoSimples_MenorRMSE(original, parameters, modelo):
     min_rmse = 100000.0
     bestd = None
     for p in parameters:
-        sets = Grid.GridPartitionerTrimf(difffts, p)
+        sets = Grid.GridPartitioner(data=difffts, npart=p)
         fts = modelo(str(p) + " particoes")
         fts.train(difffts, sets=sets)
         forecasted = fts.forecast(difffts)
@@ -1046,7 +1046,7 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
 
     for pc, p in enumerate(partitions, start=0):
 
-        sets = partitioner(train, p, transformation=transformation).sets
+        sets = partitioner(data=train, npart=p, transformation=transformation).sets
         for oc, o in enumerate(orders, start=0):
             fts = model("q = " + str(p) + " n = " + str(o))
             fts.append_transformation(transformation)
@@ -1123,7 +1123,7 @@ def sliding_window_simple_search(data, windowsize, model, partitions, orders, sa
 
     for pc, p in enumerate(partitions, start=0):
 
-        sets = Grid.GridPartitioner(data, p).sets
+        sets = Grid.GridPartitioner(data=data, npart=p).sets
         for oc, o in enumerate(orders, start=0):
             _error = []
             for ct, train, test in Util.sliding_window(data, windowsize, 0.8):
@@ -1181,7 +1181,7 @@ def sliding_window_simple_search(data, windowsize, model, partitions, orders, sa
 
 def pftsExploreOrderAndPartitions(data,save=False, file=None):
     fig, axes = plt.subplots(nrows=4, ncols=1, figsize=[6, 8])
-    data_fs1 = Grid.GridPartitioner(data, 10).sets
+    data_fs1 = Grid.GridPartitioner(data=data, npart=10).sets
     mi = []
     ma = []
 
@@ -1210,7 +1210,7 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
     axes[3].set_title('Interval Forecasts by Number of Partitions')
 
     for partitions in np.arange(5, 11):
-        data_fs = Grid.GridPartitioner(data, partitions).sets
+        data_fs = Grid.GridPartitioner(data=data, npart=partitions).sets
         fts = pwfts.ProbabilisticWeightedFTS("")
         fts.shortname = "q = " + str(partitions)
         fts.train(data, sets=data_fs.sets, order=1)

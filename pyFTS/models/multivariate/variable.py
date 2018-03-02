@@ -37,6 +37,8 @@ class Variable:
                               transformation=self.transformation, prefix=self.alias,
                               variable=self.name)
 
+        self.partitioner.name = self.name + " " + self.partitioner.name
+
     def apply_transformations(self, data, **kwargs):
 
         if kwargs.get('params', None) is not None:
