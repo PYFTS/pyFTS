@@ -18,7 +18,7 @@ class TrendWeightedFLRG(yu.WeightedFLRG):
         super(TrendWeightedFLRG, self).__init__(LHS, **kwargs)
         self.w = None
 
-    def weights(self):
+    def weights(self, sets):
         if self.w is None:
             count_nochange = 0.0
             count_up = 0.0
@@ -27,10 +27,10 @@ class TrendWeightedFLRG(yu.WeightedFLRG):
 
             for c in self.RHS:
                 tmp = 0
-                if self.LHS.centroid == c.centroid:
+                if sets[self.LHS].centroid == sets[c].centroid:
                     count_nochange += 1.0
                     tmp = count_nochange
-                elif self.LHS.centroid > c.centroid:
+                elif sets[self.LHS].centroid > sets[c].centroid:
                     count_down += 1.0
                     tmp = count_down
                 else:
@@ -54,8 +54,8 @@ class TrendWeightedFTS(yu.WeightedFTS):
 
     def generate_FLRG(self, flrs):
         for flr in flrs:
-            if flr.LHS.name in self.flrgs:
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+            if flr.LHS in self.flrgs:
+                self.flrgs[flr.LHS].append_rhs(flr.RHS)
             else:
-                self.flrgs[flr.LHS.name] = TrendWeightedFLRG(flr.LHS)
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+                self.flrgs[flr.LHS] = TrendWeightedFLRG(flr.LHS)
+                self.flrgs[flr.LHS].append_rhs(flr.RHS)

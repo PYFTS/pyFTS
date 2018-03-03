@@ -11,7 +11,10 @@ class ConventionalNonStationaryFLRG(flrg.NonStationaryFLRG):
         self.LHS = LHS
         self.RHS = set()
 
-    def append(self, c):
+    def get_key(self):
+        return self.LHS.name
+
+    def append_rhs(self, c, **kwargs):
         self.RHS.add(c)
 
     def __str__(self):
@@ -36,10 +39,10 @@ class NonStationaryFTS(fts.FTS):
     def generate_flrg(self, flrs, **kwargs):
         for flr in flrs:
             if flr.LHS.name in self.flrgs:
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+                self.flrgs[flr.LHS.name].append_rhs(flr.RHS)
             else:
                 self.flrgs[flr.LHS.name] = ConventionalNonStationaryFLRG(flr.LHS)
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+                self.flrgs[flr.LHS.name].append_rhs(flr.RHS)
 
     def train(self, data, **kwargs):
 

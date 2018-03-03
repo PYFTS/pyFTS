@@ -33,7 +33,7 @@ class TimeGridPartitioner(partitioner.Partitioner):
         self.sets = self.build(None)
 
     def build(self, data):
-        sets = []
+        sets = {}
 
         kwargs = {'variable': self.variable}
 
@@ -46,7 +46,7 @@ class TimeGridPartitioner(partitioner.Partitioner):
 
         count = 0
         for c in np.arange(self.min, self.max, partlen):
-            set_name = self.prefix + str(count) if self.setnames is None else self.setnames[count]
+            set_name = self.get_name(count)
             if self.membership_function == Membership.trimf:
                 if c == self.min:
                     tmp = Composite(set_name, superset=True)
@@ -58,14 +58,14 @@ class TimeGridPartitioner(partitioner.Partitioner):
                                             [c - partlen, c, c + partlen], c,
                                             **kwargs))
                     tmp.centroid = c
-                    sets.append(tmp)
+                    sets[set_name] = tmp
                 else:
-                    sets.append(FuzzySet(self.season, set_name, Membership.trimf,
+                    sets[set_name] = FuzzySet(self.season, set_name, Membership.trimf,
                                          [c - partlen, c, c + partlen], c,
-                                         **kwargs))
+                                         **kwargs)
             elif self.membership_function == Membership.gaussmf:
-                sets.append(FuzzySet(self.season, set_name, Membership.gaussmf, [c, partlen / 3], c,
-                                     **kwargs))
+                sets[set_name] = FuzzySet(self.season, set_name, Membership.gaussmf, [c, partlen / 3], c,
+                                     **kwargs)
             elif self.membership_function == Membership.trapmf:
                 q = partlen / 4
                 if c == self.min:
@@ -78,16 +78,17 @@ class TimeGridPartitioner(partitioner.Partitioner):
                                             [c - partlen, c - q, c + q, c + partlen], c,
                                             **kwargs))
                     tmp.centroid = c
-                    sets.append(tmp)
+                    sets[set_name] = tmp
                 else:
-                    sets.append(FuzzySet(self.season, set_name, Membership.trapmf,
+                    sets[set_name] = FuzzySet(self.season, set_name, Membership.trapmf,
                                          [c - partlen, c - q, c + q, c + partlen], c,
-                                         **kwargs))
+                                         **kwargs)
             count += 1
 
         self.min = 0
 
         return sets
+
 
     def plot(self, ax):
         """

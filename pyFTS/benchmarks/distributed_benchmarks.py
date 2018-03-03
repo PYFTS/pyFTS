@@ -150,10 +150,10 @@ def point_sliding_window(data, windowsize, train=0.8, inc=0.1, models=None, part
                 smape[tmp['key']] = []
                 u[tmp['key']] = []
                 times[tmp['key']] = []
-            rmse[tmp['key']].append(tmp['rmse'])
-            smape[tmp['key']].append(tmp['smape'])
-            u[tmp['key']].append(tmp['u'])
-            times[tmp['key']].append(tmp['time'])
+            rmse[tmp['key']].append_rhs(tmp['rmse'])
+            smape[tmp['key']].append_rhs(tmp['smape'])
+            u[tmp['key']].append_rhs(tmp['u'])
+            times[tmp['key']].append_rhs(tmp['time'])
             print(tmp['key'], tmp['window'])
         else:
             print(job.exception)
@@ -377,14 +377,14 @@ def interval_sliding_window(data, windowsize, train=0.8,  inc=0.1, models=None, 
                 q75[tmp['key']] = []
                 q95[tmp['key']] = []
 
-            sharpness[tmp['key']].append(tmp['sharpness'])
-            resolution[tmp['key']].append(tmp['resolution'])
-            coverage[tmp['key']].append(tmp['coverage'])
-            times[tmp['key']].append(tmp['time'])
-            q05[tmp['key']].append(tmp['Q05'])
-            q25[tmp['key']].append(tmp['Q25'])
-            q75[tmp['key']].append(tmp['Q75'])
-            q95[tmp['key']].append(tmp['Q95'])
+            sharpness[tmp['key']].append_rhs(tmp['sharpness'])
+            resolution[tmp['key']].append_rhs(tmp['resolution'])
+            coverage[tmp['key']].append_rhs(tmp['coverage'])
+            times[tmp['key']].append_rhs(tmp['time'])
+            q05[tmp['key']].append_rhs(tmp['Q05'])
+            q25[tmp['key']].append_rhs(tmp['Q25'])
+            q75[tmp['key']].append_rhs(tmp['Q75'])
+            q95[tmp['key']].append_rhs(tmp['Q95'])
             print(tmp['key'])
         else:
             print(job.exception)
@@ -576,10 +576,10 @@ def ahead_sliding_window(data, windowsize, steps, resolution, train=0.8, inc=0.1
                 crps_distr[tmp['key']] = []
                 times1[tmp['key']] = []
                 times2[tmp['key']] = []
-            crps_interval[tmp['key']].append(tmp['CRPS_Interval'])
-            crps_distr[tmp['key']].append(tmp['CRPS_Distribution'])
-            times1[tmp['key']].append(tmp['TIME_Interval'])
-            times2[tmp['key']].append(tmp['TIME_Distribution'])
+            crps_interval[tmp['key']].append_rhs(tmp['CRPS_Interval'])
+            crps_distr[tmp['key']].append_rhs(tmp['CRPS_Distribution'])
+            times1[tmp['key']].append_rhs(tmp['TIME_Interval'])
+            times2[tmp['key']].append_rhs(tmp['TIME_Distribution'])
 
         else:
             print(job.exception)

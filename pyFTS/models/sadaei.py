@@ -21,7 +21,7 @@ class ExponentialyWeightedFLRG(flrg.FLRG):
         self.c = kwargs.get("c",default_c)
         self.w = None
 
-    def append(self, c):
+    def append_rhs(self, c, **kwargs):
         self.RHS.append(c)
         self.count = self.count + 1.0
 
@@ -33,15 +33,15 @@ class ExponentialyWeightedFLRG(flrg.FLRG):
         return self.w
 
     def __str__(self):
-        tmp = self.LHS.name + " -> "
+        tmp = self.LHS + " -> "
         tmp2 = ""
         cc = 0
         wei = [self.c ** k for k in np.arange(0.0, self.count, 1.0)]
         tot = sum(wei)
-        for c in sorted(self.RHS, key=lambda s: s.name):
+        for c in sorted(self.RHS):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ","
-            tmp2 = tmp2 + c.name + "(" + str(wei[cc] / tot) + ")"
+            tmp2 = tmp2 + c + "(" + str(wei[cc] / tot) + ")"
             cc = cc + 1
         return tmp + tmp2
 
@@ -59,23 +59,25 @@ class ExponentialyWeightedFTS(fts.FTS):
 
     def generate_flrg(self, flrs, c):
         for flr in flrs:
-            if flr.LHS.name in self.flrgs:
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+            if flr.LHS in self.flrgs:
+                self.flrgs[flr.LHS].append_rhs(flr.RHS)
             else:
-                self.flrgs[flr.LHS.name] = ExponentialyWeightedFLRG(flr.LHS, c=c);
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+                self.flrgs[flr.LHS] = ExponentialyWeightedFLRG(flr.LHS, c=c);
+                self.flrgs[flr.LHS].append_rhs(flr.RHS)
 
     def train(self, data, **kwargs):
         self.c = kwargs.get('parameters', default_c)
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
         ndata = self.apply_transformations(data)
-        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
+        tmpdata = FuzzySet.fuzzyfy_series(ndata, self.sets, method='maximum')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs, self.c)
 
     def forecast(self, data, **kwargs):
         l = 1
+
+        ordered_sets = FuzzySet.set_ordered(self.sets)
 
         data = np.array(data)
 
@@ -87,15 +89,13 @@ class ExponentialyWeightedFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
-            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)
-
-            actual = self.sets[np.argwhere(mv == max(mv))[0, 0]]
+            actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets, ordered_sets)
 
             if actual.name not in self.flrgs:
                 ret.append(actual.centroid)
             else:
                 flrg = self.flrgs[actual.name]
-                mp = flrg.get_midpoints()
+                mp = flrg.get_midpoints(self.sets)
 
                 ret.append(mp.dot(flrg.weights()))
 

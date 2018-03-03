@@ -4,26 +4,26 @@ from pyFTS.models.seasonal import sfts
 from pyFTS.models import chen
 
 
-class ContextualSeasonalFLRG(object):
+class ContextualSeasonalFLRG(sfts.SeasonalFLRG):
     """
     Contextual Seasonal Fuzzy Logical Relationship Group
     """
     def __init__(self, seasonality):
-        self.season = seasonality
-        self.flrgs = {}
+        super(ContextualSeasonalFLRG, self).__init__(seasonality)
+        self.RHS = {}
 
-    def append(self, flr):
-        if flr.LHS.name in self.flrgs:
-            self.flrgs[flr.LHS.name].append(flr.RHS)
+    def append_rhs(self, flr, **kwargs):
+        if flr.LHS in self.RHS:
+            self.RHS[flr.LHS].append_rhs(flr.RHS)
         else:
-            self.flrgs[flr.LHS.name] = chen.ConventionalFLRG(flr.LHS)
-            self.flrgs[flr.LHS.name].append(flr.RHS)
+            self.RHS[flr.LHS] = chen.ConventionalFLRG(flr.LHS)
+            self.RHS[flr.LHS].append_rhs(flr.RHS)
 
     def __str__(self):
-        tmp = str(self.season) + ": \n "
+        tmp = str(self.LHS) + ": \n "
         tmp2 = "\t"
-        for r in sorted(self.flrgs):
-            tmp2 += str(self.flrgs[r]) + "\n\t"
+        for r in sorted(self.RHS):
+            tmp2 += str(self.RHS[r]) + "\n\t"
         return tmp + tmp2 + "\n"
 
 
@@ -50,7 +50,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
             if str(flr.index) not in self.flrgs:
                 self.flrgs[str(flr.index)] = ContextualSeasonalFLRG(flr.index)
 
-            self.flrgs[str(flr.index)].append(flr)
+            self.flrgs[str(flr.index)].append_rhs(flr)
 
     def train(self, data,  **kwargs):
         if kwargs.get('sets', None) is not None:
@@ -61,13 +61,14 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
         self.generate_flrg(flrs)
 
     def get_midpoints(self, flrg, data):
-        if data.name in flrg.flrgs:
-            ret = np.array([s.centroid for s in flrg.flrgs[data.name].RHS])
+        if data in flrg.flrgs:
+            ret = np.array([self.sets[s].centroid for s in flrg.flrgs[data.name].RHS])
             return ret
         else:
-            return  np.array([data.centroid])
+            return  np.array([self.sets[data].centroid])
 
     def forecast(self, data, **kwargs):
+        ordered_sets = FuzzySet.set_ordered(self.sets)
 
         ret = []
 
@@ -78,7 +79,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
 
             flrg = self.flrgs[str(index[k])]
 
-            d = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets)
+            d = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets, ordered_sets)
 
             mp = self.get_midpoints(flrg, d)
 

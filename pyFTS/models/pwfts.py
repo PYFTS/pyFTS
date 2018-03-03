@@ -19,79 +19,74 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
         self.frequency_count = 0.0
         self.Z = None
 
-    def append_rhs(self, c):
-        self.frequency_count += 1.0
-        if c.name in self.RHS:
-            self.rhs_count[c.name] += 1.0
-        else:
-            self.RHS[c.name] = c
-            self.rhs_count[c.name] = 1.0
+    def get_membership(self, data, sets):
+        return np.nanprod([sets[k].membership(data[k]) for k in self.LHS])
 
-    def appendRHSFuzzy(self, c, mv):
+    def append_rhs(self, c, **kwargs):
+        mv = kwargs.get('mv', 1.0)
         self.frequency_count += mv
-        if c.name in self.RHS:
-            self.rhs_count[c.name] += mv
+        if c in self.RHS:
+            self.rhs_count[c] += mv
         else:
-            self.RHS[c.name] = c
-            self.rhs_count[c.name] = mv
+            self.RHS[c] = c
+            self.rhs_count[c] = mv
 
-    def get_RHSprobability(self, c):
-        return self.rhs_count[c] / self.frequency_count
-
-    def lhs_probability(self, x, norm, uod, nbins):
+    def lhs_conditional_probability(self, x, sets, norm, uod, nbins):
         pk = self.frequency_count / norm
 
-        tmp = pk * (self.lhs_membership(x) / self.partition_function(uod, nbins=nbins))
+        tmp = pk * (self.get_membership(x, sets) / self.partition_function(uod, nbins=nbins))
 
         return tmp
 
+    def rhs_unconditional_probability(self, c):
+        return self.rhs_count[c] / self.frequency_count
+
     def rhs_conditional_probability(self, x, sets, uod, nbins):
         total = 0.0
-        for rhs in self.RHS.keys():
-            set = self.RHS[rhs]
-            wi = self.get_RHSprobability(rhs)
+        for rhs in self.RHS:
+            set = sets[rhs]
+            wi = self.rhs_unconditional_probability(rhs)
             mv = set.membership(x) / set.partition_function(uod, nbins=nbins)
             total += wi * mv
 
         return total
 
-    def lhs_membership(self,x):
-        mv = []
-        for count, set in enumerate(self.LHS):
-            mv.append(set.membership(x[count]))
-
-        min_mv = np.min(mv)
-        return min_mv
-
-    def partition_function(self, uod, nbins=100):
+    def partition_function(self, sets, uod, nbins=100):
         if self.Z is None:
             self.Z = 0.0
             for k in np.linspace(uod[0], uod[1], nbins):
-                for set in self.LHS:
-                    self.Z += set.membership(k)
+                for key in self.LHS:
+                    self.Z += sets[key].membership(k)
 
         return self.Z
 
-    def get_midpoint(self):
+    def get_midpoint(self, sets):
         '''Return the expectation of the PWFLRG, the weighted sum'''
-        return sum(np.array([self.get_RHSprobability(s) * self.RHS[s].centroid
-                             for s in self.RHS.keys()]))
+        if self.midpoint is None:
+            self.midpoint = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].centroid
+                                             for s in self.RHS]))
 
-    def get_upper(self):
-        return sum(np.array([self.get_RHSprobability(s) * self.RHS[s].upper
-                             for s in self.RHS.keys()]))
+        return self.midpoint
 
-    def get_lower(self):
-        return sum(np.array([self.get_RHSprobability(s) * self.RHS[s].lower
-                             for s in self.RHS.keys()]))
+    def get_upper(self, sets):
+        if self.upper is None:
+            self.upper = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].upper for s in self.RHS]))
+
+        return self.upper
+
+    def get_lower(self, sets):
+        if self.lower is None:
+            self.lower = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].lower for s in self.RHS]))
+
+        return self.lower
 
     def __str__(self):
         tmp2 = ""
-        for c in sorted(self.RHS.keys()):
+        for c in sorted(self.RHS):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ", "
             tmp2 = tmp2 + "(" + str(round(self.rhs_count[c] / self.frequency_count, 3)) + ")" + c
-        return self.str_lhs() + " -> " + tmp2
+        return self.get_key() + " -> " + tmp2
 
 
 class ProbabilisticWeightedFTS(ifts.IntervalFTS):
@@ -132,6 +127,31 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         else:
             self.generate_flrg(data)
 
+    def generate_lhs_flrg(self, sample):
+        lags = {}
+
+        flrgs = []
+
+        for o in np.arange(0, self.order):
+            lhs = [key for key in self.partitioner.ordered_sets if self.sets[key].membership(sample[o]) > 0.0]
+            lags[o] = lhs
+
+        root = tree.FLRGTreeNode(None)
+
+        tree.build_tree_without_order(root, lags, 0)
+
+        # Trace the possible paths
+        for p in root.paths():
+            flrg = ProbabilisticWeightedFLRG(self.order)
+            path = list(reversed(list(filter(None.__ne__, p))))
+
+            for lhs in path:
+                flrg.append_lhs(lhs)
+
+            flrgs.append(flrg)
+
+        return flrgs
+
     def generate_flrg(self, data):
         l = len(data)
         for k in np.arange(self.order, l):
@@ -139,111 +159,69 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             sample = data[k - self.order: k]
 
-            mvs = FuzzySet.fuzzyfy_instances(sample, self.sets)
-            lags = {}
+            flrgs = self.generate_lhs_flrg(sample)
 
-            mv = FuzzySet.fuzzyfy_instance(data[k], self.sets)
-            tmp = np.argwhere(mv)
-            idx = np.ravel(tmp)  # flatten the array
+            for flrg in flrgs:
 
-            for o in np.arange(0, self.order):
-                _sets = [self.sets[kk] for kk in np.arange(0, len(self.sets)) if mvs[o][kk] > 0]
+                lhs_mv = flrg.get_membership(sample, self.sets)
 
-                lags[o] = _sets
+                if flrg.get_key() not in self.flrgs:
+                    self.flrgs[flrg.get_key()] = flrg;
 
-            root = tree.FLRGTreeNode(None)
+                fuzzyfied = [(s, self.sets[s].membership(data[k]))
+                             for s in self.sets.keys() if self.sets[s].membership(data[k]) > 0]
 
-            self.build_tree_without_order(root, lags, 0)
+                mvs = []
+                for set, mv in fuzzyfied:
+                    self.flrgs[flrg.get_key()].append_rhs(set, mv=lhs_mv * mv)
+                    mvs.append(mv)
 
-            # Trace the possible paths
-            for p in root.paths():
-                flrg = ProbabilisticWeightedFLRG(self.order)
-                path = list(reversed(list(filter(None.__ne__, p))))
+                tmp_fq = sum([lhs_mv*kk for kk in mvs if kk > 0])
 
-                tmp_path = []
-                for c, e in enumerate(path, start=0):
-                    tmp_path.append(  e.membership( sample[c] )  )
-                    flrg.append_lhs(e)
+                self.global_frequency_count += tmp_fq
 
-                lhs_mv = np.prod(tmp_path)
-
-                if flrg.str_lhs() not in self.flrgs:
-                    self.flrgs[flrg.str_lhs()] = flrg;
-
-                for st in idx:
-                    self.flrgs[flrg.str_lhs()].appendRHSFuzzy(self.sets[st], lhs_mv * mv[st])
-
-                tmp_fq = sum([lhs_mv*kk for kk in mv if kk > 0])
-
-                self.global_frequency_count = self.global_frequency_count + tmp_fq
-
-    def generateFLRG(self, flrs):
-        l = len(flrs)
-        for k in np.arange(self.order, l+1):
-            if self.dump: print("FLR: " + str(k))
-            flrg = ProbabilisticWeightedFLRG(self.order)
-
-            for kk in np.arange(k - self.order, k):
-                flrg.append_lhs(flrs[kk].LHS)
-                if self.dump: print("LHS: " + str(flrs[kk]))
-
-            if flrg.str_lhs() in self.flrgs:
-                self.flrgs[flrg.str_lhs()].append_rhs(flrs[k - 1].RHS)
-            else:
-                self.flrgs[flrg.str_lhs()] = flrg
-                self.flrgs[flrg.str_lhs()].append_rhs(flrs[k - 1].RHS)
-            if self.dump: print("RHS: " + str(flrs[k-1]))
-
-            self.global_frequency_count += 1
 
     def update_model(self,data):
+        pass
 
-        fzzy = FuzzySet.fuzzyfy_series_old(data, self.sets)
-
-        flrg = ProbabilisticWeightedFLRG(self.order)
-
-        for k in np.arange(0, self.order): flrg.append_lhs(fzzy[k])
-
-        if flrg.str_lhs() in self.flrgs:
-            self.flrgs[flrg.str_lhs()].append_rhs(fzzy[self.order])
-        else:
-            self.flrgs[flrg.str_lhs()] = flrg
-            self.flrgs[flrg.str_lhs()].append_rhs(fzzy[self.order])
-
-        self.global_frequency_count += 1
 
     def add_new_PWFLGR(self, flrg):
-        if flrg.str_lhs() not in self.flrgs:
+        if flrg.get_key() not in self.flrgs:
             tmp = ProbabilisticWeightedFLRG(self.order)
             for fs in flrg.LHS: tmp.append_lhs(fs)
             tmp.append_rhs(flrg.LHS[-1])
-            self.flrgs[tmp.str_lhs()] = tmp;
+            self.flrgs[tmp.get_key()] = tmp;
             self.global_frequency_count += 1
 
-    def get_flrg_global_probability(self, flrg):
-        if flrg.str_lhs() in self.flrgs:
-            return self.flrgs[flrg.str_lhs()].frequency_count / self.global_frequency_count
+    def flrg_lhs_unconditional_probability(self, flrg):
+        if flrg.get_key() in self.flrgs:
+            return self.flrgs[flrg.get_key()].frequency_count / self.global_frequency_count
         else:
             self.add_new_PWFLGR(flrg)
-            return self.get_flrg_global_probability(flrg)
+            return self.flrg_lhs_unconditional_probability(flrg)
+
+    def flrg_lhs_conditional_probability(self, x, flrg):
+        mv = flrg.get_membership(x, self.sets)
+        pb = self.flrg_lhs_unconditional_probability(flrg)
+        return mv * pb
 
     def get_midpoint(self, flrg):
-        if flrg.str_lhs() in self.flrgs:
-            tmp = self.flrgs[flrg.str_lhs()]
-            ret = tmp.get_midpoint() #sum(np.array([tmp.get_RHSprobability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
+        if flrg.get_key() in self.flrgs:
+            tmp = self.flrgs[flrg.get_key()]
+            ret = tmp.get_midpoint(self.sets) #sum(np.array([tmp.rhs_unconditional_probability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
         else:
             pi = 1 / len(flrg.LHS)
-            ret = sum(np.array([pi * s.centroid for s in flrg.LHS]))
+            ret = sum(np.array([pi * self.sets[s].centroid for s in flrg.LHS]))
         return ret
 
-    def get_conditional_probability(self, x, flrg):
+    def flrg_rhs_conditional_probability(self, x, flrg):
 
-        if flrg.str_lhs() in self.flrgs:
-            _flrg = self.flrgs[flrg.str_lhs()]
+        if flrg.get_key() in self.flrgs:
+            _flrg = self.flrgs[flrg.get_key()]
             cond = []
-            for s in _flrg.RHS:
-                _set = self.setsDict[s]
-                tmp = _flrg.get_RHSprobability(s) * (_set.membership(x) / _set.partition_function(uod=self.get_UoD()))
+            for s in _flrg.RHS.keys():
+                _set = self.sets[s]
+                tmp = _flrg.rhs_unconditional_probability(s) * (_set.membership(x) / _set.partition_function(uod=self.get_UoD()))
                 cond.append(tmp)
             ret = sum(np.array(cond))
         else:
@@ -255,21 +233,21 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         return ret
 
     def get_upper(self, flrg):
-        if flrg.str_lhs() in self.flrgs:
-            tmp = self.flrgs[flrg.str_lhs()]
-            ret = tmp.get_upper()
+        if flrg.get_key() in self.flrgs:
+            tmp = self.flrgs[flrg.get_key()]
+            ret = tmp.get_upper(self.sets)
         else:
             pi = 1 / len(flrg.LHS)
-            ret = sum(np.array([pi * s.upper for s in flrg.LHS]))
+            ret = sum(np.array([pi * self.sets[s].upper for s in flrg.LHS]))
         return ret
 
     def get_lower(self, flrg):
-        if flrg.str_lhs() in self.flrgs:
-            tmp = self.flrgs[flrg.str_lhs()]
-            ret = tmp.get_lower()
+        if flrg.get_key() in self.flrgs:
+            tmp = self.flrgs[flrg.get_key()]
+            ret = tmp.get_lower(self.sets)
         else:
             pi = 1 / len(flrg.LHS)
-            ret = sum(np.array([pi * s.lower for s in flrg.LHS]))
+            ret = sum(np.array([pi * self.sets[s].lower for s in flrg.LHS]))
         return ret
 
     def forecast(self, data, **kwargs):
@@ -282,84 +260,20 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         for k in np.arange(self.order - 1, l):
 
-            # print(k)
+            sample = ndata[k - (self.order - 1): k + 1]
 
-            affected_flrgs = []
-            affected_flrgs_memberships = []
-            norms = []
+            flrgs = self.generate_lhs_flrg(sample)
 
             mp = []
-
-            # Find the sets which membership > 0 for each lag
-            lags = {}
-            if self.order > 1:
-                subset = ndata[k - (self.order - 1): k + 1]
-
-                for count, instance in enumerate(subset):
-                    mb = FuzzySet.fuzzyfy_instance(instance, self.sets)
-                    tmp = np.argwhere(mb)
-                    idx = np.ravel(tmp)  # flatten the array
-
-                    if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                        if instance <= self.sets[0].lower:
-                            idx = [0]
-                        elif instance >= self.sets[-1].upper:
-                            idx = [len(self.sets) - 1]
-                        else:
-                            raise Exception(instance)
-
-                    lags[count] = idx
-
-                # Build the tree with all possible paths
-
-                root = tree.FLRGTreeNode(None)
-
-                self.build_tree(root, lags, 0)
-
-                # Trace the possible paths and build the PFLRG's
-
-                for p in root.paths():
-                    path = list(reversed(list(filter(None.__ne__, p))))
-                    flrg = hofts.HighOrderFLRG(self.order)
-                    for kk in path: flrg.append_lhs(self.sets[kk])
-
-                    assert len(flrg.LHS) == subset.size, str(subset) + " -> " + str([s.name for s in flrg.LHS])
-
-                    ##
-                    affected_flrgs.append(flrg)
-
-                    # Find the general membership of FLRG
-                    affected_flrgs_memberships.append(flrg.get_membership(subset))
-
-            else:
-
-                mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)  # get all membership values
-                tmp = np.argwhere(mv)  # get the indices of values > 0
-                idx = np.ravel(tmp)  # flatten the array
-
-                if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                    if ndata[k] <= self.sets[0].lower:
-                        idx = [0]
-                    elif ndata[k] >= self.sets[-1].upper:
-                        idx = [len(self.sets) - 1]
-                    else:
-                        raise Exception(ndata[k])
-
-                for kk in idx:
-                    flrg = hofts.HighOrderFLRG(self.order)
-                    flrg.append_lhs(self.sets[kk])
-                    affected_flrgs.append(flrg)
-                    affected_flrgs_memberships.append(mv[kk])
-
-            for count, flrg in enumerate(affected_flrgs):
-                # achar o os bounds de cada FLRG, ponderados pela probabilidade e pertinência
-                norm = self.get_flrg_global_probability(flrg) * affected_flrgs_memberships[count]
+            norms = []
+            for flrg in flrgs:
+                norm = self.flrg_lhs_conditional_probability(sample, flrg)
                 if norm == 0:
-                    norm = self.get_flrg_global_probability(flrg)  # * 0.001
+                    norm = self.flrg_lhs_unconditional_probability(flrg)  # * 0.001
                 mp.append(norm * self.get_midpoint(flrg))
                 norms.append(norm)
 
-            # gerar o intervalo
+                # gerar o intervalo
             norm = sum(norms)
             if norm == 0:
                 ret.append(0)
@@ -401,7 +315,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         dist = self.forecast_distribution(ndata)
         lo_qt = dist[0].quantile(self.alpha)
         up_qt = dist[0].quantile(1.0 - self.alpha)
-        ret.append([lo_qt, up_qt])
+        ret.append_rhs([lo_qt, up_qt])
 
     def interval_extremum(self, k, ndata, ret):
         affected_flrgs = []
@@ -475,9 +389,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 affected_flrgs_memberships.append(mv[kk])
         for count, flrg in enumerate(affected_flrgs):
             # achar o os bounds de cada FLRG, ponderados pela probabilidade e pertinência
-            norm = self.get_flrg_global_probability(flrg) * affected_flrgs_memberships[count]
+            norm = self.flrg_lhs_unconditional_probability(flrg) * affected_flrgs_memberships[count]
             if norm == 0:
-                norm = self.get_flrg_global_probability(flrg)  # * 0.001
+                norm = self.flrg_lhs_unconditional_probability(flrg)  # * 0.001
             up.append(norm * self.get_upper(flrg))
             lo.append(norm * self.get_lower(flrg))
             norms.append(norm)
@@ -485,11 +399,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         # gerar o intervalo
         norm = sum(norms)
         if norm == 0:
-            ret.append([0, 0])
+            ret.append_rhs([0, 0])
         else:
             lo_ = sum(lo) / norm
             up_ = sum(up) / norm
-            ret.append([lo_, up_])
+            ret.append_rhs([lo_, up_])
 
     def forecast_distribution(self, data, **kwargs):
 
@@ -505,20 +419,22 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         ret = []
         uod = self.get_UoD()
-        _keys = sorted(self.flrgs.keys())
         _bins = np.linspace(uod[0], uod[1], nbins)
 
         for k in np.arange(self.order - 1, l):
             sample = ndata[k - (self.order - 1): k + 1]
+
+            flrgs = self.generate_lhs_flrg(sample)
+
             dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
 
             for bin in _bins:
                 num = []
                 den = []
-                for s in _keys:
-                    flrg = self.flrgs[s]
-                    pk = flrg.lhs_probability(sample, self.global_frequency_count, uod, nbins)
-                    wi = flrg.rhs_conditional_probability(bin, self.setsDict, uod, nbins)
+                for s in flrgs:
+                    flrg = self.flrgs[s.get_key()]
+                    pk = flrg.lhs_conditional_probability(sample, self.global_frequency_count, uod, nbins)
+                    wi = flrg.rhs_conditional_probability(bin, self.sets, uod, nbins)
                     num.append(wi * pk)
                     den.append(pk)
                 pf = sum(num) / sum(den)

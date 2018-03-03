@@ -20,28 +20,34 @@ class HighOrderFTS(fts.FTS):
 
     def forecast(self, data, **kwargs):
 
+        ordered_sets = FuzzySet.set_ordered(self.sets)
+
         ndata = self.apply_transformations(data)
 
-        cn = np.array([0.0 for k in range(len(self.sets))])
-        ow = np.array([[0.0 for k in range(len(self.sets))] for z in range(self.order - 1)])
-        rn = np.array([[0.0 for k in range(len(self.sets))] for z in range(self.order - 1)])
-        ft = np.array([0.0 for k in range(len(self.sets))])
+        l = len(self.sets)
+
+        cn = np.array([0.0 for k in range(l)])
+        ow = np.array([[0.0 for k in range(l)] for z in range(self.order - 1)])
+        rn = np.array([[0.0 for k in range(l)] for z in range(self.order - 1)])
+        ft = np.array([0.0 for k in range(l)])
 
         ret = []
 
         for t in np.arange(self.order-1, len(ndata)):
 
-            for s in range(len(self.sets)):
-                cn[s] = self.sets[s].membership(ndata[t])
+            for ix in range(l):
+                s = ordered_sets[ix]
+                cn[ix] = self.sets[s].membership(ndata[t])
                 for w in range(self.order - 1):
-                    ow[w, s] = self.sets[s].membership(ndata[t - w])
-                    rn[w, s] = ow[w, s] * cn[s]
-                    ft[s] = max(ft[s], rn[w, s])
+                    ow[w, ix] = self.sets[s].membership(ndata[t - w])
+                    rn[w, ix] = ow[w, ix] * cn[ix]
+                    ft[ix] = max(ft[ix], rn[w, ix])
             mft = max(ft)
             out = 0.0
             count = 0.0
-            for s in range(len(self.sets)):
-                if ft[s] == mft:
+            for ix in range(l):
+                s = ordered_sets[ix]
+                if ft[ix] == mft:
                     out = out + self.sets[s].centroid
                     count += 1.0
             ret.append(out / count)

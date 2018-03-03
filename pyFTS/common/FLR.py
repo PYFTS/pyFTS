@@ -17,7 +17,7 @@ class FLR(object):
         self.RHS = RHS
 
     def __str__(self):
-        return self.LHS.name + " -> " + self.RHS.name
+        return self.LHS + " -> " + self.RHS
 
 
 class IndexedFLR(FLR):
@@ -33,7 +33,7 @@ class IndexedFLR(FLR):
         self.index = index
 
     def __str__(self):
-        return str(self.index) + ": "+ self.LHS.name + " -> " + self.RHS.name
+        return str(self.index) + ": "+ self.LHS + " -> " + self.RHS
 
 
 def generate_high_order_recurrent_flr(fuzzyData):

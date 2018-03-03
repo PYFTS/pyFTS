@@ -26,7 +26,7 @@ class MultiSeasonalFTS(sfts.SeasonalFTS):
             if str(flr.index) not in self.flrgs:
                 self.flrgs[str(flr.index)] = sfts.SeasonalFLRG(flr.index)
 
-            self.flrgs[str(flr.index)].append(flr.RHS)
+            self.flrgs[str(flr.index)].append_rhs(flr.RHS)
 
     def train(self, data,  **kwargs):
         if kwargs.get('sets', None) is not None:

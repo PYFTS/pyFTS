@@ -83,7 +83,7 @@ class EntropyPartitioner(partitioner.Partitioner):
         super(EntropyPartitioner, self).__init__(name="Entropy", **kwargs)
 
     def build(self, data):
-        sets = []
+        sets = {}
 
         partitions = bestSplit(data, self.partitions)
         partitions.append(self.min)
@@ -91,15 +91,16 @@ class EntropyPartitioner(partitioner.Partitioner):
         partitions = list(set(partitions))
         partitions.sort()
         for c in np.arange(1, len(partitions) - 1):
+            _name = self.get_name(c)
             if self.membership_function == Membership.trimf:
-                sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf,
-                                              [partitions[c - 1], partitions[c], partitions[c + 1]],partitions[c]))
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
+                                              [partitions[c - 1], partitions[c], partitions[c + 1]],partitions[c])
             elif self.membership_function == Membership.trapmf:
                 b1 = (partitions[c] - partitions[c - 1])/2
                 b2 = (partitions[c + 1] - partitions[c]) / 2
-                sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trapmf,
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.trapmf,
                                               [partitions[c - 1], partitions[c] - b1,
                                                partitions[c] + b2, partitions[c + 1]],
-                                              partitions[c]))
+                                              partitions[c])
 
         return sets

@@ -38,10 +38,10 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
     def generate_flrg(self, flrs, **kwargs):
         for flr in flrs:
             if flr.LHS.name in self.flrgs:
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+                self.flrgs[flr.LHS.name].append_rhs(flr.RHS)
             else:
                 self.flrgs[flr.LHS.name] = nsfts.ConventionalNonStationaryFLRG(flr.LHS)
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+                self.flrgs[flr.LHS.name].append_rhs(flr.RHS)
 
     def _smooth(self, a):
         return .1 * a[0] + .3 * a[1] + .6 * a[2]

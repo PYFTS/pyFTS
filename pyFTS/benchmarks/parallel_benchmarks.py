@@ -127,10 +127,10 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
                         smape[tmp['key']] = []
                         u[tmp['key']] = []
                         times[tmp['key']] = []
-                    rmse[tmp['key']].append(tmp['rmse'])
-                    smape[tmp['key']].append(tmp['smape'])
-                    u[tmp['key']].append(tmp['u'])
-                    times[tmp['key']].append(tmp['time'])
+                    rmse[tmp['key']].append_rhs(tmp['rmse'])
+                    smape[tmp['key']].append_rhs(tmp['smape'])
+                    u[tmp['key']].append_rhs(tmp['u'])
+                    times[tmp['key']].append_rhs(tmp['time'])
 
     _process_end = time.time()
 
@@ -254,10 +254,10 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                         coverage[tmp['key']] = []
                         times[tmp['key']] = []
 
-                    sharpness[tmp['key']].append(tmp['sharpness'])
-                    resolution[tmp['key']].append(tmp['resolution'])
-                    coverage[tmp['key']].append(tmp['coverage'])
-                    times[tmp['key']].append(tmp['time'])
+                    sharpness[tmp['key']].append_rhs(tmp['sharpness'])
+                    resolution[tmp['key']].append_rhs(tmp['resolution'])
+                    coverage[tmp['key']].append_rhs(tmp['coverage'])
+                    times[tmp['key']].append_rhs(tmp['time'])
 
     _process_end = time.time()
 
@@ -384,10 +384,10 @@ def ahead_sliding_window(data, windowsize, train, steps,resolution, models=None,
                         times1[tmp['key']] = []
                         times2[tmp['key']] = []
 
-                    crps_interval[tmp['key']].append(tmp['CRPS_Interval'])
-                    crps_distr[tmp['key']].append(tmp['CRPS_Distribution'])
-                    times1[tmp['key']].append(tmp['TIME_Interval'])
-                    times2[tmp['key']].append(tmp['TIME_Distribution'])
+                    crps_interval[tmp['key']].append_rhs(tmp['CRPS_Interval'])
+                    crps_distr[tmp['key']].append_rhs(tmp['CRPS_Distribution'])
+                    times1[tmp['key']].append_rhs(tmp['TIME_Interval'])
+                    times2[tmp['key']].append_rhs(tmp['TIME_Distribution'])
 
     _process_end = time.time()
 

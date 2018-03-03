@@ -51,7 +51,7 @@ class MVFTS(fts.FTS):
             flr = MVFLR.FLR()
 
             for c, e in enumerate(path, start=0):
-                flr.set_lhs(e.variable, e)
+                flr.set_lhs(e.variable, e.name)
 
                 flrs.append(flr)
 
@@ -71,7 +71,7 @@ class MVFTS(fts.FTS):
 
             for flr in tmp_flrs:
                 for t in target:
-                    flr.set_rhs(t)
+                    flr.set_rhs(t.name)
                     flrs.append(flr)
 
         return flrs
@@ -121,6 +121,12 @@ class MVFTS(fts.FTS):
         ret = self.target_variable.apply_inverse_transformations(ret,
                                                            params=data[self.target_variable.data_label].values)
         return ret
+
+    def clone_parameters(self, model):
+        super(MVFTS, self).clone_parameters(model)
+
+        self.explanatory_variables = model.explanatory_variables
+        self.target_variable = model.target_variable
 
     def __str__(self):
         _str = self.name + ":\n"

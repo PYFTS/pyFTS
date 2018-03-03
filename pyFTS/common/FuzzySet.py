@@ -58,47 +58,62 @@ class FuzzySet(object):
         return self.name + ": " + str(self.mf.__name__) + "(" + str(self.parameters) + ")"
 
 
-def fuzzyfy_instance(inst, fuzzySets):
+def set_ordered(fuzzySets):
+    return [k for k in sorted(fuzzySets.keys())]
+
+
+def fuzzyfy_instance(inst, fuzzySets, ordered_sets=None):
     """
     Calculate the membership values for a data point given fuzzy sets
     :param inst: data point
-    :param fuzzySets: list of fuzzy sets
+    :param fuzzySets: dict of fuzzy sets
     :return: array of membership values
     """
-    mv = np.array([fs.membership(inst) for fs in fuzzySets])
-    return mv
+
+    if ordered_sets is None:
+        ordered_sets = set_ordered(fuzzySets)
+
+    mv = []
+    for key in ordered_sets:
+        mv.append( fuzzySets[key].membership(inst))
+    return np.array(mv)
 
 
-def fuzzyfy_instances(data, fuzzySets):
+def fuzzyfy_instances(data, fuzzySets, ordered_sets=None):
     """
     Calculate the membership values for a data point given fuzzy sets
     :param inst: data point
-    :param fuzzySets: list of fuzzy sets
+    :param fuzzySets: dict of fuzzy sets
     :return: array of membership values
     """
     ret = []
+    if ordered_sets is None:
+        ordered_sets = set_ordered(fuzzySets)
     for inst in data:
-        mv = np.array([fs.membership(inst) for fs in fuzzySets])
+        mv = np.array([fuzzySets[key].membership(inst) for key in ordered_sets])
         ret.append(mv)
     return ret
 
 
-def get_maximum_membership_fuzzyset(inst, fuzzySets):
+def get_maximum_membership_fuzzyset(inst, fuzzySets, ordered_sets=None):
     """
     Fuzzify a data point, returning the fuzzy set with maximum membership value
     :param inst: data point
-    :param fuzzySets: list of fuzzy sets 
+    :param fuzzySets: dict of fuzzy sets
     :return: fuzzy set with maximum membership
     """
-    mv = fuzzyfy_instance(inst, fuzzySets)
-    return fuzzySets[np.argwhere(mv == max(mv))[0, 0]]
+    if ordered_sets is None:
+        ordered_sets = set_ordered(fuzzySets)
+    mv = np.array([fuzzySets[key].membership(inst) for key in ordered_sets])
+    key = ordered_sets[np.argwhere(mv == max(mv))[0, 0]]
+    return fuzzySets[key]
 
 
 def get_maximum_membership_fuzzyset_index(inst, fuzzySets):
     """
     Fuzzify a data point, returning the fuzzy set with maximum membership value
     :param inst: data point
-    :param fuzzySets: list of fuzzy sets 
+    :param fuzzySets: dict of fuzzy sets
     :return: fuzzy set with maximum membership
     """
     mv = fuzzyfy_instance(inst, fuzzySets)
@@ -108,37 +123,38 @@ def get_maximum_membership_fuzzyset_index(inst, fuzzySets):
 def fuzzyfy_series_old(data, fuzzySets, method='maximum'):
     fts = []
     for item in data:
-        fts.append(get_maximum_membership_fuzzyset(item, fuzzySets))
+        fts.append(get_maximum_membership_fuzzyset(item, fuzzySets).name)
     return fts
 
 
-def fuzzify_series(data, fuzzySets, method='maximum'):
+def fuzzyfy_series(data, fuzzySets, method='maximum'):
     fts = []
+    ordered_sets = set_ordered(fuzzySets)
     for t, i in enumerate(data):
-        mv = np.array([fs.membership(i) for fs in fuzzySets])
+        mv = np.array([fuzzySets[key].membership(i) for key in ordered_sets])
         if len(mv) == 0:
-            sets = check_bounds(i, fuzzySets)
+            sets = check_bounds(i, fuzzySets.items(), ordered_sets)
         else:
             if method == 'fuzzy':
                 ix = np.ravel(np.argwhere(mv > 0.0))
-                sets = [fuzzySets[i] for i in ix]
+                sets = [fuzzySets[ordered_sets[i]].name for i in ix]
             elif method == 'maximum':
                 mx = max(mv)
                 ix = np.ravel(np.argwhere(mv == mx))
-                sets = fuzzySets[ix[0]]
+                sets = fuzzySets[ordered_sets[ix[0]]].name
         fts.append(sets)
     return fts
 
 
-def check_bounds(data, sets):
-    if data < sets[0].get_lower():
-        return sets[0]
-    elif data > sets[-1].get_upper():
-        return sets[-1]
+def check_bounds(data, sets, ordered_sets):
+    if data < sets[ordered_sets[0]].get_lower():
+        return sets[ordered_sets[0]]
+    elif data > sets[ordered_sets[-1]].get_upper():
+        return sets[ordered_sets[-1]]
 
 
-def check_bounds_index(data, sets):
-    if data < sets[0].get_lower():
+def check_bounds_index(data, sets, ordered_sets):
+    if data < sets[ordered_sets[0]].get_lower():
         return 0
-    elif data > sets[-1].get_upper():
+    elif data > sets[ordered_sets[-1]].get_upper():
         return len(sets) -1

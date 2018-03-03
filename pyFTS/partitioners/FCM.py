@@ -1,20 +1,23 @@
 import numpy as np
 import math
 import random as rnd
-import functools,operator
-from pyFTS.common import FuzzySet,Membership
+import functools, operator
+from pyFTS.common import FuzzySet, Membership
 from pyFTS.partitioners import partitioner
-#import CMeans
+
+
+# import CMeans
 
 # S. T. Li, Y. C. Cheng, and S. Y. Lin, “A FCM-based deterministic forecasting model for fuzzy time series,”
 # Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j.camwa.2008.07.033.
 
 def fuzzy_distance(x, y):
     if isinstance(x, list):
-        tmp = functools.reduce(operator.add, [(x[k] - y[k])**2 for k in range(0,len(x))])
+        tmp = functools.reduce(operator.add, [(x[k] - y[k]) ** 2 for k in range(0, len(x))])
     else:
         tmp = (x - y) ** 2
     return math.sqrt(tmp)
+
 
 def membership(val, vals):
     soma = 0
@@ -30,7 +33,7 @@ def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
     tam_dados = len(dados)
 
     # Inicializa as centróides escolhendo elementos aleatórios dos conjuntos
-    centroides = [dados[rnd.randint(0, tam_dados-1)] for kk in range(0, k)]
+    centroides = [dados[rnd.randint(0, tam_dados - 1)] for kk in range(0, k)]
 
     # Tabela de pertinência das instâncias aos grupos
     grupos = [[0 for kk in range(0, k)] for xx in range(0, tam_dados)]
@@ -81,7 +84,7 @@ def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
                 oldgrp = [xx for xx in grupo]
                 for atr in range(0, tam):
                     soma = functools.reduce(operator.add,
-                                  [grupos[xk][grupo_count] * dados[xk][atr] for xk in range(0, tam_dados)])
+                                            [grupos[xk][grupo_count] * dados[xk][atr] for xk in range(0, tam_dados)])
                     norm = functools.reduce(operator.add, [grupos[xk][grupo_count] for xk in range(0, tam_dados)])
                     centroides[grupo_count][atr] = soma / norm
             else:
@@ -104,28 +107,31 @@ class FCMPartitioner(partitioner.Partitioner):
     """
     
     """
+
     def __init__(self, **kwargs):
         super(FCMPartitioner, self).__init__(name="FCM", **kwargs)
 
-    def build(self,data):
-        sets = []
+    def build(self, data):
+        sets = {}
 
         centroids = fuzzy_cmeans(self.partitions, data, 1, 2)
         centroids.append(self.max)
         centroids.append(self.min)
         centroids = list(set(centroids))
         centroids.sort()
-        for c in np.arange(1,len(centroids)-1):
+        for c in np.arange(1, len(centroids) - 1):
+            _name = self.get_name(c)
             if self.membership_function == Membership.trimf:
-                sets.append(FuzzySet.FuzzySet(self.prefix+str(c),Membership.trimf,
-                                              [round(centroids[c-1],3), round(centroids[c],3), round(centroids[c+1],3)],
-                                              round(centroids[c],3) ) )
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
+                                                [round(centroids[c - 1], 3), round(centroids[c], 3),
+                                                 round(centroids[c + 1], 3)],
+                                                round(centroids[c], 3))
             elif self.membership_function == Membership.trapmf:
-                q1 = (round(centroids[c], 3) - round(centroids[c - 1], 3))/2
-                q2 = (round(centroids[c+1], 3) - round(centroids[c], 3)) / 2
-                sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf,
-                                              [round(centroids[c - 1], 3),  round(centroids[c], 3) - q1,
-                                               round(centroids[c], 3) + q2, round(centroids[c + 1], 3)],
-                                              round(centroids[c], 3)))
+                q1 = (round(centroids[c], 3) - round(centroids[c - 1], 3)) / 2
+                q2 = (round(centroids[c + 1], 3) - round(centroids[c], 3)) / 2
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
+                                                [round(centroids[c - 1], 3), round(centroids[c], 3) - q1,
+                                                 round(centroids[c], 3) + q2, round(centroids[c + 1], 3)],
+                                                round(centroids[c], 3))
 
         return sets

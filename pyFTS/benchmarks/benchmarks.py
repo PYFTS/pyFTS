@@ -198,10 +198,10 @@ def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=
                         smape[tmp['key']] = []
                         u[tmp['key']] = []
                         times[tmp['key']] = []
-                    rmse[tmp['key']].append(tmp['rmse'])
-                    smape[tmp['key']].append(tmp['smape'])
-                    u[tmp['key']].append(tmp['u'])
-                    times[tmp['key']].append(tmp['time'])
+                    rmse[tmp['key']].append_rhs(tmp['rmse'])
+                    smape[tmp['key']].append_rhs(tmp['smape'])
+                    u[tmp['key']].append_rhs(tmp['u'])
+                    times[tmp['key']].append_rhs(tmp['time'])
                     print(tmp['key'], tmp['window'])
 
     _process_end = time.time()
@@ -393,10 +393,10 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                         _sharp, _res, _cov = Measures.get_interval_statistics(test, mfts)
                         _end = time.time()
                         _tdiff += _end - _start
-                        sharpness[_key].append(_sharp)
-                        resolution[_key].append(_res)
-                        coverage[_key].append(_cov)
-                        times[_key].append(_tdiff)
+                        sharpness[_key].append_rhs(_sharp)
+                        resolution[_key].append_rhs(_res)
+                        coverage[_key].append_rhs(_cov)
+                        times[_key].append_rhs(_tdiff)
 
                     else:
                         for order in np.arange(1, max_order + 1):
@@ -428,10 +428,10 @@ def interval_sliding_window(data, windowsize, train=0.8, models=None, partitione
                                 _sharp, _res, _cov = Measures.get_interval_statistics(test, mfts)
                                 _end = time.time()
                                 _tdiff += _end - _start
-                                sharpness[_key].append(_sharp)
-                                resolution[_key].append(_res)
-                                coverage[_key].append(_cov)
-                                times[_key].append(_tdiff)
+                                sharpness[_key].append_rhs(_sharp)
+                                resolution[_key].append_rhs(_res)
+                                coverage[_key].append_rhs(_cov)
+                                times[_key].append_rhs(_tdiff)
 
     return bUtil.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times)
 
@@ -642,8 +642,8 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
 
                         _crps1, _crps2, _t1, _t2 = Measures.get_distribution_statistics(test,mfts,steps=steps,resolution=resolution)
 
-                        crps_interval[_key].append(_crps1)
-                        crps_distr[_key].append(_crps2)
+                        crps_interval[_key].append_rhs(_crps1)
+                        crps_distr[_key].append_rhs(_crps2)
                         times1[_key] = _tdiff + _t1
                         times2[_key] = _tdiff + _t2
 
@@ -678,8 +678,8 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
                                 _crps1, _crps2, _t1, _t2 = Measures.get_distribution_statistics(test, mfts, steps=steps,
                                                                                        resolution=resolution)
 
-                                crps_interval[_key].append(_crps1)
-                                crps_distr[_key].append(_crps2)
+                                crps_interval[_key].append_rhs(_crps1)
+                                crps_distr[_key].append_rhs(_crps2)
                                 times1[_key] = _tdiff + _t1
                                 times2[_key] = _tdiff + _t2
 

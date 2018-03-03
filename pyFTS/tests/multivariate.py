@@ -4,45 +4,49 @@ from pyFTS.data import TAIEX as tx
 from pyFTS.common import Transformations
 
 
+from pyFTS.data import SONDA
+df = SONDA.get_dataframe()
+train = df.iloc[0:1572480] #three years
+test = df.iloc[1572480:2096640] #ears
+del df
+
+from pyFTS.partitioners import Grid, Util as pUtil
+from pyFTS.common import Transformations
+from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.models.seasonal import partitioner as seasonal
+from pyFTS.models.seasonal.common import DateTime
+
 bc = Transformations.BoxCox(0)
 diff = Transformations.Differential(1)
 
-df = tx.get_dataframe()
-df = df.dropna()
-#df.loc[2209]
-train = df.iloc[2000:2500]
-test = df.iloc[2500:3000]
+np = 10
 
-from pyFTS.partitioners import Grid, Util as pUtil
-from pyFTS.models.multivariate import common, variable
+model = mvfts.MVFTS("")
 
-model = common.MVFTS("")
+fig, axes = plt.subplots(nrows=5, ncols=1,figsize=[15,10])
 
-#fig, axes = plt.subplots(nrows=5, ncols=1,figsize=[10,10])
+sp = {'seasonality': DateTime.day_of_year , 'names': ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec']}
 
-vopen = variable.Variable("Open", data_label="Openly", partitioner=Grid.GridPartitioner, npart=40, data=df)
-model.append_variable(vopen)
-#vopen.partitioner.plot(axes[0])
-vhigh = variable.Variable("High", data_label="Highest", partitioner=Grid.GridPartitioner, npart=40, data=df)#train)
-model.append_variable(vhigh)
-#vhigh.partitioner.plot(axes[1])
-vlow = variable.Variable("Low", data_label="Lowermost", partitioner=Grid.GridPartitioner, npart=40, data=df)#train)
-model.append_variable(vlow)
-#vlow.partitioner.plot(axes[2])
-vclose = variable.Variable("Close", data_label="Close", partitioner=Grid.GridPartitioner, npart=40, data=df)#train)
-model.append_variable(vclose)
-#vclose.partitioner.plot(axes[3])
-vvol = variable.Variable("Volume", data_label="Volume", partitioner=Grid.GridPartitioner, npart=100, data=df,
-                         transformation=bc)#train)
-model.append_variable(vvol)
-#vvol.partitioner.plot(axes[4])
+vmonth = variable.Variable("Month", data_label="datahora", partitioner=seasonal.TimeGridPartitioner, npart=12,
+                           data=train, partitioner_specific=sp)
+model.append_variable(vmonth)
 
-model.target_variable = vvol
+sp = {'seasonality': DateTime.minute_of_day}
 
-#plt.tight_layout()
-model.train(train)
+vhour = variable.Variable("Hour", data_label="datahora", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                          data=train, partitioner_specific=sp)
+model.append_variable(vhour)
 
-forecasted = model.forecast(test)
+vhumid = variable.Variable("Humidity", data_label="humid", partitioner=Grid.GridPartitioner, npart=np, data=train)
+model.append_variable(vhumid)
 
-print([round(k,0) for k in test['Volume'].values.tolist()])
-print([round(k,0) for k in forecasted])
+vpress = variable.Variable("AtmPress", data_label="press", partitioner=Grid.GridPartitioner, npart=np, data=train)
+model.append_variable(vpress)
+
+vrain = variable.Variable("Rain", data_label="rain", partitioner=Grid.GridPartitioner, npart=20, data=train)#train)
+model.append_variable(vrain)
+
+model.target_variable = vrain
+
+model.fit(train, num_batches=20, save=True, batch_save=True, file_path='mvfts_sonda3', distributed=True,
+          nodes=['192.168.0.110','192.168.0.106'])

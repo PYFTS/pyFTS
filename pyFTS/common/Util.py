@@ -87,3 +87,71 @@ def persist_env(file):
 
 def load_env(file):
     dill.load_session(file)
+
+
+def simple_model_train(model, data, parameters):
+    model.train(data, **parameters)
+    return model
+
+
+def distributed_train(model, train_method, nodes, fts_method, data, num_batches,
+                      train_parameters, **kwargs):
+    import dispy, dispy.httpd, datetime
+
+    batch_save = kwargs.get('batch_save', True)  # save model between batches
+
+    file_path = kwargs.get('file_path', None)
+
+    cluster = dispy.JobCluster(train_method, nodes=nodes)  # , depends=dependencies)
+
+    http_server = dispy.httpd.DispyHTTPServer(cluster)
+
+    print("[{0: %H:%M:%S}] Distrituted Train Started".format(datetime.datetime.now()))
+
+    jobs = []
+    n = len(data)
+    batch_size = int(n / num_batches)
+    bcount = 1
+    for ct in range(model.order, n, batch_size):
+        if model.is_multivariate:
+            ndata = data.iloc[ct - model.order:ct + batch_size]
+        else:
+            ndata = data[ct - model.order: ct + batch_size]
+
+        #self.train(ndata, **kwargs)
+
+        tmp_model = fts_method(str(bcount))
+
+        tmp_model.clone_parameters(model)
+
+        job = cluster.submit(tmp_model, ndata, train_parameters)
+        job.id = bcount  # associate an ID to identify jobs (if needed later)
+        jobs.append(job)
+
+        bcount += 1
+
+    for job in jobs:
+        print("[{0: %H:%M:%S}] Processing batch ".format(datetime.datetime.now()) + str(job.id))
+        tmp = job()
+        if job.status == dispy.DispyJob.Finished and tmp is not None:
+            model.merge(tmp)
+
+            if batch_save:
+                persist_obj(model, file_path)
+
+        else:
+            print(job.exception)
+            print(job.stdout)
+
+        print("[{0: %H:%M:%S}] Finished batch ".format(datetime.datetime.now()) + str(job.id))
+
+    print("[{0: %H:%M:%S}] Distrituted Train Finished".format(datetime.datetime.now()))
+
+    cluster.wait()  # wait for all jobs to finish
+
+    cluster.print_status()
+
+    http_server.shutdown()  # this waits until browser gets all updates
+    cluster.close()
+
+    return model

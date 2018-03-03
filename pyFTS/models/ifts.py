@@ -24,16 +24,16 @@ class IntervalFTS(hofts.HighOrderFTS):
         self.is_high_order = True
 
     def get_upper(self, flrg):
-        if flrg.str_lhs() in self.flrgs:
-            tmp = self.flrgs[flrg.str_lhs()]
+        if flrg.get_key() in self.flrgs:
+            tmp = self.flrgs[flrg.get_key()]
             ret = tmp.get_upper()
         else:
             ret = flrg.LHS[-1].upper
         return ret
 
     def get_lower(self, flrg):
-        if flrg.str_lhs() in self.flrgs:
-            tmp = self.flrgs[flrg.str_lhs()]
+        if flrg.get_key() in self.flrgs:
+            tmp = self.flrgs[flrg.get_key()]
             ret = tmp.get_lower()
         else:
             ret = flrg.LHS[-1].lower

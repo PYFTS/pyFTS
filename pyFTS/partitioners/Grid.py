@@ -21,7 +21,7 @@ class GridPartitioner(partitioner.Partitioner):
         super(GridPartitioner, self).__init__(name="Grid", **kwargs)
 
     def build(self, data):
-        sets = []
+        sets = {}
 
         kwargs = {'type': self.type, 'variable': self.variable}
 
@@ -30,16 +30,14 @@ class GridPartitioner(partitioner.Partitioner):
 
         count = 0
         for c in np.arange(self.min, self.max, partlen):
+            _name = self.get_name(count)
             if self.membership_function == Membership.trimf:
-                sets.append(
-                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.trimf, [c - partlen, c, c + partlen],c,**kwargs))
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf, [c - partlen, c, c + partlen],c,**kwargs)
             elif self.membership_function == Membership.gaussmf:
-                sets.append(
-                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.gaussmf, [c, partlen / 3], c,**kwargs))
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.gaussmf, [c, partlen / 3], c,**kwargs)
             elif self.membership_function == Membership.trapmf:
                 q = partlen / 2
-                sets.append(
-                    FuzzySet.FuzzySet(self.prefix + str(count), Membership.trapmf, [c - partlen, c - q, c + q, c + partlen], c,**kwargs))
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.trapmf, [c - partlen, c - q, c + q, c + partlen], c,**kwargs)
             count += 1
 
         self.min = self.min - partlen

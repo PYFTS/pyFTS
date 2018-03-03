@@ -15,11 +15,12 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
                                                                  prefix=part.prefix, transformation=part.transformation,
                                                                  indexer=part.indexer)
 
-        self.sets = []
+        self.sets = {}
 
         loc_params, wid_params = self.get_polynomial_perturbations(data, **kwargs)
 
-        for ct, set in enumerate(part.sets):
+        for ct, key in enumerate(part.sets.keys()):
+            set = part.sets[key]
             loc_roots = np.roots(loc_params[ct])[0]
             wid_roots = np.roots(wid_params[ct])[0]
             tmp = common.FuzzySet(set.name, set.mf, set.parameters,
@@ -30,7 +31,7 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
                            width_params=wid_params[ct],
                            width_roots=wid_roots, **kwargs)
 
-            self.sets.append(tmp)
+            self.sets[set.name] = tmp
 
     def poly_width(self, par1, par2, rng, deg):
         a = np.polyval(par1, rng)
@@ -114,9 +115,10 @@ class ConstantNonStationaryPartitioner(partitioner.Partitioner):
                                                                  prefix=part.prefix, transformation=part.transformation,
                                                                  indexer=part.indexer)
 
-        self.sets = []
+        self.sets = {}
 
-        for set in part.sets:
+        for key in part.sets.keys():
+            set = part.sets[key]
             tmp = common.FuzzySet(set.name, set.mf, set.parameters, **kwargs)
 
-            self.sets.append(tmp)
+            self.sets[key] =tmp

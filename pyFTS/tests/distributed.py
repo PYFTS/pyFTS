@@ -90,9 +90,9 @@ for job in jobs:
             results[_m][_o][_p]['mape'] = []
             results[_m][_o][_p]['u'] = []
 
-        results[_m][_o][_p]['rmse'].append(tmp['rmse'])
-        results[_m][_o][_p]['mape'].append(tmp['mape'])
-        results[_m][_o][_p]['u'].append(tmp['u'])
+        results[_m][_o][_p]['rmse'].append_rhs(tmp['rmse'])
+        results[_m][_o][_p]['mape'].append_rhs(tmp['mape'])
+        results[_m][_o][_p]['u'].append_rhs(tmp['u'])
 
 cluster.wait()  # wait for all jobs to finish
 

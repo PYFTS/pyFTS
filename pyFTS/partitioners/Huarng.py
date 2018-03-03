@@ -29,22 +29,23 @@ class HuarngPartitioner(partitioner.Partitioner):
         else:
             base = 100
 
-        sets = []
+        sets = {}
 
         dlen = self.max - self.min
         npart = math.ceil(dlen / base)
         partition = math.ceil(self.min)
         for c in range(npart):
+            _name = self.get_name(c)
             if self.membership_function == Membership.trimf:
-                sets.append( FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf,
-                                               [partition - base, partition, partition + base], partition))
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
+                                               [partition - base, partition, partition + base], partition)
             elif self.membership_function == Membership.gaussmf:
-                sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.gaussmf,
-                                              [partition, base/2], partition))
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.gaussmf,
+                                              [partition, base/2], partition)
             elif self.membership_function == Membership.trapmf:
-                sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trapmf,
+                sets[_name] = FuzzySet.FuzzySet(_name, Membership.trapmf,
                                               [partition - base, partition - (base/2),
-                                               partition + (base / 2), partition + base], partition))
+                                               partition + (base / 2), partition + base], partition)
 
             partition += base
 

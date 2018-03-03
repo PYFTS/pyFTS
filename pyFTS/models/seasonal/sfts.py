@@ -10,14 +10,17 @@ import numpy as np
 from pyFTS.common import FuzzySet, FLR, fts
 
 
-class SeasonalFLRG(FLR.FLR):
+class SeasonalFLRG(FLR.FLRG):
     """First Order Seasonal Fuzzy Logical Relationship Group"""
     def __init__(self, seasonality):
         super(SeasonalFLRG, self).__init__(None,None)
         self.LHS = seasonality
         self.RHS = []
 
-    def append(self, c):
+    def get_key(self):
+        return self.LHS
+
+    def append_rhs(self, c, **kwargs):
         self.RHS.append(c)
 
     def __str__(self):
@@ -57,7 +60,7 @@ class SeasonalFTS(fts.FTS):
                 self.flrgs[ss] = SeasonalFLRG(season)
 
             #print(season)
-            self.flrgs[ss].append(flr.RHS)
+            self.flrgs[ss].append_rhs(flr.RHS)
 
     def train(self, data,  **kwargs):
         if kwargs.get('sets', None) is not None:

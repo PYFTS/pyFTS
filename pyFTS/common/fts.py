@@ -2,6 +2,11 @@ import numpy as np
 import pandas as pd
 from pyFTS.common import FuzzySet, SortedCollection, tree, Util
 
+def parallel_train(data, method, **kwargs):
+    model = method(**kwargs)
+    model.train(data)
+
+    return model
 
 class FTS(object):
     """
@@ -124,7 +129,7 @@ class FTS(object):
                 tmp = tmp[0]
 
             ret.append(tmp)
-            data.append(tmp)
+            data.append_rhs(tmp)
 
         return ret
 
@@ -173,6 +178,8 @@ class FTS(object):
         :return:
         """
 
+        import datetime
+
         num_batches = kwargs.get('num_batches', None)
 
         save = kwargs.get('save_model', False)  # save model on disk
@@ -181,25 +188,82 @@ class FTS(object):
 
         file_path = kwargs.get('file_path', None)
 
-        if num_batches is not None:
-            n = len(data)
-            batch_size = round(n / num_batches, 0)
-            for ct in range(self.order, n, batch_size):
-                if self.is_multivariate:
-                    ndata = data.iloc[ct - self.order:ct + batch_size]
-                else:
-                    ndata = data[ct - self.order : ct + batch_size]
+        distributed = kwargs.get('distributed', False)
 
-                self.train(ndata, **kwargs)
-
-                if batch_save:
-                    Util.persist_obj(self,file_path)
-
+        if distributed:
+            nodes = kwargs.get('nodes', False)
+            train_method = kwargs.get('train_method', Util.simple_model_train)
+            Util.distributed_train(self, train_method, nodes, type(self), data, num_batches, {},
+                                   batch_save=batch_save, file_path=file_path)
         else:
-            self.train(data, **kwargs)
+
+            print("[{0: %H:%M:%S}] Start training".format(datetime.datetime.now()))
+
+            if num_batches is not None:
+                n = len(data)
+                batch_size = int(n / num_batches)
+                bcount = 1
+                for ct in range(self.order, n, batch_size):
+                    print("[{0: %H:%M:%S}] Starting batch ".format(datetime.datetime.now()) + str(bcount))
+                    if self.is_multivariate:
+                        ndata = data.iloc[ct - self.order:ct + batch_size]
+                    else:
+                        ndata = data[ct - self.order : ct + batch_size]
+
+                    self.train(ndata, **kwargs)
+
+                    if batch_save:
+                        Util.persist_obj(self,file_path)
+
+                    print("[{0: %H:%M:%S}] Finish batch ".format(datetime.datetime.now()) + str(bcount))
+
+                    bcount += 1
+
+            else:
+                self.train(data, **kwargs)
+
+            print("[{0: %H:%M:%S}] Finish training".format(datetime.datetime.now()))
 
         if save:
             Util.persist_obj(self, file_path)
+
+    def clone_parameters(self, model):
+        self.order = model.order
+        self.shortname = model.shortname
+        self.name = model.name
+        self.detail = model.detail
+        self.is_high_order = model.is_high_order
+        self.min_order = model.min_order
+        self.has_seasonality = model.has_seasonality
+        self.has_point_forecasting = model.has_point_forecasting
+        self.has_interval_forecasting = model.has_interval_forecasting
+        self.has_probability_forecasting = model.has_probability_forecasting
+        self.is_multivariate = model.is_multivariate
+        self.dump = model.dump
+        self.transformations = model.transformations
+        self.transformations_param = model.transformations_param
+        self.original_max = model.original_max
+        self.original_min = model.original_min
+        self.partitioner = model.partitioner
+        self.sets = model.sets
+        self.auto_update = model.auto_update
+        self.benchmark_only = model.benchmark_only
+        self.indexer = model.indexer
+
+    def merge(self, model):
+        for key in model.flrgs.keys():
+            flrg = model.flrgs[key]
+            if flrg.get_key() not in self.flrgs:
+                self.flrgs[flrg.get_key()] = flrg
+            else:
+                if isinstance(flrg.RHS, (list, set)):
+                    for k in flrg.RHS:
+                        self.flrgs[flrg.get_key()].append_rhs(k)
+                elif isinstance(flrg.RHS, dict):
+                    for k in flrg.RHS.keys():
+                        self.flrgs[flrg.get_key()].append_rhs(flrg.RHS[k])
+                else:
+                    self.flrgs[flrg.get_key()].append_rhs(flrg.RHS)
 
     def append_transformation(self, transformation):
         if transformation is not None:
@@ -251,42 +315,6 @@ class FTS(object):
     def len_total(self):
         return sum([len(k) for k in self.flrgs])
 
-    def get_empty_grid(self, _min, _max, resolution):
-        grid = {}
-
-        for sbin in np.arange(_min,_max, resolution):
-            grid[sbin] = 0
-
-        return grid
-
-    def getGridClean(self, resolution):
-        if len(self.transformations) == 0:
-            _min = self.sets[0].lower
-            _max = self.sets[-1].upper
-        else:
-            _min = self.original_min
-            _max = self.original_max
-        return self.get_empty_grid(_min, _max, resolution)
-
-
-
-    def gridCount(self, grid, resolution, index, interval):
-        #print(point_to_interval)
-        for k in index.inside(interval[0],interval[1]):
-            grid[k] += 1
-        return grid
-
-    def gridCountPoint(self, grid, resolution, index, point):
-        if not isinstance(point, (list, np.ndarray)):
-            point = [point]
-
-        for p in point:
-            k = index.find_ge(p)
-            grid[k] += 1
-        return grid
-
-    def get_UoD(self):
-        return [self.original_min, self.original_max]
 
 
 

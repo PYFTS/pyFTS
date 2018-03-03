@@ -82,15 +82,16 @@ class CMeansPartitioner(partitioner.Partitioner):
         super(CMeansPartitioner, self).__init__(name="CMeans", **kwargs)
 
     def build(self, data):
-        sets = []
+        sets = {}
         centroides = c_means(self.partitions, data, 1)
         centroides.append(self.max)
         centroides.append(self.min)
         centroides = list(set(centroides))
         centroides.sort()
         for c in np.arange(1, len(centroides) - 1):
-            sets.append(FuzzySet.FuzzySet(self.prefix + str(c), Membership.trimf,
+            _name = self.get_name(c)
+            sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
                                  [round(centroides[c - 1], 3), round(centroides[c], 3), round(centroides[c + 1], 3)],
-                                 round(centroides[c], 3)))
+                                 round(centroides[c], 3))
 
         return sets

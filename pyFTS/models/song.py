@@ -20,39 +20,45 @@ class ConventionalFTS(fts.FTS):
         self.R = None
 
         if self.sets is not None:
-            self.R = np.zeros((len(self.sets),len(self.sets)))
-
+            l = len(self.sets)
+            self.R = np.zeros((l,l))
 
     def flr_membership_matrix(self, flr):
-        lm = [flr.LHS.membership(k.centroid) for k in self.sets]
-        rm = [flr.RHS.membership(k.centroid) for k in self.sets]
+        ordered_set = FuzzySet.set_ordered(self.sets)
+        centroids = [self.sets[k].centroid for k in ordered_set]
+        lm = [self.sets[flr.LHS].membership(k) for k in centroids]
+        rm = [self.sets[flr.RHS].membership(k) for k in centroids]
 
-        r = np.zeros((len(self.sets), len(self.sets)))
-        for k in range(0,len(self.sets)):
-            for l in range(0, len(self.sets)):
-                r[k][l] = min(lm[k],rm[l])
+        l = len(ordered_set)
+        r = np.zeros((l, l))
+        for k in range(0,l):
+            for l in range(0, l):
+                r[k][l] = min(lm[k], rm[l])
 
         return r
 
     def operation_matrix(self, flrs):
+        l = len(self.sets)
         if self.R is None:
-            self.R = np.zeros((len(self.sets), len(self.sets)))
+            self.R = np.zeros((l, l))
         for k in flrs:
             mm = self.flr_membership_matrix(k)
-            for k in range(0, len(self.sets)):
-                for l in range(0, len(self.sets)):
-                    self.R[k][l] = max(r[k][l], mm[k][l])
+            for k in range(0, l):
+                for l in range(0, l):
+                    self.R[k][l] = max(self.R[k][l], mm[k][l])
 
 
     def train(self, data, **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
         ndata = self.apply_transformations(data)
-        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
+        tmpdata = FuzzySet.fuzzyfy_series(ndata, self.sets, method='maximum')
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
         self.operation_matrix(flrs)
 
     def forecast(self, data, **kwargs):
+
+        ordered_set = FuzzySet.set_ordered(self.sets)
 
         ndata = np.array(self.apply_transformations(data))
 
@@ -69,9 +75,9 @@ class ConventionalFTS(fts.FTS):
             fs = np.ravel(np.argwhere(r == max(r)))
 
             if len(fs) == 1:
-                ret.append(self.sets[fs[0]].centroid)
+                ret.append(self.sets[ordered_set[fs[0]]].centroid)
             else:
-                mp = [self.sets[s].centroid for s in fs]
+                mp = [self.sets[ordered_set[s]].centroid for s in fs]
 
                 ret.append( sum(mp)/len(mp))
 

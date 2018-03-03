@@ -11,21 +11,12 @@ class HighOrderNonStationaryFLRG(flrg.NonStationaryFLRG):
 
         self.LHS = []
         self.RHS = {}
-        self.strlhs = ""
 
-    def appendRHS(self, c):
+    def append_rhs(self, c, **kwargs):
         if c.name not in self.RHS:
             self.RHS[c.name] = c
 
-    def strLHS(self):
-        if len(self.strlhs) == 0:
-            for c in self.LHS:
-                if len(self.strlhs) > 0:
-                    self.strlhs += ", "
-                self.strlhs = self.strlhs + c.name
-        return self.strlhs
-
-    def appendLHS(self, c):
+    def append_lhs(self, c):
         self.LHS.append(c)
 
     def __str__(self):
@@ -34,7 +25,7 @@ class HighOrderNonStationaryFLRG(flrg.NonStationaryFLRG):
             if len(tmp) > 0:
                 tmp = tmp + ","
             tmp = tmp + c
-        return self.strLHS() + " -> " + tmp
+        return self.get_key() + " -> " + tmp
 
 
 class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
@@ -81,13 +72,13 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
                 path = list(reversed(list(filter(None.__ne__, p))))
 
                 for c, e in enumerate(path, start=0):
-                    flrg.appendLHS(e)
+                    flrg.append_lhs(e)
 
-                if flrg.strLHS() not in self.flrgs:
-                    self.flrgs[flrg.strLHS()] = flrg;
+                if flrg.get_key() not in self.flrgs:
+                    self.flrgs[flrg.get_key()] = flrg;
 
                 for st in rhs:
-                    self.flrgs[flrg.strLHS()].append_rhs(st)
+                    self.flrgs[flrg.get_key()].append_rhs(st)
 
         # flrgs = sorted(flrgs, key=lambda flrg: flrg.get_midpoint(0, window_size=1))
 
@@ -135,12 +126,12 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
             flrg = HighOrderNonStationaryFLRG(self.order)
 
             for kk in path:
-                flrg.appendLHS(self.sets[kk])
+                flrg.append_lhs(self.sets[kk])
 
             affected_flrgs.append(flrg)
-            # affected_flrgs_memberships.append(flrg.get_membership(sample, disp))
+            # affected_flrgs_memberships.append_rhs(flrg.get_membership(sample, disp))
 
-            #                print(flrg.str_lhs())
+            #                print(flrg.get_key())
 
             # the FLRG is here because of the bounds verification
             mv = []
@@ -192,14 +183,14 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
                 tmp.append(common.check_bounds(sample[-1], self.sets, tdisp))
             elif len(affected_flrgs) == 1:
                 flrg = affected_flrgs[0]
-                if flrg.str_lhs() in self.flrgs:
-                    tmp.append(self.flrgs[flrg.str_lhs()].get_midpoint(tdisp))
+                if flrg.get_key() in self.flrgs:
+                    tmp.append(self.flrgs[flrg.get_key()].get_midpoint(tdisp))
                 else:
                     tmp.append(flrg.LHS[-1].get_midpoint(tdisp))
             else:
                 for ct, aset in enumerate(affected_flrgs):
-                    if aset.str_lhs() in self.flrgs:
-                        tmp.append(self.flrgs[aset.str_lhs()].get_midpoint(tdisp) *
+                    if aset.get_key() in self.flrgs:
+                        tmp.append(self.flrgs[aset.get_key()].get_midpoint(tdisp) *
                                    affected_flrgs_memberships[ct])
                     else:
                         tmp.append(aset.LHS[-1].get_midpoint(tdisp)*
@@ -246,18 +237,18 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
                 upper.append(aset.get_upper(tdisp))
             elif len(affected_flrgs) == 1:
                 _flrg = affected_flrgs[0]
-                if _flrg.str_lhs() in self.flrgs:
-                    lower.append(self.flrgs[_flrg.str_lhs()].get_lower(tdisp))
-                    upper.append(self.flrgs[_flrg.str_lhs()].get_upper(tdisp))
+                if _flrg.get_key() in self.flrgs:
+                    lower.append(self.flrgs[_flrg.get_key()].get_lower(tdisp))
+                    upper.append(self.flrgs[_flrg.get_key()].get_upper(tdisp))
                 else:
                     lower.append(_flrg.LHS[-1].get_lower(tdisp))
                     upper.append(_flrg.LHS[-1].get_upper(tdisp))
             else:
                 for ct, aset in enumerate(affected_flrgs):
-                    if aset.str_lhs() in self.flrgs:
-                        lower.append(self.flrgs[aset.str_lhs()].get_lower(tdisp) *
+                    if aset.get_key() in self.flrgs:
+                        lower.append(self.flrgs[aset.get_key()].get_lower(tdisp) *
                                      affected_flrgs_memberships[ct])
-                        upper.append(self.flrgs[aset.str_lhs()].get_upper(tdisp) *
+                        upper.append(self.flrgs[aset.get_key()].get_upper(tdisp) *
                                      affected_flrgs_memberships[ct])
                     else:
                         lower.append(aset.LHS[-1].get_lower(tdisp) *

@@ -15,16 +15,19 @@ class ConventionalFLRG(flrg.FLRG):
         self.LHS = LHS
         self.RHS = set()
 
-    def append(self, c):
+    def get_key(self):
+        return sets[self.LHS].name
+
+    def append_rhs(self, c, **kwargs):
         self.RHS.add(c)
 
     def __str__(self):
-        tmp = self.LHS.name + " -> "
+        tmp = self.LHS + " -> "
         tmp2 = ""
-        for c in sorted(self.RHS, key=lambda s: s.name):
+        for c in sorted(self.RHS, key=lambda s: s):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ","
-            tmp2 = tmp2 + c.name
+            tmp2 = tmp2 + c
         return tmp + tmp2
 
 
@@ -38,11 +41,11 @@ class ConventionalFTS(fts.FTS):
 
     def generate_flrg(self, flrs):
         for flr in flrs:
-            if flr.LHS.name in self.flrgs:
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+            if flr.LHS in self.flrgs:
+                self.flrgs[flr.LHS].append_rhs(flr.RHS)
             else:
-                self.flrgs[flr.LHS.name] = ConventionalFLRG(flr.LHS)
-                self.flrgs[flr.LHS.name].append(flr.RHS)
+                self.flrgs[flr.LHS] = ConventionalFLRG(flr.LHS)
+                self.flrgs[flr.LHS].append_rhs(flr.RHS)
 
     def train(self, data, **kwargs):
         if kwargs.get('sets', None) is not None:
@@ -64,14 +67,14 @@ class ConventionalFTS(fts.FTS):
 
             mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)
 
-            actual = self.sets[np.argwhere(mv == max(mv))[0, 0]]
+            actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets) #self.sets[np.argwhere(mv == max(mv))[0, 0]]
 
             if actual.name not in self.flrgs:
                 ret.append(actual.centroid)
             else:
                 _flrg = self.flrgs[actual.name]
 
-                ret.append(_flrg.get_midpoint())
+                ret.append(_flrg.get_midpoint(self.sets))
 
         ret = self.apply_inverse_transformations(ret, params=[data])
 

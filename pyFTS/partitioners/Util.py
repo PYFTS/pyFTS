@@ -26,7 +26,8 @@ def plot_sets(data, sets, titles, tam=[12, 10], save=False, file=None):
         ax = axes[k]
         ax.set_title(titles[k])
         ax.set_ylim([0, 1.1])
-        for s in sets[k]:
+        for key in sets[k].keys():
+            s = sets[k][key]
             if s.mf == Membership.trimf:
                 ax.plot(s.parameters,[0,1,0])
             elif s.mf == Membership.gaussmf:

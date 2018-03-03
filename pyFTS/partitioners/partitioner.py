@@ -20,15 +20,16 @@ class Partitioner(object):
         :param transformation: data transformation to be applied on data
         """
         self.name = kwargs.get('name',"")
-        self.partitions = kwargs.get('npart',10)
-        self.sets = []
-        self.membership_function = kwargs.get('func',Membership.trimf)
-        self.setnames = kwargs.get('names',None)
-        self.prefix = kwargs.get('prefix','A')
-        self.transformation = kwargs.get('transformation',None)
-        self.indexer = kwargs.get('indexer',None)
+        self.partitions = kwargs.get('npart', 10)
+        self.sets = {}
+        self.membership_function = kwargs.get('func', Membership.trimf)
+        self.setnames = kwargs.get('names', None)
+        self.prefix = kwargs.get('prefix', 'A')
+        self.transformation = kwargs.get('transformation', None)
+        self.indexer = kwargs.get('indexer', None)
         self.variable = kwargs.get('variable', None)
         self.type = kwargs.get('type', 'common')
+        self.ordered_sets = None
 
         if kwargs.get('preprocess',True):
 
@@ -58,6 +59,11 @@ class Partitioner(object):
 
             self.sets = self.build(ndata)
 
+            if self.ordered_sets is None and self.setnames is not None:
+                self.ordered_sets = self.setnames
+            else:
+                self.ordered_sets = FuzzySet.set_ordered(self.sets)
+
             del(ndata)
 
     def build(self, data):
@@ -67,6 +73,9 @@ class Partitioner(object):
         :return: 
         """
         pass
+
+    def get_name(self, counter):
+        return self.prefix + str(counter) if self.setnames is None else self.setnames[counter]
 
     def plot(self, ax):
         """
@@ -79,7 +88,8 @@ class Partitioner(object):
         ax.set_xlim([self.min, self.max])
         ticks = []
         x = []
-        for s in self.sets:
+        for key in self.sets.keys():
+            s = self.sets[key]
             if s.type == 'common':
                 self.plot_set(ax, s)
             elif s.type == 'composite':
@@ -103,6 +113,6 @@ class Partitioner(object):
 
     def __str__(self):
         tmp = self.name + ":\n"
-        for a in self.sets:
-            tmp += str(a)+ "\n"
+        for key in self.sets.keys():
+            tmp += str(self.sets[key])+ "\n"
         return tmp
