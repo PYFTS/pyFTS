@@ -1,8 +1,0 @@
-include data/Enrollments.csv
-include data/AirPassengers.csv
-include data/NASDAQ.csv.bz2
-include data/SP500.csv.bz2
-include data/sunspots.csv
-include data/TAIEX.csv.bz2
-include data/INMET.csv.bz2
-include data/SONDA_BSB.csv.bz2

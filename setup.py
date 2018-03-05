@@ -6,8 +6,7 @@ setup(
               'pyFTS.models', 'pyFTS.models.seasonal', 'pyFTS.partitioners', 'pyFTS.probabilistic',
               'pyFTS.tests', 'pyFTS.models.nonstationary', 'pyFTS.models.multivariate'],
     #package_dir={}
-    package_data={'benchmarks': ['*'], 'common': ['*'], 'data': ['*'],
-                  'models': ['*'],  'partitioners': ['*'], 'probabilistic': ['*'], 'tests': ['*']},
+    package_data={'pyFTS.data': ['*.csv','*.csv.bz2']},
     #data_files=[('data', ['pyFTS/data/Enrollments.csv', 'pyFTS/data/AirPassengers.csv'])],
     include_package_data=True,
     version='1.2.3',
@@ -17,7 +16,12 @@ setup(
     url='https://github.com/petroniocandido/pyFTS',
     download_url='https://github.com/petroniocandido/pyFTS/archive/pkg1.2.3.tar.gz',
     keywords=['forecasting', 'fuzzy time series', 'fuzzy', 'time series forecasting'],
-    classifiers=[],
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+    ],
     install_requires=[
         'numpy','pandas','matplotlib','dill','copy','dispy','multiprocessing','joblib','statsmodels'
     ]
