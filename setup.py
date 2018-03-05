@@ -10,15 +10,15 @@ setup(
                   'models': ['*'],  'partitioners': ['*'], 'probabilistic': ['*'], 'tests': ['*']},
     #data_files=[('data', ['pyFTS/data/Enrollments.csv', 'pyFTS/data/AirPassengers.csv'])],
     include_package_data=True,
-    version='1.1.1',
+    version='1.2.3',
     description='Fuzzy Time Series for Python',
     author='Petronio Candido L. e Silva',
     author_email='petronio.candido@gmail.com',
     url='https://github.com/petroniocandido/pyFTS',
-    download_url='https://github.com/petroniocandido/pyFTS/archive/pkg1.1.1.tar.gz',
+    download_url='https://github.com/petroniocandido/pyFTS/archive/pkg1.2.3.tar.gz',
     keywords=['forecasting', 'fuzzy time series', 'fuzzy', 'time series forecasting'],
     classifiers=[],
-    #install_requires=[
-    #    'numpy','pandas','matplotlib','dill','copy','dispy','multiprocessing','joblib'
-    #],
+    install_requires=[
+        'numpy','pandas','matplotlib','dill','copy','dispy','multiprocessing','joblib','statsmodels'
+    ]
 )
