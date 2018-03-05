@@ -2,11 +2,6 @@ import numpy as np
 import pandas as pd
 from pyFTS.common import FuzzySet, SortedCollection, tree, Util
 
-def parallel_train(data, method, **kwargs):
-    model = method(**kwargs)
-    model.train(data)
-
-    return model
 
 class FTS(object):
     """
@@ -67,23 +62,42 @@ class FTS(object):
         :param kwargs:
         :return:
         """
-        type = kwargs.get("type", 'point')
-        steps_ahead = kwargs.get("steps_ahead", None)
 
-        if type == 'point' and steps_ahead == None:
-            return self.forecast(data, **kwargs)
-        elif type == 'point' and steps_ahead != None:
-            return self.forecast_ahead(data, steps_ahead, **kwargs)
-        elif type == 'interval' and steps_ahead == None:
-            return self.forecast_interval(data, **kwargs)
-        elif type == 'interval' and steps_ahead != None:
-            return self.forecast_ahead_interval(data, steps_ahead, **kwargs)
-        elif type == 'distribution' and steps_ahead == None:
-            return self.forecast_distribution(data, **kwargs)
-        elif type == 'distribution' and steps_ahead != None:
-            return self.forecast_ahead_distribution(data, steps_ahead, **kwargs)
+        if 'distributed' in kwargs:
+            distributed = kwargs.pop('distributed')
         else:
-            raise ValueError('The argument \'type\' has an unknown value.')
+            distributed = False
+
+        if distributed is None or distributed == False:
+
+            if 'type' in kwargs:
+                type = kwargs.pop("type")
+            else:
+                type = 'point'
+
+            steps_ahead = kwargs.get("steps_ahead", None)
+
+            if type == 'point' and steps_ahead == None:
+                return self.forecast(data, **kwargs)
+            elif type == 'point' and steps_ahead != None:
+                return self.forecast_ahead(data, steps_ahead, **kwargs)
+            elif type == 'interval' and steps_ahead == None:
+                return self.forecast_interval(data, **kwargs)
+            elif type == 'interval' and steps_ahead != None:
+                return self.forecast_ahead_interval(data, steps_ahead, **kwargs)
+            elif type == 'distribution' and steps_ahead == None:
+                return self.forecast_distribution(data, **kwargs)
+            elif type == 'distribution' and steps_ahead != None:
+                return self.forecast_ahead_distribution(data, steps_ahead, **kwargs)
+            else:
+                raise ValueError('The argument \'type\' has an unknown value.')
+
+        else:
+
+            nodes = kwargs.get("nodes", ['127.0.0.1'])
+            num_batches = kwargs.get('num_batches', 10)
+
+            return Util.distributed_predict(self, kwargs, nodes, data, num_batches)
 
 
     def forecast(self, data, **kwargs):
@@ -180,21 +194,24 @@ class FTS(object):
 
         import datetime
 
-        num_batches = kwargs.get('num_batches', None)
+        num_batches = kwargs.get('num_batches', 10)
 
         save = kwargs.get('save_model', False)  # save model on disk
 
-        batch_save = kwargs.get('batch_save', True) #save model between batches
+        batch_save = kwargs.get('batch_save', False) #save model between batches
 
         file_path = kwargs.get('file_path', None)
 
         distributed = kwargs.get('distributed', False)
 
+        batch_save_interval = kwargs.get('batch_save_interval', 10)
+
         if distributed:
             nodes = kwargs.get('nodes', False)
             train_method = kwargs.get('train_method', Util.simple_model_train)
             Util.distributed_train(self, train_method, nodes, type(self), data, num_batches, {},
-                                   batch_save=batch_save, file_path=file_path)
+                                   batch_save=batch_save, file_path=file_path,
+                                   batch_save_interval=batch_save_interval)
         else:
 
             print("[{0: %H:%M:%S}] Start training".format(datetime.datetime.now()))
@@ -302,6 +319,9 @@ class FTS(object):
             return ndata
         else:
             return data
+
+    def get_UoD(self):
+        return [self.original_min, self.original_max]
 
     def __str__(self):
         tmp = self.name + ":\n"

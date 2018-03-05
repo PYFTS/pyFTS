@@ -107,7 +107,7 @@ class ProbabilityDistribution(object):
             if str(ret) not in self.qtl:
                 self.qtl[str(ret)] = []
 
-            self.qtl[str(ret)].append_rhs(k)
+            self.qtl[str(ret)].append(k)
 
         _keys = [float(k) for k in sorted(self.qtl.keys())]
 

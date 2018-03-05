@@ -6,12 +6,12 @@ from pyFTS.common import Transformations
 
 from pyFTS.data import SONDA
 df = SONDA.get_dataframe()
-train = df.iloc[0:1572480] #three years
-test = df.iloc[1572480:2096640] #ears
+train = df.iloc[0:1578241] #three years
+#test = df.iloc[1572480:2096640] #ears
 del df
 
 from pyFTS.partitioners import Grid, Util as pUtil
-from pyFTS.common import Transformations
+from pyFTS.common import Transformations, Util
 from pyFTS.models.multivariate import common, variable, mvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
@@ -20,6 +20,7 @@ bc = Transformations.BoxCox(0)
 diff = Transformations.Differential(1)
 
 np = 10
+
 
 model = mvfts.MVFTS("")
 
@@ -48,5 +49,11 @@ model.append_variable(vrain)
 
 model.target_variable = vrain
 
-model.fit(train, num_batches=20, save=True, batch_save=True, file_path='mvfts_sonda3', distributed=True,
-          nodes=['192.168.0.110','192.168.0.106'])
+
+#model.fit(train, num_batches=60, save=True, batch_save=True, file_path='mvfts_sonda')
+
+model.fit(train, num_batches=200, save=True, batch_save=True, file_path='mvfts_sonda', distributed=True,
+          nodes=['192.168.0.110','192.168.0.106'], batch_save_interval=10)
+
+
+#model = Util.load_obj('mvfts_sonda')

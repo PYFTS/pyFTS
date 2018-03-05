@@ -488,14 +488,18 @@ def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save
 
 
 def print_interval_statistics(original, models):
-    ret = "Model	& Order     & Sharpness		& Resolution		& Coverage	\\\\ \n"
+    ret = "Model	& Order     & Sharpness		& Resolution		& Coverage & .05  & .25 & .75 & .95	\\\\ \n"
     for fts in models:
-        _sharp, _res, _cov = Measures.get_interval_statistics(original, fts)
+        _sharp, _res, _cov, _q5, _q25, _q75, _q95  = Measures.get_interval_statistics(original, fts)
         ret += fts.shortname + "		& "
         ret += str(fts.order) + "		& "
         ret += str(_sharp) + "		& "
         ret += str(_res) + "		& "
-        ret += str(_cov) + "	\\\\ \n"
+        ret += str(_cov) + "        &"
+        ret += str(_q5) + "        &"
+        ret += str(_q25) + "        &"
+        ret += str(_q75) + "        &"
+        ret += str(_q95) + "\\\\ \n"
     print(ret)
 
 

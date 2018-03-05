@@ -1,111 +1,45 @@
-#!/usr/bin/python
-# -*- coding: utf8 -*-
-
 import os
 import numpy as np
 import pandas as pd
 import matplotlib as plt
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
-import pandas as pd
-from pyFTS.common import FLR, FuzzySet, Membership, Transformations, fts
-from pyFTS.models import chen
-from pyFTS.benchmarks import benchmarks as bchmk
-from numpy import random
-
-#gauss_treino = random.normal(0,1.0,1600)
-#gauss_teste = random.normal(0,1.0,400)
-
-
-os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
-
-'''
-enrollments = pd.read_csv("DataSets/Enrollments.csv", sep=";")
-enrollments = np.array(enrollments["Enrollments"])
-'''
-
-taiexpd = pd.read_csv("DataSets/TAIEX.csv", sep=",")
-data = np.array(taiexpd["avg"][:5000])
-del(taiexpd)
-
-
+#from mpl_toolkits.mplot3d import Axes3D
 import importlib
-import pandas as pd
-from pyFTS.partitioners import Grid
-from pyFTS.common import FLR, FuzzySet, Membership, SortedCollection
-from pyFTS import fts
-from pyFTS import hofts
-from pyFTS import pwfts
-from pyFTS import tree
-from pyFTS.benchmarks import benchmarks as bchmk
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
-#uod = [10162, 21271]
+from pyFTS.common import Util
 
-fs1 = Grid.GridPartitioner(data[:3000], 30)
-#for s in enrollments_fs1.sets:
-#    print(s) #.partition_function(uod, 100))
+from pyFTS.data import TAIEX
 
-pfts1 = pwfts.ProbabilisticWeightedFTS("1", partitioner=fs1)
-pfts1.train(data, None, 1)
-pfts1.shortname = "1st Order"
+taiex = TAIEX.get_data()
 
-#print(pfts1_enrollments)
+train = taiex[:3000]
+test = taiex[3000:3200]
 
-#tmp = pfts1.forecast(data[3000:3020])
-
-#tmp = pfts1.forecast_interval(data[3000:3020])
-
-tmp = pfts1.forecast_distribution(data[3500])
-
-p = 0
-for b in tmp[0].bins:
-    p += tmp[0].density(b)
-
-print(p)
-
-#tmp = pfts1.forecast_ahead_interval(data[3000:3020],20)
-
-#tmp = pfts1.forecast_ahead_distribution(data[3000:3020],20, method=3, h=0.45, kernel="gaussian")
-#print(tmp[0])
-
-#print(tmp[0].quantile([0.05, 0.95]))
-
-#pfts1_enrollments.AprioriPDF
-#norm = pfts1_enrollments.global_frequency_count
-#uod = pfts1.get_UoD()
-
-#for k in sorted(pfts1_enrollments.flrgs.keys())
-#    flrg = pfts1_enrollments.flrgs[k]
-#    tmp = flrg.get_LHSprobability(15000, norm, uod, 100)
-#    print(tmp) #flrg.partition_function(uod,100))
-
-#print("MARGINAL VERIFICATION")
-#for s in sorted(pfts1_enrollments.flrgs.keys()):
-#    flrg = pfts1_enrollments.flrgs[s]
-    #print(flrg.get_LHSprobability(15000, norm, uod, 100))
-#    print(sum([flrg.get_LHSprobability(k, norm, uod, 100) for k in np.linspace(uod[0],uod[1],100)]))
-
-
+from pyFTS.common import Transformations
+tdiff = Transformations.Differential(1)
 
 '''
-pfts2_enrollments = pwfts.ProbabilisticWeightedFTS("2")
-pfts2_enrollments.dump = False
-pfts2_enrollments.shortname = "2nd Order"
-pfts2_enrollments.train(enrollments, enrollments_fs1, 2)
-pfts3_enrollments = pwfts.ProbabilisticWeightedFTS("3")
-pfts3_enrollments.dump = False
-pfts3_enrollments.shortname = "3rd Order"
-pfts3_enrollments.train(enrollments, enrollments_fs1, 3)
+from pyFTS.partitioners import Grid, Util as pUtil
+from pyFTS.common import FLR,FuzzySet,Membership,SortedCollection
+taiex_fs1 = Grid.GridPartitioner(data=train, npart=30)
+taiex_fs2 = Grid.GridPartitioner(data=train, npart=10, transformation=tdiff)
 
-bchmk.plot_compared_series(enrollments,[pfts1_enrollments,pfts2_enrollments, pfts3_enrollments],
-                           ["red","blue","green"], linewidth=2,
-                         typeonlegend=True,save=False,file="pictures/pwfts_enrollments_interval.png",
-                           tam=[20,7],points=False, intervals=True)
+#pUtil.plot_partitioners(train, [taiex_fs1,taiex_fs2], tam=[15,7])
+
+from pyFTS.common import fts,tree
+from pyFTS.models import hofts, pwfts
+
+pfts1_taiex = pwfts.ProbabilisticWeightedFTS("1", partitioner=taiex_fs1)
+#pfts1_taiex.appendTransformation(diff)
+pfts1_taiex.fit(train, save_model=True, file_path='pwfts')
+pfts1_taiex.shortname = "1st Order"
+print(pfts1_taiex)
+
 '''
 
+model = Util.load_obj('pwfts')
 
-
-
-
-
+model.predict(test, type='distribution')
+#'''

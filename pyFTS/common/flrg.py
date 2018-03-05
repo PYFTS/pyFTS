@@ -47,13 +47,13 @@ class FLRG(object):
             self.midpoint = np.nanmean(self.get_midpoints(sets))
         return self.midpoint
 
-    def get_midpoints(self,sets):
+    def get_midpoints(self, sets):
         if isinstance(self.RHS, (list, set)):
             return np.array([sets[s].centroid for s in self.RHS])
         elif isinstance(self.RHS, dict):
             return np.array([sets[self.RHS[s]].centroid for s in self.RHS.keys()])
 
-    def get_lower(self,sets):
+    def get_lower(self, sets):
         if self.lower is None:
             if isinstance(self.RHS, list):
                 self.lower = min([sets[rhs].lower for rhs in self.RHS])
@@ -61,7 +61,7 @@ class FLRG(object):
                 self.lower = min([sets[self.RHS[s]].lower for s in self.RHS.keys()])
         return self.lower
 
-    def get_upper(self, t,sets):
+    def get_upper(self, sets):
         if self.upper is None:
             if isinstance(self.RHS, list):
                 self.upper = max([sets[rhs].upper for rhs in self.RHS])

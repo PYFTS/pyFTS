@@ -20,7 +20,10 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
         self.Z = None
 
     def get_membership(self, data, sets):
-        return np.nanprod([sets[k].membership(data[k]) for k in self.LHS])
+        if isinstance(data, (np.ndarray, list)):
+            return np.nanprod([sets[key].membership(data[count]) for count, key in enumerate(self.LHS)])
+        else:
+            return sets[self.LHS[0]].membership(data)
 
     def append_rhs(self, c, **kwargs):
         mv = kwargs.get('mv', 1.0)
@@ -34,7 +37,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
     def lhs_conditional_probability(self, x, sets, norm, uod, nbins):
         pk = self.frequency_count / norm
 
-        tmp = pk * (self.get_membership(x, sets) / self.partition_function(uod, nbins=nbins))
+        tmp = pk * (self.get_membership(x, sets) / self.partition_function(sets, uod, nbins=nbins))
 
         return tmp
 
@@ -110,17 +113,18 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         data = self.apply_transformations(data, updateUoD=True)
 
-        parameters = kwargs.get('parameters','Fuzzy')
+        parameters = kwargs.get('parameters','fuzzy')
 
         self.order = kwargs.get('order',1)
-        if kwargs.get('sets',None) is None and self.partitioner is not None:
+
+        if kwargs.get('sets', None) is None and self.partitioner is not None:
             self.sets = self.partitioner.sets
             self.original_min = self.partitioner.min
             self.original_max = self.partitioner.max
         else:
             self.sets = kwargs.get('sets',None)
-        for s in self.sets:    self.setsDict[s.name] = s
-        if parameters == 'Monotonic':
+
+        if parameters == 'monotonic':
             tmpdata = FuzzySet.fuzzyfy_series_old(data, self.sets)
             flrs = FLR.generate_recurrent_flrs(tmpdata)
             self.generateFLRG(flrs)
@@ -433,7 +437,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 den = []
                 for s in flrgs:
                     flrg = self.flrgs[s.get_key()]
-                    pk = flrg.lhs_conditional_probability(sample, self.global_frequency_count, uod, nbins)
+                    pk = flrg.lhs_conditional_probability(sample, self.sets, self.global_frequency_count, uod, nbins)
                     wi = flrg.rhs_conditional_probability(bin, self.sets, uod, nbins)
                     num.append(wi * pk)
                     den.append(pk)

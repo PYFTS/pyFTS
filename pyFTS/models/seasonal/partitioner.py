@@ -1,4 +1,4 @@
-from pyFTS.common import Membership
+from pyFTS.common import Membership, FuzzySet as FS
 from pyFTS.common.Composite import FuzzySet as Composite
 from pyFTS.partitioners import partitioner, Grid
 from pyFTS.models.seasonal.common import DateTime, FuzzySet, strip_datepart
@@ -31,6 +31,11 @@ class TimeGridPartitioner(partitioner.Partitioner):
             self.max = self.season.value + tmp
 
         self.sets = self.build(None)
+
+        if self.ordered_sets is None and self.setnames is not None:
+            self.ordered_sets = self.setnames
+        else:
+            self.ordered_sets = FS.set_ordered(self.sets)
 
     def build(self, data):
         sets = {}

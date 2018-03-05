@@ -19,8 +19,13 @@ class FLRG(flg.FLRG):
     def append_rhs(self, set, **kwargs):
         self.RHS.add(set)
 
-    def get_membership(self, data, sets):
-        return np.nanmin([sets[self.LHS[k]].membership(data[k]) for k in self.LHS.keys()])
+    def get_membership(self, data, variables):
+        mvs = []
+        for var in variables:
+            s = self.LHS[var.name]
+            mvs.append(var.partitioner.sets[s].membership(data[var.name]))
+
+        return np.nanmin(mvs)
 
     def __str__(self):
         _str = ""

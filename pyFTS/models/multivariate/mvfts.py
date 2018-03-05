@@ -50,9 +50,10 @@ class MVFTS(fts.FTS):
 
             flr = MVFLR.FLR()
 
-            for c, e in enumerate(path, start=0):
-                flr.set_lhs(e.variable, e.name)
+            for v, s in path:
+                flr.set_lhs(v, s)
 
+            if len(flr.LHS.keys()) == len(self.explanatory_variables):
                 flrs.append(flr)
 
         return flrs
@@ -70,8 +71,8 @@ class MVFTS(fts.FTS):
             target = common.fuzzyfy_instance(target_point, self.target_variable)
 
             for flr in tmp_flrs:
-                for t in target:
-                    flr.set_rhs(t.name)
+                for v, s in target:
+                    flr.set_rhs(s)
                     flrs.append(flr)
 
         return flrs
@@ -108,8 +109,8 @@ class MVFTS(fts.FTS):
                     mvs.append(0.)
                     mps.append(0.)
                 else:
-                    mvs.append(self.flrgs[flrg.get_key()].get_membership(self.format_data(data_point)))
-                    mps.append(self.flrgs[flrg.get_key()].get_midpoint())
+                    mvs.append(self.flrgs[flrg.get_key()].get_membership(self.format_data(data_point), self.explanatory_variables))
+                    mps.append(self.flrgs[flrg.get_key()].get_midpoint(self.target_variable.partitioner.sets))
 
             #print('mv', mvs)
             #print('mp', mps)

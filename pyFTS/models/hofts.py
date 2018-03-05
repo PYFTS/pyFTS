@@ -1,8 +1,8 @@
 """
-Simple High Order extension of Conventional FTS by Chen (1996)
+High Order FTS
 
-[1] S.-M. Chen, “Forecasting enrollments based on fuzzy time series,” 
-Fuzzy Sets Syst., vol. 81, no. 3, pp. 311–319, 1996.
+Severiano, S. A. Jr; Silva, P. C. L.; Sadaei, H. J.; Guimarães, F. G. Very Short-term Solar Forecasting
+using Fuzzy Time Series. 2017 IEEE International Conference on Fuzzy Systems. DOI10.1109/FUZZ-IEEE.2017.8015732
 """
 
 import numpy as np

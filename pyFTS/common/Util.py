@@ -78,12 +78,14 @@ def load_obj(file):
         obj = dill.load(_file)
     return obj
 
+
 def persist_env(file):
     """
     Persist an entire environment on file. This function depends on Dill package
     :param file: file name to store the environment
     """
     dill.dump_session(file)
+
 
 def load_env(file):
     dill.load_session(file)
@@ -94,11 +96,13 @@ def simple_model_train(model, data, parameters):
     return model
 
 
-def distributed_train(model, train_method, nodes, fts_method, data, num_batches,
-                      train_parameters, **kwargs):
+def distributed_train(model, train_method, nodes, fts_method, data, num_batches=10,
+                      train_parameters={}, **kwargs):
     import dispy, dispy.httpd, datetime
 
-    batch_save = kwargs.get('batch_save', True)  # save model between batches
+    batch_save = kwargs.get('batch_save', False)  # save model between batches
+
+    batch_save_interval = kwargs.get('batch_save_interval', 1)
 
     file_path = kwargs.get('file_path', None)
 
@@ -118,8 +122,6 @@ def distributed_train(model, train_method, nodes, fts_method, data, num_batches,
         else:
             ndata = data[ct - model.order: ct + batch_size]
 
-        #self.train(ndata, **kwargs)
-
         tmp_model = fts_method(str(bcount))
 
         tmp_model.clone_parameters(model)
@@ -136,7 +138,7 @@ def distributed_train(model, train_method, nodes, fts_method, data, num_batches,
         if job.status == dispy.DispyJob.Finished and tmp is not None:
             model.merge(tmp)
 
-            if batch_save:
+            if batch_save and (job.id % batch_save_interval) == 0:
                 persist_obj(model, file_path)
 
         else:
@@ -155,3 +157,53 @@ def distributed_train(model, train_method, nodes, fts_method, data, num_batches,
     cluster.close()
 
     return model
+
+
+def simple_model_predict(model, data, parameters):
+    return model.predict(data, **parameters)
+
+
+def distributed_predict(model, parameters, nodes, data, num_batches):
+    import dispy, dispy.httpd
+
+    cluster = dispy.JobCluster(simple_model_predict, nodes=nodes)  # , depends=dependencies)
+
+    http_server = dispy.httpd.DispyHTTPServer(cluster)
+
+    jobs = []
+    n = len(data)
+    batch_size = int(n / num_batches)
+    bcount = 1
+    for ct in range(model.order, n, batch_size):
+        if model.is_multivariate:
+            ndata = data.iloc[ct - model.order:ct + batch_size]
+        else:
+            ndata = data[ct - model.order: ct + batch_size]
+
+        job = cluster.submit(model, ndata, parameters)
+        job.id = bcount  # associate an ID to identify jobs (if needed later)
+        jobs.append(job)
+
+        bcount += 1
+
+    ret = []
+
+    for job in jobs:
+        tmp = job()
+        if job.status == dispy.DispyJob.Finished and tmp is not None:
+            if job.id < batch_size:
+                ret.extend(tmp[:-1])
+            else:
+                ret.extend(tmp)
+        else:
+            print(job.exception)
+            print(job.stdout)
+
+    cluster.wait()  # wait for all jobs to finish
+
+    cluster.print_status()
+
+    http_server.shutdown()  # this waits until browser gets all updates
+    cluster.close()
+
+    return ret
