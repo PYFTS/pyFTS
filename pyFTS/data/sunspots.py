@@ -1,11 +1,15 @@
+from pyFTS.data import common
 import pandas as pd
 import numpy as np
-import os
-import pkg_resources
-
 
 def get_data():
-    filename = pkg_resources.resource_filename('pyFTS', 'data/sunspots.csv')
-    dat = pd.read_csv(filename, sep=",")
+    dat = get_dataframe()
     dat = np.array(dat["SUNACTIVITY"])
     return dat
+
+def get_dataframe():
+    dat = common.get_dataframe('data/sunspots.csv',
+                               'https://github.com/petroniocandido/pyFTS/raw/8f20f3634aa6a8f58083bdcd1bbf93795e6ed767/pyFTS/data/sunspots.csv',
+                               sep=",")
+    return dat
+

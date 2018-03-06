@@ -6,9 +6,9 @@ setup(
               'pyFTS.models', 'pyFTS.models.seasonal', 'pyFTS.partitioners', 'pyFTS.probabilistic',
               'pyFTS.tests', 'pyFTS.models.nonstationary', 'pyFTS.models.multivariate'],
     #package_dir={}
-    package_data={'pyFTS.data': ['*.csv','*.csv.bz2']},
+    #package_data={'pyFTS.data': ['*.csv','*.csv.bz2']},
     #data_files=[('data', ['pyFTS/data/Enrollments.csv', 'pyFTS/data/AirPassengers.csv'])],
-    include_package_data=True,
+    #include_package_data=True,
     version='1.2.3',
     description='Fuzzy Time Series for Python',
     author='Petronio Candido L. e Silva',
@@ -22,7 +22,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    install_requires=[
-        'numpy','pandas','matplotlib','dill','copy','dispy','multiprocessing','joblib','statsmodels'
-    ]
+    #install_requires=[
+    #    'numpy','pandas','matplotlib','dill','copy','dispy','multiprocessing','joblib','statsmodels'
+    #]
 )

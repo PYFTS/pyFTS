@@ -16,7 +16,10 @@
 from pyFTS.data import common
 import pandas as pd
 
+
 def get_dataframe():
-    dat = common.get_dataframe('data/INMET.csv.bz2',sep=";", compression='bz2')
+    dat = common.get_dataframe('data/INMET.csv.bz2',
+                               'https://github.com/petroniocandido/pyFTS/raw/8f20f3634aa6a8f58083bdcd1bbf93795e6ed767/pyFTS/data/INMET.csv.bz2',
+                               sep=";", compression='bz2')
     dat["DataHora"] = pd.to_datetime(dat["DataHora"], format='%d/%m/%Y %H:%M')
     return dat
