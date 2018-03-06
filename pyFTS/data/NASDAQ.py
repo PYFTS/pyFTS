@@ -11,7 +11,7 @@ def get_data(field):
 
 def get_dataframe():
     dat = common.get_dataframe('data/NASDAQ.csv.bz2',
-                               'https://github.com/petroniocandido/pyFTS/raw/8f20f3634aa6a8f58083bdcd1bbf93795e6ed767/pyFTS/data/data/NASDAQ.csv.bz2',
+                               'https://github.com/petroniocandido/pyFTS/raw/8f20f3634aa6a8f58083bdcd1bbf93795e6ed767/pyFTS/data/NASDAQ.csv.bz2',
                                sep=";", compression='bz2')
     return dat
 

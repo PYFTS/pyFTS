@@ -12,7 +12,7 @@ def get_data():
 def get_dataframe():
     dat = common.get_dataframe('data/TAIEX.csv.bz2',
                                'https://github.com/petroniocandido/pyFTS/raw/8f20f3634aa6a8f58083bdcd1bbf93795e6ed767/pyFTS/data/TAIEX.csv.bz2',
-                               sep=";", compression='bz2')
+                               sep=",", compression='bz2')
     dat["Date"] = pd.to_datetime(dat["Date"])
     return dat
 
