@@ -17,7 +17,7 @@ from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
 bc = Transformations.BoxCox(0)
-diff = Transformations.Differential(1)
+tdiff = Transformations.Differential(1)
 
 np = 10
 
@@ -38,10 +38,12 @@ vhour = variable.Variable("Hour", data_label="datahora", partitioner=seasonal.Ti
                           data=train, partitioner_specific=sp)
 model.append_variable(vhour)
 
-vhumid = variable.Variable("Humidity", data_label="humid", partitioner=Grid.GridPartitioner, npart=np, data=train)
+vhumid = variable.Variable("Humidity", data_label="humid", partitioner=Grid.GridPartitioner, npart=np, data=train,
+                           transformation=tdiff)
 model.append_variable(vhumid)
 
-vpress = variable.Variable("AtmPress", data_label="press", partitioner=Grid.GridPartitioner, npart=np, data=train)
+vpress = variable.Variable("AtmPress", data_label="press", partitioner=Grid.GridPartitioner, npart=np, data=train,
+                           transformation=tdiff)
 model.append_variable(vpress)
 
 vrain = variable.Variable("Rain", data_label="rain", partitioner=Grid.GridPartitioner, npart=20, data=train)#train)
@@ -53,7 +55,7 @@ model.target_variable = vrain
 #model.fit(train, num_batches=60, save=True, batch_save=True, file_path='mvfts_sonda')
 
 model.fit(train, num_batches=200, save=True, batch_save=True, file_path='mvfts_sonda', distributed=True,
-          nodes=['192.168.0.110','192.168.0.106'], batch_save_interval=10)
+          nodes=['192.168.1.22'], batch_save_interval=10)
 
 
 #model = Util.load_obj('mvfts_sonda')

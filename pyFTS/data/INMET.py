@@ -13,14 +13,10 @@
 
 # http://www.inmet.gov.br
 
+from pyFTS.data import common
 import pandas as pd
-import numpy as np
-import os
-import pkg_resources
-
 
 def get_dataframe():
-    filename = pkg_resources.resource_filename('pyFTS', 'data/INMET.csv.bz2')
-    dat = pd.read_csv(filename, sep=";", compression='bz2')
+    dat = common.get_dataframe('data/INMET.csv.bz2',sep=";", compression='bz2')
     dat["DataHora"] = pd.to_datetime(dat["DataHora"], format='%d/%m/%Y %H:%M')
     return dat
