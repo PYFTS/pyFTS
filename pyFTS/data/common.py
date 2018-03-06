@@ -6,8 +6,8 @@ from pathlib import Path
 from urllib import request
 
 
-def get_dataframe(path, url, sep=";", compression='infer'):
-    filename = pkg_resources.resource_filename('pyFTS', path)
+def get_dataframe(filename, url, sep=";", compression='infer'):
+    #filename = pkg_resources.resource_filename('pyFTS', path)
     tmp_file = Path(filename)
 
     if tmp_file.is_file():

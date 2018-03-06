@@ -106,7 +106,8 @@ class TimeGridPartitioner(partitioner.Partitioner):
         ax.set_xlim([0, self.season.value])
         ticks = []
         x = []
-        for s in self.sets:
+        for key in self.sets.keys():
+            s = self.sets[key]
             if s.type == 'composite':
                 for ss in s.sets:
                     self.plot_set(ax, ss)

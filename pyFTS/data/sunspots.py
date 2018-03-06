@@ -8,7 +8,7 @@ def get_data():
     return dat
 
 def get_dataframe():
-    dat = common.get_dataframe('data/sunspots.csv',
+    dat = common.get_dataframe('sunspots.csv',
                                'https://github.com/petroniocandido/pyFTS/raw/8f20f3634aa6a8f58083bdcd1bbf93795e6ed767/pyFTS/data/sunspots.csv',
                                sep=",")
     return dat
