@@ -9,7 +9,7 @@ setup(
     #package_data={'pyFTS.data': ['*.csv','*.csv.bz2']},
     #data_files=[('data', ['pyFTS/data/Enrollments.csv', 'pyFTS/data/AirPassengers.csv'])],
     #include_package_data=True,
-    version='1.2.1',
+    version='1.2.2',
     description='Fuzzy Time Series for Python',
     author='Petronio Candido L. e Silva',
     author_email='petronio.candido@gmail.com',
