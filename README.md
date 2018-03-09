@@ -1,13 +1,32 @@
 # pyFTS - Fuzzy Time Series for Python
 
-## pyFTS Library
+## What is pyFTS Library?
 
 This package is intended for students, researchers, data scientists or whose want to exploit the Fuzzy Time Series methods. These methods provide simple, easy to use, computationally cheap and human-readable models, suitable for statistic laymans to experts.
 
 This project is continously under improvement and contributors are well come.
 
+## How to reference pyFTS?
 
-## Fuzzy Time Series (FTS)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1194859.svg)](https://doi.org/10.5281/zenodo.1194859)
+
+ Silva, P. C. L. et al. *pyFTS: Fuzzy Time Series for Python (Version v4.0).* Belo Horizonte. 2018. DOI: 10.5281/zenodo.1194859. Url: <http://doi.org/10.5281/zenodo.1194859>
+
+## How to install pyFTS?
+
+First of all pyFTS was developed and tested with Python 3.6. To install pyFTS using pip tool
+
+```
+pip install -U pyFTS
+```
+
+Ou pull directly from the GitHub repo:
+
+```
+pip install -U git+https://github.com/petroniocandido/pyFTS
+```
+
+## What are Fuzzy Time Series (FTS)?
 Fuzzy Time Series (FTS) are non parametric methods for time series forecasting based on Fuzzy Theory.  The original method was proposed by [1] and improved later by many researchers. The general approach of the FTS methods, based on [2] is listed below:
 
 1. **Data preprocessing**: Data transformation functions contained at [pyFTS.common.Transformations](https://github.com/petroniocandido/pyFTS/blob/master/pyFTS/common/Transformations.py), like differentiation, Box-Cox, scaling and normalization.
