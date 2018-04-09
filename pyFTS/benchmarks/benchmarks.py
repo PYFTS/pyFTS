@@ -6,7 +6,6 @@
 
 import datetime
 import time
-import numba
 from copy import deepcopy
 
 import matplotlib as plt

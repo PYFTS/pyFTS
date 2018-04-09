@@ -1,5 +1,4 @@
 import time
-import numba
 import matplotlib.pyplot as plt
 import dill
 import numpy as np

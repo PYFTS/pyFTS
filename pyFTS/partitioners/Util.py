@@ -1,4 +1,3 @@
-import numba
 import numpy as np
 import pandas as pd
 import matplotlib as plt
@@ -15,7 +14,6 @@ all_methods = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitio
 mfs = [Membership.trimf, Membership.gaussmf, Membership.trapmf]
 
 
-@numba.jit()
 def sliding_window_simple_search(data, windowsize, model, partitions, orders, **kwargs):
 
     _3d = len(orders) > 1

@@ -363,6 +363,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         if 'bins' in kwargs:
             _bins = kwargs.pop('bins')
+            nbins = len(_bins)
         else:
             nbins = kwargs.get("num_bins", 100)
             _bins = np.linspace(uod[0], uod[1], nbins)
@@ -380,11 +381,15 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 num = []
                 den = []
                 for s in flrgs:
-                    flrg = self.flrgs[s.get_key()]
-                    pk = flrg.lhs_conditional_probability(sample, self.sets, self.global_frequency_count, uod, nbins)
-                    wi = flrg.rhs_conditional_probability(bin, self.sets, uod, nbins)
-                    num.append(wi * pk)
-                    den.append(pk)
+                    if s.get_key() in self.flrgs:
+                        flrg = self.flrgs[s.get_key()]
+                        pk = flrg.lhs_conditional_probability(sample, self.sets, self.global_frequency_count, uod, nbins)
+                        wi = flrg.rhs_conditional_probability(bin, self.sets, uod, nbins)
+                        num.append(wi * pk)
+                        den.append(pk)
+                    else:
+                        num.append(0.0)
+                        den.append(0.000000001)
                 pf = sum(num) / sum(den)
 
                 dist.set(bin, pf)
@@ -452,11 +457,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             tmp.set(dat, 1.0)
             ret.append(tmp)
 
-        dist = self.forecast_distribution(sample, bins=_bins)
+        dist = self.forecast_distribution(sample, bins=_bins)[0]
 
         ret.append(dist)
 
-        for k in np.arange(self.order, steps+self.order):
+        for k in np.arange(self.order+1, steps+self.order+1):
             dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
 
             lags = {}
@@ -469,7 +474,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             root = tree.FLRGTreeNode(None)
 
-            self.build_tree_without_order(root, lags, 0)
+            tree.build_tree_without_order(root, lags, 0)
 
             # Trace all possible combinations between the bins of past distributions
 
@@ -486,6 +491,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 for bin in _bins:
                     dist.set(bin, dist.density(bin) + pk * d.density(bin))
+
+            ret.append(dist)
 
         ret = ret[self.order:]
 

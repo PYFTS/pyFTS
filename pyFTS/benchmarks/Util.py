@@ -2,7 +2,6 @@
 Benchmark utility functions
 """
 
-import numba
 import matplotlib as plt
 import matplotlib.cm as cmx
 import matplotlib.colors as pltcolors
