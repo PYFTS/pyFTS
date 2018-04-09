@@ -5,7 +5,7 @@ from pyFTS.common import FuzzySet, SortedCollection, tree, Util
 
 class FTS(object):
     """
-    Fuzzy Time Series
+    Fuzzy Time Series object model
     """
     def __init__(self, order, name, **kwargs):
         """
@@ -60,7 +60,14 @@ class FTS(object):
         Forecast using trained model
         :param data: time series with minimal length to the order of the model
         :param kwargs:
-        :return:
+
+        :keyword
+        type: the forecasting type, one of these values: point(default), interval or distribution.
+        steps_ahead: The forecasting horizon, i. e., the number of steps ahead to forecast
+        start: in the multi step forecasting, the index of the data where to start forecasting
+        distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster
+        nodes: a list with the dispy cluster nodes addresses
+        :return: a numpy array with the forecasted data
         """
 
         if 'distributed' in kwargs:
@@ -181,7 +188,7 @@ class FTS(object):
     def fit(self, data, **kwargs):
         """
 
-        :param data:
+        :param data: the training time series
         :param kwargs:
 
         :keyword
@@ -189,12 +196,17 @@ class FTS(object):
         save_model: save final model on disk
         batch_save: save the model between each batch
         file_path: path to save the model
+        distributed: boolean, indicate if the training procedure will be distributed in a dispy cluster
+        nodes: a list with the dispy cluster nodes addresses
+
         :return:
         """
 
         import datetime
 
-        num_batches = kwargs.get('num_batches', 10)
+        dump = kwargs.get('dump', None)
+
+        num_batches = kwargs.get('num_batches', None)
 
         save = kwargs.get('save_model', False)  # save model on disk
 
@@ -214,14 +226,24 @@ class FTS(object):
                                    batch_save_interval=batch_save_interval)
         else:
 
-            print("[{0: %H:%M:%S}] Start training".format(datetime.datetime.now()))
+            if dump == 'time':
+                print("[{0: %H:%M:%S}] Start training".format(datetime.datetime.now()))
 
             if num_batches is not None:
                 n = len(data)
                 batch_size = int(n / num_batches)
                 bcount = 1
-                for ct in range(self.order, n, batch_size):
-                    print("[{0: %H:%M:%S}] Starting batch ".format(datetime.datetime.now()) + str(bcount))
+
+                rng = range(self.order, n, batch_size)
+
+                if dump == 'tqdm':
+                    from tqdm import tqdm
+
+                    rng = tqdm(rng)
+
+                for ct in rng:
+                    if dump == 'time':
+                        print("[{0: %H:%M:%S}] Starting batch ".format(datetime.datetime.now()) + str(bcount))
                     if self.is_multivariate:
                         ndata = data.iloc[ct - self.order:ct + batch_size]
                     else:
@@ -232,14 +254,16 @@ class FTS(object):
                     if batch_save:
                         Util.persist_obj(self,file_path)
 
-                    print("[{0: %H:%M:%S}] Finish batch ".format(datetime.datetime.now()) + str(bcount))
+                    if dump == 'time':
+                        print("[{0: %H:%M:%S}] Finish batch ".format(datetime.datetime.now()) + str(bcount))
 
                     bcount += 1
 
             else:
                 self.train(data, **kwargs)
 
-            print("[{0: %H:%M:%S}] Finish training".format(datetime.datetime.now()))
+            if dump == 'time':
+                print("[{0: %H:%M:%S}] Finish training".format(datetime.datetime.now()))
 
         if save:
             Util.persist_obj(self, file_path)

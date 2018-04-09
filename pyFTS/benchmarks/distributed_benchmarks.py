@@ -8,6 +8,7 @@ python3 /usr/local/bin/dispynode.py -i [local IP] -d
 
 import datetime
 import time
+import numba
 
 import dispy
 import dispy.httpd
@@ -18,61 +19,7 @@ from pyFTS.common import Util
 from pyFTS.partitioners import Grid
 
 
-def run_point(mfts, partitioner, train_data, test_data, window_key=None, transformation=None, indexer=None):
-    """
-    Point forecast benchmark function to be executed on cluster nodes
-    :param mfts: FTS model
-    :param partitioner: Universe of Discourse partitioner
-    :param train_data: data used to train the model
-    :param test_data: ata used to test the model
-    :param window_key: id of the sliding window
-    :param transformation: data transformation
-    :param indexer: seasonal indexer
-    :return: a dictionary with the benchmark results 
-    """
-    import time
-    from pyFTS.models import yu, chen, hofts, pwfts,ismailefendi,sadaei, song, cheng, hwang
-    from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures, naive, arima, quantreg
-    from pyFTS.common import Transformations
-
-    tmp = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-           cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
-           pwfts.ProbabilisticWeightedFTS]
-
-    tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
-
-    tmp4 = [naive.Naive, arima.ARIMA, quantreg.QuantileRegression]
-
-    tmp3 = [Measures.get_point_statistics]
-
-    tmp5 = [Transformations.Differential]
-
-    if mfts.benchmark_only:
-        _key = mfts.shortname + str(mfts.order if mfts.order is not None else "")
-    else:
-        pttr = str(partitioner.__module__).split('.')[-1]
-        _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
-        mfts.partitioner = partitioner
-
-    if transformation is not None:
-        mfts.append_transformation(transformation)
-
-    _start = time.time()
-    mfts.train(train_data, partitioner.sets, order=mfts.order)
-    _end = time.time()
-    times = _end - _start
-
-    _start = time.time()
-    _rmse, _smape, _u = Measures.get_point_statistics(test_data, mfts, indexer)
-    _end = time.time()
-    times += _end - _start
-
-    ret = {'key': _key, 'obj': mfts, 'rmse': _rmse, 'smape': _smape, 'u': _u, 'time': times, 'window': window_key}
-
-    return ret
-
-
+@numba.jit()
 def point_sliding_window(data, windowsize, train=0.8, inc=0.1, models=None, partitioners=[Grid.GridPartitioner],
                          partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
                          benchmark_models=None, benchmark_models_parameters = None,
@@ -100,7 +47,7 @@ def point_sliding_window(data, windowsize, train=0.8, inc=0.1, models=None, part
     :return: DataFrame with the results
     """
 
-    cluster = dispy.JobCluster(run_point, nodes=nodes) #, depends=dependencies)
+    cluster = dispy.JobCluster(benchmarks.run_point, nodes=nodes) #, depends=dependencies)
 
     http_server = dispy.httpd.DispyHTTPServer(cluster)
 
@@ -174,7 +121,7 @@ def point_sliding_window(data, windowsize, train=0.8, inc=0.1, models=None, part
 
     return bUtil.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
 
-
+@numba.jit()
 def build_model_pool_point(models, max_order, benchmark_models, benchmark_models_parameters):
     pool = []
 
@@ -209,57 +156,7 @@ def build_model_pool_point(models, max_order, benchmark_models, benchmark_models
     return pool
 
 
-def run_interval(mfts, partitioner, train_data, test_data, window_key=None, transformation=None, indexer=None):
-    """
-    Interval forecast benchmark function to be executed on cluster nodes
-    :param mfts: FTS model
-    :param partitioner: Universe of Discourse partitioner
-    :param train_data: data used to train the model
-    :param test_data: ata used to test the model
-    :param window_key: id of the sliding window
-    :param transformation: data transformation
-    :param indexer: seasonal indexer
-    :return: a dictionary with the benchmark results 
-    """
-    import time
-    from pyFTS.models import hofts,ifts,pwfts
-    from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures, arima, quantreg
-
-    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS,  pwfts.ProbabilisticWeightedFTS]
-
-    tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
-
-    tmp4 = [arima.ARIMA, quantreg.QuantileRegression]
-
-    tmp3 = [Measures.get_interval_statistics]
-
-    if mfts.benchmark_only:
-        _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
-    else:
-        pttr = str(partitioner.__module__).split('.')[-1]
-        _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
-        mfts.partitioner = partitioner
-
-    if transformation is not None:
-        mfts.append_transformation(transformation)
-
-    _start = time.time()
-    mfts.train(train_data, partitioner.sets, order=mfts.order)
-    _end = time.time()
-    times = _end - _start
-
-    _start = time.time()
-    _sharp, _res, _cov, _q05, _q25, _q75, _q95 = Measures.get_interval_statistics(test_data, mfts)
-    _end = time.time()
-    times += _end - _start
-
-    ret = {'key': _key, 'obj': mfts, 'sharpness': _sharp, 'resolution': _res, 'coverage': _cov, 'time': times,
-           'Q05': _q05, 'Q25': _q25, 'Q75': _q75, 'Q95': _q95, 'window': window_key}
-
-    return ret
-
-
+@numba.jit()
 def interval_sliding_window(data, windowsize, train=0.8,  inc=0.1, models=None, partitioners=[Grid.GridPartitioner],
                             partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
                             benchmark_models=None, benchmark_models_parameters = None,
@@ -296,7 +193,7 @@ def interval_sliding_window(data, windowsize, train=0.8,  inc=0.1, models=None, 
     if benchmark_models_parameters is None:
         benchmark_models_parameters = [(1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
 
-    cluster = dispy.JobCluster(run_interval, nodes=nodes) #, depends=dependencies)
+    cluster = dispy.JobCluster(benchmarks.run_interval, nodes=nodes) #, depends=dependencies)
 
     http_server = dispy.httpd.DispyHTTPServer(cluster)
 
@@ -407,70 +304,7 @@ def interval_sliding_window(data, windowsize, train=0.8,  inc=0.1, models=None, 
                                          times, q05, q25, q75, q95)
 
 
-def run_ahead(mfts, partitioner, train_data, test_data, steps, resolution, window_key=None, transformation=None, indexer=None):
-    """
-    Probabilistic m-step ahead forecast benchmark function to be executed on cluster nodes
-    :param mfts: FTS model
-    :param partitioner: Universe of Discourse partitioner
-    :param train_data: data used to train the model
-    :param test_data: ata used to test the model 
-    :param steps: 
-    :param resolution: 
-    :param window_key: id of the sliding window
-    :param transformation: data transformation
-    :param indexer: seasonal indexer
-    :return: a dictionary with the benchmark results 
-    """
-    import time
-    import numpy as np
-    from pyFTS.models import hofts, ifts, pwfts
-    from pyFTS.models.ensemble import ensemble
-    from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures, arima
-    from pyFTS.models.seasonal import SeasonalIndexer
-
-    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA, ensemble.AllMethodEnsembleFTS]
-
-    tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
-
-    tmp3 = [Measures.get_distribution_statistics, SeasonalIndexer.SeasonalIndexer, SeasonalIndexer.LinearSeasonalIndexer]
-
-    if mfts.benchmark_only:
-        _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
-    else:
-        pttr = str(partitioner.__module__).split('.')[-1]
-        _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
-        mfts.partitioner = partitioner
-
-    if transformation is not None:
-        mfts.append_transformation(transformation)
-
-    if mfts.has_seasonality:
-        mfts.indexer = indexer
-
-    try:
-        _start = time.time()
-        mfts.train(train_data, partitioner.sets, order=mfts.order)
-        _end = time.time()
-        times = _end - _start
-
-        _crps1, _crps2, _t1, _t2 = Measures.get_distribution_statistics(test_data, mfts, steps=steps,
-                                                              resolution=resolution)
-        _t1 += times
-        _t2 += times
-    except Exception as e:
-        print(e)
-        _crps1 = np.nan
-        _crps2 = np.nan
-        _t1 = np.nan
-        _t2 = np.nan
-
-    ret = {'key': _key, 'obj': mfts, 'CRPS_Interval': _crps1, 'CRPS_Distribution': _crps2, 'TIME_Interval': _t1,
-           'TIME_Distribution': _t2, 'window': window_key}
-
-    return ret
-
-
+@numba.jit()
 def ahead_sliding_window(data, windowsize, steps, resolution, train=0.8, inc=0.1, models=None, partitioners=[Grid.GridPartitioner],
                          partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
                          benchmark_models=None, benchmark_models_parameters = None,
@@ -505,7 +339,7 @@ def ahead_sliding_window(data, windowsize, steps, resolution, train=0.8, inc=0.1
     if benchmark_models_parameters is None:
         benchmark_models_parameters = [(1, 0, 0), (1, 0, 1), (2, 0, 0), (2, 0, 1), (2, 0, 2)]
 
-    cluster = dispy.JobCluster(run_ahead, nodes=nodes)  # , depends=dependencies)
+    cluster = dispy.JobCluster(benchmarks.run_ahead, nodes=nodes)  # , depends=dependencies)
 
     http_server = dispy.httpd.DispyHTTPServer(cluster)
 

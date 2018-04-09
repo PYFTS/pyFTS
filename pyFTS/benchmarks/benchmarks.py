@@ -6,6 +6,7 @@
 
 import datetime
 import time
+import numba
 from copy import deepcopy
 
 import matplotlib as plt
@@ -20,15 +21,15 @@ from pyFTS.models import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ift
 from pyFTS.models.ensemble import ensemble
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, quantreg
 from pyFTS.benchmarks import Util as bUtil
-from pyFTS.common import Util
+from pyFTS.common import Util as cUtil
 # from sklearn.cross_validation import KFold
 from pyFTS.partitioners import Grid
 from matplotlib import rc
 
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+#rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 ## for Palatino and other serif fonts use:
 #rc('font',**{'family':'serif','serif':['Palatino']})
-rc('text', usetex=True)
+#rc('text', usetex=True)
 
 colors = ['grey', 'darkgrey', 'rosybrown', 'maroon', 'red','orange', 'gold', 'yellow', 'olive', 'green',
           'darkgreen', 'cyan', 'lightblue','blue', 'darkblue', 'purple', 'darkviolet' ]
@@ -38,6 +39,193 @@ ncol = len(colors)
 styles = ['-','--','-.',':','.']
 
 nsty = len(styles)
+
+
+def __pop(key, default, kwargs):
+    if key in kwargs:
+        return kwargs.pop(key)
+    else:
+        return default
+
+
+def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
+    """
+    Sliding window benchmarks for FTS point forecasters
+    :param data:
+    :param windowsize: size of sliding window
+    :param train: percentual of sliding window data used to train the models
+    :param models: FTS point forecasters
+    :param partitioners: Universe of Discourse partitioner
+    :param partitions: the max number of partitions on the Universe of Discourse
+    :param max_order: the max order of the models (for high order models)
+    :param transformation: data transformation
+    :param indexer: seasonal indexer
+    :param dump:
+    :param benchmark_methods: Non FTS models to benchmark
+    :param benchmark_methods_parameters: Non FTS models parameters
+    :param save: save results
+    :param file: file path to save the results
+    :param sintetic: if true only the average and standard deviation of the results
+    :return: DataFrame with the results
+    """
+    distributed = __pop('distributed', False, kwargs)
+    save = __pop('save', False, kwargs)
+
+    transformation = kwargs.get('transformation', None)
+    progress = kwargs.get('progress', None)
+    type = kwargs.get("type", 'point')
+
+    orders = __pop("orders", [1,2,3], kwargs)
+
+    partitioners_models = __pop("partitioners_models", None, kwargs)
+    partitioners_methods = __pop("partitioners_methods", [Grid.GridPartitioner], kwargs)
+    partitions = __pop("partitions", [10], kwargs)
+
+    methods = __pop('methods', None, kwargs)
+
+    models = __pop('models', None, kwargs)
+
+    pool = [] if models is None else models
+
+    if models is None and methods is None:
+        if type  == 'point':
+            methods = get_point_methods()
+        elif type == 'interval':
+            methods = get_interval_methods()
+        elif type == 'distribution':
+            methods = get_probabilistic_methods()
+
+    if models is None:
+        for method in methods:
+            mfts = method("")
+
+            if mfts.is_high_order:
+                for order in orders:
+                    if order >= mfts.min_order:
+                        mfts = method("")
+                        mfts.order = order
+                        pool.append(mfts)
+            else:
+                mfts.order = 1
+                pool.append(mfts)
+
+    benchmark_models = __pop("benchmark_models", None, kwargs)
+
+    benchmark_methods = __pop("benchmark_methods", None, kwargs)
+    benchmark_methods_parameters = __pop("benchmark_methods_parameters", None, kwargs)
+
+    if benchmark_models != False:
+
+        if benchmark_models is None and benchmark_methods is None:
+            if type == 'point'or type  == 'partition':
+                benchmark_methods = get_benchmark_point_methods()
+            elif type == 'interval':
+                benchmark_methods = get_benchmark_interval_methods()
+            elif type == 'distribution':
+                benchmark_methods = get_benchmark_probabilistic_methods()
+
+        if benchmark_models is not None:
+            pool.extend(benchmark_models)
+        elif benchmark_methods is not None:
+            for count, model in enumerate(benchmark_methods, start=0):
+                par = benchmark_methods_parameters[count]
+                mfts = model(str(par if par is not None else ""))
+                mfts.order = par
+                pool.append(mfts)
+
+    if type == 'point':
+        experiment_method = run_point
+        synthesis_method = process_point_jobs
+    elif type == 'interval':
+        experiment_method = run_interval
+        synthesis_method = process_interval_jobs
+    elif type == 'distribution':
+        experiment_method = run_probabilistic
+        synthesis_method = process_probabilistic_jobs
+
+    if distributed:
+        import dispy, dispy.httpd
+
+        nodes = kwargs.get("nodes", ['127.0.0.1'])
+        cluster, http_server = cUtil.start_dispy_cluster(experiment_method, nodes)
+
+    experiments = 0
+    jobs = []
+
+    if progress:
+        from tqdm import tqdm
+        progressbar = tqdm(total=len(data), desc="Sliding Window:")
+
+    inc = __pop("inc", 0.1, kwargs)
+
+    for ct, train, test in cUtil.sliding_window(data, windowsize, train, inc=inc, **kwargs):
+        experiments += 1
+
+        if progress:
+            progressbar.update(windowsize * inc)
+
+        partitioners_pool = []
+
+        if partitioners_models is None:
+
+            for partition in partitions:
+
+                for partitioner in partitioners_methods:
+
+                    data_train_fs = partitioner(data=train, npart=partition, transformation=transformation)
+
+                    partitioners_pool.append(data_train_fs)
+        else:
+            partitioners_pool = partitioners_models
+
+        rng1 = partitioners_pool
+
+        if progress:
+            rng1 = tqdm(partitioners_pool, desc="Partitioners")
+
+        for partitioner in rng1:
+
+            rng2 = enumerate(pool,start=0)
+
+            if progress:
+                rng2 = enumerate(tqdm(pool, desc="Models"),start=0)
+
+            for _id, model in rng2:
+
+                if not distributed:
+                    job = experiment_method(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
+                    jobs.append(job)
+                else:
+                    job = cluster.submit(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
+                    job.id = id  # associate an ID to identify jobs (if needed later)
+                    jobs.append(job)
+
+    if progress:
+        progressbar.close()
+
+    if distributed:
+        jobs2 = []
+
+        rng = jobs
+
+        cluster.wait()  # wait for all jobs to finish
+
+        if progress:
+            rng = tqdm(jobs)
+
+        for job in rng:
+            if job.status == dispy.DispyJob.Finished and job is not None:
+                tmp = job()
+                jobs2.append(tmp)
+
+        jobs = deepcopy(jobs2)
+
+        cUtil.stop_dispy_cluster(cluster, http_server)
+
+    file = kwargs.get('file', None)
+    sintetic = kwargs.get('sintetic', False)
+
+    return synthesis_method(jobs, experiments, save, file, sintetic)
 
 
 def get_benchmark_point_methods():
@@ -64,12 +252,17 @@ def get_interval_methods():
 
 def get_probabilistic_methods():
     """Return all FTS methods for probabilistic forecasting"""
-    return [arima.ARIMA, ensemble.AllMethodEnsembleFTS, pwfts.ProbabilisticWeightedFTS]
+    return [ensemble.AllMethodEnsembleFTS, pwfts.ProbabilisticWeightedFTS]
 
 
-def run_point(mfts, partitioner, train_data, test_data, window_key=None, transformation=None, indexer=None):
+def get_benchmark_probabilistic_methods():
+    """Return all FTS methods for probabilistic forecasting"""
+    return [arima.ARIMA, quantreg.QuantileRegression]
+
+
+def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
     """
-    Point forecast benchmark function to be executed on sliding window
+    Point forecast benchmark function to be executed on cluster nodes
     :param mfts: FTS model
     :param partitioner: Universe of Discourse partitioner
     :param train_data: data used to train the model
@@ -77,8 +270,28 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
     :param window_key: id of the sliding window
     :param transformation: data transformation
     :param indexer: seasonal indexer
-    :return: a dictionary with the benchmark results 
+    :return: a dictionary with the benchmark results
     """
+    import time
+    from pyFTS.models import yu, chen, hofts, pwfts,ismailefendi,sadaei, song, cheng, hwang
+    from pyFTS.partitioners import Grid, Entropy, FCM
+    from pyFTS.benchmarks import Measures, naive, arima, quantreg
+    from pyFTS.common import Transformations
+
+    tmp = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+           cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
+           pwfts.ProbabilisticWeightedFTS]
+
+    tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
+
+    tmp4 = [naive.Naive, arima.ARIMA, quantreg.QuantileRegression]
+
+    tmp3 = [Measures.get_point_statistics]
+
+    tmp5 = [Transformations.Differential]
+
+    transformation = kwargs.get('transformation', None)
+    indexer = kwargs.get('indexer', None)
 
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "")
@@ -86,16 +299,17 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
         mfts.partitioner = partitioner
-        if transformation is not None:
-            mfts.append_transformation(transformation)
+
+    if transformation is not None:
+        mfts.append_transformation(transformation)
 
     _start = time.time()
-    mfts.train(train_data, sets=partitioner.sets, order=mfts.order)
+    mfts.fit(train_data, order=mfts.order, **kwargs)
     _end = time.time()
     times = _end - _start
 
     _start = time.time()
-    _rmse, _smape, _u = Measures.get_point_statistics(test_data, mfts, indexer)
+    _rmse, _smape, _u = Measures.get_point_statistics(test_data, mfts, **kwargs)
     _end = time.time()
     times += _end - _start
 
@@ -104,113 +318,120 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, transfo
     return ret
 
 
-def point_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
-                         partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
-                         benchmark_models=None, benchmark_models_parameters = None,
-                         save=False, file=None, sintetic=False):
+def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
     """
-    Sliding window benchmarks for FTS point forecasters
-    :param data: 
-    :param windowsize: size of sliding window
-    :param train: percentual of sliding window data used to train the models
-    :param models: FTS point forecasters
-    :param partitioners: Universe of Discourse partitioner
-    :param partitions: the max number of partitions on the Universe of Discourse 
-    :param max_order: the max order of the models (for high order models)
+    Interval forecast benchmark function to be executed on cluster nodes
+    :param mfts: FTS model
+    :param partitioner: Universe of Discourse partitioner
+    :param train_data: data used to train the model
+    :param test_data: ata used to test the model
+    :param window_key: id of the sliding window
     :param transformation: data transformation
     :param indexer: seasonal indexer
-    :param dump: 
-    :param benchmark_models: Non FTS models to benchmark
-    :param benchmark_models_parameters: Non FTS models parameters
-    :param save: save results
-    :param file: file path to save the results
-    :param sintetic: if true only the average and standard deviation of the results
-    :return: DataFrame with the results
+    :return: a dictionary with the benchmark results
     """
+    import time
+    from pyFTS.models import hofts,ifts,pwfts
+    from pyFTS.partitioners import Grid, Entropy, FCM
+    from pyFTS.benchmarks import Measures, arima, quantreg
 
-    if benchmark_models is None: # and models is None:
-        benchmark_models = [naive.Naive, arima.ARIMA, arima.ARIMA, arima.ARIMA, arima.ARIMA,
-                            quantreg.QuantileRegression, quantreg.QuantileRegression]
+    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS,  pwfts.ProbabilisticWeightedFTS]
 
-    if benchmark_models_parameters is None:
-        benchmark_models_parameters = [1, (1, 0, 0), (1, 0, 1), (2, 0, 1), (2, 0, 2), 1, 2]
+    tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
 
-    _process_start = time.time()
+    tmp4 = [arima.ARIMA, quantreg.QuantileRegression]
 
-    print("Process Start: {0: %H:%M:%S}".format(datetime.datetime.now()))
+    tmp3 = [Measures.get_interval_statistics]
 
-    pool = []
-    jobs = []
-    objs = {}
-    rmse = {}
-    smape = {}
-    u = {}
-    times = {}
+    transformation = kwargs.get('transformation', None)
+    indexer = kwargs.get('indexer', None)
 
-    if models is None:
-        models = get_point_methods()
+    if mfts.benchmark_only:
+        _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
+    else:
+        pttr = str(partitioner.__module__).split('.')[-1]
+        _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
+        mfts.partitioner = partitioner
 
-    for model in models:
-        mfts = model("")
+    if transformation is not None:
+        mfts.append_transformation(transformation)
 
-        if mfts.is_high_order:
-            for order in np.arange(1, max_order + 1):
-                if order >= mfts.min_order:
-                    mfts = model("")
-                    mfts.order = order
-                    pool.append(mfts)
-        else:
-            mfts.order = 1
-            pool.append(mfts)
+    _start = time.time()
+    mfts.fit(train_data, order=mfts.order, **kwargs)
+    _end = time.time()
+    times = _end - _start
 
-    if benchmark_models is not None:
-        for count, model in enumerate(benchmark_models, start=0):
-            par = benchmark_models_parameters[count]
-            mfts = model(str(par if par is not None else ""))
-            mfts.order = par
-            pool.append(mfts)
+    _start = time.time()
+    _sharp, _res, _cov, _q05, _q25, _q75, _q95 = Measures.get_interval_statistics(test_data, mfts, **kwargs)
+    _end = time.time()
+    times += _end - _start
 
-    experiments = 0
-    for ct, train, test in Util.sliding_window(data, windowsize, train):
-        experiments += 1
+    ret = {'key': _key, 'obj': mfts, 'sharpness': _sharp, 'resolution': _res, 'coverage': _cov, 'time': times,
+           'Q05': _q05, 'Q25': _q25, 'Q75': _q75, 'Q95': _q95, 'window': window_key}
 
-        benchmarks_only = {}
+    return ret
 
-        if dump: print('\nWindow: {0}\n'.format(ct))
 
-        for partition in partitions:
+def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
+    """
+    Probabilistic forecast benchmark function to be executed on cluster nodes
+    :param mfts: FTS model
+    :param partitioner: Universe of Discourse partitioner
+    :param train_data: data used to train the model
+    :param test_data: ata used to test the model
+    :param steps:
+    :param resolution:
+    :param window_key: id of the sliding window
+    :param transformation: data transformation
+    :param indexer: seasonal indexer
+    :return: a dictionary with the benchmark results
+    """
+    import time
+    import numpy as np
+    from pyFTS.models import hofts, ifts, pwfts
+    from pyFTS.models.ensemble import ensemble
+    from pyFTS.partitioners import Grid, Entropy, FCM
+    from pyFTS.benchmarks import Measures, arima
+    from pyFTS.models.seasonal import SeasonalIndexer
 
-            for partitioner in partitioners:
+    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA, ensemble.AllMethodEnsembleFTS]
 
-                data_train_fs = partitioner(data=train, npart=partition, transformation=transformation)
+    tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
 
-                for _id, m in enumerate(pool,start=0):
-                    if m.benchmark_only and m.shortname in benchmarks_only:
-                        continue
-                    else:
-                        benchmarks_only[m.shortname] = m
+    tmp3 = [Measures.get_distribution_statistics, SeasonalIndexer.SeasonalIndexer, SeasonalIndexer.LinearSeasonalIndexer]
 
-                    tmp = run_point(deepcopy(m), data_train_fs, train, test, ct, transformation)
+    transformation = kwargs.get('transformation', None)
+    indexer = kwargs.get('indexer', None)
 
-                    if tmp['key'] not in objs:
-                        objs[tmp['key']] = tmp['obj']
-                        rmse[tmp['key']] = []
-                        smape[tmp['key']] = []
-                        u[tmp['key']] = []
-                        times[tmp['key']] = []
-                    rmse[tmp['key']].append_rhs(tmp['rmse'])
-                    smape[tmp['key']].append_rhs(tmp['smape'])
-                    u[tmp['key']].append_rhs(tmp['u'])
-                    times[tmp['key']].append_rhs(tmp['time'])
-                    print(tmp['key'], tmp['window'])
+    if mfts.benchmark_only:
+        _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
+    else:
+        pttr = str(partitioner.__module__).split('.')[-1]
+        _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
+        mfts.partitioner = partitioner
 
-    _process_end = time.time()
+    if transformation is not None:
+        mfts.append_transformation(transformation)
 
-    print("Process End: {0: %H:%M:%S}".format(datetime.datetime.now()))
+    if mfts.has_seasonality:
+        mfts.indexer = indexer
 
-    print("Process Duration: {0}".format(_process_end - _process_start))
+    try:
+        _start = time.time()
+        mfts.fit(train_data, order=mfts.order)
+        _end = time.time()
+        times = _end - _start
 
-    return bUtil.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
+        _crps1, _t1 = Measures.get_distribution_statistics(test_data, mfts, **kwargs)
+        _t1 += times
+    except Exception as e:
+        print(e)
+        _crps1 = np.nan
+        _t1 = np.nan
+
+    ret = {'key': _key, 'obj': mfts, 'CRPS': _crps1, 'time': _t1, 'window': window_key}
+
+    return ret
 
 
 def build_model_pool_point(models, max_order, benchmark_models, benchmark_models_parameters):
@@ -239,71 +460,84 @@ def build_model_pool_point(models, max_order, benchmark_models, benchmark_models
     return pool
 
 
-def all_point_forecasters(data_train, data_test, partitions, max_order=3, statistics=True, residuals=True,
-                        series=True, save=False, file=None, tam=[20, 5], models=None, transformation=None,
-                        distributions=False, benchmark_models=None, benchmark_models_parameters=None):
-    """
-    Fixed data benchmark for FTS point forecasters
-    :param data_train: data used to train the models
-    :param data_test: data used to test the models
-    :param partitions: the max number of partitions on the Universe of Discourse 
-    :param max_order: the max order of the models (for high order models)
-    :param statistics: print statistics
-    :param residuals: print and plot residuals
-    :param series: plot time series
-    :param save: save results
-    :param file: file path to save the results
-    :param tam: figure dimensions to plot the graphs 
-    :param models: list of models to benchmark
-    :param transformation: data transformation
-    :param distributions: plot distributions
-    :return: 
-    """
-    models = build_model_pool_point(models, max_order, benchmark_models, benchmark_models_parameters)
+def process_point_jobs(jobs, experiments, save=False, file=None, sintetic=False):
+    objs = {}
+    rmse = {}
+    smape = {}
+    u = {}
+    times = {}
 
-    objs = []
+    for job in jobs:
+        _key = job['key']
+        if _key not in objs:
+            objs[_key] = job['obj']
+            rmse[_key] = []
+            smape[_key] = []
+            u[_key] = []
+            times[_key] = []
+        rmse[_key].append(job['rmse'])
+        smape[_key].append(job['smape'])
+        u[_key].append(job['u'])
+        times[_key].append(job['time'])
 
-    data_train_fs = Grid.GridPartitioner(data=data_train, npart=partitions, transformation=transformation)
+    return bUtil.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
 
-    count = 1
 
-    lcolors = []
+def process_interval_jobs(jobs, experiments, save=False, file=None, sintetic=False):
+    objs = {}
+    sharpness = {}
+    resolution = {}
+    coverage = {}
+    q05 = {}
+    q25 = {}
+    q75 = {}
+    q95 = {}
+    times = {}
 
-    for count, model in enumerate(models, start=0):
-        #print(model)
-        if transformation is not None:
-            model.append_transformation(transformation)
-        model.train(data_train, sets=data_train_fs.sets, order=model.order)
-        objs.append(model)
-        lcolors.append( colors[count % ncol] )
+    for job in jobs:
+        _key = job['key']
+        if _key not in objs:
+            objs[_key] = job['obj']
+            sharpness[_key] = []
+            resolution[_key] = []
+            coverage[_key] = []
+            times[_key] = []
+            q05[_key] = []
+            q25[_key] = []
+            q75[_key] = []
+            q95[_key] = []
 
-    if statistics:
-        print_point_statistics(data_test, objs)
+        sharpness[_key].append(job['sharpness'])
+        resolution[_key].append(job['resolution'])
+        coverage[_key].append(job['coverage'])
+        times[_key].append(job['time'])
+        q05[_key].append(job['Q05'])
+        q25[_key].append(job['Q25'])
+        q75[_key].append(job['Q75'])
+        q95[_key].append(job['Q95'])
 
-    if residuals:
-        print(ResidualAnalysis.compare_residuals(data_test, objs))
-        ResidualAnalysis.plot_residuals(data_test, objs, save=save, file=file, tam=tam)
 
-    if series:
-        plot_compared_series(data_test, objs, lcolors, typeonlegend=False, save=save, file=file, tam=tam,
-                             intervals=False)
+    return bUtil.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic,
+                                         times, q05, q25, q75, q95)
 
-    if distributions:
-        lcolors.insert(0,'black')
-        pmfs = []
-        pmfs.append(
-            ProbabilityDistribution.ProbabilityDistribution("Original", 100, [min(data_test), max(data_test)], data=data_test) )
 
-        for m in objs:
-            forecasts = m.forecast(data_test)
-            pmfs.append(
-                ProbabilityDistribution.ProbabilityDistribution(m.shortname, 100, [min(data_test), max(data_test)],
-                                                                data=forecasts))
-        print(getProbabilityDistributionStatistics(pmfs,data_test))
+def process_probabilistic_jobs(jobs, experiments, save=False, file=None, sintetic=False):
+    objs = {}
+    crps = {}
+    times = {}
 
-        plot_probability_distributions(pmfs, lcolors, tam=tam)
+    for job in jobs:
+        _key = job['key']
+        if _key not in objs:
+            objs[_key] = job['obj']
+            crps[_key] = []
+            times[_key] = []
 
-    return models
+        crps[_key].append(job['CRPS'])
+        times[_key].append(job['time'])
+
+    return bUtil.save_dataframe_probabilistic(experiments, file, objs, crps, times, save, sintetic)
+
 
 
 def print_point_statistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
@@ -330,163 +564,6 @@ def print_point_statistics(data, models, externalmodels = None, externalforecast
 
 
 
-def getProbabilityDistributionStatistics(pmfs, data):
-    ret = "Model		& Entropy     & Empirical Likelihood		&  Pseudo Likelihood		\\\\ \n"
-    for k in pmfs:
-        ret += k.name + "		& "
-        ret += str(k.entropy()) + "		& "
-        ret += str(k.empiricalloglikelihood())+ "		& "
-        ret += str(k.pseudologlikelihood(data))
-        ret += "	\\\\ \n"
-    return ret
-
-
-
-def interval_sliding_window(data, windowsize, train=0.8, models=None, partitioners=[Grid.GridPartitioner],
-                            partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
-                            save=False, file=None, synthetic=True):
-    if models is None:
-        models = get_interval_methods()
-
-    objs = {}
-    lcolors = {}
-    sharpness = {}
-    resolution = {}
-    coverage = {}
-    times = {}
-
-    experiments = 0
-    for ct, training,test in Util.sliding_window(data, windowsize, train):
-        experiments += 1
-        for partition in partitions:
-            for partitioner in partitioners:
-                pttr = str(partitioner.__module__).split('.')[-1]
-                data_train_fs = partitioner(data=training, npart=partition, transformation=transformation)
-
-                for count, model in enumerate(models, start=0):
-
-                    mfts = model("")
-                    _key = mfts.shortname + " " + pttr+ " q = " +str(partition)
-
-                    mfts.partitioner = data_train_fs
-                    if not mfts.is_high_order:
-
-                        if dump: print(ct,_key)
-
-                        if _key not in objs:
-                            objs[_key] = mfts
-                            lcolors[_key] = colors[count % ncol]
-                            sharpness[_key] = []
-                            resolution[_key] = []
-                            coverage[_key] = []
-                            times[_key] = []
-
-                        if transformation is not None:
-                            mfts.append_transformation(transformation)
-
-                        _start = time.time()
-                        mfts.train(training, sets=data_train_fs.sets)
-                        _end = time.time()
-                        _tdiff = _end - _start
-
-                        _start = time.time()
-                        _sharp, _res, _cov = Measures.get_interval_statistics(test, mfts)
-                        _end = time.time()
-                        _tdiff += _end - _start
-                        sharpness[_key].append_rhs(_sharp)
-                        resolution[_key].append_rhs(_res)
-                        coverage[_key].append_rhs(_cov)
-                        times[_key].append_rhs(_tdiff)
-
-                    else:
-                        for order in np.arange(1, max_order + 1):
-                            if order >= mfts.min_order:
-                                mfts = model("")
-                                _key = mfts.shortname + " n = " + str(order) + " " + pttr + " q = " + str(partition)
-                                mfts.partitioner = data_train_fs
-
-                                if dump: print(ct,_key)
-
-                                if _key not in objs:
-                                    objs[_key] = mfts
-                                    lcolors[_key] = colors[count % ncol]
-                                    sharpness[_key] = []
-                                    resolution[_key] = []
-                                    coverage[_key] = []
-                                    times[_key] = []
-
-                                if transformation is not None:
-                                    mfts.append_transformation(transformation)
-
-                                _start = time.time()
-                                mfts.train(training, sets=data_train_fs.sets, order=order)
-                                _end = time.time()
-
-                                _tdiff = _end - _start
-
-                                _start = time.time()
-                                _sharp, _res, _cov = Measures.get_interval_statistics(test, mfts)
-                                _end = time.time()
-                                _tdiff += _end - _start
-                                sharpness[_key].append_rhs(_sharp)
-                                resolution[_key].append_rhs(_res)
-                                coverage[_key].append_rhs(_cov)
-                                times[_key].append_rhs(_tdiff)
-
-    return bUtil.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times)
-
-
-def build_model_pool_interval(models, max_order, benchmark_models, benchmark_models_parameters):
-    pool = []
-    if models is None:
-        models = get_interval_methods()
-    for model in models:
-        mfts = model("")
-
-        if mfts.is_high_order:
-            for order in np.arange(1, max_order + 1):
-                if order >= mfts.min_order:
-                    mfts = model("")
-                    mfts.order = order
-                    pool.append(mfts)
-        else:
-            mfts.order = 1
-            pool.append(mfts)
-    alphas = [0.05, 0.25]
-    if benchmark_models is not None:
-        for count, model in enumerate(benchmark_models, start=0):
-            par = benchmark_models_parameters[count]
-            for alpha in alphas:
-                mfts = model(str(alpha), alpha=alpha)
-                mfts.order = par
-                pool.append(mfts)
-    return pool
-
-
-def all_interval_forecasters(data_train, data_test, partitions, max_order=3,save=False, file=None, tam=[20, 5],
-                             statistics=False, models=None, transformation=None,
-                             benchmark_models=None, benchmark_models_parameters=None):
-    models = build_model_pool_interval(models, max_order, benchmark_models, benchmark_models_parameters)
-
-    data_train_fs = Grid.GridPartitioner(data=data_train, npart=partitions, transformation=transformation).sets
-
-    lcolors = []
-    objs = []
-
-    for count, model in Util.enumerate2(models, start=0, step=2):
-        if transformation is not None:
-            model.append_transformation(transformation)
-            model.train(data_train, sets=data_train_fs, order=model.order)
-        objs.append(model)
-        lcolors.append( colors[count % ncol] )
-
-    if statistics:
-        print_interval_statistics(data_test, objs)
-
-    plot_compared_series(data_test, objs, lcolors, typeonlegend=False, save=save, file=file, tam=tam,
-                         points=False, intervals=True)
-
-
 def print_interval_statistics(original, models):
     ret = "Model	& Order     & Sharpness		& Resolution		& Coverage & .05  & .25 & .75 & .95	\\\\ \n"
     for fts in models:
@@ -503,6 +580,7 @@ def print_interval_statistics(original, models):
     print(ret)
 
 
+
 def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False, ls='-', linewidth=1):
     lower = [kk[0] for kk in intervals]
     upper = [kk[1] for kk in intervals]
@@ -515,6 +593,7 @@ def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False
     axis.plot(lower, color=color, label=label, ls=ls,linewidth=linewidth)
     axis.plot(upper, color=color, ls=ls,linewidth=linewidth)
     return [mi, ma]
+
 
 
 def plot_compared_series(original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5],
@@ -596,6 +675,7 @@ def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
     ax.legend(handles0, labels0)
 
 
+
 def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution = None, partitioners=[Grid.GridPartitioner],
                          partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
                          save=False, file=None, synthetic=False):
@@ -610,7 +690,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
     times2 = {}
 
     experiments = 0
-    for ct, train,test in Util.sliding_window(data, windowsize, train):
+    for ct, train,test in cUtil.sliding_window(data, windowsize, train):
         experiments += 1
         for partition in partitions:
             for partitioner in partitioners:
@@ -692,6 +772,7 @@ def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution
     return bUtil.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, synthetic)
 
 
+
 def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resolution = None, max_order=3,save=False, file=None, tam=[20, 5],
                            models=None, transformation=None, option=2):
     if models is None:
@@ -704,7 +785,7 @@ def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resol
     data_train_fs = Grid.GridPartitioner(data=data_train, npart=partitions, transformation=transformation).sets
     lcolors = []
 
-    for count, model in Util.enumerate2(models, start=0, step=2):
+    for count, model in cUtil.enumerate2(models, start=0, step=2):
         mfts = model("")
         if not mfts.is_high_order:
             if transformation is not None:
@@ -744,6 +825,7 @@ def print_distribution_statistics(original, models, steps, resolution):
         ret += str(_crps1) + "		& "
         ret += str(_crps2) + "	\\\\ \n"
     print(ret)
+
 
 
 def plot_compared_intervals_ahead(original, models, colors, distributions, time_from, time_to, intervals = True,
@@ -820,7 +902,8 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
 
-    Util.show_and_save_image(fig, file, save, lgd=lgd)
+    cUtil.show_and_save_image(fig, file, save, lgd=lgd)
+
 
 
 def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to):
@@ -843,6 +926,7 @@ def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to
 
 
 from pyFTS.common import Transformations
+
 
 
 def plot_probabilitydistribution_density(ax, cmap, probabilitydist, fig, time_from):
@@ -1102,85 +1186,10 @@ def simpleSearch_RMSE(train, test, model, partitions, orders, save=False, file=N
 
     # plt.tight_layout()
 
-    Util.show_and_save_image(fig, file, save)
+    cUtil.show_and_save_image(fig, file, save)
 
     return ret
 
-
-def sliding_window_simple_search(data, windowsize, model, partitions, orders, save=False, file=None, tam=[10, 15],
-                                 plotforecasts=False, elev=30, azim=144, intervals=False, parameters=None):
-    _3d = len(orders) > 1
-    ret = []
-    errors = np.array([[0 for k in range(len(partitions))] for kk in range(len(orders))])
-    forecasted_best = []
-    fig = plt.figure(figsize=tam)
-    # fig.suptitle("Comparação de modelos ")
-    if plotforecasts:
-        ax0 = fig.add_axes([0, 0.4, 0.9, 0.5])  # left, bottom, width, height
-        ax0.set_xlim([0, len(data)])
-        ax0.set_ylim([min(data) * 0.9, max(data) * 1.1])
-        ax0.set_title('Forecasts')
-        ax0.set_ylabel('F(T)')
-        ax0.set_xlabel('T')
-    min_rmse = 1000000.0
-    best = None
-
-    for pc, p in enumerate(partitions, start=0):
-
-        sets = Grid.GridPartitioner(data=data, npart=p).sets
-        for oc, o in enumerate(orders, start=0):
-            _error = []
-            for ct, train, test in Util.sliding_window(data, windowsize, 0.8):
-                fts = model("q = " + str(p) + " n = " + str(o))
-                fts.train(data, sets=sets, order=o, parameters=parameters)
-                if not intervals:
-                    forecasted = fts.forecast(test)
-                    if not fts.has_seasonality:
-                        _error.append( Measures.rmse(np.array(test[o:]), np.array(forecasted[:-1])) )
-                    else:
-                        _error.append( Measures.rmse(np.array(test[o:]), np.array(forecasted)) )
-                    for kk in range(o):
-                        forecasted.insert(0, None)
-                    if plotforecasts: ax0.plot(forecasted, label=fts.name)
-                else:
-                    forecasted = fts.forecast_interval(test)
-                    _error.append( 1.0 - Measures.rmse_interval(np.array(test[o:]), np.array(forecasted[:-1])) )
-            error = np.nanmean(_error)
-            errors[oc, pc] = error
-            if error < min_rmse:
-                min_rmse = error
-                best = fts
-                forecasted_best = forecasted
-
-    # print(min_rmse)
-    if plotforecasts:
-        # handles0, labels0 = ax0.get_legend_handles_labels()
-        # ax0.legend(handles0, labels0)
-        ax0.plot(test, label="Original", linewidth=3.0, color="black")
-        if _3d: ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
-    if not plotforecasts: ax1 = Axes3D(fig, rect=[0, 1, 0.9, 0.9], elev=elev, azim=azim)
-    # ax1 = fig.add_axes([0.6, 0.5, 0.45, 0.45], projection='3d')
-    if _3d:
-        ax1.set_title('Error Surface')
-        ax1.set_ylabel('Model order')
-        ax1.set_xlabel('Number of partitions')
-        ax1.set_zlabel('RMSE')
-        X, Y = np.meshgrid(partitions, orders)
-        surf = ax1.plot_surface(X, Y, errors, rstride=1, cstride=1, antialiased=True)
-    else:
-        ax1 = fig.add_axes([0, 1, 0.9, 0.9])
-        ax1.set_title('Error Curve')
-        ax1.set_ylabel('Number of partitions')
-        ax1.set_xlabel('RMSE')
-        ax0.plot(errors,partitions)
-    ret.append(best)
-    ret.append(forecasted_best)
-
-    # plt.tight_layout()
-
-    Util.show_and_save_image(fig, file, save)
-
-    return ret
 
 
 def pftsExploreOrderAndPartitions(data,save=False, file=None):
@@ -1242,5 +1251,5 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
 
     plt.tight_layout()
 
-    Util.show_and_save_image(fig, file, save)
+    cUtil.show_and_save_image(fig, file, save)
 

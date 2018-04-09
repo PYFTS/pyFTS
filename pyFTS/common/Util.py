@@ -1,4 +1,5 @@
 import time
+import numba
 import matplotlib.pyplot as plt
 import dill
 import numpy as np
@@ -13,6 +14,7 @@ def uniquefilename(name):
         return  tmp[0] + str(current_milli_time()) + '.' + tmp[1]
     else:
         return name + str(current_milli_time())
+
 
 
 def show_and_save_image(fig, file, flag, lgd=None):
@@ -38,7 +40,7 @@ def enumerate2(xs, start=0, step=1):
         start += step
 
 
-def sliding_window(data, windowsize, train=0.8, inc=0.1):
+def sliding_window(data, windowsize, train=0.8, inc=0.1, **kwargs):
     """
     Sliding window method of cross validation for time series
     :param data: the entire dataset
@@ -50,7 +52,16 @@ def sliding_window(data, windowsize, train=0.8, inc=0.1):
     l = len(data)
     ttrain = int(round(windowsize * train, 0))
     ic = int(round(windowsize * inc, 0))
-    for count in np.arange(0,l-windowsize+ic,ic):
+
+    progressbar = kwargs.get('progress', None)
+
+    rng = np.arange(0,l-windowsize+ic,ic)
+
+    if progressbar:
+        from tqdm import tqdm
+        rng = tqdm(rng)
+
+    for count in rng:
         if count + windowsize > l:
             _end = l
         else:
@@ -91,9 +102,32 @@ def load_env(file):
     dill.load_session(file)
 
 
+
+def start_dispy_cluster(method, nodes):
+    import dispy, dispy.httpd, logging
+
+    cluster = dispy.JobCluster(method, nodes=nodes, loglevel=logging.DEBUG, ping_interval=1000)
+
+    http_server = dispy.httpd.DispyHTTPServer(cluster)
+
+    return cluster, http_server
+
+
+
+def stop_dispy_cluster(cluster, http_server):
+    cluster.wait()  # wait for all jobs to finish
+
+    cluster.print_status()
+
+    http_server.shutdown()  # this waits until browser gets all updates
+    cluster.close()
+
+
+
 def simple_model_train(model, data, parameters):
     model.train(data, **parameters)
     return model
+
 
 
 def distributed_train(model, train_method, nodes, fts_method, data, num_batches=10,
@@ -106,9 +140,7 @@ def distributed_train(model, train_method, nodes, fts_method, data, num_batches=
 
     file_path = kwargs.get('file_path', None)
 
-    cluster = dispy.JobCluster(train_method, nodes=nodes)  # , depends=dependencies)
-
-    http_server = dispy.httpd.DispyHTTPServer(cluster)
+    cluster, http_server = start_dispy_cluster(train_method, nodes)
 
     print("[{0: %H:%M:%S}] Distrituted Train Started".format(datetime.datetime.now()))
 
@@ -149,26 +181,21 @@ def distributed_train(model, train_method, nodes, fts_method, data, num_batches=
 
     print("[{0: %H:%M:%S}] Distrituted Train Finished".format(datetime.datetime.now()))
 
-    cluster.wait()  # wait for all jobs to finish
-
-    cluster.print_status()
-
-    http_server.shutdown()  # this waits until browser gets all updates
-    cluster.close()
+    stop_dispy_cluster(cluster, http_server)
 
     return model
+
 
 
 def simple_model_predict(model, data, parameters):
     return model.predict(data, **parameters)
 
 
+
 def distributed_predict(model, parameters, nodes, data, num_batches):
     import dispy, dispy.httpd
 
-    cluster = dispy.JobCluster(simple_model_predict, nodes=nodes)  # , depends=dependencies)
-
-    http_server = dispy.httpd.DispyHTTPServer(cluster)
+    cluster, http_server = start_dispy_cluster(simple_model_predict, nodes)
 
     jobs = []
     n = len(data)
@@ -199,11 +226,6 @@ def distributed_predict(model, parameters, nodes, data, num_batches):
             print(job.exception)
             print(job.stdout)
 
-    cluster.wait()  # wait for all jobs to finish
-
-    cluster.print_status()
-
-    http_server.shutdown()  # this waits until browser gets all updates
-    cluster.close()
+    stop_dispy_cluster(cluster, http_server)
 
     return ret

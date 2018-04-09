@@ -201,8 +201,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         if flrg.get_key() in self.flrgs:
             return self.flrgs[flrg.get_key()].frequency_count / self.global_frequency_count
         else:
-            self.add_new_PWFLGR(flrg)
-            return self.flrg_lhs_unconditional_probability(flrg)
+            return 0.0
+            #self.add_new_PWFLGR(flrg)
+            #return self.flrg_lhs_unconditional_probability(flrg)
 
     def flrg_lhs_conditional_probability(self, x, flrg):
         mv = flrg.get_membership(x, self.sets)
@@ -214,8 +215,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             tmp = self.flrgs[flrg.get_key()]
             ret = tmp.get_midpoint(self.sets) #sum(np.array([tmp.rhs_unconditional_probability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
         else:
-            pi = 1 / len(flrg.LHS)
-            ret = sum(np.array([pi * self.sets[s].centroid for s in flrg.LHS]))
+            if len(flrg.LHS) > 0:
+                pi = 1 / len(flrg.LHS)
+                ret = sum(np.array([pi * self.sets[s].centroid for s in flrg.LHS]))
+            else:
+                ret = np.nan
         return ret
 
     def flrg_rhs_conditional_probability(self, x, flrg):
@@ -241,8 +245,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             tmp = self.flrgs[flrg.get_key()]
             ret = tmp.get_upper(self.sets)
         else:
-            pi = 1 / len(flrg.LHS)
-            ret = sum(np.array([pi * self.sets[s].upper for s in flrg.LHS]))
+            ret = 0
         return ret
 
     def get_lower(self, flrg):
@@ -250,8 +253,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             tmp = self.flrgs[flrg.get_key()]
             ret = tmp.get_lower(self.sets)
         else:
-            pi = 1 / len(flrg.LHS)
-            ret = sum(np.array([pi * self.sets[s].lower for s in flrg.LHS]))
+            ret = 0
         return ret
 
     def forecast(self, data, **kwargs):
@@ -322,92 +324,31 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         ret.append_rhs([lo_qt, up_qt])
 
     def interval_extremum(self, k, ndata, ret):
-        affected_flrgs = []
-        affected_flrgs_memberships = []
-        norms = []
+
+        sample = ndata[k - (self.order - 1): k + 1]
+
+        flrgs = self.generate_lhs_flrg(sample)
+
         up = []
         lo = []
-        # Find the sets which membership > 0 for each lag
-        count = 0
-        lags = {}
-        if self.order > 1:
-            subset = ndata[k - (self.order - 1): k + 1]
-
-            for instance in subset:
-                mb = FuzzySet.fuzzyfy_instance(instance, self.sets)
-                tmp = np.argwhere(mb)
-                idx = np.ravel(tmp)  # flatten the array
-
-                if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                    if math.isclose(instance, self.sets[0].lower) or instance < self.sets[0].lower:
-                        idx = [0]
-                    elif math.isclose(instance, self.sets[-1].upper) or instance > self.sets[-1].upper:
-                        idx = [len(self.sets) - 1]
-                    else:
-                        raise Exception("Data exceed the known bounds [%s, %s] of universe of discourse: %s" %
-                                        (self.sets[0].lower, self.sets[-1].upper, instance))
-
-                lags[count] = idx
-                count += 1
-
-            # Build the tree with all possible paths
-
-            root = tree.FLRGTreeNode(None)
-
-            self.build_tree(root, lags, 0)
-
-            # Trace the possible paths and build the PFLRG's
-
-            for p in root.paths():
-                path = list(reversed(list(filter(None.__ne__, p))))
-                flrg = hofts.HighOrderFLRG(self.order)
-                for kk in path: flrg.append_lhs(self.sets[kk])
-
-                assert len(flrg.LHS) == subset.size, str(subset) + " -> " + str([s.name for s in flrg.LHS])
-
-                ##
-                affected_flrgs.append(flrg)
-
-                # Find the general membership of FLRG
-                affected_flrgs_memberships.append(min(self.get_sequence_membership(subset, flrg.LHS)))
-
-        else:
-
-            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)  # get all membership values
-            tmp = np.argwhere(mv)  # get the indices of values > 0
-            idx = np.ravel(tmp)  # flatten the array
-
-            if idx.size == 0:  # the element is out of the bounds of the Universe of Discourse
-                if math.isclose(ndata[k], self.sets[0].lower) or ndata[k] < self.sets[0].lower:
-                    idx = [0]
-                elif math.isclose(ndata[k], self.sets[-1].upper) or ndata[k] > self.sets[-1].upper:
-                    idx = [len(self.sets) - 1]
-                else:
-                    raise Exception("Data exceed the known bounds [%s, %s] of universe of discourse: %s" %
-                                    (self.sets[0].lower, self.sets[-1].upper, ndata[k]))
-
-            for kk in idx:
-                flrg = hofts.HighOrderFLRG(self.order)
-                flrg.append_lhs(self.sets[kk])
-                affected_flrgs.append(flrg)
-                affected_flrgs_memberships.append(mv[kk])
-        for count, flrg in enumerate(affected_flrgs):
-            # achar o os bounds de cada FLRG, ponderados pela probabilidade e pertinência
-            norm = self.flrg_lhs_unconditional_probability(flrg) * affected_flrgs_memberships[count]
+        norms = []
+        for flrg in flrgs:
+            norm = self.flrg_lhs_conditional_probability(sample, flrg)
             if norm == 0:
                 norm = self.flrg_lhs_unconditional_probability(flrg)  # * 0.001
             up.append(norm * self.get_upper(flrg))
             lo.append(norm * self.get_lower(flrg))
             norms.append(norm)
 
-        # gerar o intervalo
+            # gerar o intervalo
         norm = sum(norms)
         if norm == 0:
-            ret.append_rhs([0, 0])
+            ret.append([0, 0])
         else:
             lo_ = sum(lo) / norm
             up_ = sum(up) / norm
-            ret.append_rhs([lo_, up_])
+            ret.append([lo_, up_])
+
 
     def forecast_distribution(self, data, **kwargs):
 
@@ -415,15 +356,18 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             data = [data]
 
         smooth = kwargs.get("smooth", "none")
-        nbins = kwargs.get("num_bins", 100)
 
         ndata = np.array(self.apply_transformations(data))
-
         l = len(ndata)
+        uod = self.get_UoD()
+
+        if 'bins' in kwargs:
+            _bins = kwargs.pop('bins')
+        else:
+            nbins = kwargs.get("num_bins", 100)
+            _bins = np.linspace(uod[0], uod[1], nbins)
 
         ret = []
-        uod = self.get_UoD()
-        _bins = np.linspace(uod[0], uod[1], nbins)
 
         for k in np.arange(self.order - 1, l):
             sample = ndata[k - (self.order - 1): k + 1]
@@ -487,120 +431,63 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         ret = []
 
-        method = kwargs.get('method', 2)
-        smooth = "KDE" if method != 4 else "none"
-        nbins = kwargs.get("num_bins", 100)
+        smooth = kwargs.get("smooth", "none")
+
+        ndata = np.array(self.apply_transformations(data))
 
         uod = self.get_UoD()
-        _bins = np.linspace(uod[0], uod[1], nbins).tolist()
 
-        if method != 4:
-            intervals = self.forecast_ahead_interval(data, steps)
+        if 'bins' in kwargs:
+            _bins = kwargs.pop('bins')
         else:
-            l = len(data)
-            for k in np.arange(l - self.order, l):
-                dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
-                dist.set(data[k], 1.0)
-                ret.append(dist)
+            nbins = kwargs.get("num_bins", 100)
+            _bins = np.linspace(uod[0], uod[1], nbins)
 
-        for k in np.arange(self.order, steps + self.order):
+        start = kwargs.get('start', self.order)
 
-            data = []
+        sample = ndata[start - (self.order - 1): start + 1]
 
-            if method == 1:
+        for dat in sample:
+            tmp = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
+            tmp.set(dat, 1.0)
+            ret.append(tmp)
 
-                lags = {}
+        dist = self.forecast_distribution(sample, bins=_bins)
 
-                cc = 0
+        ret.append(dist)
 
-                for i in intervals[k - self.order : k]:
+        for k in np.arange(self.order, steps+self.order):
+            dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
 
-                    quantiles = []
+            lags = {}
 
-                    for qt in np.arange(0, 50, 2):
-                        quantiles.append(i[0] + qt * ((i[1] - i[0]) / 100))
-                        quantiles.append(i[1] - qt * ((i[1] - i[0]) / 100))
-                    quantiles.append(i[0] + ((i[1] - i[0]) / 2))
+            # Find all bins of past distributions with probability greater than zero
 
-                    quantiles = list(set(quantiles))
+            for ct, dd in enumerate(ret[k - self.order: k]):
+                vals = [float(v) for v in dd.bins if round(dd.density(v), 4) > 0]
+                lags[ct] = sorted(vals)
 
-                    quantiles.sort()
+            root = tree.FLRGTreeNode(None)
 
-                    lags[cc] = quantiles
+            self.build_tree_without_order(root, lags, 0)
 
-                    cc += 1
+            # Trace all possible combinations between the bins of past distributions
 
-                # Build the tree with all possible paths
+            for p in root.paths():
+                path = list(reversed(list(filter(None.__ne__, p))))
 
-                root = tree.FLRGTreeNode(None)
+                # get the combined probabilities for this path
 
-                self.build_tree_without_order(root, lags, 0)
+                pk = np.prod([ret[k - self.order + o].density(path[o])
+                              for o in np.arange(0, self.order)])
 
-                # Trace the possible paths
-                for p in root.paths():
-                    path = list(reversed(list(filter(None.__ne__, p))))
 
-                    qtle = np.ravel(self.forecast_interval(path))
+                d = self.forecast_distribution(path)[0]
 
-                    data.extend(np.linspace(qtle[0],qtle[1],100).tolist())
+                for bin in _bins:
+                    dist.set(bin, dist.density(bin) + pk * d.density(bin))
 
-            elif method == 2:
-
-                for qt in np.arange(0, 50, 1):
-                    # print(qt)
-                    qtle_lower = self.forecast_interval(
-                        [intervals[x][0] + qt * ((intervals[x][1] - intervals[x][0]) / 100) for x in
-                         np.arange(k - self.order, k)])
-                    qtle_lower = np.ravel(qtle_lower)
-                    data.extend(np.linspace(qtle_lower[0], qtle_lower[1], 100).tolist())
-                    qtle_upper = self.forecast_interval(
-                        [intervals[x][1] - qt * ((intervals[x][1] - intervals[x][0]) / 100) for x in
-                         np.arange(k - self.order, k)])
-                    qtle_upper = np.ravel(qtle_upper)
-                    data.extend(np.linspace(qtle_upper[0], qtle_upper[1], 100).tolist())
-                qtle_mid = self.forecast_interval(
-                    [intervals[x][0] + (intervals[x][1] - intervals[x][0]) / 2 for x in np.arange(k - self.order, k)])
-                qtle_mid = np.ravel(qtle_mid)
-                data.extend(np.linspace(qtle_mid[0], qtle_mid[1], 100).tolist())
-
-            elif method == 3:
-                i = intervals[k]
-
-                data = np.linspace(i[0],i[1],100).tolist()
-
-            else:
-                dist = ProbabilityDistribution.ProbabilityDistribution(smooth, bins=_bins,
-                                                                       uod=uod, **kwargs)
-                lags = {}
-
-                cc = 0
-
-                for dd in ret[k - self.order: k]:
-                    vals = [float(v) for v in dd.bins if round(dd.density(v),4) > 0]
-                    lags[cc] = sorted(vals)
-                    cc += 1
-
-                root = tree.FLRGTreeNode(None)
-
-                self.build_tree_without_order(root, lags, 0)
-
-                # Trace the possible paths
-                for p in root.paths():
-                    path = list(reversed(list(filter(None.__ne__, p))))
-
-                    pk = np.prod([ret[k - self.order + o].density(path[o])
-                                  for o in np.arange(0,self.order)])
-
-                    d = self.forecast_distribution(path)[0]
-
-                    for bin in _bins:
-                        dist.set(bin, dist.density(bin) + pk * d.density(bin))
-
-            if method != 4:
-                dist = ProbabilityDistribution.ProbabilityDistribution(smooth, bins=_bins, data=data,
-                                                                       uod=uod, **kwargs)
-
-            ret.append(dist)
+        ret = ret[self.order:]
 
         return ret
 

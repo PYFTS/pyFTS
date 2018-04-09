@@ -5,10 +5,12 @@ pyFTS module for common benchmark metrics
 """
 
 import time
+import numba
 import numpy as np
 import pandas as pd
 from pyFTS.common import FuzzySet,SortedCollection
 from pyFTS.probabilistic import ProbabilityDistribution
+
 
 
 def acf(data, k):
@@ -28,6 +30,7 @@ def acf(data, k):
     return 1/((n-k)*sigma)*s
 
 
+
 def rmse(targets, forecasts):
     """
     Root Mean Squared Error
@@ -42,6 +45,7 @@ def rmse(targets, forecasts):
     return np.sqrt(np.nanmean((targets - forecasts) ** 2))
 
 
+
 def rmse_interval(targets, forecasts):
     """
     Root Mean Squared Error
@@ -51,6 +55,7 @@ def rmse_interval(targets, forecasts):
     """
     fmean = [np.mean(i) for i in forecasts]
     return np.sqrt(np.nanmean((fmean - targets) ** 2))
+
 
 
 def mape(targets, forecasts):
@@ -65,6 +70,7 @@ def mape(targets, forecasts):
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
     return np.mean(np.abs(targets - forecasts) / targets) * 100
+
 
 
 def smape(targets, forecasts, type=2):
@@ -87,9 +93,11 @@ def smape(targets, forecasts, type=2):
         return sum(np.abs(forecasts - targets)) / sum(forecasts + targets)
 
 
+
 def mape_interval(targets, forecasts):
     fmean = [np.mean(i) for i in forecasts]
     return np.mean(abs(fmean - targets) / fmean) * 100
+
 
 
 def UStatistic(targets, forecasts):
@@ -108,9 +116,10 @@ def UStatistic(targets, forecasts):
     naive = []
     y = []
     for k in np.arange(0,l-1):
-        y.append((forecasts[k ] - targets[k ]) ** 2)
+        y.append((forecasts[k ] - targets[k]) ** 2)
         naive.append((targets[k + 1] - targets[k]) ** 2)
     return np.sqrt(sum(y) / sum(naive))
+
 
 
 def TheilsInequality(targets, forecasts):
@@ -126,6 +135,7 @@ def TheilsInequality(targets, forecasts):
     ys = np.sqrt(sum([y**2 for y in targets]))
     fs = np.sqrt(sum([f**2 for f in forecasts]))
     return  us / (ys + fs)
+
 
 
 def BoxPierceStatistic(data, h):
@@ -204,12 +214,15 @@ def pinball_mean(tau, targets, forecasts):
     :param forecasts: list of prediction intervals
     :return: 
     """
-    preds = []
-    if tau <= 0.5:
-        preds = [pinball(tau, targets[i], forecasts[i][0]) for i in np.arange(0, len(forecasts))]
-    else:
-        preds = [pinball(tau, targets[i], forecasts[i][1]) for i in np.arange(0, len(forecasts))]
-    return np.nanmean(preds)
+    try:
+        if tau <= 0.5:
+            preds = [pinball(tau, targets[i], forecasts[i][0]) for i in np.arange(0, len(forecasts))]
+        else:
+            preds = [pinball(tau, targets[i], forecasts[i][1]) for i in np.arange(0, len(forecasts))]
+        return np.nanmean(preds)
+    except Exception as ex:
+        print(ex)
+
 
 
 def pmf_to_cdf(density):
@@ -259,18 +272,17 @@ def crps(targets, densities):
     return _crps / float(l * n)
 
 
-def get_point_statistics(data, model, indexer=None):
+def get_point_statistics(data, model, **kwargs):
     """Condensate all measures for point forecasters"""
+
+    indexer = kwargs.get('indexer', None)
 
     if indexer is not None:
         ndata = np.array(indexer.get_data(data))
     else:
         ndata = np.array(data[model.order:])
 
-    if model.is_multivariate or indexer is None:
-        forecasts = model.forecast(data)
-    elif not model.is_multivariate and indexer is not None:
-        forecasts = model.forecast(indexer.get_data(data))
+    forecasts = model.predict(data, **kwargs)
 
     try:
         if model.has_seasonality:
@@ -281,29 +293,18 @@ def get_point_statistics(data, model, indexer=None):
         print(ex)
         return [np.nan,np.nan,np.nan]
     ret = list()
-    try:
-        ret.append(np.round(rmse(ndata, nforecasts), 2))
-    except Exception as ex:
-        print('Error in RMSE: {}'.format(ex))
-        ret.append(np.nan)
-    try:
-        ret.append(np.round(smape(ndata, nforecasts), 2))
-    except Exception as ex:
-        print('Error in SMAPE: {}'.format(ex))
-        ret.append(np.nan)
-    try:
-        ret.append(np.round(UStatistic(ndata, nforecasts), 2))
-    except Exception as ex:
-        print('Error in U: {}'.format(ex))
-        ret.append(np.nan)
+
+    ret.append(np.round(rmse(ndata, nforecasts), 2))
+    ret.append(np.round(smape(ndata, nforecasts), 2))
+    ret.append(np.round(UStatistic(ndata, nforecasts), 2))
 
     return ret
 
 
-def get_interval_statistics(original, model):
+def get_interval_statistics(original, model, **kwargs):
     """Condensate all measures for point_to_interval forecasters"""
     ret = list()
-    forecasts = model.forecast_interval(original)
+    forecasts = model.predict(original, **kwargs)
     ret.append(round(sharpness(forecasts), 2))
     ret.append(round(resolution(forecasts), 2))
     ret.append(round(coverage(original[model.order:], forecasts[:-1]), 2))
@@ -314,27 +315,13 @@ def get_interval_statistics(original, model):
     return ret
 
 
-def get_distribution_statistics(original, model, steps, resolution):
+def get_distribution_statistics(original, model, **kwargs):
     ret = list()
-    try:
-        _s1 = time.time()
-        densities1 = model.forecast_ahead_distribution(original, steps, parameters=3)
-        _e1 = time.time()
-        ret.append(round(crps(original, densities1), 3))
-        ret.append(round(_e1 - _s1, 3))
-    except Exception as e:
-        print('Erro: ', e)
-        ret.append(np.nan)
-        ret.append(np.nan)
-
-    try:
-        _s2 = time.time()
-        densities2 = model.forecast_ahead_distribution(original, steps, parameters=2)
-        _e2 = time.time()
-        ret.append( round(crps(original, densities2), 3))
-        ret.append(round(_e2 - _s2, 3))
-    except:
-        ret.append(np.nan)
-        ret.append(np.nan)
-
+    _s1 = time.time()
+    densities1 = model.predict(original, **kwargs)
+    _e1 = time.time()
+    ret.append(round(crps(original, densities1), 3))
+    ret.append(round(_e1 - _s1, 3))
     return ret
+
+

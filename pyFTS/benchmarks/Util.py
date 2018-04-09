@@ -2,6 +2,7 @@
 Benchmark utility functions
 """
 
+import numba
 import matplotlib as plt
 import matplotlib.cm as cmx
 import matplotlib.colors as pltcolors
@@ -11,8 +12,6 @@ import pandas as pd
 #from mpl_toolkits.mplot3d import Axes3D
 
 
-import numpy as np
-import pandas as pd
 from copy import deepcopy
 from pyFTS.common import Util
 
@@ -124,7 +123,7 @@ def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, 
                     s = '-'
                     p = '-'
                     l = '-'
-
+                print([n, o, s, p, l])
                 tmp = [n, o, s, p, l, 'RMSE']
                 tmp.extend(rmse[k])
                 ret.append(deepcopy(tmp))
@@ -194,9 +193,11 @@ def cast_dataframe_to_synthetic_point(infile, outfile, experiments):
     dat.to_csv(outfile, sep=";", index=False)
 
 
+
 def analytical_data_columns(experiments):
     data_columns = [str(k) for k in np.arange(0, experiments)]
     return data_columns
+
 
 
 def scale_params(data):
@@ -204,12 +205,18 @@ def scale_params(data):
     vlen = np.nanmax(data) - vmin
     return (vmin, vlen)
 
+
+
 def scale(data, params):
     ndata = [(k-params[0])/params[1] for k in data]
     return ndata
 
+
+
 def stats(measure, data):
     print(measure, np.nanmean(data), np.nanstd(data))
+
+
 
 def unified_scaled_point(experiments, tam, save=False, file=None,
                          sort_columns=['UAVG', 'RMSEAVG', 'USTD', 'RMSESTD'],
@@ -320,6 +327,7 @@ def unified_scaled_point(experiments, tam, save=False, file=None,
     Util.show_and_save_image(fig, file, save)
 
 
+
 def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
                          sort_columns=['UAVG', 'RMSEAVG', 'USTD', 'RMSESTD'],
                          sort_ascend=[1, 1, 1, 1],save_best=False,
@@ -375,12 +383,14 @@ def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam, save=F
     Util.show_and_save_image(fig, file, save)
 
 
+
 def check_replace_list(m, replace):
     if replace is not None:
         for r in replace:
             if r[0] in m:
                 return r[1]
     return m
+
 
 
 def check_ignore_list(b, ignore):
@@ -475,6 +485,7 @@ def save_dataframe_interval(coverage, experiments, file, objs, resolution, save,
     if save: dat.to_csv(Util.uniquefilename(file), sep=";")
     return dat
 
+
 def interval_dataframe_analytic_columns(experiments):
     columns = [str(k) for k in np.arange(0, experiments)]
     columns.insert(0, "Model")
@@ -486,10 +497,12 @@ def interval_dataframe_analytic_columns(experiments):
     return columns
 
 
+
 def interval_dataframe_synthetic_columns():
     columns = ["Model", "Order", "Scheme", "Partitions", "SHARPAVG", "SHARPSTD", "RESAVG", "RESSTD", "COVAVG",
                "COVSTD", "TIMEAVG", "TIMESTD", "Q05AVG", "Q05STD", "Q25AVG", "Q25STD", "Q75AVG", "Q75STD", "Q95AVG", "Q95STD"]
     return columns
+
 
 
 def cast_dataframe_to_synthetic_interval(infile, outfile, experiments):
@@ -543,6 +556,7 @@ def cast_dataframe_to_synthetic_interval(infile, outfile, experiments):
 
     dat = pd.DataFrame(ret, columns=interval_dataframe_synthetic_columns())
     dat.to_csv(outfile, sep=";", index=False)
+
 
 
 def unified_scaled_interval(experiments, tam, save=False, file=None,
@@ -643,6 +657,7 @@ def unified_scaled_interval(experiments, tam, save=False, file=None,
     Util.show_and_save_image(fig, file, save)
 
 
+
 def plot_dataframe_interval(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
                             sort_columns=['COVAVG', 'SHARPAVG', 'COVSTD', 'SHARPSTD'],
                             sort_ascend=[True, False, True, True],save_best=False,
@@ -696,6 +711,7 @@ def plot_dataframe_interval(file_synthetic, file_analytic, experiments, tam, sav
     plt.tight_layout()
 
     Util.show_and_save_image(fig, file, save)
+
 
 
 def unified_scaled_interval_pinball(experiments, tam, save=False, file=None,
@@ -795,6 +811,8 @@ def unified_scaled_interval_pinball(experiments, tam, save=False, file=None,
 
     Util.show_and_save_image(fig, file, save)
 
+
+
 def plot_dataframe_interval_pinball(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
                                     sort_columns=['COVAVG','SHARPAVG','COVSTD','SHARPSTD'],
                                     sort_ascend=[True, False, True, True], save_best=False,
@@ -846,7 +864,7 @@ def plot_dataframe_interval_pinball(file_synthetic, file_analytic, experiments, 
     Util.show_and_save_image(fig, file, save)
 
 
-def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, synthetic):
+def save_dataframe_probabilistic(experiments, file, objs, crps, times, save, synthetic):
     """
     Save benchmark results for m-step ahead probabilistic forecasters 
     :param experiments: 
@@ -854,7 +872,7 @@ def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, tim
     :param objs: 
     :param crps_interval: 
     :param crps_distr: 
-    :param times1: 
+    :param times: 
     :param times2: 
     :param save: 
     :param synthetic: 
@@ -881,13 +899,11 @@ def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, tim
                             mod.append('-')
                             mod.append('-')
                             l = '-'
-                        mod.append(np.round(np.nanmean(crps_interval[k]), 2))
-                        mod.append(np.round(np.nanstd(crps_interval[k]), 2))
-                        mod.append(np.round(np.nanmean(crps_distr[k]), 2))
-                        mod.append(np.round(np.nanstd(crps_distr[k]), 2))
+                        mod.append(np.round(np.nanmean(crps[k]), 2))
+                        mod.append(np.round(np.nanstd(crps[k]), 2))
                         mod.append(l)
-                        mod.append(np.round(np.nanmean(times1[k]), 4))
-                        mod.append(np.round(np.nanmean(times2[k]), 4))
+                        mod.append(np.round(np.nanmean(times[k]), 4))
+                        mod.append(np.round(np.nanstd(times[k]), 4))
                         ret.append(mod)
                     except Exception as e:
                         print('Erro: %s' % e)
@@ -895,7 +911,7 @@ def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, tim
                 print("Erro ao salvar ", k)
                 print("Exceção ", ex)
 
-        columns = ahead_dataframe_synthetic_columns()
+        columns = probabilistic_dataframe_synthetic_columns()
     else:
         for k in sorted(objs.keys()):
             try:
@@ -910,28 +926,23 @@ def save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, tim
                     s = '-'
                     p = '-'
                     l = '-'
-                tmp = [n, o, s, p, l, 'CRPS_Interval']
-                tmp.extend(crps_interval[k])
+                tmp = [n, o, s, p, l, 'CRPS']
+                tmp.extend(crps[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'CRPS_Distribution']
-                tmp.extend(crps_distr[k])
-                ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'TIME_Interval']
-                tmp.extend(times1[k])
-                ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'TIME_Distribution']
-                tmp.extend(times2[k])
+                tmp = [n, o, s, p, l, 'TIME']
+                tmp.extend(times[k])
                 ret.append(deepcopy(tmp))
             except Exception as ex:
                 print("Erro ao salvar ", k)
                 print("Exceção ", ex)
-        columns = ahead_dataframe_analytic_columns(experiments)
+        columns = probabilistic_dataframe_analytic_columns(experiments)
     dat = pd.DataFrame(ret, columns=columns)
     if save: dat.to_csv(Util.uniquefilename(file), sep=";")
     return dat
 
 
-def ahead_dataframe_analytic_columns(experiments):
+
+def probabilistic_dataframe_analytic_columns(experiments):
     columns = [str(k) for k in np.arange(0, experiments)]
     columns.insert(0, "Model")
     columns.insert(1, "Order")
@@ -942,14 +953,14 @@ def ahead_dataframe_analytic_columns(experiments):
     return columns
 
 
-def ahead_dataframe_synthetic_columns():
-    columns = ["Model", "Order", "Scheme", "Partitions", "CRPS1AVG", "CRPS1STD", "CRPS2AVG", "CRPS2STD",
-               "TIME1AVG", "TIME1STD", "TIME2AVG", "TIME2STD"]
+def probabilistic_dataframe_synthetic_columns():
+    columns = ["Model", "Order", "Scheme", "Partitions", "CRPSAVG", "CRPSSTD",
+               "TIMEAVG", "TIMESTD"]
     return columns
 
 
-def cast_dataframe_to_synthetic_ahead(infile, outfile, experiments):
-    columns = ahead_dataframe_analytic_columns(experiments)
+def cast_dataframe_to_synthetic_probabilistic(infile, outfile, experiments):
+    columns = probabilistic_dataframe_analytic_columns(experiments)
     dat = pd.read_csv(infile, sep=";", usecols=columns)
     models = dat.Model.unique()
     orders = dat.Order.unique()
@@ -967,36 +978,31 @@ def cast_dataframe_to_synthetic_ahead(infile, outfile, experiments):
                     mod = []
                     df = dat[(dat.Model == m) & (dat.Order == o) & (dat.Scheme == s) & (dat.Partitions == p)]
                     if not df.empty:
-                        crps1 = extract_measure(df, 'CRPS_Interval', data_columns)
-                        crps2 = extract_measure(df, 'CRPS_Distribution', data_columns)
-                        times1 = extract_measure(df, 'TIME_Interval', data_columns)
-                        times2 = extract_measure(df, 'TIME_Distribution', data_columns)
+                        crps1 = extract_measure(df, 'CRPS', data_columns)
+                        times1 = extract_measure(df, 'TIME', data_columns)
                         mod.append(m)
                         mod.append(o)
                         mod.append(s)
                         mod.append(p)
                         mod.append(np.round(np.nanmean(crps1), 2))
                         mod.append(np.round(np.nanstd(crps1), 2))
-                        mod.append(np.round(np.nanmean(crps2), 2))
-                        mod.append(np.round(np.nanstd(crps2), 2))
                         mod.append(np.round(np.nanmean(times1), 2))
                         mod.append(np.round(np.nanstd(times1), 2))
-                        mod.append(np.round(np.nanmean(times2), 4))
-                        mod.append(np.round(np.nanstd(times2), 4))
                         ret.append(mod)
 
-    dat = pd.DataFrame(ret, columns=ahead_dataframe_synthetic_columns())
+    dat = pd.DataFrame(ret, columns=probabilistic_dataframe_synthetic_columns())
     dat.to_csv(outfile, sep=";", index=False)
 
 
-def unified_scaled_ahead(experiments, tam, save=False, file=None,
-                         sort_columns=['CRPS1AVG', 'CRPS2AVG', 'CRPS1STD', 'CRPS2STD'],
-                         sort_ascend=[True, True, True, True], save_best=False,
-                         ignore=None, replace=None):
-    fig, axes = plt.subplots(nrows=2, ncols=1, figsize=tam)
 
-    axes[0].set_title('CRPS Interval Ahead')
-    axes[1].set_title('CRPS Distribution Ahead')
+def unified_scaled_probabilistic(experiments, tam, save=False, file=None,
+                                 sort_columns=['CRPSAVG', 'CRPSSTD'],
+                                 sort_ascend=[True, True], save_best=False,
+                                 ignore=None, replace=None):
+    fig, axes = plt.subplots(nrows=1, ncols=1, figsize=tam)
+
+    axes.set_title('CRPS')
+    #axes[1].set_title('CRPS Distribution Ahead')
 
     models = {}
 
@@ -1006,11 +1012,11 @@ def unified_scaled_ahead(experiments, tam, save=False, file=None,
 
         mdl = {}
 
-        dat_syn = pd.read_csv(experiment[0], sep=";", usecols=ahead_dataframe_synthetic_columns())
+        dat_syn = pd.read_csv(experiment[0], sep=";", usecols=probabilistic_dataframe_synthetic_columns())
 
         bests = find_best(dat_syn, sort_columns, sort_ascend)
 
-        dat_ana = pd.read_csv(experiment[1], sep=";", usecols=ahead_dataframe_analytic_columns(experiment[2]))
+        dat_ana = pd.read_csv(experiment[1], sep=";", usecols=probabilistic_dataframe_analytic_columns(experiment[2]))
 
         crps1 = []
         crps2 = []
@@ -1070,21 +1076,22 @@ def unified_scaled_ahead(experiments, tam, save=False, file=None,
     Util.show_and_save_image(fig, file, save)
 
 
-def plot_dataframe_ahead(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
-                         sort_columns=['CRPS1AVG', 'CRPS2AVG', 'CRPS1STD', 'CRPS2STD'],
-                         sort_ascend=[True, True, True, True],save_best=False,
-                         ignore=None, replace=None):
+
+def plot_dataframe_probabilistic(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
+                                 sort_columns=['CRPS1AVG', 'CRPS2AVG', 'CRPS1STD', 'CRPS2STD'],
+                                 sort_ascend=[True, True, True, True], save_best=False,
+                                 ignore=None, replace=None):
 
     fig, axes = plt.subplots(nrows=2, ncols=1, figsize=tam)
 
-    axes[0].set_title('CRPS Interval Ahead')
-    axes[1].set_title('CRPS Distribution Ahead')
+    axes[0].set_title('CRPS')
+    axes[1].set_title('CRPS')
 
-    dat_syn = pd.read_csv(file_synthetic, sep=";", usecols=ahead_dataframe_synthetic_columns())
+    dat_syn = pd.read_csv(file_synthetic, sep=";", usecols=probabilistic_dataframe_synthetic_columns())
 
     bests = find_best(dat_syn, sort_columns, sort_ascend)
 
-    dat_ana = pd.read_csv(file_analytic, sep=";", usecols=ahead_dataframe_analytic_columns(experiments))
+    dat_ana = pd.read_csv(file_analytic, sep=";", usecols=probabilistic_dataframe_analytic_columns(experiments))
 
     data_columns = analytical_data_columns(experiments)
 
