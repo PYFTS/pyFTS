@@ -5,12 +5,10 @@ pyFTS module for common benchmark metrics
 """
 
 import time
-import numba
 import numpy as np
 import pandas as pd
 from pyFTS.common import FuzzySet,SortedCollection
 from pyFTS.probabilistic import ProbabilityDistribution
-
 
 
 def acf(data, k):
@@ -30,7 +28,6 @@ def acf(data, k):
     return 1/((n-k)*sigma)*s
 
 
-
 def rmse(targets, forecasts):
     """
     Root Mean Squared Error
@@ -43,7 +40,6 @@ def rmse(targets, forecasts):
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
     return np.sqrt(np.nanmean((targets - forecasts) ** 2))
-
 
 
 def rmse_interval(targets, forecasts):

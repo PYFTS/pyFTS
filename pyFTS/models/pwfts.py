@@ -444,6 +444,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         if 'bins' in kwargs:
             _bins = kwargs.pop('bins')
+            nbins = len(_bins)
         else:
             nbins = kwargs.get("num_bins", 100)
             _bins = np.linspace(uod[0], uod[1], nbins)

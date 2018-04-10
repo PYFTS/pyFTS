@@ -580,98 +580,7 @@ def print_interval_statistics(original, models):
 
 
 
-def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False, ls='-', linewidth=1):
-    lower = [kk[0] for kk in intervals]
-    upper = [kk[1] for kk in intervals]
-    mi = min(lower) * 0.95
-    ma = max(upper) * 1.05
-    for k in np.arange(0, order):
-        lower.insert(0, None)
-        upper.insert(0, None)
-    if typeonlegend: label += " (Interval)"
-    axis.plot(lower, color=color, label=label, ls=ls,linewidth=linewidth)
-    axis.plot(upper, color=color, ls=ls,linewidth=linewidth)
-    return [mi, ma]
 
-
-
-def plot_compared_series(original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5],
-                         points=True, intervals=True, linewidth=1.5):
-    """
-    Plot the forecasts of several one step ahead models, by point or by interval 
-    :param original: Original time series data (list)
-    :param models: List of models to compare
-    :param colors: List of models colors
-    :param typeonlegend: Add the type of forecast (point / interval) on legend
-    :param save: Save the picture on file
-    :param file: Filename to save the picture
-    :param tam: Size of the picture
-    :param points: True to plot the point forecasts, False otherwise
-    :param intervals: True to plot the interval forecasts, False otherwise 
-    :param linewidth: 
-    :return: 
-    """
-
-    fig = plt.figure(figsize=tam)
-    ax = fig.add_subplot(111)
-
-    mi = []
-    ma = []
-
-    legends = []
-
-    ax.plot(original, color='black', label="Original", linewidth=linewidth*1.5)
-
-    for count, fts in enumerate(models, start=0):
-        try:
-            if fts.has_point_forecasting and points:
-                forecasts = fts.forecast(original)
-                if isinstance(forecasts, np.ndarray):
-                    forecasts = forecasts.tolist()
-                mi.append(min(forecasts) * 0.95)
-                ma.append(max(forecasts) * 1.05)
-                for k in np.arange(0, fts.order):
-                    forecasts.insert(0, None)
-                lbl = fts.shortname + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
-                if typeonlegend: lbl += " (Point)"
-                ax.plot(forecasts, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
-
-            if fts.has_interval_forecasting and intervals:
-                forecasts = fts.forecast_interval(original)
-                lbl = fts.shortname + " " + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
-                if not points and intervals:
-                    ls = "-"
-                else:
-                    ls = "--"
-                tmpmi, tmpma = plot_interval(ax, forecasts, fts.order, label=lbl, typeonlegend=typeonlegend,
-                                             color=colors[count], ls=ls, linewidth=linewidth)
-                mi.append(tmpmi)
-                ma.append(tmpma)
-        except ValueError as ex:
-            print(fts.shortname)
-
-        handles0, labels0 = ax.get_legend_handles_labels()
-        lgd = ax.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
-        legends.append(lgd)
-
-    # ax.set_title(fts.name)
-    ax.set_ylim([min(mi), max(ma)])
-    ax.set_ylabel('F(T)')
-    ax.set_xlabel('T')
-    ax.set_xlim([0, len(original)])
-
-    #Util.show_and_save_image(fig, file, save, lgd=legends)
-
-
-def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
-    fig = plt.figure(figsize=tam)
-    ax = fig.add_subplot(111)
-
-    for k,m in enumerate(pmfs,start=0):
-        m.plot(ax, color=lcolors[k])
-
-    handles0, labels0 = ax.get_legend_handles_labels()
-    ax.legend(handles0, labels0)
 
 
 
@@ -928,14 +837,18 @@ from pyFTS.common import Transformations
 
 
 
-def plot_probabilitydistribution_density(ax, cmap, probabilitydist, fig, time_from):
+def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=None):
     from matplotlib.patches import Rectangle
     from matplotlib.collections import PatchCollection
     patches = []
     colors = []
     for ct, dt in enumerate(probabilitydist):
+        disp = 0.0
+        if reference_data is not None:
+            disp = reference_data[time_from+ct]
+
         for y in dt.bins:
-            s = Rectangle((time_from+ct, y), 1, dt.resolution, fill=True, lw = 0)
+            s = Rectangle((time_from+ct, y+disp), 1, dt.resolution, fill=True, lw = 0)
             patches.append(s)
             colors.append(dt.density(y))
     scale = Transformations.Scale()
@@ -947,6 +860,101 @@ def plot_probabilitydistribution_density(ax, cmap, probabilitydist, fig, time_fr
     ax.add_collection(pc)
     cb = fig.colorbar(pc, ax=ax)
     cb.set_label('Density')
+
+
+def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False, ls='-', linewidth=1):
+    lower = [kk[0] for kk in intervals]
+    upper = [kk[1] for kk in intervals]
+    mi = min(lower) * 0.95
+    ma = max(upper) * 1.05
+    for k in np.arange(0, order):
+        lower.insert(0, None)
+        upper.insert(0, None)
+    if typeonlegend: label += " (Interval)"
+    axis.plot(lower, color=color, label=label, ls=ls,linewidth=linewidth)
+    axis.plot(upper, color=color, ls=ls,linewidth=linewidth)
+    return [mi, ma]
+
+
+
+def plot_compared_series(original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5],
+                         points=True, intervals=True, linewidth=1.5):
+    """
+    Plot the forecasts of several one step ahead models, by point or by interval
+    :param original: Original time series data (list)
+    :param models: List of models to compare
+    :param colors: List of models colors
+    :param typeonlegend: Add the type of forecast (point / interval) on legend
+    :param save: Save the picture on file
+    :param file: Filename to save the picture
+    :param tam: Size of the picture
+    :param points: True to plot the point forecasts, False otherwise
+    :param intervals: True to plot the interval forecasts, False otherwise
+    :param linewidth:
+    :return:
+    """
+
+    fig = plt.figure(figsize=tam)
+    ax = fig.add_subplot(111)
+
+    mi = []
+    ma = []
+
+    legends = []
+
+    ax.plot(original, color='black', label="Original", linewidth=linewidth*1.5)
+
+    for count, fts in enumerate(models, start=0):
+        try:
+            if fts.has_point_forecasting and points:
+                forecasts = fts.forecast(original)
+                if isinstance(forecasts, np.ndarray):
+                    forecasts = forecasts.tolist()
+                mi.append(min(forecasts) * 0.95)
+                ma.append(max(forecasts) * 1.05)
+                for k in np.arange(0, fts.order):
+                    forecasts.insert(0, None)
+                lbl = fts.shortname + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
+                if typeonlegend: lbl += " (Point)"
+                ax.plot(forecasts, color=colors[count], label=lbl, ls="-",linewidth=linewidth)
+
+            if fts.has_interval_forecasting and intervals:
+                forecasts = fts.forecast_interval(original)
+                lbl = fts.shortname + " " + str(fts.order if fts.is_high_order and not fts.benchmark_only else "")
+                if not points and intervals:
+                    ls = "-"
+                else:
+                    ls = "--"
+                tmpmi, tmpma = plot_interval(ax, forecasts, fts.order, label=lbl, typeonlegend=typeonlegend,
+                                             color=colors[count], ls=ls, linewidth=linewidth)
+                mi.append(tmpmi)
+                ma.append(tmpma)
+        except ValueError as ex:
+            print(fts.shortname)
+
+        handles0, labels0 = ax.get_legend_handles_labels()
+        lgd = ax.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
+        legends.append(lgd)
+
+    # ax.set_title(fts.name)
+    ax.set_ylim([min(mi), max(ma)])
+    ax.set_ylabel('F(T)')
+    ax.set_xlabel('T')
+    ax.set_xlim([0, len(original)])
+
+    #Util.show_and_save_image(fig, file, save, lgd=legends)
+
+
+def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
+    fig = plt.figure(figsize=tam)
+    ax = fig.add_subplot(111)
+
+    for k,m in enumerate(pmfs,start=0):
+        m.plot(ax, color=lcolors[k])
+
+    handles0, labels0 = ax.get_legend_handles_labels()
+    ax.legend(handles0, labels0)
+
 
 
 def plotCompared(original, forecasts, labels, title):
