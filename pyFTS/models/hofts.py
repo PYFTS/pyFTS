@@ -93,8 +93,6 @@ class HighOrderFTS(fts.FTS):
 
     def train(self, data, **kwargs):
 
-        data = self.apply_transformations(data, updateUoD=True)
-
         self.order = kwargs.get('order',2)
 
         if kwargs.get('sets', None) is not None:
@@ -102,16 +100,14 @@ class HighOrderFTS(fts.FTS):
 
         self.generate_flrg(data)
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, ndata, **kwargs):
 
         ret = []
 
-        l = len(data)
+        l = len(ndata)
 
         if l <= self.order:
-            return data
-
-        ndata = self.apply_transformations(data)
+            return ndata
 
         for k in np.arange(self.order, l+1):
             flrgs = self.generate_lhs_flrg(ndata[k - self.order: k])
@@ -125,7 +121,5 @@ class HighOrderFTS(fts.FTS):
                     tmp.append(flrg.get_midpoint(self.sets))
 
             ret.append(np.nanmean(tmp))
-
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

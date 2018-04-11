@@ -51,16 +51,14 @@ class ConventionalFTS(fts.FTS):
     def train(self, data, **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
-        ndata = self.apply_transformations(data)
-        tmpdata = FuzzySet.fuzzyfy_series(ndata, self.sets, method='maximum')
+
+        tmpdata = FuzzySet.fuzzyfy_series(data, self.sets, method='maximum')
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
         self.operation_matrix(flrs)
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, ndata, **kwargs):
 
         ordered_set = FuzzySet.set_ordered(self.sets)
-
-        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
         npart = len(self.sets)
@@ -80,8 +78,6 @@ class ConventionalFTS(fts.FTS):
                 mp = [self.sets[ordered_set[s]].centroid for s in fs]
 
                 ret.append( sum(mp)/len(mp))
-
-        ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret
 

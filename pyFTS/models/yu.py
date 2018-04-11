@@ -57,23 +57,19 @@ class WeightedFTS(fts.FTS):
                 self.flrgs[flr.LHS] = WeightedFLRG(flr.LHS);
                 self.flrgs[flr.LHS].append_rhs(flr.RHS)
 
-    def train(self, data, **kwargs):
+    def train(self, ndata, **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
-        ndata = self.apply_transformations(data)
+
         tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_FLRG(flrs)
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, ndata, **kwargs):
 
         ordered_sets = FuzzySet.set_ordered(self.sets)
 
-        l = 1
-
-        data = np.array(data)
-
-        ndata = self.apply_transformations(data)
+        ndata = np.array(ndata)
 
         l = len(ndata)
 
@@ -90,7 +86,5 @@ class WeightedFTS(fts.FTS):
                 mp = flrg.get_midpoints(self.sets)
 
                 ret.append(mp.dot(flrg.weights(self.sets)))
-
-        ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret

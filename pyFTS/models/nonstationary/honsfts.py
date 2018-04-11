@@ -1,7 +1,7 @@
 import numpy as np
 from pyFTS.common import FuzzySet, FLR, fts, tree
 from pyFTS.models import hofts
-from pyFTS.nonstationary import common, flrg
+from pyFTS.models.nonstationary import common, flrg
 
 
 class HighOrderNonStationaryFLRG(flrg.NonStationaryFLRG):
@@ -90,11 +90,8 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
 
-        ndata = self.apply_transformations(data)
-        #tmpdata = common.fuzzyfy_series_old(ndata, self.sets)
-        #flrs = FLR.generate_recurrent_flrs(ndata)
         window_size = kwargs.get('parameters', 1)
-        self.generate_flrg(ndata, window_size=window_size)
+        self.generate_flrg(data, window_size=window_size)
 
     def _affected_flrgs(self, sample, k, time_displacement, window_size):
         # print("input: " + str(ndata[k]))
@@ -155,13 +152,11 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
         return [affected_flrgs, affected_flrgs_memberships]
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, ndata, **kwargs):
 
         time_displacement = kwargs.get("time_displacement",0)
 
         window_size = kwargs.get("window_size", 1)
-
-        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -201,17 +196,13 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
             ret.append(pto)
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
-
         return ret
 
-    def forecast_interval(self, data, **kwargs):
+    def forecast_interval(self, ndata, **kwargs):
 
         time_displacement = kwargs.get("time_displacement", 0)
 
         window_size = kwargs.get("window_size", 1)
-
-        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -258,7 +249,5 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
             ret.append([sum(lower), sum(upper)])
 
-
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

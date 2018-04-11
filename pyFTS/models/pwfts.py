@@ -266,9 +266,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         else:
             raise Exception("Unknown point forecasting method!")
 
-    def point_heuristic(self, data, **kwargs):
-
-        ndata = np.array(self.apply_transformations(data))
+    def point_heuristic(self, ndata, **kwargs):
 
         l = len(ndata)
 
@@ -298,8 +296,6 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         if self.auto_update and k > self.order+1: self.update_model(ndata[k - self.order - 1 : k])
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
-
         return ret
 
     def point_expected_value(self, data, **kwargs):
@@ -314,19 +310,15 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             ret.append(tmp)
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
-
         return ret
 
-    def forecast_interval(self, data, **kwargs):
+    def forecast_interval(self, ndata, **kwargs):
 
         if 'method' in kwargs:
             self.interval_method = kwargs.get('method','heuristic')
 
         if 'alpha' in kwargs:
             self.alpha = kwargs.get('alpha', 0.05)
-
-        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -339,15 +331,12 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             else:
                 self.interval_quantile(k, ndata, ret)
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], interval=True)
-
         return ret
 
     def interval_quantile(self, k, ndata, ret):
         dist = self.forecast_distribution(ndata)
-        lo_qt = dist[0].quantile(self.alpha)
-        up_qt = dist[0].quantile(1.0 - self.alpha)
-        ret.append([lo_qt, up_qt])
+        itvl = dist[0].quantile([self.alpha, 1.0 - self.alpha])
+        ret.append(itvl)
 
     def interval_heuristic(self, k, ndata, ret):
 
@@ -375,14 +364,10 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             up_ = sum(up) / norm
             ret.append([lo_, up_])
 
-    def forecast_distribution(self, data, **kwargs):
-
-        if not isinstance(data, (list, set, np.ndarray)):
-            data = [data]
+    def forecast_distribution(self, ndata, **kwargs):
 
         smooth = kwargs.get("smooth", "none")
 
-        ndata = np.array(self.apply_transformations(data))
         l = len(ndata)
         uod = self.get_UoD()
 
@@ -457,13 +442,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         return ret
 
-    def forecast_ahead_distribution(self, data, steps, **kwargs):
+    def forecast_ahead_distribution(self, ndata, steps, **kwargs):
 
         ret = []
 
         smooth = kwargs.get("smooth", "none")
-
-        ndata = np.array(self.apply_transformations(data))
 
         uod = self.get_UoD()
 

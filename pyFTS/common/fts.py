@@ -70,6 +70,11 @@ class FTS(object):
         :return: a numpy array with the forecasted data
         """
 
+        if self.is_multivariate:
+            ndata = data
+        else:
+            ndata = self.apply_transformations(data)
+
         if 'distributed' in kwargs:
             distributed = kwargs.pop('distributed')
         else:
@@ -85,17 +90,17 @@ class FTS(object):
             steps_ahead = kwargs.get("steps_ahead", None)
 
             if type == 'point' and steps_ahead == None:
-                return self.forecast(data, **kwargs)
+                ret = self.forecast(ndata, **kwargs)
             elif type == 'point' and steps_ahead != None:
-                return self.forecast_ahead(data, steps_ahead, **kwargs)
+                ret = self.forecast_ahead(ndata, steps_ahead, **kwargs)
             elif type == 'interval' and steps_ahead == None:
-                return self.forecast_interval(data, **kwargs)
+                ret = self.forecast_interval(ndata, **kwargs)
             elif type == 'interval' and steps_ahead != None:
-                return self.forecast_ahead_interval(data, steps_ahead, **kwargs)
+                ret = self.forecast_ahead_interval(ndata, steps_ahead, **kwargs)
             elif type == 'distribution' and steps_ahead == None:
-                return self.forecast_distribution(data, **kwargs)
+                ret = self.forecast_distribution(ndata, **kwargs)
             elif type == 'distribution' and steps_ahead != None:
-                return self.forecast_ahead_distribution(data, steps_ahead, **kwargs)
+                ret = self.forecast_ahead_distribution(ndata, steps_ahead, **kwargs)
             else:
                 raise ValueError('The argument \'type\' has an unknown value.')
 
@@ -104,7 +109,13 @@ class FTS(object):
             nodes = kwargs.get("nodes", ['127.0.0.1'])
             num_batches = kwargs.get('num_batches', 10)
 
-            return Util.distributed_predict(self, kwargs, nodes, data, num_batches)
+            ret = Util.distributed_predict(self, kwargs, nodes, ndata, num_batches)
+
+        if type != 'distribution' and not self.is_multivariate:
+            interval = True if type == 'interval' else False
+            ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], interval=interval)
+
+        return ret
 
 
     def forecast(self, data, **kwargs):
@@ -185,7 +196,7 @@ class FTS(object):
         """
         pass
 
-    def fit(self, data, **kwargs):
+    def fit(self, ndata, **kwargs):
         """
 
         :param data: the training time series
@@ -203,6 +214,11 @@ class FTS(object):
         """
 
         import datetime
+
+        if self.is_multivariate:
+            data = ndata
+        else:
+            data = self.apply_transformations(ndata)
 
         dump = kwargs.get('dump', None)
 
@@ -245,11 +261,11 @@ class FTS(object):
                     if dump == 'time':
                         print("[{0: %H:%M:%S}] Starting batch ".format(datetime.datetime.now()) + str(bcount))
                     if self.is_multivariate:
-                        ndata = data.iloc[ct - self.order:ct + batch_size]
+                        mdata = data.iloc[ct - self.order:ct + batch_size]
                     else:
-                        ndata = data[ct - self.order : ct + batch_size]
+                        mdata = data[ct - self.order : ct + batch_size]
 
-                    self.train(ndata, **kwargs)
+                    self.train(mdata, **kwargs)
 
                     if batch_save:
                         Util.persist_obj(self,file_path)

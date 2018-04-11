@@ -49,29 +49,22 @@ class NonStationaryFTS(fts.FTS):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
 
-        ndata = self.apply_transformations(data)
         window_size = kwargs.get('parameters', 1)
-        tmpdata = common.fuzzySeries(ndata, self.sets, window_size, method=self.method)
-        #print([k[0].name for k in tmpdata])
+        tmpdata = common.fuzzySeries(data, self.sets, window_size, method=self.method)
         flrs = FLR.generate_recurrent_flrs(tmpdata)
-        #print([str(k) for k in flrs])
         self.generate_flrg(flrs)
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, ndata, **kwargs):
 
         time_displacement = kwargs.get("time_displacement",0)
 
         window_size = kwargs.get("window_size", 1)
-
-        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
         ret = []
 
         for k in np.arange(0, l):
-
-            #print("input: " + str(ndata[k]))
 
             tdisp = common.window_index(k + time_displacement, window_size)
 
@@ -88,8 +81,6 @@ class NonStationaryFTS(fts.FTS):
                     affected_sets.append([common.check_bounds(ndata[k], self.sets, tdisp), 1.0])
                 else:
                     affected_sets.append(common.check_bounds(ndata[k], self.sets, tdisp))
-
-            #print(affected_sets)
 
             tmp = []
 
@@ -118,17 +109,13 @@ class NonStationaryFTS(fts.FTS):
 
             ret.append(pto)
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
-
         return ret
 
-    def forecast_interval(self, data, **kwargs):
+    def forecast_interval(self, ndata, **kwargs):
 
         time_displacement = kwargs.get("time_displacement", 0)
 
         window_size = kwargs.get("window_size", 1)
-
-        ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -178,7 +165,5 @@ class NonStationaryFTS(fts.FTS):
 
 
             ret.append([sum(lower), sum(upper)])
-
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret

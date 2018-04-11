@@ -18,11 +18,9 @@ class HighOrderFTS(fts.FTS):
         self.shortname = "Hwang" + name
         self.detail = "Hwang"
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, ndata, **kwargs):
 
         ordered_sets = FuzzySet.set_ordered(self.sets)
-
-        ndata = self.apply_transformations(data)
 
         l = len(self.sets)
 
@@ -51,8 +49,6 @@ class HighOrderFTS(fts.FTS):
                     out = out + self.sets[s].centroid
                     count += 1.0
             ret.append(out / count)
-
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret
 

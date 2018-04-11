@@ -15,7 +15,7 @@ class ConventionalFLRG(flrg.FLRG):
         self.LHS = LHS
         self.RHS = set()
 
-    def get_key(self):
+    def get_key(self, sets):
         return sets[self.LHS].name
 
     def append_rhs(self, c, **kwargs):
@@ -50,14 +50,11 @@ class ConventionalFTS(fts.FTS):
     def train(self, data, **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
-        ndata = self.apply_transformations(data)
-        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
+        tmpdata = FuzzySet.fuzzyfy_series_old(data, self.sets)
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs)
 
-    def forecast(self, data, **kwargs):
-
-        ndata = np.array(self.apply_transformations(data))
+    def forecast(self, ndata, **kwargs):
 
         l = len(ndata)
 
@@ -75,7 +72,5 @@ class ConventionalFTS(fts.FTS):
                 _flrg = self.flrgs[actual.name]
 
                 ret.append(_flrg.get_midpoint(self.sets))
-
-        ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret

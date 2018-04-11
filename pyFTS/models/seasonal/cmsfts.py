@@ -85,8 +85,6 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
 
             ret.append(sum(mp) / len(mp))
 
-        ret = self.doInverseTransformations(ret, params=[ndata])
-
         return ret
 
     def forecast_ahead(self, data, steps, **kwargs):
@@ -97,7 +95,5 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
             mp = self.get_midpoints(flrg)
 
             ret.append(sum(mp) / len(mp))
-
-        ret = self.doInverseTransformations(ret, params=data)
 
         return ret

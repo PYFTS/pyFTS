@@ -69,19 +69,16 @@ class ExponentialyWeightedFTS(fts.FTS):
         self.c = kwargs.get('parameters', default_c)
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
-        ndata = self.apply_transformations(data)
-        tmpdata = FuzzySet.fuzzyfy_series(ndata, self.sets, method='maximum')
+        tmpdata = FuzzySet.fuzzyfy_series(data, self.sets, method='maximum')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs, self.c)
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, ndata, **kwargs):
         l = 1
 
         ordered_sets = FuzzySet.set_ordered(self.sets)
 
         data = np.array(data)
-
-        ndata = self.apply_transformations(data)
 
         l = len(ndata)
 
@@ -98,7 +95,5 @@ class ExponentialyWeightedFTS(fts.FTS):
                 mp = flrg.get_midpoints(self.sets)
 
                 ret.append(mp.dot(flrg.weights()))
-
-        ret = self.apply_inverse_transformations(ret, params=[data])
 
         return ret

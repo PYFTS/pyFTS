@@ -44,16 +44,14 @@ class IntervalFTS(hofts.HighOrderFTS):
         return mb
 
 
-    def forecast_interval(self, data, **kwargs):
+    def forecast_interval(self, ndata, **kwargs):
 
         ret = []
 
-        l = len(data)
+        l = len(ndata)
 
         if l <= self.order:
-            return data
-
-        ndata = self.apply_transformations(data)
+            return ndata
 
         for k in np.arange(self.order, l+1):
 
@@ -77,7 +75,5 @@ class IntervalFTS(hofts.HighOrderFTS):
             lo_ = sum(lo) / norm
             up_ = sum(up) / norm
             ret.append([lo_, up_])
-
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], interval=True)
 
         return ret

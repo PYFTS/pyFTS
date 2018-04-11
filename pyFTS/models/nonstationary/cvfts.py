@@ -22,11 +22,9 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
         self.min_stack = [0,0,0]
         self.max_stack = [0,0,0]
 
-    def train(self, data, **kwargs):
+    def train(self, ndata, **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
-
-        ndata = self.apply_transformations(data)
 
         self.min_tx = min(ndata)
         self.max_tx = max(ndata)
@@ -84,9 +82,7 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
 
         return affected_sets
 
-    def forecast(self, data, **kwargs):
-        ndata = np.array(self.apply_transformations(data))
-
+    def forecast(self, ndata, **kwargs):
         l = len(ndata)
 
         ret = []
@@ -123,14 +119,10 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
 
             ret.append(pto)
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
-
         return ret
 
 
-    def forecast_interval(self, data, **kwargs):
-        ndata = np.array(self.apply_transformations(data))
-
+    def forecast_interval(self, ndata, **kwargs):
         l = len(ndata)
 
         ret = []
@@ -170,7 +162,5 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
             itvl = [sum(lower), sum(upper)]
 
             ret.append(itvl)
-
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
 
         return ret
