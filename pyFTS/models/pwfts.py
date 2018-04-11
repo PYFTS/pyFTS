@@ -106,8 +106,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         self.has_probability_forecasting = True
         self.is_high_order = True
         self.auto_update = kwargs.get('update',False)
-        self.interval_method = kwargs.get('interval_method','extremum')
-        self.alpha = kwargs.get('alpha', 0.05)
+
 
     def train(self, data, **kwargs):
 
@@ -259,14 +258,52 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def forecast(self, data, **kwargs):
         method = kwargs.get('method','heuristic')
 
-        if method == 'heuristic':
-            return self.point_heuristic(data, **kwargs)
-        elif method == 'expected_value':
-            return self.point_expected_value(data, **kwargs)
-        else:
-            raise Exception("Unknown point forecasting method!")
+        l = len(data)
 
-    def point_heuristic(self, ndata, **kwargs):
+        ret = []
+
+        for k in np.arange(self.order - 1, l):
+            sample = data[k - (self.order - 1): k + 1]
+
+            if method == 'heuristic':
+                ret.append(self.point_heuristic(sample, **kwargs))
+            elif method == 'expected_value':
+                ret.append(self.point_expected_value(sample, **kwargs))
+            else:
+                raise ValueError("Unknown point forecasting method!")
+
+            if self.auto_update and k > self.order+1: self.update_model(data[k - self.order - 1 : k])
+
+        return ret
+
+    def point_heuristic(self, sample, **kwargs):
+
+        flrgs = self.generate_lhs_flrg(sample)
+
+        mp = []
+        norms = []
+        for flrg in flrgs:
+            norm = self.flrg_lhs_conditional_probability(sample, flrg)
+            if norm == 0:
+                norm = self.flrg_lhs_unconditional_probability(flrg)
+            mp.append(norm * self.get_midpoint(flrg))
+            norms.append(norm)
+
+        norm = sum(norms)
+        if norm == 0:
+            return 0
+        else:
+            return sum(mp) / norm
+
+
+    def point_expected_value(self, sample, **kwargs):
+       return self.forecast_distribution(sample)[0].expected_value()
+
+
+    def forecast_interval(self, ndata, **kwargs):
+
+        method = kwargs.get('method','heuristic')
+        alpha = kwargs.get('alpha', 0.05)
 
         l = len(ndata)
 
@@ -276,71 +313,21 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             sample = ndata[k - (self.order - 1): k + 1]
 
-            flrgs = self.generate_lhs_flrg(sample)
-
-            mp = []
-            norms = []
-            for flrg in flrgs:
-                norm = self.flrg_lhs_conditional_probability(sample, flrg)
-                if norm == 0:
-                    norm = self.flrg_lhs_unconditional_probability(flrg)  # * 0.001
-                mp.append(norm * self.get_midpoint(flrg))
-                norms.append(norm)
-
-                # gerar o intervalo
-            norm = sum(norms)
-            if norm == 0:
-                ret.append(0)
+            if method == 'heuristic':
+                ret.append(self.interval_heuristic(sample))
+            elif method == 'quantile':
+                ret.append(self.interval_quantile(sample, alpha))
             else:
-                ret.append(sum(mp) / norm)
-
-        if self.auto_update and k > self.order+1: self.update_model(ndata[k - self.order - 1 : k])
+                raise ValueError("Unknown interval forecasting method!")
 
         return ret
 
-    def point_expected_value(self, data, **kwargs):
-        l = len(data)
-
-        ret = []
-
-        for k in np.arange(self.order - 1, l):
-            sample = data[k - (self.order - 1): k + 1]
-
-            tmp = self.forecast_distribution(sample)[0].expected_value()
-
-            ret.append(tmp)
-
-        return ret
-
-    def forecast_interval(self, ndata, **kwargs):
-
-        if 'method' in kwargs:
-            self.interval_method = kwargs.get('method','heuristic')
-
-        if 'alpha' in kwargs:
-            self.alpha = kwargs.get('alpha', 0.05)
-
-        l = len(ndata)
-
-        ret = []
-
-        for k in np.arange(self.order - 1, l):
-
-            if self.interval_method == 'heuristic':
-                self.interval_heuristic(k, ndata, ret)
-            else:
-                self.interval_quantile(k, ndata, ret)
-
-        return ret
-
-    def interval_quantile(self, k, ndata, ret):
+    def interval_quantile(self, ndata, alpha):
         dist = self.forecast_distribution(ndata)
-        itvl = dist[0].quantile([self.alpha, 1.0 - self.alpha])
-        ret.append(itvl)
+        itvl = dist[0].quantile([alpha, 1.0 - alpha])
+        return itvl
 
-    def interval_heuristic(self, k, ndata, ret):
-
-        sample = ndata[k - (self.order - 1): k + 1]
+    def interval_heuristic(self, sample):
 
         flrgs = self.generate_lhs_flrg(sample)
 
@@ -358,11 +345,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             # gerar o intervalo
         norm = sum(norms)
         if norm == 0:
-            ret.append([0, 0])
+            return [0, 0]
         else:
             lo_ = sum(lo) / norm
             up_ = sum(up) / norm
-            ret.append([lo_, up_])
+            return [lo_, up_]
 
     def forecast_distribution(self, ndata, **kwargs):
 

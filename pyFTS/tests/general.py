@@ -44,8 +44,11 @@ pfts1_taiex.shortname = "1st Order"
 
 print(pfts1_taiex)
 
-tmp = pfts1_taiex.predict(dataset[train_split:train_split+200], type='interval',
-                          method='quantile', alpha=.05, steps_ahead=10)
+tmp = pfts1_taiex.predict(dataset[train_split:train_split+20], type='interval',
+                          method='heuristic')
+
+
+print(tmp)
 
 
 
