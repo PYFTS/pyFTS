@@ -111,25 +111,17 @@ class NonStationaryFTS(fts.FTS):
 
             tdisp = common.window_index(k + time_displacement, window_size)
 
-            if self.method == 'fuzzy':
-                affected_sets = [[set, set.membership(ndata[k], tdisp)]
-                                 for set in self.sets if set.membership(ndata[k], tdisp) > 0.0]
-            elif self.method == 'maximum':
-                mv = [set.membership(ndata[k], tdisp) for set in self.sets]
-                ix = np.ravel(np.argwhere(mv == max(mv)))
-                affected_sets = [self.sets[x] for x in ix]
+            affected_sets = [[self.sets[key], self.sets[key].membership(ndata[k], tdisp)]
+                             for key in self.partitioner.ordered_sets
+                             if self.sets[key].membership(ndata[k], tdisp) > 0.0]
 
             if len(affected_sets) == 0:
-                if self.method == 'fuzzy':
-                    affected_sets.append([common.check_bounds(ndata[k], self.sets, tdisp), 1.0])
-                else:
-                    affected_sets.append(common.check_bounds(ndata[k], self.sets, tdisp))
+                affected_sets.append([common.check_bounds(ndata[k], self.partitioner, tdisp), 1.0])
 
             upper = []
             lower = []
 
             if len(affected_sets) == 1:
-                #print(2)
                 aset = affected_sets[0][0]
                 if aset.name in self.flrgs:
                     lower.append(self.flrgs[aset.name].get_lower(tdisp))
@@ -139,7 +131,6 @@ class NonStationaryFTS(fts.FTS):
                     upper.append(aset.get_upper(tdisp))
             else:
                 for aset in affected_sets:
-                    #print(aset)
                     if aset[0].name in self.flrgs:
                         lower.append(self.flrgs[aset[0].name].get_lower(tdisp) * aset[1])
                         upper.append(self.flrgs[aset[0].name].get_upper(tdisp) * aset[1])

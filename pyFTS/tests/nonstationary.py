@@ -30,3 +30,5 @@ print(fs1)
 print(nsfts1.predict(test1))
 
 print(nsfts1)
+
+util.plot_sets(fs1, tam=[10, 5], start=0, end=100, step=2, data=lmv1[:100], window_size=35)

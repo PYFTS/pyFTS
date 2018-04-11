@@ -873,6 +873,15 @@ def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False
     return [mi, ma]
 
 
+def plot_point(axis, points, order, label, color='red', ls='-', linewidth=1):
+    mi = min(points) * 0.95
+    ma = max(points) * 1.05
+    for k in np.arange(0, order):
+        points.insert(0, None)
+    axis.plot(points, color=color, label=label, ls=ls,linewidth=linewidth)
+    return [mi, ma]
+
+
 
 def plot_compared_series(original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5],
                          points=True, intervals=True, linewidth=1.5):

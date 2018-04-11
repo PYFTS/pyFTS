@@ -15,27 +15,27 @@ def plot_sets(partitioner, start=0, end=10, step=1, tam=[5, 5], colors=None,
         fig, axes = plt.subplots(nrows=1, ncols=1, figsize=tam)
 
     for ct, key in enumerate(partitioner.ordered_sets):
-        set = partitioner.sets[key]
+        fset = partitioner.sets[key]
         if not only_lines:
             for t in range:
                 tdisp = t - (t % window_size)
-                set.membership(0, tdisp)
-                param = set.perturbated_parameters[str(tdisp)]
+                fset.membership(0, tdisp)
+                param = fset.perturbated_parameters[str(tdisp)]
 
-                if set.mf == Membership.trimf:
+                if fset.mf == Membership.trimf:
                     if t == start:
-                        line = axes.plot([t, t+1, t], param, label=set.name)
-                        set.metadata['color'] = line[0].get_color()
+                        line = axes.plot([t, t+1, t], param, label=fset.name)
+                        fset.metadata['color'] = line[0].get_color()
                     else:
-                        axes.plot([t, t + 1, t], param,c=set.metadata['color'])
+                        axes.plot([t, t + 1, t], param,c=fset.metadata['color'])
 
                 ticks.extend(["t+"+str(t),""])
         else:
             tmp = []
             for t in range:
                 tdisp = t - (t % window_size)
-                set.membership(0, tdisp)
-                param = set.perturbated_parameters[str(tdisp)]
+                fset.membership(0, tdisp)
+                param = fset.perturbated_parameters[str(tdisp)]
                 tmp.append(np.polyval(param, tdisp))
             axes.plot(range, tmp, ls="--", c="blue")
 
