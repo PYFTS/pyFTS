@@ -95,6 +95,9 @@ class ProbabilityDistribution(object):
 
         return ret
 
+    def expected_value(self):
+        return np.nansum([v * self.distribution[v] for v in self.bins])
+
     def build_cdf_qtl(self):
         ret = 0.0
         self.cdf = {}
@@ -137,7 +140,7 @@ class ProbabilityDistribution(object):
                 ret.append(self.qtl[str(k)][0])
         else:
             k = self.quantile_index.find_ge(values)
-            ret = self.qtl[str(k)[0]]
+            ret = self.qtl[str(k)]
 
         return ret
 

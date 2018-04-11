@@ -16,6 +16,7 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
 from pyFTS.probabilistic import ProbabilityDistribution
+from pyFTS.common import Transformations
 from pyFTS.models import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, hwang
 from pyFTS.models.ensemble import ensemble
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, quantreg
@@ -831,10 +832,6 @@ def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to
     ax.add_collection(pc)
     cb = fig.colorbar(pc, ax=ax)
     cb.set_label('Density')
-
-
-from pyFTS.common import Transformations
-
 
 
 def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=None):

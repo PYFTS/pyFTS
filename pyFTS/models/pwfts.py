@@ -257,6 +257,16 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         return ret
 
     def forecast(self, data, **kwargs):
+        method = kwargs.get('method','heuristic')
+
+        if method == 'heuristic':
+            return self.point_heuristic(data, **kwargs)
+        elif method == 'expected_value':
+            return self.point_expected_value(data, **kwargs)
+        else:
+            raise Exception("Unknown point forecasting method!")
+
+    def point_heuristic(self, data, **kwargs):
 
         ndata = np.array(self.apply_transformations(data))
 
@@ -292,10 +302,26 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         return ret
 
+    def point_expected_value(self, data, **kwargs):
+        l = len(data)
+
+        ret = []
+
+        for k in np.arange(self.order - 1, l):
+            sample = data[k - (self.order - 1): k + 1]
+
+            tmp = self.forecast_distribution(sample)[0].expected_value()
+
+            ret.append(tmp)
+
+        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
+
+        return ret
+
     def forecast_interval(self, data, **kwargs):
 
         if 'method' in kwargs:
-            self.interval_method = kwargs.get('method','quantile')
+            self.interval_method = kwargs.get('method','heuristic')
 
         if 'alpha' in kwargs:
             self.alpha = kwargs.get('alpha', 0.05)
@@ -308,8 +334,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         for k in np.arange(self.order - 1, l):
 
-            if self.interval_method == 'extremum':
-                self.interval_extremum(k, ndata, ret)
+            if self.interval_method == 'heuristic':
+                self.interval_heuristic(k, ndata, ret)
             else:
                 self.interval_quantile(k, ndata, ret)
 
@@ -321,9 +347,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         dist = self.forecast_distribution(ndata)
         lo_qt = dist[0].quantile(self.alpha)
         up_qt = dist[0].quantile(1.0 - self.alpha)
-        ret.append_rhs([lo_qt, up_qt])
+        ret.append([lo_qt, up_qt])
 
-    def interval_extremum(self, k, ndata, ret):
+    def interval_heuristic(self, k, ndata, ret):
 
         sample = ndata[k - (self.order - 1): k + 1]
 
@@ -335,7 +361,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         for flrg in flrgs:
             norm = self.flrg_lhs_conditional_probability(sample, flrg)
             if norm == 0:
-                norm = self.flrg_lhs_unconditional_probability(flrg)  # * 0.001
+                norm = self.flrg_lhs_unconditional_probability(flrg)
             up.append(norm * self.get_upper(flrg))
             lo.append(norm * self.get_lower(flrg))
             norms.append(norm)
@@ -348,7 +374,6 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             lo_ = sum(lo) / norm
             up_ = sum(up) / norm
             ret.append([lo_, up_])
-
 
     def forecast_distribution(self, data, **kwargs):
 
@@ -425,8 +450,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 1] >= self.original_max):
                 ret.append(ret[-1])
             else:
-                lower = self.forecast_interval([ret[x][0] for x in np.arange(k - self.order, k)])
-                upper = self.forecast_interval([ret[x][1] for x in np.arange(k - self.order, k)])
+                lower = self.forecast_interval([ret[x][0] for x in np.arange(k - self.order, k)], **kwargs)
+                upper = self.forecast_interval([ret[x][1] for x in np.arange(k - self.order, k)], **kwargs)
 
                 ret.append([np.min(lower), np.max(upper)])
 
