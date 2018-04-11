@@ -1,6 +1,7 @@
 import numpy as np
 from pyFTS.partitioners import partitioner
 from pyFTS.models.nonstationary import common, perturbation
+from pyFTS.common import FuzzySet as stationary_fs
 
 
 class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
@@ -13,13 +14,18 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
         super(PolynomialNonStationaryPartitioner, self).__init__(name=part.name, data=data, npart=part.partitions,
                                                                  func=part.membership_function, names=part.setnames,
                                                                  prefix=part.prefix, transformation=part.transformation,
-                                                                 indexer=part.indexer)
+                                                                 indexer=part.indexer, preprocess=False)
 
         self.sets = {}
 
         loc_params, wid_params = self.get_polynomial_perturbations(data, **kwargs)
 
-        for ct, key in enumerate(part.sets.keys()):
+        if self.ordered_sets is None and self.setnames is not None:
+            self.ordered_sets = part.setnames
+        else:
+            self.ordered_sets = stationary_fs.set_ordered(part.sets)
+
+        for ct, key in enumerate(self.ordered_sets):
             set = part.sets[key]
             loc_roots = np.roots(loc_params[ct])[0]
             wid_roots = np.roots(wid_params[ct])[0]

@@ -23,13 +23,10 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
         self.max_stack = [0,0,0]
 
     def train(self, ndata, **kwargs):
-        if kwargs.get('sets', None) is not None:
-            self.sets = kwargs.get('sets', None)
-
         self.min_tx = min(ndata)
         self.max_tx = max(ndata)
 
-        tmpdata = common.fuzzySeries(ndata, self.sets, method='fuzzy', const_t=0)
+        tmpdata = common.fuzzySeries(ndata, self.sets, self.partitioner.ordered_sets, method='fuzzy', const_t=0)
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs)
 
@@ -69,14 +66,14 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
 
     def _affected_sets(self, sample, perturb):
 
-        affected_sets = [[ct, set.membership(sample, perturb[ct])]
-                         for ct, set in enumerate(self.sets)
-                         if set.membership(sample, perturb[ct]) > 0.0]
+        affected_sets = [[ct, self.sets[key].membership(sample, perturb[ct])]
+                         for ct, key in enumerate(self.partitioner.ordered_sets)
+                         if self.sets[key].membership(sample, perturb[ct]) > 0.0]
 
         if len(affected_sets) == 0:
-            if sample < self.sets[0].get_lower(perturb[0]):
+            if sample < self.partitioner.lower_set().get_lower(perturb[0]):
                 affected_sets.append([0, 1])
-            elif sample < self.sets[-1].get_lower(perturb[-1]):
+            elif sample > self.partitioner.upper_set().get_upper(perturb[-1]):
                 affected_sets.append([len(self.sets) - 1, 1])
 
 

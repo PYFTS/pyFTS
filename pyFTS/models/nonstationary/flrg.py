@@ -11,7 +11,10 @@ class NonStationaryFLRG(flrg.FLRG):
         self.RHS = set()
 
     def get_key(self):
-        return self.LHS.name
+        if isinstance(self.LHS, list):
+            return str([k.name for k in self.LHS])
+        else:
+            return self.LHS.name
 
     def get_membership(self, data, t, window_size=1):
         ret = 0.0

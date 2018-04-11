@@ -46,25 +46,27 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
             disp = common.window_index(k, window_size)
 
-            rhs = [set for set in self.sets if set.membership(data[k], disp) > 0.0]
+            rhs = [self.sets[key] for key in self.partitioner.ordered_sets
+                   if self.sets[key].membership(data[k], disp) > 0.0]
 
             if len(rhs) == 0:
-                rhs = [common.check_bounds(data[k], self.sets, disp)]
+                rhs = [common.check_bounds(data[k], self.partitioner, disp)]
 
             lags = {}
 
             for o in np.arange(0, self.order):
                 tdisp = common.window_index(k - (self.order - o), window_size)
-                lhs = [set for set in self.sets if set.membership(sample[o], tdisp) > 0.0]
+                lhs = [self.sets[key] for key in self.partitioner.ordered_sets
+                   if self.sets[key].membership(sample[o], tdisp) > 0.0]
 
                 if len(lhs) == 0:
-                    lhs = [common.check_bounds(sample[o], self.sets, tdisp)]
+                    lhs = [common.check_bounds(sample[o], self.partitioner, tdisp)]
 
                 lags[o] = lhs
 
             root = tree.FLRGTreeNode(None)
 
-            self.build_tree_without_order(root, lags, 0)
+            tree.build_tree_without_order(root, lags, 0)
 
             # Trace the possible paths
             for p in root.paths():
@@ -103,10 +105,12 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
         for ct, dat in enumerate(sample):
             tdisp = common.window_index((k + time_displacement) - (self.order - ct), window_size)
-            sel = [ct for ct, set in enumerate(self.sets) if set.membership(dat, tdisp) > 0.0]
+
+            sel = [ct for ct, key in enumerate(self.partitioner.ordered_sets)
+                   if self.sets[key].membership(dat, tdisp) > 0.0]
 
             if len(sel) == 0:
-                sel.append(common.check_bounds_index(dat, self.sets, tdisp))
+                sel.append(common.check_bounds_index(dat, self.partitioner, tdisp))
 
             lags[ct] = sel
 
@@ -114,7 +118,7 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
 
         root = tree.FLRGTreeNode(None)
 
-        self.build_tree(root, lags, 0)
+        tree.build_tree_without_order(root, lags, 0)
 
         # Trace the possible paths and build the PFLRG's
 
@@ -123,7 +127,7 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
             flrg = HighOrderNonStationaryFLRG(self.order)
 
             for kk in path:
-                flrg.append_lhs(self.sets[kk])
+                flrg.append_lhs(self.sets[self.partitioner.ordered_sets[kk]])
 
             affected_flrgs.append(flrg)
             # affected_flrgs_memberships.append_rhs(flrg.get_membership(sample, disp))
@@ -135,17 +139,9 @@ class HighOrderNonStationaryFTS(hofts.HighOrderFTS):
             for ct, dat in enumerate(sample):
                 td = common.window_index((k + time_displacement) - (self.order - ct), window_size)
                 tmp = flrg.LHS[ct].membership(dat, td)
-                # print('td',td)
-                # print('dat',dat)
-                # print(flrg.LHS[ct].name, flrg.LHS[ct].perturbated_parameters[td])
-                # print(tmp)
 
-                if (tmp == 0.0 and flrg.LHS[ct].name == self.sets[0].name and dat < self.sets[0].get_lower(td)) \
-                        or (tmp == 0.0 and flrg.LHS[ct].name == self.sets[-1].name and dat > self.sets[-1].get_upper(
-                            td)):
-                    mv.append(1.0)
-                else:
-                    mv.append(tmp)
+
+                mv.append(tmp)
             # print(mv)
 
             affected_flrgs_memberships.append(np.prod(mv))

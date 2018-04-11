@@ -34,7 +34,6 @@ class NonStationaryFTS(fts.FTS):
         self.name = "Non Stationary FTS"
         self.detail = ""
         self.flrgs = {}
-        self.method = kwargs.get("method",'fuzzy')
 
     def generate_flrg(self, flrs, **kwargs):
         for flr in flrs:
@@ -46,11 +45,9 @@ class NonStationaryFTS(fts.FTS):
 
     def train(self, data, **kwargs):
 
-        if kwargs.get('sets', None) is not None:
-            self.sets = kwargs.get('sets', None)
-
         window_size = kwargs.get('parameters', 1)
-        tmpdata = common.fuzzySeries(data, self.sets, window_size, method=self.method)
+        tmpdata = common.fuzzySeries(data, self.sets, self.partitioner.ordered_sets,
+                                     window_size, method='fuzzy')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs)
 
@@ -68,23 +65,16 @@ class NonStationaryFTS(fts.FTS):
 
             tdisp = common.window_index(k + time_displacement, window_size)
 
-            if self.method == 'fuzzy':
-                affected_sets = [ [set, set.membership(ndata[k], tdisp)]
-                                  for set in self.sets if set.membership(ndata[k], tdisp) > 0.0]
-            elif self.method == 'maximum':
-                mv = [set.membership(ndata[k], tdisp) for set in self.sets]
-                ix = np.ravel(np.argwhere(mv == max(mv)))
-                affected_sets = [self.sets[x] for x in ix]
+            affected_sets = [ [self.sets[key], self.sets[key].membership(ndata[k], tdisp)]
+                              for key in self.partitioner.ordered_sets
+                              if self.sets[key].membership(ndata[k], tdisp) > 0.0]
 
             if len(affected_sets) == 0:
-                if self.method == 'fuzzy':
-                    affected_sets.append([common.check_bounds(ndata[k], self.sets, tdisp), 1.0])
-                else:
-                    affected_sets.append(common.check_bounds(ndata[k], self.sets, tdisp))
+                affected_sets.append([common.check_bounds(ndata[k], self.partitioner, tdisp), 1.0])
 
             tmp = []
 
-            if len(affected_sets) == 1 and self.method == 'fuzzy':
+            if len(affected_sets) == 1:
                 aset = affected_sets[0][0]
                 if aset.name in self.flrgs:
                     tmp.append(self.flrgs[aset.name].get_midpoint(tdisp))
@@ -92,16 +82,10 @@ class NonStationaryFTS(fts.FTS):
                     tmp.append(aset.get_midpoint(tdisp))
             else:
                 for aset in affected_sets:
-                    if self.method == 'fuzzy':
-                        if aset[0].name in self.flrgs:
-                            tmp.append(self.flrgs[aset[0].name].get_midpoint(tdisp) * aset[1])
-                        else:
-                            tmp.append(aset[0].get_midpoint(tdisp) * aset[1])
-                    elif self.method == 'maximum':
-                        if aset.name in self.flrgs:
-                            tmp.append(self.flrgs[aset.name].get_midpoint(tdisp))
-                        else:
-                            tmp.append(aset.get_midpoint(tdisp))
+                    if aset[0].name in self.flrgs:
+                        tmp.append(self.flrgs[aset[0].name].get_midpoint(tdisp) * aset[1])
+                    else:
+                        tmp.append(aset[0].get_midpoint(tdisp) * aset[1])
 
             pto = sum(tmp)
 

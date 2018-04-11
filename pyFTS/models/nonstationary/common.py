@@ -205,11 +205,11 @@ def fuzzify(inst, t, fuzzySets):
     return ret
 
 
-def fuzzySeries(data, fuzzySets, window_size=1, method='fuzzy', const_t= None):
+def fuzzySeries(data, fuzzySets, ordered_sets, window_size=1, method='fuzzy', const_t= None):
     fts = []
     for t, i in enumerate(data):
         tdisp = window_index(t, window_size) if const_t is None else const_t
-        mv = np.array([fs.membership(i, tdisp) for fs in fuzzySets])
+        mv = np.array([fuzzySets[fs].membership(i, tdisp) for fs in ordered_sets])
         if len(mv) == 0:
             sets = [check_bounds(i, fuzzySets, tdisp)]
         else:
@@ -218,7 +218,7 @@ def fuzzySeries(data, fuzzySets, window_size=1, method='fuzzy', const_t= None):
             elif method == 'maximum':
                 mx = max(mv)
                 ix = np.ravel(np.argwhere(mv == mx))
-            sets = [fuzzySets[i] for i in ix]
+            sets = [fuzzySets[ordered_sets[i]] for i in ix]
         fts.append(sets)
     return fts
 
@@ -229,15 +229,15 @@ def window_index(t, window_size):
     return t - (t % window_size)
 
 
-def check_bounds(data, sets, t):
-    if data < sets[0].get_lower(t):
-        return sets[0]
-    elif data > sets[-1].get_upper(t):
-        return sets[-1]
+def check_bounds(data, partitioner, t):
+    if data < partitioner.lower_set().get_lower(t):
+        return partitioner.lower_set()
+    elif data > partitioner.upper_set().get_upper(t):
+        return partitioner.upper_set()
 
 
-def check_bounds_index(data, sets, t):
-    if data < sets[0].get_lower(t):
+def check_bounds_index(data, partitioner, t):
+    if data < partitioner.lower_set().get_lower(t):
         return 0
-    elif data > sets[-1].get_upper(t):
-        return len(sets) -1
+    elif data > partitioner.upper_set().get_upper(t):
+        return len(partitioner.sets) -1
