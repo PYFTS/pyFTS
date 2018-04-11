@@ -77,6 +77,12 @@ class Partitioner(object):
     def get_name(self, counter):
         return self.prefix + str(counter) if self.setnames is None else self.setnames[counter]
 
+    def lower_set(self):
+        return self.sets[self.ordered_sets[0]]
+
+    def upper_set(self):
+        return self.sets[self.ordered_sets[-1]]
+
     def plot(self, ax):
         """
         Plot the 

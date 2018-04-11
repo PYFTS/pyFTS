@@ -59,7 +59,8 @@ class FuzzySet(object):
 
 
 def set_ordered(fuzzySets):
-    return [k for k in sorted(fuzzySets.keys())]
+    tmp1 = [fuzzySets[k] for k in fuzzySets.keys()]
+    return [k.name for k in sorted(tmp1, key=lambda x: x.centroid)]
 
 
 def fuzzyfy_instance(inst, fuzzySets, ordered_sets=None):

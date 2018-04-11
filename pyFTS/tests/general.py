@@ -31,21 +31,21 @@ train_split = 2000
 test_length = 200
 
 from pyFTS.partitioners import Grid, Util as pUtil
-partitioner = Grid.GridPartitioner(data=dataset[:train_split], npart=30)
-#partitioner = Grid.GridPartitioner(data=dataset[:train_split], npart=10, transformation=tdiff)
+#partitioner = Grid.GridPartitioner(data=dataset[:train_split], npart=30)
+partitioner = Grid.GridPartitioner(data=dataset[:train_split], npart=10, transformation=tdiff)
 
 from pyFTS.common import fts,tree
 from pyFTS.models import hofts, pwfts
 
 pfts1_taiex = pwfts.ProbabilisticWeightedFTS("1", partitioner=partitioner)
-#pfts1_taiex.append_transformation(tdiff)
+pfts1_taiex.append_transformation(tdiff)
 pfts1_taiex.fit(dataset[:train_split], save_model=True, file_path='pwfts')
 pfts1_taiex.shortname = "1st Order"
 
 print(pfts1_taiex)
 
-tmp = pfts1_taiex.predict(dataset[train_split:train_split+20], type='interval',
-                          method='heuristic')
+tmp = pfts1_taiex.predict(dataset[train_split:train_split+20], type='point',
+                          method='heuristic', steps_ahead=10)
 
 
 print(tmp)

@@ -395,31 +395,45 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         return ret
 
+    def __check_point_bounds(self, point):
+        lower_set = self.partitioner.lower_set()
+        upper_set = self.partitioner.upper_set()
+        return point <= lower_set.lower or point >= upper_set.upper
+
     def forecast_ahead(self, data, steps, **kwargs):
         ret = [data[k] for k in np.arange(len(data) - self.order, len(data))]
 
         for k in np.arange(self.order - 1, steps):
 
-            if ret[-1] <= self.sets[0].lower or ret[-1] >= self.sets[-1].upper:
+            if self.__check_point_bounds(ret[-1]) :
                 ret.append(ret[-1])
             else:
-                mp = self.forecast([ret[x] for x in np.arange(k - self.order, k)])
-
+                mp = self.forecast([ret[x] for x in np.arange(k - self.order, k)], **kwargs)
                 ret.append(mp)
 
-        return ret
+        return ret[self.order:]
+
+    def __check_interval_bounds(self, interval):
+        if len(self.transformations) > 0:
+            lower_set = self.partitioner.lower_set()
+            upper_set = self.partitioner.upper_set()
+            return interval[0] <= lower_set.lower and interval[1] >= upper_set.upper
+        elif len(self.transformations) == 0:
+            return interval[0] <= self.original_min and interval[1] >= self.original_max
 
     def forecast_ahead_interval(self, data, steps, **kwargs):
 
         l = len(data)
 
-        ret = [[data[k], data[k]] for k in np.arange(l - self.order, l)]
+        start = kwargs.get('start', self.order)
+
+        sample = data[start - (self.order - 1): start + 1]
+
+        ret = [[k, k] for k in sample]
 
         for k in np.arange(self.order, steps+self.order):
 
-            if (len(self.transformations) > 0 and ret[-1][0] <= self.sets[0].lower and ret[-1][1] >= self.sets[
-                -1].upper) or (len(self.transformations) == 0 and ret[-1][0] <= self.original_min and ret[-1][
-                1] >= self.original_max):
+            if self.__check_interval_bounds(ret[-1]):
                 ret.append(ret[-1])
             else:
                 lower = self.forecast_interval([ret[x][0] for x in np.arange(k - self.order, k)], **kwargs)
@@ -427,7 +441,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 ret.append([np.min(lower), np.max(upper)])
 
-        return ret
+        return ret[self.order:]
 
     def forecast_ahead_distribution(self, ndata, steps, **kwargs):
 
@@ -490,9 +504,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             ret.append(dist)
 
-        ret = ret[self.order:]
-
-        return ret
+        return ret[self.order:]
 
     def __str__(self):
         tmp = self.name + ":\n"
