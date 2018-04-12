@@ -293,6 +293,9 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
     transformation = kwargs.get('transformation', None)
     indexer = kwargs.get('indexer', None)
 
+    steps_ahead = kwargs.get('steps_ahead', 1)
+    method = kwargs.get('method', None)
+
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "")
     else:
@@ -313,7 +316,8 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
     _end = time.time()
     times += _end - _start
 
-    ret = {'key': _key, 'obj': mfts, 'rmse': _rmse, 'smape': _smape, 'u': _u, 'time': times, 'window': window_key}
+    ret = {'key': _key, 'obj': mfts, 'rmse': _rmse, 'smape': _smape, 'u': _u, 'time': times, 'window': window_key,
+           'steps': steps_ahead, 'method': method}
 
     return ret
 
@@ -346,6 +350,9 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
     transformation = kwargs.get('transformation', None)
     indexer = kwargs.get('indexer', None)
 
+    steps_ahead = kwargs.get('steps_ahead', 1)
+    method = kwargs.get('method', None)
+
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
     else:
@@ -367,7 +374,8 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
     times += _end - _start
 
     ret = {'key': _key, 'obj': mfts, 'sharpness': _sharp, 'resolution': _res, 'coverage': _cov, 'time': times,
-           'Q05': _q05, 'Q25': _q25, 'Q75': _q75, 'Q95': _q95, 'window': window_key}
+           'Q05': _q05, 'Q25': _q25, 'Q75': _q75, 'Q95': _q95, 'window': window_key,
+           'steps': steps_ahead, 'method': method}
 
     return ret
 
@@ -403,6 +411,9 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
     transformation = kwargs.get('transformation', None)
     indexer = kwargs.get('indexer', None)
 
+    steps_ahead = kwargs.get('steps_ahead', 1)
+    method = kwargs.get('method', None)
+
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
     else:
@@ -429,7 +440,8 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
         _crps1 = np.nan
         _t1 = np.nan
 
-    ret = {'key': _key, 'obj': mfts, 'CRPS': _crps1, 'time': _t1, 'window': window_key}
+    ret = {'key': _key, 'obj': mfts, 'CRPS': _crps1, 'time': _t1, 'window': window_key,
+           'steps': steps_ahead, 'method': method}
 
     return ret
 
@@ -466,6 +478,8 @@ def process_point_jobs(jobs, experiments, save=False, file=None, sintetic=False)
     smape = {}
     u = {}
     times = {}
+    steps = None
+    method = None
 
     for job in jobs:
         _key = job['key']
@@ -475,6 +489,8 @@ def process_point_jobs(jobs, experiments, save=False, file=None, sintetic=False)
             smape[_key] = []
             u[_key] = []
             times[_key] = []
+            steps[_key] = job['steps']
+            method[_key] = job['method']
         rmse[_key].append(job['rmse'])
         smape[_key].append(job['smape'])
         u[_key].append(job['u'])

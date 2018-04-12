@@ -47,8 +47,8 @@ def find_best(dataframe, criteria, ascending):
 
 
 def point_dataframe_synthetic_columns():
-    return ["Model", "Order", "Scheme", "Partitions", "Size", "RMSEAVG", "RMSESTD", "SMAPEAVG", "SMAPESTD", "UAVG",
-            "USTD", "TIMEAVG", "TIMESTD"]
+    return ["Model", "Order", "Scheme", "Partitions", "Size", "Steps", "Method", "RMSEAVG", "RMSESTD",
+            "SMAPEAVG", "SMAPESTD", "UAVG","USTD", "TIMEAVG", "TIMESTD"]
 
 
 def point_dataframe_analytic_columns(experiments):
@@ -58,11 +58,13 @@ def point_dataframe_analytic_columns(experiments):
     columns.insert(2, "Scheme")
     columns.insert(3, "Partitions")
     columns.insert(4, "Size")
-    columns.insert(5, "Measure")
+    columns.insert(5, "Steps")
+    columns.insert(6, "Method")
+    columns.insert(7, "Measure")
     return columns
 
 
-def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, times, u):
+def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, times, u, steps, method):
     """
     Create a dataframe to store the benchmark results
     :param experiments: dictionary with the execution results
@@ -90,6 +92,8 @@ def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, 
                     mod.append(mfts.partitioner.name)
                     mod.append(mfts.partitioner.partitions)
                     mod.append(len(mfts))
+                    mod.append(steps)
+                    mod.append(method)
                 else:
                     mod.append('-')
                     mod.append('-')
@@ -122,17 +126,17 @@ def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, 
                     s = '-'
                     p = '-'
                     l = '-'
-                print([n, o, s, p, l])
-                tmp = [n, o, s, p, l, 'RMSE']
+                print([n, o, s, p, l, steps, method])
+                tmp = [n, o, s, p, l, steps, method, 'RMSE']
                 tmp.extend(rmse[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'SMAPE']
+                tmp = [n, o, s, p, l, steps, method, 'SMAPE']
                 tmp.extend(smape[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'U']
+                tmp = [n, o, s, p, l, steps, method, 'U']
                 tmp.extend(u[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'TIME']
+                tmp = [n, o, s, p, l, steps, method, 'TIME']
                 tmp.extend(times[k])
                 ret.append(deepcopy(tmp))
             except Exception as ex:
@@ -401,7 +405,8 @@ def check_ignore_list(b, ignore):
     return flag
 
 
-def save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times, q05, q25, q75, q95):
+def save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, synthetic, times,
+                            q05, q25, q75, q95, steps, method):
     ret = []
     if synthetic:
         for k in sorted(objs.keys()):
@@ -409,14 +414,19 @@ def save_dataframe_interval(coverage, experiments, file, objs, resolution, save,
             mfts = objs[k]
             mod.append(mfts.shortname)
             mod.append(mfts.order)
+            l = len(mfts)
             if not mfts.benchmark_only:
                 mod.append(mfts.partitioner.name)
                 mod.append(mfts.partitioner.partitions)
-                l = len(mfts)
+                mod.append(l)
+                mod.append(steps)
+                mod.append(method)
             else:
                 mod.append('-')
                 mod.append('-')
-                l = '-'
+                mod.append('-')
+                mod.append(steps)
+                mod.append(method)
             mod.append(round(np.nanmean(sharpness[k]), 2))
             mod.append(round(np.nanstd(sharpness[k]), 2))
             mod.append(round(np.nanmean(resolution[k]), 2))
@@ -452,28 +462,28 @@ def save_dataframe_interval(coverage, experiments, file, objs, resolution, save,
                     p = '-'
                     l = '-'
 
-                tmp = [n, o, s, p, l, 'Sharpness']
+                tmp = [n, o, s, p, l, steps, method, 'Sharpness']
                 tmp.extend(sharpness[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'Resolution']
+                tmp = [n, o, s, p, l, steps, method, 'Resolution']
                 tmp.extend(resolution[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'Coverage']
+                tmp = [n, o, s, p, l, steps, method, 'Coverage']
                 tmp.extend(coverage[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'TIME']
+                tmp = [n, o, s, p, l, steps, method, 'TIME']
                 tmp.extend(times[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'Q05']
+                tmp = [n, o, s, p, l, steps, method, 'Q05']
                 tmp.extend(q05[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'Q25']
+                tmp = [n, o, s, p, l, steps, method, 'Q25']
                 tmp.extend(q25[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'Q75']
+                tmp = [n, o, s, p, l, steps, method, 'Q75']
                 tmp.extend(q75[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'Q95']
+                tmp = [n, o, s, p, l, steps, method, 'Q95']
                 tmp.extend(q95[k])
                 ret.append(deepcopy(tmp))
             except Exception as ex:
@@ -492,16 +502,17 @@ def interval_dataframe_analytic_columns(experiments):
     columns.insert(2, "Scheme")
     columns.insert(3, "Partitions")
     columns.insert(4, "Size")
-    columns.insert(5, "Measure")
+    columns.insert(5, "Steps")
+    columns.insert(6, "Method")
+    columns.insert(7, "Measure")
     return columns
 
 
 
 def interval_dataframe_synthetic_columns():
-    columns = ["Model", "Order", "Scheme", "Partitions", "SHARPAVG", "SHARPSTD", "RESAVG", "RESSTD", "COVAVG",
+    columns = ["Model", "Order", "Scheme", "Partitions","SIZE", "Steps","Method" "SHARPAVG", "SHARPSTD", "RESAVG", "RESSTD", "COVAVG",
                "COVSTD", "TIMEAVG", "TIMESTD", "Q05AVG", "Q05STD", "Q25AVG", "Q25STD", "Q75AVG", "Q75STD", "Q95AVG", "Q95STD"]
     return columns
-
 
 
 def cast_dataframe_to_synthetic_interval(infile, outfile, experiments):
@@ -863,7 +874,7 @@ def plot_dataframe_interval_pinball(file_synthetic, file_analytic, experiments, 
     Util.show_and_save_image(fig, file, save)
 
 
-def save_dataframe_probabilistic(experiments, file, objs, crps, times, save, synthetic):
+def save_dataframe_probabilistic(experiments, file, objs, crps, times, save, synthetic, steps, method):
     """
     Save benchmark results for m-step ahead probabilistic forecasters 
     :param experiments: 
@@ -893,11 +904,15 @@ def save_dataframe_probabilistic(experiments, file, objs, crps, times, save, syn
                         if not mfts.benchmark_only:
                             mod.append(mfts.partitioner.name)
                             mod.append(mfts.partitioner.partitions)
-                            l = len(mfts)
+                            mod.append(len(mfts))
+                            mod.append(steps)
+                            mod.append(method)
                         else:
                             mod.append('-')
                             mod.append('-')
-                            l = '-'
+                            mod.append('-')
+                            mod.append(steps)
+                            mod.append(method)
                         mod.append(np.round(np.nanmean(crps[k]), 2))
                         mod.append(np.round(np.nanstd(crps[k]), 2))
                         mod.append(l)
@@ -925,10 +940,10 @@ def save_dataframe_probabilistic(experiments, file, objs, crps, times, save, syn
                     s = '-'
                     p = '-'
                     l = '-'
-                tmp = [n, o, s, p, l, 'CRPS']
+                tmp = [n, o, s, p, l, steps, method, 'CRPS']
                 tmp.extend(crps[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, 'TIME']
+                tmp = [n, o, s, p, l, steps, method, 'TIME']
                 tmp.extend(times[k])
                 ret.append(deepcopy(tmp))
             except Exception as ex:
@@ -940,7 +955,6 @@ def save_dataframe_probabilistic(experiments, file, objs, crps, times, save, syn
     return dat
 
 
-
 def probabilistic_dataframe_analytic_columns(experiments):
     columns = [str(k) for k in np.arange(0, experiments)]
     columns.insert(0, "Model")
@@ -948,12 +962,14 @@ def probabilistic_dataframe_analytic_columns(experiments):
     columns.insert(2, "Scheme")
     columns.insert(3, "Partitions")
     columns.insert(4, "Size")
-    columns.insert(5, "Measure")
+    columns.insert(5, "Steps")
+    columns.insert(6, "Method")
+    columns.insert(7, "Measure")
     return columns
 
 
 def probabilistic_dataframe_synthetic_columns():
-    columns = ["Model", "Order", "Scheme", "Partitions", "CRPSAVG", "CRPSSTD",
+    columns = ["Model", "Order", "Scheme", "Partitions","Size", "Steps", "Method", "CRPSAVG", "CRPSSTD",
                "TIMEAVG", "TIMESTD"]
     return columns
 

@@ -89,17 +89,17 @@ class FTS(object):
 
             steps_ahead = kwargs.get("steps_ahead", None)
 
-            if type == 'point' and steps_ahead == None:
+            if type == 'point' and (steps_ahead == None or steps_ahead == 1):
                 ret = self.forecast(ndata, **kwargs)
-            elif type == 'point' and steps_ahead != None:
+            elif type == 'point' and steps_ahead > 1:
                 ret = self.forecast_ahead(ndata, steps_ahead, **kwargs)
-            elif type == 'interval' and steps_ahead == None:
+            elif type == 'interval' and (steps_ahead == None or steps_ahead == 1):
                 ret = self.forecast_interval(ndata, **kwargs)
-            elif type == 'interval' and steps_ahead != None:
+            elif type == 'interval' and steps_ahead > 1:
                 ret = self.forecast_ahead_interval(ndata, steps_ahead, **kwargs)
-            elif type == 'distribution' and steps_ahead == None:
+            elif type == 'distribution' and (steps_ahead == None or steps_ahead == 1):
                 ret = self.forecast_distribution(ndata, **kwargs)
-            elif type == 'distribution' and steps_ahead != None:
+            elif type == 'distribution' and steps_ahead > 1:
                 ret = self.forecast_ahead_distribution(ndata, steps_ahead, **kwargs)
             else:
                 raise ValueError('The argument \'type\' has an unknown value.')
