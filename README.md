@@ -53,6 +53,12 @@ Fuzzy Time Series (FTS) are non parametric methods for time series forecasting b
 
 7. **Data postprocessing**: The inverse operations of step 1.
 
+## Usage examples
+
+There is nothing better than good code examples to start. [Then check out the demo Jupyter Notebooks of the implemented method os pyFTS!](https://github.com/petroniocandido/pyFTS/tree/master/pyFTS/notebooks).
+
+A Google Colab example can also be found [here](https://drive.google.com/file/d/1zRBCHXOawwgmzjEoKBgmvBqkIrKxuaz9/view?usp=sharing).
+
 ## MINDS - Machine Intelligence And Data Science Lab
 
 This tool is result of collective effort of [MINDS Lab](http://www.minds.eng.ufmg.br/), headed by Prof. Frederico Gadelha Guimarães. Some of research on FTS which was developed under pyFTS:
