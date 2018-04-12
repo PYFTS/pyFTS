@@ -1,3 +1,4 @@
 theme: jekyll-theme-minimal
-avatar: "/img/icon.png"
+title: 
 logo: "/img/logo.png"
+show_downloads: true
