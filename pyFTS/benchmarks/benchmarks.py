@@ -81,6 +81,8 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     partitioners_methods = __pop("partitioners_methods", [Grid.GridPartitioner], kwargs)
     partitions = __pop("partitions", [10], kwargs)
 
+    steps_ahead = __pop('steps_ahead', [1], kwargs)
+
     methods = __pop('methods', None, kwargs)
 
     models = __pop('models', None, kwargs)
@@ -178,27 +180,34 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
         else:
             partitioners_pool = partitioners_models
 
-        rng1 = partitioners_pool
-
+        rng1 = steps_ahead
         if progress:
-            rng1 = tqdm(partitioners_pool, desc="Partitioners")
+            rng1 = tqdm(steps_ahead, desc="Steps")
 
-        for partitioner in rng1:
-
-            rng2 = enumerate(pool,start=0)
+        for step in rng1:
+            rng2 = partitioners_pool
 
             if progress:
-                rng2 = enumerate(tqdm(pool, desc="Models"),start=0)
+                rng2 = tqdm(partitioners_pool, desc="Partitioners")
 
-            for _id, model in rng2:
+            for partitioner in rng2:
 
-                if not distributed:
-                    job = experiment_method(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
-                    jobs.append(job)
-                else:
-                    job = cluster.submit(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
-                    job.id = id  # associate an ID to identify jobs (if needed later)
-                    jobs.append(job)
+                rng3 = enumerate(pool,start=0)
+
+                if progress:
+                    rng3 = enumerate(tqdm(pool, desc="Models"),start=0)
+
+                for _id, model in rng3:
+
+                    kwargs['steps_ahead'] = step
+
+                    if not distributed:
+                        job = experiment_method(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
+                        jobs.append(job)
+                    else:
+                        job = cluster.submit(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
+                        job.id = id  # associate an ID to identify jobs (if needed later)
+                        jobs.append(job)
 
     if progress:
         progressbar.close()
@@ -303,6 +312,9 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
         mfts.partitioner = partitioner
 
+    _key += str(steps_ahead)
+    _key += str(method) if method is not None else ""
+
     if transformation is not None:
         mfts.append_transformation(transformation)
 
@@ -363,6 +375,9 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
     if transformation is not None:
         mfts.append_transformation(transformation)
 
+    _key += str(steps_ahead)
+    _key += str(method) if method is not None else ""
+
     _start = time.time()
     mfts.fit(train_data, order=mfts.order, **kwargs)
     _end = time.time()
@@ -421,6 +436,9 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
         mfts.partitioner = partitioner
 
+    _key += str(steps_ahead)
+    _key += str(method) if method is not None else ""
+
     if transformation is not None:
         mfts.append_transformation(transformation)
 
@@ -478,8 +496,8 @@ def process_point_jobs(jobs, experiments, save=False, file=None, sintetic=False)
     smape = {}
     u = {}
     times = {}
-    steps = None
-    method = None
+    steps = {}
+    method = {}
 
     for job in jobs:
         _key = job['key']
@@ -489,14 +507,16 @@ def process_point_jobs(jobs, experiments, save=False, file=None, sintetic=False)
             smape[_key] = []
             u[_key] = []
             times[_key] = []
-            steps[_key] = job['steps']
-            method[_key] = job['method']
+            steps[_key] = []
+            method[_key] = []
+        steps[_key] = job['steps']
+        method[_key] = job['method']
         rmse[_key].append(job['rmse'])
         smape[_key].append(job['smape'])
         u[_key].append(job['u'])
         times[_key].append(job['time'])
 
-    return bUtil.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u)
+    return bUtil.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u, steps, method)
 
 
 def process_interval_jobs(jobs, experiments, save=False, file=None, sintetic=False):
@@ -509,6 +529,8 @@ def process_interval_jobs(jobs, experiments, save=False, file=None, sintetic=Fal
     q75 = {}
     q95 = {}
     times = {}
+    steps = {}
+    method = {}
 
     for job in jobs:
         _key = job['key']
@@ -522,6 +544,8 @@ def process_interval_jobs(jobs, experiments, save=False, file=None, sintetic=Fal
             q25[_key] = []
             q75[_key] = []
             q95[_key] = []
+            steps[_key] = []
+            method[_key] = []
 
         sharpness[_key].append(job['sharpness'])
         resolution[_key].append(job['resolution'])
@@ -531,16 +555,18 @@ def process_interval_jobs(jobs, experiments, save=False, file=None, sintetic=Fal
         q25[_key].append(job['Q25'])
         q75[_key].append(job['Q75'])
         q95[_key].append(job['Q95'])
-
-
+        steps[_key] = job['steps']
+        method[_key] = job['method']
     return bUtil.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic,
-                                         times, q05, q25, q75, q95)
+                                         times, q05, q25, q75, q95, steps, method)
 
 
 def process_probabilistic_jobs(jobs, experiments, save=False, file=None, sintetic=False):
     objs = {}
     crps = {}
     times = {}
+    steps = {}
+    method = {}
 
     for job in jobs:
         _key = job['key']
@@ -548,11 +574,15 @@ def process_probabilistic_jobs(jobs, experiments, save=False, file=None, sinteti
             objs[_key] = job['obj']
             crps[_key] = []
             times[_key] = []
+            steps[_key] = []
+            method[_key] = []
 
         crps[_key].append(job['CRPS'])
         times[_key].append(job['time'])
+        steps[_key] = job['steps']
+        method[_key] = job['method']
 
-    return bUtil.save_dataframe_probabilistic(experiments, file, objs, crps, times, save, sintetic)
+    return bUtil.save_dataframe_probabilistic(experiments, file, objs, crps, times, save, sintetic, steps, method)
 
 
 

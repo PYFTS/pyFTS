@@ -372,6 +372,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             flrgs = self.generate_lhs_flrg(sample)
 
+            if 'type' in kwargs:
+                kwargs.pop('type')
+
             dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
 
             for bin in _bins:
@@ -409,7 +412,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 ret.append(ret[-1])
             else:
                 mp = self.forecast([ret[x] for x in np.arange(k - self.order, k)], **kwargs)
-                ret.append(mp)
+                ret.append(mp[0])
 
         return ret[self.order:]
 
@@ -427,13 +430,13 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         start = kwargs.get('start', self.order)
 
-        sample = data[start - (self.order - 1): start + 1]
+        sample = data[start - self.order: start]
 
         ret = [[k, k] for k in sample]
 
         for k in np.arange(self.order, steps+self.order):
 
-            if self.__check_interval_bounds(ret[-1]):
+            if len(ret) > 0 and self.__check_interval_bounds(ret[-1]):
                 ret.append(ret[-1])
             else:
                 lower = self.forecast_interval([ret[x][0] for x in np.arange(k - self.order, k)], **kwargs)
@@ -460,9 +463,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         start = kwargs.get('start', self.order)
 
-        sample = ndata[start - (self.order - 1): start + 1]
+        sample = ndata[start - self.order: start]
 
         for dat in sample:
+            if 'type' in kwargs:
+                kwargs.pop('type')
             tmp = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
             tmp.set(dat, 1.0)
             ret.append(tmp)

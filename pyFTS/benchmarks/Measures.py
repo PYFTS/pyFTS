@@ -271,6 +271,8 @@ def crps(targets, densities):
 def get_point_statistics(data, model, **kwargs):
     """Condensate all measures for point forecasters"""
 
+    steps_ahead = kwargs.get('steps_ahead',1)
+
     indexer = kwargs.get('indexer', None)
 
     if indexer is not None:
@@ -278,46 +280,89 @@ def get_point_statistics(data, model, **kwargs):
     else:
         ndata = np.array(data[model.order:])
 
-    forecasts = model.predict(data, **kwargs)
+    ret = list()
 
-    try:
+    if steps_ahead == 1:
+        forecasts = model.forecast(data, **kwargs)
         if model.has_seasonality:
             nforecasts = np.array(forecasts)
         else:
             nforecasts = np.array(forecasts[:-1])
-    except Exception as ex:
-        print(ex)
-        return [np.nan,np.nan,np.nan]
-    ret = list()
+        ret.append(np.round(rmse(ndata, nforecasts), 2))
+        ret.append(np.round(smape(ndata, nforecasts), 2))
+        ret.append(np.round(UStatistic(ndata, nforecasts), 2))
+    else:
+        nforecasts = []
+        for k in np.arange(model.order, len(ndata)-steps_ahead):
+            sample = ndata[k - model.order: k]
+            tmp = model.forecast_ahead(sample, steps_ahead, **kwargs)
+            nforecasts.append(tmp[-1])
 
-    ret.append(np.round(rmse(ndata, nforecasts), 2))
-    ret.append(np.round(smape(ndata, nforecasts), 2))
-    ret.append(np.round(UStatistic(ndata, nforecasts), 2))
+        start = model.order + steps_ahead
+        ret.append(np.round(rmse(ndata[start:], nforecasts), 2))
+        ret.append(np.round(smape(ndata[start:], nforecasts), 2))
+        ret.append(np.round(UStatistic(ndata[start:], nforecasts), 2))
 
     return ret
 
 
-def get_interval_statistics(original, model, **kwargs):
+def get_interval_statistics(data, model, **kwargs):
     """Condensate all measures for point_to_interval forecasters"""
+
+    steps_ahead = kwargs.get('steps_ahead', 1)
+
     ret = list()
-    forecasts = model.predict(original, **kwargs)
-    ret.append(round(sharpness(forecasts), 2))
-    ret.append(round(resolution(forecasts), 2))
-    ret.append(round(coverage(original[model.order:], forecasts[:-1]), 2))
-    ret.append(round(pinball_mean(0.05, original[model.order:], forecasts[:-1]), 2))
-    ret.append(round(pinball_mean(0.25, original[model.order:], forecasts[:-1]), 2))
-    ret.append(round(pinball_mean(0.75, original[model.order:], forecasts[:-1]), 2))
-    ret.append(round(pinball_mean(0.95, original[model.order:], forecasts[:-1]), 2))
+
+    if steps_ahead == 1:
+        forecasts = model.forecast_interval(data, **kwargs)
+        ret.append(round(sharpness(forecasts), 2))
+        ret.append(round(resolution(forecasts), 2))
+        ret.append(round(coverage(data[model.order:], forecasts[:-1]), 2))
+        ret.append(round(pinball_mean(0.05, data[model.order:], forecasts[:-1]), 2))
+        ret.append(round(pinball_mean(0.25, data[model.order:], forecasts[:-1]), 2))
+        ret.append(round(pinball_mean(0.75, data[model.order:], forecasts[:-1]), 2))
+        ret.append(round(pinball_mean(0.95, data[model.order:], forecasts[:-1]), 2))
+    else:
+        forecasts = []
+        for k in np.arange(model.order, len(data) - steps_ahead):
+            sample = data[k - model.order: k]
+            tmp = model.forecast_ahead_interval(sample, steps_ahead, **kwargs)
+            forecasts.append(tmp[-1])
+
+        start = model.order + steps_ahead
+        ret.append(round(sharpness(forecasts), 2))
+        ret.append(round(resolution(forecasts), 2))
+        ret.append(round(coverage(data[model.order:], forecasts), 2))
+        ret.append(round(pinball_mean(0.05, data[start:], forecasts), 2))
+        ret.append(round(pinball_mean(0.25, data[start:], forecasts), 2))
+        ret.append(round(pinball_mean(0.75, data[start:], forecasts), 2))
+        ret.append(round(pinball_mean(0.95, data[start:], forecasts), 2))
     return ret
 
 
-def get_distribution_statistics(original, model, **kwargs):
+def get_distribution_statistics(data, model, **kwargs):
+    steps_ahead = kwargs.get('steps_ahead', 1)
+
     ret = list()
-    _s1 = time.time()
-    densities1 = model.predict(original, **kwargs)
-    _e1 = time.time()
-    ret.append(round(crps(original, densities1), 3))
-    ret.append(round(_e1 - _s1, 3))
+
+    if steps_ahead == 1:
+        _s1 = time.time()
+        forecasts = model.forecast_distribution(data, **kwargs)
+        _e1 = time.time()
+        ret.append(round(crps(data, forecasts), 3))
+        ret.append(round(_e1 - _s1, 3))
+    else:
+        forecasts = []
+        _s1 = time.time()
+        for k in np.arange(model.order, len(data) - steps_ahead):
+            sample = data[k - model.order: k]
+            tmp = model.forecast_ahead_distribution(sample, steps_ahead, **kwargs)
+            forecasts.append(tmp[-1])
+        _e1 = time.time()
+
+        start = model.order + steps_ahead
+        ret.append(round(crps(data[start:], forecasts), 3))
+        ret.append(round(_e1 - _s1, 3))
     return ret
 
 

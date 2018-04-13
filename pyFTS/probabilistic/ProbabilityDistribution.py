@@ -11,7 +11,7 @@ class ProbabilityDistribution(object):
     If type is histogram, the PDF is discrete
     If type is KDE the PDF is continuous
     """
-    def __init__(self,type = "KDE", **kwargs):
+    def __init__(self, type = "KDE", **kwargs):
         self.uod = kwargs.get("uod", None)
 
         self.type = type

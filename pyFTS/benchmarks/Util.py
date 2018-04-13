@@ -15,7 +15,7 @@ from copy import deepcopy
 from pyFTS.common import Util
 
 
-def extract_measure(dataframe,measure,data_columns):
+def extract_measure(dataframe, measure, data_columns):
     if not dataframe.empty:
         df = dataframe[(dataframe.Measure == measure)][data_columns]
         tmp = df.to_dict(orient="records")[0]
@@ -92,12 +92,12 @@ def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, 
                     mod.append(mfts.partitioner.name)
                     mod.append(mfts.partitioner.partitions)
                     mod.append(len(mfts))
-                    mod.append(steps)
-                    mod.append(method)
                 else:
                     mod.append('-')
                     mod.append('-')
                     mod.append('-')
+                mod.append(steps[k])
+                mod.append(method[k])
                 mod.append(np.round(np.nanmean(rmse[k]), 2))
                 mod.append(np.round(np.nanstd(rmse[k]), 2))
                 mod.append(np.round(np.nanmean(smape[k]), 2))
@@ -126,17 +126,18 @@ def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, 
                     s = '-'
                     p = '-'
                     l = '-'
-                print([n, o, s, p, l, steps, method])
-                tmp = [n, o, s, p, l, steps, method, 'RMSE']
+                st = steps[k]
+                mt = method[k]
+                tmp = [n, o, s, p, l, st, mt, 'RMSE']
                 tmp.extend(rmse[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'SMAPE']
+                tmp = [n, o, s, p, l, st, mt, 'SMAPE']
                 tmp.extend(smape[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'U']
+                tmp = [n, o, s, p, l, st, mt, 'U']
                 tmp.extend(u[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'TIME']
+                tmp = [n, o, s, p, l, st, mt, 'TIME']
                 tmp.extend(times[k])
                 ret.append(deepcopy(tmp))
             except Exception as ex:
@@ -154,13 +155,30 @@ def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, 
         print(ret)
 
 
-def cast_dataframe_to_synthetic_point(infile, outfile, experiments):
-    columns = point_dataframe_analytic_columns(experiments)
+def cast_dataframe_to_synthetic(infile, outfile, experiments, type):
+    if type == 'point':
+        analytic_columns = point_dataframe_analytic_columns
+        synthetic_columns = point_dataframe_synthetic_columns
+        synthetize_measures = cast_dataframe_to_synthetic_point
+    elif type == 'interval':
+        analytic_columns = interval_dataframe_analytic_columns
+        synthetic_columns = interval_dataframe_synthetic_columns
+        synthetize_measures = cast_dataframe_to_synthetic_interval
+    elif type == 'distribution':
+        analytic_columns = probabilistic_dataframe_analytic_columns
+        synthetic_columns = probabilistic_dataframe_synthetic_columns
+        synthetize_measures = cast_dataframe_to_synthetic_probabilistic
+    else:
+        raise ValueError("Type parameter has an unknown value!")
+
+    columns = analytic_columns(experiments)
     dat = pd.read_csv(infile, sep=";", usecols=columns)
     models = dat.Model.unique()
     orders = dat.Order.unique()
     schemes = dat.Scheme.unique()
     partitions = dat.Partitions.unique()
+    steps = dat.Steps.unique()
+    methods = dat.Method.unique()
 
     data_columns = analytical_data_columns(experiments)
 
@@ -170,37 +188,46 @@ def cast_dataframe_to_synthetic_point(infile, outfile, experiments):
         for o in orders:
             for s in schemes:
                 for p in partitions:
-                    mod = []
-                    df = dat[(dat.Model == m) & (dat.Order == o) & (dat.Scheme == s) & (dat.Partitions == p)]
-                    if not df.empty:
-                        rmse = extract_measure(df, 'RMSE', data_columns)
-                        smape = extract_measure(df, 'SMAPE', data_columns)
-                        u = extract_measure(df, 'U', data_columns)
-                        times = extract_measure(df, 'TIME', data_columns)
-                        mod.append(m)
-                        mod.append(o)
-                        mod.append(s)
-                        mod.append(p)
-                        mod.append(extract_measure(df, 'RMSE', ['Size'])[0])
-                        mod.append(np.round(np.nanmean(rmse), 2))
-                        mod.append(np.round(np.nanstd(rmse), 2))
-                        mod.append(np.round(np.nanmean(smape), 2))
-                        mod.append(np.round(np.nanstd(smape), 2))
-                        mod.append(np.round(np.nanmean(u), 2))
-                        mod.append(np.round(np.nanstd(u), 2))
-                        mod.append(np.round(np.nanmean(times), 4))
-                        mod.append(np.round(np.nanstd(times), 4))
-                        ret.append(mod)
+                    for st in steps:
+                        for mt in methods:
+                            df = dat[(dat.Model == m) & (dat.Order == o) & (dat.Scheme == s) &
+                                     (dat.Partitions == p) & (dat.Steps == st) & (dat.Method == mt)]
+                            if not df.empty:
+                                mod = synthetize_measures(df, data_columns)
+                                mod.insert(0, m)
+                                mod.insert(1, o)
+                                mod.insert(2, s)
+                                mod.insert(3, p)
+                                mod.insert(4, df.iat[0,5])
+                                mod.insert(5, st)
+                                mod.insert(6, mt)
+                                ret.append(mod)
 
-    dat = pd.DataFrame(ret, columns=point_dataframe_synthetic_columns())
+    dat = pd.DataFrame(ret, columns=synthetic_columns())
     dat.to_csv(outfile, sep=";", index=False)
 
+
+def cast_dataframe_to_synthetic_point(df, data_columns):
+    ret = []
+    rmse = extract_measure(df, 'RMSE', data_columns)
+    smape = extract_measure(df, 'SMAPE', data_columns)
+    u = extract_measure(df, 'U', data_columns)
+    times = extract_measure(df, 'TIME', data_columns)
+    ret.append(np.round(np.nanmean(rmse), 2))
+    ret.append(np.round(np.nanstd(rmse), 2))
+    ret.append(np.round(np.nanmean(smape), 2))
+    ret.append(np.round(np.nanstd(smape), 2))
+    ret.append(np.round(np.nanmean(u), 2))
+    ret.append(np.round(np.nanstd(u), 2))
+    ret.append(np.round(np.nanmean(times), 4))
+    ret.append(np.round(np.nanstd(times), 4))
+
+    return ret
 
 
 def analytical_data_columns(experiments):
     data_columns = [str(k) for k in np.arange(0, experiments)]
     return data_columns
-
 
 
 def scale_params(data):
@@ -215,10 +242,8 @@ def scale(data, params):
     return ndata
 
 
-
 def stats(measure, data):
     print(measure, np.nanmean(data), np.nanstd(data))
-
 
 
 def unified_scaled_point(experiments, tam, save=False, file=None,
@@ -330,7 +355,6 @@ def unified_scaled_point(experiments, tam, save=False, file=None,
     Util.show_and_save_image(fig, file, save)
 
 
-
 def plot_dataframe_point(file_synthetic, file_analytic, experiments, tam, save=False, file=None,
                          sort_columns=['UAVG', 'RMSEAVG', 'USTD', 'RMSESTD'],
                          sort_ascend=[1, 1, 1, 1],save_best=False,
@@ -419,14 +443,12 @@ def save_dataframe_interval(coverage, experiments, file, objs, resolution, save,
                 mod.append(mfts.partitioner.name)
                 mod.append(mfts.partitioner.partitions)
                 mod.append(l)
-                mod.append(steps)
-                mod.append(method)
             else:
                 mod.append('-')
                 mod.append('-')
                 mod.append('-')
-                mod.append(steps)
-                mod.append(method)
+            mod.append(steps[k])
+            mod.append(method[k])
             mod.append(round(np.nanmean(sharpness[k]), 2))
             mod.append(round(np.nanstd(sharpness[k]), 2))
             mod.append(round(np.nanmean(resolution[k]), 2))
@@ -461,29 +483,30 @@ def save_dataframe_interval(coverage, experiments, file, objs, resolution, save,
                     s = '-'
                     p = '-'
                     l = '-'
-
-                tmp = [n, o, s, p, l, steps, method, 'Sharpness']
+                st = steps[k]
+                mt = method[k]
+                tmp = [n, o, s, p, l, st, mt, 'Sharpness']
                 tmp.extend(sharpness[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'Resolution']
+                tmp = [n, o, s, p, l, st, mt, 'Resolution']
                 tmp.extend(resolution[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'Coverage']
+                tmp = [n, o, s, p, l, st, mt, 'Coverage']
                 tmp.extend(coverage[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'TIME']
+                tmp = [n, o, s, p, l, st, mt, 'TIME']
                 tmp.extend(times[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'Q05']
+                tmp = [n, o, s, p, l, st, mt, 'Q05']
                 tmp.extend(q05[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'Q25']
+                tmp = [n, o, s, p, l, st, mt, 'Q25']
                 tmp.extend(q25[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'Q75']
+                tmp = [n, o, s, p, l, st, mt, 'Q75']
                 tmp.extend(q75[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'Q95']
+                tmp = [n, o, s, p, l, st, mt, 'Q95']
                 tmp.extend(q95[k])
                 ret.append(deepcopy(tmp))
             except Exception as ex:
@@ -515,57 +538,34 @@ def interval_dataframe_synthetic_columns():
     return columns
 
 
-def cast_dataframe_to_synthetic_interval(infile, outfile, experiments):
-    columns = interval_dataframe_analytic_columns(experiments)
-    dat = pd.read_csv(infile, sep=";", usecols=columns)
-    models = dat.Model.unique()
-    orders = dat.Order.unique()
-    schemes = dat.Scheme.unique()
-    partitions = dat.Partitions.unique()
-
-    data_columns = analytical_data_columns(experiments)
-
+def cast_dataframe_to_synthetic_interval(df, data_columns):
+    sharpness = extract_measure(df, 'Sharpness', data_columns)
+    resolution = extract_measure(df, 'Resolution', data_columns)
+    coverage = extract_measure(df, 'Coverage', data_columns)
+    times = extract_measure(df, 'TIME', data_columns)
+    q05 = extract_measure(df, 'Q05', data_columns)
+    q25 = extract_measure(df, 'Q25', data_columns)
+    q75 = extract_measure(df, 'Q75', data_columns)
+    q95 = extract_measure(df, 'Q95', data_columns)
     ret = []
+    ret.append(np.round(np.nanmean(sharpness), 2))
+    ret.append(np.round(np.nanstd(sharpness), 2))
+    ret.append(np.round(np.nanmean(resolution), 2))
+    ret.append(np.round(np.nanstd(resolution), 2))
+    ret.append(np.round(np.nanmean(coverage), 2))
+    ret.append(np.round(np.nanstd(coverage), 2))
+    ret.append(np.round(np.nanmean(times), 4))
+    ret.append(np.round(np.nanstd(times), 4))
+    ret.append(np.round(np.nanmean(q05), 4))
+    ret.append(np.round(np.nanstd(q05), 4))
+    ret.append(np.round(np.nanmean(q25), 4))
+    ret.append(np.round(np.nanstd(q25), 4))
+    ret.append(np.round(np.nanmean(q75), 4))
+    ret.append(np.round(np.nanstd(q75), 4))
+    ret.append(np.round(np.nanmean(q95), 4))
+    ret.append(np.round(np.nanstd(q95), 4))
+    return ret
 
-    for m in models:
-        for o in orders:
-            for s in schemes:
-                for p in partitions:
-                    mod = []
-                    df = dat[(dat.Model == m) & (dat.Order == o) & (dat.Scheme == s) & (dat.Partitions == p)]
-                    if not df.empty:
-                        sharpness = extract_measure(df, 'Sharpness', data_columns)
-                        resolution = extract_measure(df, 'Resolution', data_columns)
-                        coverage = extract_measure(df, 'Coverage', data_columns)
-                        times = extract_measure(df, 'TIME', data_columns)
-                        q05 = extract_measure(df, 'Q05', data_columns)
-                        q25 = extract_measure(df, 'Q25', data_columns)
-                        q75 = extract_measure(df, 'Q75', data_columns)
-                        q95 = extract_measure(df, 'Q95', data_columns)
-                        mod.append(m)
-                        mod.append(o)
-                        mod.append(s)
-                        mod.append(p)
-                        mod.append(np.round(np.nanmean(sharpness), 2))
-                        mod.append(np.round(np.nanstd(sharpness), 2))
-                        mod.append(np.round(np.nanmean(resolution), 2))
-                        mod.append(np.round(np.nanstd(resolution), 2))
-                        mod.append(np.round(np.nanmean(coverage), 2))
-                        mod.append(np.round(np.nanstd(coverage), 2))
-                        mod.append(np.round(np.nanmean(times), 4))
-                        mod.append(np.round(np.nanstd(times), 4))
-                        mod.append(np.round(np.nanmean(q05), 4))
-                        mod.append(np.round(np.nanstd(q05), 4))
-                        mod.append(np.round(np.nanmean(q25), 4))
-                        mod.append(np.round(np.nanstd(q25), 4))
-                        mod.append(np.round(np.nanmean(q75), 4))
-                        mod.append(np.round(np.nanstd(q75), 4))
-                        mod.append(np.round(np.nanmean(q95), 4))
-                        mod.append(np.round(np.nanstd(q95), 4))
-                        ret.append(mod)
-
-    dat = pd.DataFrame(ret, columns=interval_dataframe_synthetic_columns())
-    dat.to_csv(outfile, sep=";", index=False)
 
 
 
@@ -905,17 +905,14 @@ def save_dataframe_probabilistic(experiments, file, objs, crps, times, save, syn
                             mod.append(mfts.partitioner.name)
                             mod.append(mfts.partitioner.partitions)
                             mod.append(len(mfts))
-                            mod.append(steps)
-                            mod.append(method)
                         else:
                             mod.append('-')
                             mod.append('-')
                             mod.append('-')
-                            mod.append(steps)
-                            mod.append(method)
+                        mod.append(steps[k])
+                        mod.append(method[k])
                         mod.append(np.round(np.nanmean(crps[k]), 2))
                         mod.append(np.round(np.nanstd(crps[k]), 2))
-                        mod.append(l)
                         mod.append(np.round(np.nanmean(times[k]), 4))
                         mod.append(np.round(np.nanstd(times[k]), 4))
                         ret.append(mod)
@@ -940,10 +937,12 @@ def save_dataframe_probabilistic(experiments, file, objs, crps, times, save, syn
                     s = '-'
                     p = '-'
                     l = '-'
-                tmp = [n, o, s, p, l, steps, method, 'CRPS']
+                st = steps[k]
+                mt = method[k]
+                tmp = [n, o, s, p, l, st, mt, 'CRPS']
                 tmp.extend(crps[k])
                 ret.append(deepcopy(tmp))
-                tmp = [n, o, s, p, l, steps, method, 'TIME']
+                tmp = [n, o, s, p, l, st, mt, 'TIME']
                 tmp.extend(times[k])
                 ret.append(deepcopy(tmp))
             except Exception as ex:
@@ -974,40 +973,15 @@ def probabilistic_dataframe_synthetic_columns():
     return columns
 
 
-def cast_dataframe_to_synthetic_probabilistic(infile, outfile, experiments):
-    columns = probabilistic_dataframe_analytic_columns(experiments)
-    dat = pd.read_csv(infile, sep=";", usecols=columns)
-    models = dat.Model.unique()
-    orders = dat.Order.unique()
-    schemes = dat.Scheme.unique()
-    partitions = dat.Partitions.unique()
-
-    data_columns = analytical_data_columns(experiments)
-
+def cast_dataframe_to_synthetic_probabilistic(df, data_columns):
+    crps1 = extract_measure(df, 'CRPS', data_columns)
+    times1 = extract_measure(df, 'TIME', data_columns)
     ret = []
-
-    for m in models:
-        for o in orders:
-            for s in schemes:
-                for p in partitions:
-                    mod = []
-                    df = dat[(dat.Model == m) & (dat.Order == o) & (dat.Scheme == s) & (dat.Partitions == p)]
-                    if not df.empty:
-                        crps1 = extract_measure(df, 'CRPS', data_columns)
-                        times1 = extract_measure(df, 'TIME', data_columns)
-                        mod.append(m)
-                        mod.append(o)
-                        mod.append(s)
-                        mod.append(p)
-                        mod.append(np.round(np.nanmean(crps1), 2))
-                        mod.append(np.round(np.nanstd(crps1), 2))
-                        mod.append(np.round(np.nanmean(times1), 2))
-                        mod.append(np.round(np.nanstd(times1), 2))
-                        ret.append(mod)
-
-    dat = pd.DataFrame(ret, columns=probabilistic_dataframe_synthetic_columns())
-    dat.to_csv(outfile, sep=";", index=False)
-
+    ret.append(np.round(np.nanmean(crps1), 2))
+    ret.append(np.round(np.nanstd(crps1), 2))
+    ret.append(np.round(np.nanmean(times1), 2))
+    ret.append(np.round(np.nanstd(times1), 2))
+    return ret
 
 
 def unified_scaled_probabilistic(experiments, tam, save=False, file=None,
