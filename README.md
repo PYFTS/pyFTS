@@ -1,5 +1,10 @@
 # pyFTS - Fuzzy Time Series for Python
 
+[![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/pyFTS/)
+[![Open Source Love png2](https://badges.frapsoft.com/os/v2/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
+
 ## What is pyFTS Library?
 
 This package is intended for students, researchers, data scientists or whose want to exploit the Fuzzy Time Series methods. These methods provide simple, easy to use, computationally cheap and human-readable models, suitable for statistic laymans to experts.
@@ -52,6 +57,12 @@ Fuzzy Time Series (FTS) are non parametric methods for time series forecasting b
 6. **Defuzzyfication**: This step transform the fuzzy forecast into a real number.
 
 7. **Data postprocessing**: The inverse operations of step 1.
+
+## Usage examples
+
+There is nothing better than good code examples to start. [Then check out the demo Jupyter Notebooks of the implemented method os pyFTS!](https://github.com/petroniocandido/pyFTS/tree/master/pyFTS/notebooks).
+
+A Google Colab example can also be found [here](https://drive.google.com/file/d/1zRBCHXOawwgmzjEoKBgmvBqkIrKxuaz9/view?usp=sharing).
 
 ## MINDS - Machine Intelligence And Data Science Lab
 
