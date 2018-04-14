@@ -1,3 +1,4 @@
+
 import pandas as pd
 import numpy as np
 import os
@@ -7,7 +8,16 @@ from urllib import request
 
 
 def get_dataframe(filename, url, sep=";", compression='infer'):
-    #filename = pkg_resources.resource_filename('pyFTS', path)
+    """
+    This method check if filename already exists, read the file and return its data.
+    If the file don't already exists, it will be downloaded and decompressed.
+    :param filename: dataset local filename
+    :param url: dataset internet URL
+    :param sep: CSV field separator
+    :param compression: type of compression
+    :return:  Pandas dataset
+    """
+
     tmp_file = Path(filename)
 
     if tmp_file.is_file():

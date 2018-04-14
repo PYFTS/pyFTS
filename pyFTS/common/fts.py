@@ -120,7 +120,6 @@ class FTS(object):
 
         return ret
 
-
     def forecast(self, data, **kwargs):
         """
         Point forecast one step ahead 

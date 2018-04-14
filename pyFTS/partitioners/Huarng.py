@@ -1,14 +1,15 @@
+"""
+K. H. Huarng, “Effective lengths of intervals to improve forecasting in fuzzy time series,”
+Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.
+"""
+
 import numpy as np
 import math
 import random as rnd
 import functools, operator
 from pyFTS.common import FuzzySet, Membership, Transformations
 
-
-# K. H. Huarng, “Effective lengths of intervals to improve forecasting in fuzzy time series,”
-# Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.
 from pyFTS.partitioners import partitioner
-
 
 class HuarngPartitioner(partitioner.Partitioner):
     """Huarng Empirical Partitioner"""

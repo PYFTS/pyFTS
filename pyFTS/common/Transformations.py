@@ -1,3 +1,7 @@
+"""
+Common data transformation used on pre and post processing of the FTS
+"""
+
 import numpy as np
 import math
 from pyFTS import *
@@ -5,7 +9,7 @@ from pyFTS import *
 
 class Transformation(object):
     """
-    Data transformation used to pre and post processing of the FTS
+    Data transformation used on pre and post processing of the FTS
     """
 
     def __init__(self, **kwargs):
@@ -13,9 +17,23 @@ class Transformation(object):
         self.minimal_length = 1
 
     def apply(self, data, param, **kwargs):
+        """
+        Apply the transformation on input data
+        :param data: input data
+        :param param:
+        :param kwargs:
+        :return: numpy array with transformed data
+        """
         pass
 
     def inverse(self,data, param, **kwargs):
+        """
+
+        :param data: transformed data
+        :param param:
+        :param kwargs:
+        :return: numpy array with inverse transformed data
+        """
         pass
 
     def __str__(self):
@@ -73,6 +91,11 @@ class Differential(Transformation):
 
 
 class Scale(Transformation):
+    """
+    Scale data inside a interval [min, max]
+
+    
+    """
     def __init__(self, min=0, max=1):
         super(Scale, self).__init__()
         self.data_max = None
@@ -130,6 +153,9 @@ class AdaptiveExpectation(Transformation):
 
 
 class BoxCox(Transformation):
+    """
+    Box-Cox power transformation
+    """
     def __init__(self, plambda):
         super(BoxCox, self).__init__()
         self.plambda = plambda

@@ -1,12 +1,14 @@
+"""
+C. H. Cheng, R. J. Chang, and C. A. Yeh, “Entropy-based and trapezoidal fuzzification-based fuzzy time series approach for forecasting IT project cost,”
+Technol. Forecast. Social Change, vol. 73, no. 5, pp. 524–542, Jun. 2006.
+"""
+
 import numpy as np
 import math
 import random as rnd
 import functools, operator
 from pyFTS.common import FuzzySet, Membership
 from pyFTS.partitioners import partitioner
-
-# C. H. Cheng, R. J. Chang, and C. A. Yeh, “Entropy-based and trapezoidal fuzzification-based fuzzy time series approach for forecasting IT project cost,”
-# Technol. Forecast. Social Change, vol. 73, no. 5, pp. 524–542, Jun. 2006.
 
 
 def splitBelow(data,threshold):

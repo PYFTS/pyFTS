@@ -2,6 +2,12 @@ import numpy as np
 
 
 class FLRG(object):
+    """
+    Fuzzy Logical Relationship Group
+
+    Group a set of FLR's with the same LHS. Represents the temporal patterns for time t+1 (the RHS fuzzy sets)
+    when the LHS pattern is identified on time t.
+    """
 
     def __init__(self, order, **kwargs):
         self.LHS = None

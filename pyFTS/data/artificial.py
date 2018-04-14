@@ -1,3 +1,7 @@
+"""
+Facilities to generate synthetic stochastic processes
+"""
+
 import numpy as np
 
 

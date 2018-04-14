@@ -1,5 +1,5 @@
 """
-Benchmark utility functions
+Facilities for pyFTS Benchmark module
 """
 
 import matplotlib as plt

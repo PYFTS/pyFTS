@@ -53,7 +53,6 @@ def rmse_interval(targets, forecasts):
     return np.sqrt(np.nanmean((fmean - targets) ** 2))
 
 
-
 def mape(targets, forecasts):
     """
     Mean Average Percentual Error
@@ -66,7 +65,6 @@ def mape(targets, forecasts):
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
     return np.mean(np.abs(targets - forecasts) / targets) * 100
-
 
 
 def smape(targets, forecasts, type=2):
@@ -89,11 +87,9 @@ def smape(targets, forecasts, type=2):
         return sum(np.abs(forecasts - targets)) / sum(forecasts + targets)
 
 
-
 def mape_interval(targets, forecasts):
     fmean = [np.mean(i) for i in forecasts]
     return np.mean(abs(fmean - targets) / fmean) * 100
-
 
 
 def UStatistic(targets, forecasts):
@@ -115,7 +111,6 @@ def UStatistic(targets, forecasts):
         y.append((forecasts[k ] - targets[k]) ** 2)
         naive.append((targets[k + 1] - targets[k]) ** 2)
     return np.sqrt(sum(y) / sum(naive))
-
 
 
 def TheilsInequality(targets, forecasts):
@@ -194,7 +189,7 @@ def pinball(tau, target, forecast):
     :param tau: quantile value in the range (0,1)
     :param target: 
     :param forecast: 
-    :return: distance of forecast to the tau-quantile of the target
+    :return: float, distance of forecast to the tau-quantile of the target
     """
     if target >= forecast:
         return (target - forecast) * tau
@@ -208,7 +203,7 @@ def pinball_mean(tau, targets, forecasts):
     :param tau: quantile value in the range (0,1)
     :param targets: list of target values
     :param forecasts: list of prediction intervals
-    :return: 
+    :return: float, the pinball loss mean for tau quantile
     """
     try:
         if tau <= 0.5:
@@ -218,7 +213,6 @@ def pinball_mean(tau, targets, forecasts):
         return np.nanmean(preds)
     except Exception as ex:
         print(ex)
-
 
 
 def pmf_to_cdf(density):
@@ -244,7 +238,12 @@ def heavyside_cdf(bins, targets):
 
 
 def crps(targets, densities):
-    """Continuous Ranked Probability Score"""
+    '''
+    Continuous Ranked Probability Score
+    :param targets: a list with the target values
+    :param densities: a list with pyFTS.probabil objectsistic.ProbabilityDistribution
+    :return: float
+    '''
     _crps = float(0.0)
     if isinstance(densities, pd.DataFrame):
         l = len(densities.columns)
@@ -269,7 +268,13 @@ def crps(targets, densities):
 
 
 def get_point_statistics(data, model, **kwargs):
-    """Condensate all measures for point forecasters"""
+    '''
+    Condensate all measures for point forecasters
+    :param data: test data
+    :param model: FTS model with point forecasting capability
+    :param kwargs:
+    :return: a list with the RMSE, SMAPE and U Statistic
+    '''
 
     steps_ahead = kwargs.get('steps_ahead',1)
 
@@ -307,7 +312,14 @@ def get_point_statistics(data, model, **kwargs):
 
 
 def get_interval_statistics(data, model, **kwargs):
-    """Condensate all measures for point_to_interval forecasters"""
+    '''
+    Condensate all measures for point interval forecasters
+    :param data: test data
+    :param model: FTS model with interval forecasting capability
+    :param kwargs:
+    :return: a list with the sharpness, resolution, coverage, .05 pinball mean,
+    .25 pinball mean, .75 pinball mean and .95 pinball mean.
+    '''
 
     steps_ahead = kwargs.get('steps_ahead', 1)
 
@@ -341,6 +353,13 @@ def get_interval_statistics(data, model, **kwargs):
 
 
 def get_distribution_statistics(data, model, **kwargs):
+    '''
+    Get CRPS statistic and time for a forecasting model
+    :param data: test data
+    :param model: FTS model with probabilistic forecasting capability
+    :param kwargs:
+    :return: a list with the CRPS and execution time
+    '''
     steps_ahead = kwargs.get('steps_ahead', 1)
 
     ret = list()

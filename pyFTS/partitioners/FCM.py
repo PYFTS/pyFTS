@@ -1,3 +1,7 @@
+"""
+S. T. Li, Y. C. Cheng, and S. Y. Lin, “A FCM-based deterministic forecasting model for fuzzy time series,”
+Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j.camwa.2008.07.033.
+"""
 import numpy as np
 import math
 import random as rnd
@@ -5,11 +9,6 @@ import functools, operator
 from pyFTS.common import FuzzySet, Membership
 from pyFTS.partitioners import partitioner
 
-
-# import CMeans
-
-# S. T. Li, Y. C. Cheng, and S. Y. Lin, “A FCM-based deterministic forecasting model for fuzzy time series,”
-# Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j.camwa.2008.07.033.
 
 def fuzzy_distance(x, y):
     if isinstance(x, list):

@@ -1,3 +1,5 @@
+"""Even Length Grid Partitioner"""
+
 import numpy as np
 import math
 import random as rnd

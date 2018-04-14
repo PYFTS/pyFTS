@@ -1,9 +1,17 @@
+"""
+Tree data structure
+"""
+
 from pyFTS import *
 from functools import reduce
 import numpy as np
 
 
 class FLRGTreeNode:
+    """
+    Tree node for
+    """
+
     def __init__(self, value):
         self.isRoot = False
         self.children = []

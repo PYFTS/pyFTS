@@ -31,7 +31,7 @@ def chi_squared(q, h):
 def compare_residuals(data, models):
     """
     Compare residual's statistics of several models
-    :param data: 
+    :param data: test data
     :param models: 
     :return: 
     """

@@ -20,10 +20,10 @@ from pyFTS.benchmarks import benchmarks as bchmk
 from pyFTS.models import pwfts
 
 #'''
-bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2, methods=[pwfts.ProbabilisticWeightedFTS],
-                                benchmark_models=False, orders=[1], partitions=[10], #np.arange(10,100,2),
+bchmk.sliding_window_benchmarks(dataset[:2000], 1000, train=0.8, inc=0.2, methods=[pwfts.ProbabilisticWeightedFTS],
+                                benchmark_models=False, orders=[1,2,3], partitions=[30,50,70], #np.arange(10,100,2),
                                 progress=False, type='distribution', steps_ahead=[1,4,7,10],
-                                #distributed=False, nodes=['192.168.0.106', '192.168.0.105', '192.168.0.110'],
+                                distributed=True, nodes=['192.168.0.102','192.168.0.106','192.168.0.110'],
                                 save=True, file="pwfts_taiex_distribution.csv")
 #'''
 

@@ -1,12 +1,17 @@
+"""
+This module implements functions for Fuzzy Logical Relationship generation
+"""
+
 import numpy as np
 from pyFTS.common import FuzzySet
 
-"""
-This module implements functions for Fuzzy Logical Relationship generation 
-"""
 
 class FLR(object):
-    """Fuzzy Logical Relationship"""
+    """
+    Fuzzy Logical Relationship
+
+    Represents a temporal transition of the fuzzy set LHS on time t for the fuzzy set RHS on time t+1.
+    """
     def __init__(self, LHS, RHS):
         """
         Creates a Fuzzy Logical Relationship

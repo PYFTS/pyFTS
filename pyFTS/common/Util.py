@@ -1,3 +1,7 @@
+"""
+Common facilities for pyFTS
+"""
+
 import time
 import matplotlib.pyplot as plt
 import dill

@@ -51,22 +51,31 @@ def __pop(key, default, kwargs):
 def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     """
     Sliding window benchmarks for FTS point forecasters
-    :param data:
+    :param data: test data
     :param windowsize: size of sliding window
     :param train: percentual of sliding window data used to train the models
-    :param models: FTS point forecasters
-    :param partitioners: Universe of Discourse partitioner
-    :param partitions: the max number of partitions on the Universe of Discourse
-    :param max_order: the max order of the models (for high order models)
-    :param transformation: data transformation
-    :param indexer: seasonal indexer
-    :param dump:
-    :param benchmark_methods: Non FTS models to benchmark
-    :param benchmark_methods_parameters: Non FTS models parameters
-    :param save: save results
-    :param file: file path to save the results
-    :param sintetic: if true only the average and standard deviation of the results
-    :return: DataFrame with the results
+    :param kwargs: dict, optional arguments
+
+    :keyword
+        models: FTS point forecasters
+        partitioners: Universe of Discourse partitioner
+        partitions: the max number of partitions on the Universe of Discourse
+        max_order: the max order of the models (for high order models)
+        type: the forecasting type, one of these values: point(default), interval or distribution.
+        steps_ahead: The forecasting horizon, i. e., the number of steps ahead to forecast
+        start: in the multi step forecasting, the index of the data where to start forecasting
+        transformation: data transformation
+        indexer: seasonal indexer
+        progress: If true a progress bar will be displayed during the benchmarks
+        distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster
+        nodes: a list with the dispy cluster nodes addresses
+        benchmark_methods: Non FTS models to benchmark
+        benchmark_methods_parameters: Non FTS models parameters
+        save: save results
+        file: file path to save the results
+        sintetic: if true only the average and standard deviation of the results
+
+    :return: DataFrame with the benchmark results
     """
     distributed = __pop('distributed', False, kwargs)
     save = __pop('save', False, kwargs)
@@ -226,6 +235,12 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
             if job.status == dispy.DispyJob.Finished and job is not None:
                 tmp = job()
                 jobs2.append(tmp)
+                print(tmp)
+            else:
+                print("status",job.status)
+                print("result",job.result)
+                print("stdout",job.stdout)
+                print("stderr",job.exception)
 
         jobs = deepcopy(jobs2)
 
@@ -233,6 +248,8 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
     file = kwargs.get('file', None)
     sintetic = kwargs.get('sintetic', False)
+
+    print(jobs)
 
     return synthesis_method(jobs, experiments, save, file, sintetic)
 

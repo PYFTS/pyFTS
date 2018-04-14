@@ -1,9 +1,11 @@
-from pyFTS.common import Transformations
-import numpy as np
+# -*- coding: utf8 -*-
 
 """
 Kernel Density Estimation 
 """
+
+from pyFTS.common import Transformations
+import numpy as np
 
 
 class KernelSmoothing(object):
