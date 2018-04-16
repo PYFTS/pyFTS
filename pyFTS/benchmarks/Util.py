@@ -45,10 +45,47 @@ def find_best(dataframe, criteria, ascending):
 
     return ret
 
+def analytic_tabular_dataframe(dataframe):
+    experiments = len(dataframe.columns) - len(base_dataframe_columns()) - 1
+    models = dataframe.Model.unique()
+    orders = dataframe.Order.unique()
+    schemes = dataframe.Scheme.unique()
+    partitions = dataframe.Partitions.unique()
+    steps = dataframe.Steps.unique()
+    measures = dataframe.Measure.unique()
+    data_columns = analytical_data_columns(experiments)
+
+    ret = []
+
+    for m in models:
+        for o in orders:
+            for s in schemes:
+                for p in partitions:
+                    for st in steps:
+                        for ms in measures:
+                            df = dataframe[(dataframe.Model == m) & (dataframe.Order == o)
+                                           & (dataframe.Scheme == s) & (dataframe.Partitions == p)
+                                           & (dataframe.Steps == st) & (dataframe.Measure == ms) ]
+
+                            if not df.empty:
+                                for col in data_columns:
+                                    mod = [m, o, s, p, st, ms, df[col].values[0]]
+                                    ret.append(mod)
+
+    dat = pd.DataFrame(ret, columns=tabular_dataframe_columns())
+    return dat
+
+
+def tabular_dataframe_columns():
+        return ["Model", "Order", "Scheme", "Partitions", "Steps", "Measure", "Value"]
+
+
+def base_dataframe_columns():
+    return ["Model", "Order", "Scheme", "Partitions", "Size", "Steps", "Method"]
 
 def point_dataframe_synthetic_columns():
-    return ["Model", "Order", "Scheme", "Partitions", "Size", "Steps", "Method", "RMSEAVG", "RMSESTD",
-            "SMAPEAVG", "SMAPESTD", "UAVG","USTD", "TIMEAVG", "TIMESTD"]
+    return base_dataframe_columns().extend(["RMSEAVG", "RMSESTD",
+            "SMAPEAVG", "SMAPESTD", "UAVG","USTD", "TIMEAVG", "TIMESTD"])
 
 
 def point_dataframe_analytic_columns(experiments):

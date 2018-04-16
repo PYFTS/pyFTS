@@ -297,16 +297,17 @@ def get_point_statistics(data, model, **kwargs):
         ret.append(np.round(smape(ndata, nforecasts), 2))
         ret.append(np.round(UStatistic(ndata, nforecasts), 2))
     else:
+        steps_ahead_sampler = kwargs.get('steps_ahead_sampler', 1)
         nforecasts = []
-        for k in np.arange(model.order, len(ndata)-steps_ahead):
+        for k in np.arange(model.order, len(ndata)-steps_ahead,steps_ahead_sampler):
             sample = ndata[k - model.order: k]
             tmp = model.forecast_ahead(sample, steps_ahead, **kwargs)
             nforecasts.append(tmp[-1])
 
         start = model.order + steps_ahead
-        ret.append(np.round(rmse(ndata[start:], nforecasts), 2))
-        ret.append(np.round(smape(ndata[start:], nforecasts), 2))
-        ret.append(np.round(UStatistic(ndata[start:], nforecasts), 2))
+        ret.append(np.round(rmse(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
+        ret.append(np.round(smape(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
+        ret.append(np.round(UStatistic(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
 
     return ret
 
@@ -371,16 +372,17 @@ def get_distribution_statistics(data, model, **kwargs):
         ret.append(round(crps(data, forecasts), 3))
         ret.append(round(_e1 - _s1, 3))
     else:
+        skip = kwargs.get('steps_ahead_sampler', 1)
         forecasts = []
         _s1 = time.time()
-        for k in np.arange(model.order, len(data) - steps_ahead):
+        for k in np.arange(model.order, len(data) - steps_ahead, skip):
             sample = data[k - model.order: k]
             tmp = model.forecast_ahead_distribution(sample, steps_ahead, **kwargs)
             forecasts.append(tmp[-1])
         _e1 = time.time()
 
         start = model.order + steps_ahead
-        ret.append(round(crps(data[start:], forecasts), 3))
+        ret.append(round(crps(data[start:-1:skip], forecasts), 3))
         ret.append(round(_e1 - _s1, 3))
     return ret
 

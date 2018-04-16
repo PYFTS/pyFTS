@@ -15,17 +15,22 @@ from pyFTS.data import TAIEX
 
 dataset = TAIEX.get_data()
 
-from pyFTS.benchmarks import benchmarks as bchmk
+from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil
 
 from pyFTS.models import pwfts
 
-#'''
-bchmk.sliding_window_benchmarks(dataset[:2000], 1000, train=0.8, inc=0.2, methods=[pwfts.ProbabilisticWeightedFTS],
-                                benchmark_models=False, orders=[1,2,3], partitions=[30,50,70], #np.arange(10,100,2),
-                                progress=False, type='distribution', steps_ahead=[1,4,7,10],
+'''
+bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2, methods=[pwfts.ProbabilisticWeightedFTS],
+                                benchmark_models=False, orders=[1,2,3], partitions=np.arange(10,100,5),
+                                progress=False, type='point',
+                                #steps_ahead=[1,4,7,10], steps_ahead_sampler=10,
                                 distributed=True, nodes=['192.168.0.102','192.168.0.106','192.168.0.110'],
-                                save=True, file="pwfts_taiex_distribution.csv")
-#'''
+                                save=True, file="pwfts_taiex_partitioning.csv")
+'''
+
+dat = pd.read_csv('pwfts_taiex_partitioning.csv', sep=';')
+print(bUtil.analytic_tabular_dataframe(dat))
+#print(dat["Size"].values[0])
 
 '''
 train_split = 2000
