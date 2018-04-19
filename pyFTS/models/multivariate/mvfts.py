@@ -91,6 +91,8 @@ class MVFTS(fts.FTS):
 
         ndata = self.apply_transformations(data)
 
+        self.order = kwargs.get('order',1)
+
         flrs = self.generate_flrs(ndata)
         self.generate_flrg(flrs)
 

@@ -10,14 +10,21 @@ class FLRG(flg.FLRG):
 
     def __init__(self, **kwargs):
         super(FLRG,self).__init__(0,**kwargs)
+        self.order = kwargs.get('order', 1)
         self.LHS = kwargs.get('lhs', {})
         self.RHS = set()
 
-    def set_lhs(self, var, set):
-        self.LHS[var] = set
+    def set_lhs(self, var, fset):
+        if self.order == 1:
+            self.LHS[var] = fset
+        else:
+            if var not in self.LHS:
+                self.LHS[var] = []
+            self.LHS[var].append(fset)
 
-    def append_rhs(self, set, **kwargs):
-        self.RHS.add(set)
+
+    def append_rhs(self, fset, **kwargs):
+        self.RHS.add(fset)
 
     def get_membership(self, data, variables):
         mvs = []

@@ -517,3 +517,39 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             p = round(self.flrgs[r].frequency_count / self.global_frequency_count, 3)
             tmp = tmp + "(" + str(p) + ") " + str(self.flrgs[r]) + "\n"
         return tmp
+
+
+def visualize_distributions(model, **kwargs):
+    import matplotlib.pyplot as plt
+    from matplotlib import gridspec
+    import seaborn as sns
+
+    ordered_sets = model.partitioner.ordered_sets
+    ftpg_keys = sorted(model.flrgs.keys(), key=lambda x: model.flrgs[x].get_midpoint(model.sets))
+
+    lhs_probs = [model.flrg_lhs_unconditional_probability(model.flrgs[k])
+                 for k in ftpg_keys]
+
+    mat = np.zeros((len(ftpg_keys), len(ordered_sets)))
+    for row, w in enumerate(ftpg_keys):
+        for col, k in enumerate(ordered_sets):
+            if k in model.flrgs[w].RHS:
+                mat[row, col] = model.flrgs[w].rhs_unconditional_probability(k)
+
+    size = kwargs.get('size', (5,10))
+
+    fig = plt.figure(figsize=size)
+
+    gs = gridspec.GridSpec(1, 2, width_ratios=[1, 4])
+    ax1 = plt.subplot(gs[0])
+    sns.barplot(x='y', y='x', color='darkblue', data={'x': ftpg_keys, 'y': lhs_probs}, ax=ax1)
+    ax1.set_ylabel("LHS Probabilities")
+
+    ind_sets = range(len(ordered_sets))
+    ax = plt.subplot(gs[1])
+    sns.heatmap(mat, cmap='Blues', ax=ax, yticklabels=False)
+    ax.set_title("RHS probabilities")
+    ax.set_xticks(ind_sets)
+    ax.set_xticklabels(ordered_sets)
+    ax.grid(True)
+    ax.xaxis.set_tick_params(rotation=90)

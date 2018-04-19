@@ -6,7 +6,7 @@ from pyFTS.common import Transformations
 
 from pyFTS.data import SONDA
 df = SONDA.get_dataframe()
-train = df.iloc[0:1578241] #three years
+train = df.iloc[0:578241] #three years
 #test = df.iloc[1572480:2096640] #ears
 del df
 
@@ -26,36 +26,40 @@ model = mvfts.MVFTS("")
 
 fig, axes = plt.subplots(nrows=5, ncols=1,figsize=[15,10])
 
+
 sp = {'seasonality': DateTime.day_of_year , 'names': ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec']}
 
 vmonth = variable.Variable("Month", data_label="datahora", partitioner=seasonal.TimeGridPartitioner, npart=12,
                            data=train, partitioner_specific=sp)
-model.append_variable(vmonth)
+vmonth.partitioner.plot(axes[0])
 
 sp = {'seasonality': DateTime.minute_of_day}
 
 vhour = variable.Variable("Hour", data_label="datahora", partitioner=seasonal.TimeGridPartitioner, npart=24,
                           data=train, partitioner_specific=sp)
-model.append_variable(vhour)
 
-vhumid = variable.Variable("Humidity", data_label="humid", partitioner=Grid.GridPartitioner, npart=np, data=train,
-                           transformation=tdiff)
-model.append_variable(vhumid)
+vhour.partitioner.plot(axes[1])
 
-vpress = variable.Variable("AtmPress", data_label="press", partitioner=Grid.GridPartitioner, npart=np, data=train,
-                           transformation=tdiff)
-model.append_variable(vpress)
+vavg = variable.Variable("Radiance", data_label="glo_avg", partitioner=Grid.GridPartitioner, npart=30,
+                         data=train)
 
-vrain = variable.Variable("Rain", data_label="rain", partitioner=Grid.GridPartitioner, npart=20, data=train)#train)
-model.append_variable(vrain)
+model1 = mvfts.MVFTS("")
 
-model.target_variable = vrain
+model1.append_variable(vmonth)
+
+model1.append_variable(vhour)
+
+model1.append_variable(vavg)
+
+model1.target_variable = vavg
+
+#model1.fit(train, num_batches=60, save=True, batch_save=True, file_path='mvfts_sonda')
 
 
 #model.fit(train, num_batches=60, save=True, batch_save=True, file_path='mvfts_sonda')
 
-model.fit(train, num_batches=200, save=True, batch_save=True, file_path='mvfts_sonda', distributed=True,
-          nodes=['192.168.1.22'], batch_save_interval=10)
+model1.fit(train, num_batches=200, save=True, batch_save=True, file_path='mvfts_sonda', distributed=True,
+          nodes=['192.168.1.35'], batch_save_interval=10)
 
 
 #model = Util.load_obj('mvfts_sonda')
