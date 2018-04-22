@@ -8,11 +8,63 @@ import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import sqlite3
 #from mpl_toolkits.mplot3d import Axes3D
 
 
 from copy import deepcopy
 from pyFTS.common import Util
+
+
+def open_benchmark_db(name):
+    conn = sqlite3.connect(name)
+    create_benchmark_tables(conn)
+    return conn
+
+
+def create_benchmark_tables(conn):
+    c = conn.cursor()
+
+    c.execute('''CREATE TABLE if not exists benchmarks(
+                 ID integer primary key, Date int, Dataset text, Tag text, 
+                 Type text, Model text, Transformation text, 'Order' int, 
+                 Scheme text, Partitions int,
+                 Size int, Steps int, Method text, Measure text, Value real)''')
+
+    # Save (commit) the changes
+    conn.commit()
+
+
+def insert_benchmark(data, conn):
+    c = conn.cursor()
+
+    c.execute("INSERT INTO benchmarks(Date, Dataset, Tag, Type, Model, "
+              + "Transformation, 'Order', Scheme, Partitions, "
+              + "Size, Steps, Method, Measure, Value) "
+              + "VALUES(datetime('now'),?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+    conn.commit()
+
+
+def process_common_data(dataset, tag, type, job):
+    model = job["obj"]
+    if not model.benchmark_only:
+        data = [dataset, tag, type, model.shortname,
+                str(model.partitioner.transformation) if model.partitioner.transformation is not None else None,
+                model.order, model.partitioner.name, str(model.partitioner.partitions),
+                len(model), job['steps'], job['method']]
+    else:
+        data = [tag, type, model.shortname, None, model.order, None, None,
+                None, job['steps'], job['method']]
+    return data
+
+
+def get_dataframe_from_bd(file, filter):
+    con = sqlite3.connect(file)
+    sql = "SELECT * from benchmarks"
+    if filter is not None:
+        sql += " WHERE " + filter
+    return pd.read_sql_query(sql, con)
+
 
 
 def extract_measure(dataframe, measure, data_columns):
@@ -44,6 +96,7 @@ def find_best(dataframe, criteria, ascending):
                 ret[_key] = mod
 
     return ret
+
 
 def analytic_tabular_dataframe(dataframe):
     experiments = len(dataframe.columns) - len(base_dataframe_columns()) - 1

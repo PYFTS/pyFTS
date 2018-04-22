@@ -288,7 +288,7 @@ def get_point_statistics(data, model, **kwargs):
     ret = list()
 
     if steps_ahead == 1:
-        forecasts = model.forecast(data, **kwargs)
+        forecasts = model.predict(data, **kwargs)
         if model.has_seasonality:
             nforecasts = np.array(forecasts)
         else:
@@ -304,7 +304,7 @@ def get_point_statistics(data, model, **kwargs):
             tmp = model.forecast_ahead(sample, steps_ahead, **kwargs)
             nforecasts.append(tmp[-1])
 
-        start = model.order + steps_ahead
+        start = model.order + steps_ahead -1
         ret.append(np.round(rmse(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
         ret.append(np.round(smape(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
         ret.append(np.round(UStatistic(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
@@ -327,7 +327,7 @@ def get_interval_statistics(data, model, **kwargs):
     ret = list()
 
     if steps_ahead == 1:
-        forecasts = model.forecast_interval(data, **kwargs)
+        forecasts = model.predict(data, **kwargs)
         ret.append(round(sharpness(forecasts), 2))
         ret.append(round(resolution(forecasts), 2))
         ret.append(round(coverage(data[model.order:], forecasts[:-1]), 2))
@@ -339,10 +339,10 @@ def get_interval_statistics(data, model, **kwargs):
         forecasts = []
         for k in np.arange(model.order, len(data) - steps_ahead):
             sample = data[k - model.order: k]
-            tmp = model.forecast_ahead_interval(sample, steps_ahead, **kwargs)
+            tmp = model.predict(sample, steps_ahead, **kwargs)
             forecasts.append(tmp[-1])
 
-        start = model.order + steps_ahead
+        start = model.order + steps_ahead -1
         ret.append(round(sharpness(forecasts), 2))
         ret.append(round(resolution(forecasts), 2))
         ret.append(round(coverage(data[model.order:], forecasts), 2))

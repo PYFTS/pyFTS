@@ -44,10 +44,14 @@ class Differential(Transformation):
     """
     Differentiation data transform
     """
-    def __init__(self, parameters):
+    def __init__(self, lag):
         super(Differential, self).__init__()
-        self.lag = parameters
+        self.lag = lag
         self.minimal_length = 2
+
+    @property
+    def parameters(self):
+        return self.lag
 
     def apply(self, data, param=None, **kwargs):
         if param is not None:
@@ -66,7 +70,7 @@ class Differential(Transformation):
 
     def inverse(self, data, param, **kwargs):
 
-        interval = kwargs.get("point_to_interval",False)
+        type = kwargs.get("type","point")
 
         if isinstance(data, (np.ndarray, np.generic)):
             data = data.tolist()
@@ -79,10 +83,14 @@ class Differential(Transformation):
 #        print(n)
 #        print(len(param))
 
-        if not interval:
+        if type == "point":
             inc = [data[t] + param[t] for t in np.arange(0, n)]
-        else:
+        elif type == "interval":
             inc = [[data[t][0] + param[t], data[t][1] + param[t]] for t in np.arange(0, n)]
+        elif type == "distribution":
+            for t in np.arange(0, n):
+                data[t].differential_offset(param[t])
+            inc = data
 
         if n == 1:
             return inc[0]
@@ -102,6 +110,10 @@ class Scale(Transformation):
         self.data_min = None
         self.transf_max = max
         self.transf_min = min
+
+    @property
+    def parameters(self):
+        return [self.transf_max, self.transf_min]
 
     def apply(self, data, param=None,**kwargs):
         if self.data_max is None:
@@ -138,6 +150,10 @@ class AdaptiveExpectation(Transformation):
         super(AdaptiveExpectation, self).__init__(parameters)
         self.h = parameters
 
+    @property
+    def parameters(self):
+        return self.parameters
+
     def apply(self, data, param=None,**kwargs):
         return data
 
@@ -159,6 +175,10 @@ class BoxCox(Transformation):
     def __init__(self, plambda):
         super(BoxCox, self).__init__()
         self.plambda = plambda
+
+    @property
+    def parameters(self):
+        return self.plambda
 
     def apply(self, data, param=None, **kwargs):
         if self.plambda != 0:

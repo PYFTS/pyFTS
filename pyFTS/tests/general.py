@@ -19,19 +19,34 @@ from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil
 
 from pyFTS.models import pwfts
 
+from pyFTS.partitioners import Grid, Util as pUtil
+partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10, transformation=tdiff)
+
+model = pwfts.ProbabilisticWeightedFTS('',partitioner=partitioner)
+#model.append_transformation(tdiff)
+model.fit(dataset[:800])
+print(model.predict(dataset[800:1000], type='interval'))
+
+
 '''
 bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2, methods=[pwfts.ProbabilisticWeightedFTS],
-                                benchmark_models=False, orders=[1,2,3], partitions=np.arange(10,100,5),
-                                progress=False, type='point',
-                                #steps_ahead=[1,4,7,10], steps_ahead_sampler=10,
-                                distributed=True, nodes=['192.168.0.102','192.168.0.106','192.168.0.110'],
-                                save=True, file="pwfts_taiex_partitioning.csv")
-'''
+                                benchmark_models=False,
+                                #transformations=[tdiff],
+                                orders=[1, 2, 3],
+                                partitions=np.arange(10, 100, 5),
+                                progress=False, type='distribution',
+                                #steps_ahead=[1,4,7,10], #steps_ahead=[1]
+                                distributed=True, nodes=['192.168.0.110', '192.168.0.100','192.168.0.106'],
+                                file="benchmarks.db", dataset="TAIEX", tag="partitioning")
+                                #save=True, file="tmp.db")
 
+
+'''
+'''
 dat = pd.read_csv('pwfts_taiex_partitioning.csv', sep=';')
 print(bUtil.analytic_tabular_dataframe(dat))
 #print(dat["Size"].values[0])
-
+'''
 '''
 train_split = 2000
 test_length = 200

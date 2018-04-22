@@ -95,6 +95,25 @@ class ProbabilityDistribution(object):
 
         return ret
 
+    def differential_offset(self, value):
+        nbins = []
+        dist = {}
+
+        for k in self.bins:
+            nk = k+value
+            nbins.append(nk)
+            dist[nk] = self.distribution[k]
+
+        self.bins = nbins
+        self.distribution = dist
+        self.labels = [str(k) for k in self.bins]
+
+        self.bin_index = SortedCollection.SortedCollection(iterable=sorted(self.bins))
+        self.quantile_index = None
+        self.cdf = None
+        self.qtl = None
+
+
     def expected_value(self):
         return np.nansum([v * self.distribution[v] for v in self.bins])
 

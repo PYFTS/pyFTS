@@ -90,10 +90,14 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
     :return: DataFrame with the benchmark results
     """
+
+    tag = __pop('tag', None, kwargs)
+    dataset = __pop('dataset', None, kwargs)
+
     distributed = __pop('distributed', False, kwargs)
     save = __pop('save', False, kwargs)
 
-    transformation = kwargs.get('transformation', None)
+    transformations = kwargs.get('transformations', [None])
     progress = kwargs.get('progress', None)
     type = kwargs.get("type", 'point')
 
@@ -192,19 +196,25 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
         if partitioners_models is None:
 
-            for partition in partitions:
+            for transformation in transformations:
 
-                for partitioner in partitioners_methods:
+                for partition in partitions:
 
-                    data_train_fs = partitioner(data=train, npart=partition, transformation=transformation)
+                    for partitioner in partitioners_methods:
 
-                    partitioners_pool.append(data_train_fs)
+                        data_train_fs = partitioner(data=train, npart=partition, transformation=transformation)
+
+                        partitioners_pool.append(data_train_fs)
         else:
             partitioners_pool = partitioners_models
 
         rng1 = steps_ahead
         if progress:
             rng1 = tqdm(steps_ahead, desc="Steps")
+
+        file = kwargs.get('file', "benchmarks.db")
+
+        conn = bUtil.open_benchmark_db(file)
 
         for step in rng1:
             rng2 = partitioners_pool
@@ -225,7 +235,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
                     if not distributed:
                         job = experiment_method(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
-                        jobs.append(job)
+                        synthesis_method(dataset, tag, job, conn)
                     else:
                         job = cluster.submit(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
                         job.id = id  # associate an ID to identify jobs (if needed later)
@@ -239,29 +249,29 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
         rng = jobs
 
-        cluster.wait()  # wait for all jobs to finish
-
         if progress:
             rng = tqdm(jobs)
 
         for job in rng:
+            job()
             if job.status == dispy.DispyJob.Finished and job is not None:
-                tmp = job()
-                jobs2.append(tmp)
+                tmp = job.result
+                synthesis_method(dataset, tag, tmp, conn)
             else:
                 print("status",job.status)
                 print("result",job.result)
                 print("stdout",job.stdout)
                 print("stderr",job.exception)
 
-        jobs = deepcopy(jobs2)
+        cluster.wait()  # wait for all jobs to finish
 
         cUtil.stop_dispy_cluster(cluster, http_server)
 
-    file = kwargs.get('file', None)
+    conn.close()
+
     sintetic = kwargs.get('sintetic', False)
 
-    return synthesis_method(jobs, experiments, save, file, sintetic)
+    #return synthesis_method(jobs, experiments, save, file, sintetic)
 
 
 def get_benchmark_point_methods():
@@ -326,7 +336,6 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
 
     tmp5 = [Transformations.Differential]
 
-    transformation = kwargs.get('transformation', None)
     indexer = kwargs.get('indexer', None)
 
     steps_ahead = kwargs.get('steps_ahead', 1)
@@ -338,12 +347,10 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
         mfts.partitioner = partitioner
+        mfts.append_transformation(partitioner.transformation)
 
     _key += str(steps_ahead)
     _key += str(method) if method is not None else ""
-
-    if transformation is not None:
-        mfts.append_transformation(transformation)
 
     _start = time.time()
     mfts.fit(train_data, order=mfts.order, **kwargs)
@@ -386,9 +393,6 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
 
     tmp3 = [Measures.get_interval_statistics]
 
-    transformation = kwargs.get('transformation', None)
-    indexer = kwargs.get('indexer', None)
-
     steps_ahead = kwargs.get('steps_ahead', 1)
     method = kwargs.get('method', None)
 
@@ -398,9 +402,7 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
         mfts.partitioner = partitioner
-
-    if transformation is not None:
-        mfts.append_transformation(transformation)
+        mfts.append_transformation(partitioner.transformation)
 
     _key += str(steps_ahead)
     _key += str(method) if method is not None else ""
@@ -450,7 +452,6 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
 
     tmp3 = [Measures.get_distribution_statistics, SeasonalIndexer.SeasonalIndexer, SeasonalIndexer.LinearSeasonalIndexer]
 
-    transformation = kwargs.get('transformation', None)
     indexer = kwargs.get('indexer', None)
 
     steps_ahead = kwargs.get('steps_ahead', 1)
@@ -462,12 +463,10 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
         mfts.partitioner = partitioner
+        mfts.append_transformation(partitioner.transformation)
 
     _key += str(steps_ahead)
     _key += str(method) if method is not None else ""
-
-    if transformation is not None:
-        mfts.append_transformation(transformation)
 
     if mfts.has_seasonality:
         mfts.indexer = indexer
@@ -491,126 +490,64 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
     return ret
 
 
-def build_model_pool_point(models, max_order, benchmark_models, benchmark_models_parameters):
-    pool = []
-    if models is None:
-        models = get_point_methods()
-    for model in models:
-        mfts = model("")
+def process_point_jobs(dataset, tag,  job, conn):
 
-        if mfts.is_high_order:
-            for order in np.arange(1, max_order + 1):
-                if order >= mfts.min_order:
-                    mfts = model("")
-                    mfts.order = order
-                    pool.append(mfts)
-        else:
-            mfts.order = 1
-            pool.append(mfts)
+    data = bUtil.process_common_data(dataset, tag, 'point',job)
 
-    if benchmark_models is not None:
-        for count, model in enumerate(benchmark_models, start=0):
-            par = benchmark_models_parameters[count]
-            mfts = model(str(par if par is not None else ""))
-            mfts.order = par
-            pool.append(mfts)
-    return pool
+    rmse = deepcopy(data)
+    rmse.extend(["rmse", job["rmse"]])
+    bUtil.insert_benchmark(rmse, conn)
+    smape = deepcopy(data)
+    smape.extend(["smape", job["smape"]])
+    bUtil.insert_benchmark(smape, conn)
+    u = deepcopy(data)
+    u.extend(["u", job["u"]])
+    bUtil.insert_benchmark(u, conn)
+    time = deepcopy(data)
+    time.extend(["time", job["time"]])
+    bUtil.insert_benchmark(time, conn)
 
 
-def process_point_jobs(jobs, experiments, save=False, file=None, sintetic=False):
-    objs = {}
-    rmse = {}
-    smape = {}
-    u = {}
-    times = {}
-    steps = {}
-    method = {}
+def process_interval_jobs(dataset, tag, job, conn):
 
-    for job in jobs:
-        _key = job['key']
-        if _key not in objs:
-            objs[_key] = job['obj']
-            rmse[_key] = []
-            smape[_key] = []
-            u[_key] = []
-            times[_key] = []
-            steps[_key] = []
-            method[_key] = []
-        steps[_key] = job['steps']
-        method[_key] = job['method']
-        rmse[_key].append(job['rmse'])
-        smape[_key].append(job['smape'])
-        u[_key].append(job['u'])
-        times[_key].append(job['time'])
+    data = bUtil.process_common_data(dataset, tag, 'interval', job)
 
-    return bUtil.save_dataframe_point(experiments, file, objs, rmse, save, sintetic, smape, times, u, steps, method)
-
-
-def process_interval_jobs(jobs, experiments, save=False, file=None, sintetic=False):
-    objs = {}
-    sharpness = {}
-    resolution = {}
-    coverage = {}
-    q05 = {}
-    q25 = {}
-    q75 = {}
-    q95 = {}
-    times = {}
-    steps = {}
-    method = {}
-
-    for job in jobs:
-        _key = job['key']
-        if _key not in objs:
-            objs[_key] = job['obj']
-            sharpness[_key] = []
-            resolution[_key] = []
-            coverage[_key] = []
-            times[_key] = []
-            q05[_key] = []
-            q25[_key] = []
-            q75[_key] = []
-            q95[_key] = []
-            steps[_key] = []
-            method[_key] = []
-
-        sharpness[_key].append(job['sharpness'])
-        resolution[_key].append(job['resolution'])
-        coverage[_key].append(job['coverage'])
-        times[_key].append(job['time'])
-        q05[_key].append(job['Q05'])
-        q25[_key].append(job['Q25'])
-        q75[_key].append(job['Q75'])
-        q95[_key].append(job['Q95'])
-        steps[_key] = job['steps']
-        method[_key] = job['method']
-    return bUtil.save_dataframe_interval(coverage, experiments, file, objs, resolution, save, sharpness, sintetic,
-                                         times, q05, q25, q75, q95, steps, method)
+    sharpness = deepcopy(data)
+    sharpness.extend(["sharpness", job["sharpness"]])
+    bUtil.insert_benchmark(sharpness, conn)
+    resolution = deepcopy(data)
+    resolution.extend(["resolution", job["resolution"]])
+    bUtil.insert_benchmark(resolution, conn)
+    coverage = deepcopy(data)
+    coverage.extend(["coverage", job["coverage"]])
+    bUtil.insert_benchmark(coverage, conn)
+    time = deepcopy(data)
+    time.extend(["time", job["time"]])
+    bUtil.insert_benchmark(time, conn)
+    Q05 = deepcopy(data)
+    Q05.extend(["Q05", job["Q05"]])
+    bUtil.insert_benchmark(Q05, conn)
+    Q25 = deepcopy(data)
+    Q25.extend(["Q25", job["Q25"]])
+    bUtil.insert_benchmark(Q25, conn)
+    Q75 = deepcopy(data)
+    Q75.extend(["Q75", job["Q75"]])
+    bUtil.insert_benchmark(Q75, conn)
+    Q95 = deepcopy(data)
+    Q95.extend(["Q95", job["Q95"]])
+    bUtil.insert_benchmark(Q95, conn)
 
 
-def process_probabilistic_jobs(jobs, experiments, save=False, file=None, sintetic=False):
-    objs = {}
-    crps = {}
-    times = {}
-    steps = {}
-    method = {}
+def process_probabilistic_jobs(dataset, tag,  job, conn):
 
-    for job in jobs:
-        _key = job['key']
-        if _key not in objs:
-            objs[_key] = job['obj']
-            crps[_key] = []
-            times[_key] = []
-            steps[_key] = []
-            method[_key] = []
+    data = bUtil.process_common_data(dataset, tag,  'density', job)
 
-        crps[_key].append(job['CRPS'])
-        times[_key].append(job['time'])
-        steps[_key] = job['steps']
-        method[_key] = job['method']
-
-    return bUtil.save_dataframe_probabilistic(experiments, file, objs, crps, times, save, sintetic, steps, method)
-
+    crps = deepcopy(data)
+    crps.extend(["CRPS",job["CRPS"]])
+    bUtil.insert_benchmark(crps, conn)
+    time = deepcopy(data)
+    time.extend(["time", job["time"]])
+    bUtil.insert_benchmark(time, conn)
 
 
 def print_point_statistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
@@ -636,7 +573,6 @@ def print_point_statistics(data, models, externalmodels = None, externalforecast
     print(ret)
 
 
-
 def print_interval_statistics(original, models):
     ret = "Model	& Order     & Sharpness		& Resolution		& Coverage & .05  & .25 & .75 & .95	\\\\ \n"
     for fts in models:
@@ -651,151 +587,6 @@ def print_interval_statistics(original, models):
         ret += str(_q75) + "        &"
         ret += str(_q95) + "\\\\ \n"
     print(ret)
-
-
-
-
-
-
-
-def ahead_sliding_window(data, windowsize, train, steps, models=None, resolution = None, partitioners=[Grid.GridPartitioner],
-                         partitions=[10], max_order=3, transformation=None, indexer=None, dump=False,
-                         save=False, file=None, synthetic=False):
-    if models is None:
-        models = [pwfts.ProbabilisticWeightedFTS]
-
-    objs = {}
-    lcolors = {}
-    crps_interval = {}
-    crps_distr = {}
-    times1 = {}
-    times2 = {}
-
-    experiments = 0
-    for ct, train,test in cUtil.sliding_window(data, windowsize, train):
-        experiments += 1
-        for partition in partitions:
-            for partitioner in partitioners:
-                pttr = str(partitioner.__module__).split('.')[-1]
-                data_train_fs = partitioner(data=train, npart=partition, transformation=transformation)
-
-                for count, model in enumerate(models, start=0):
-
-                    mfts = model("")
-                    _key = mfts.shortname + " " + pttr+ " q = " +str(partition)
-
-                    mfts.partitioner = data_train_fs
-                    if not mfts.is_high_order:
-
-                        if dump: print(ct,_key)
-
-                        if _key not in objs:
-                            objs[_key] = mfts
-                            lcolors[_key] = colors[count % ncol]
-                            crps_interval[_key] = []
-                            crps_distr[_key] = []
-                            times1[_key] = []
-                            times2[_key] = []
-
-                        if transformation is not None:
-                            mfts.append_transformation(transformation)
-
-                        _start = time.time()
-                        mfts.train(train, sets=data_train_fs.sets)
-                        _end = time.time()
-
-                        _tdiff = _end - _start
-
-                        _crps1, _crps2, _t1, _t2 = Measures.get_distribution_statistics(test,mfts,steps=steps,resolution=resolution)
-
-                        crps_interval[_key].append_rhs(_crps1)
-                        crps_distr[_key].append_rhs(_crps2)
-                        times1[_key] = _tdiff + _t1
-                        times2[_key] = _tdiff + _t2
-
-                        if dump: print(_crps1, _crps2, _tdiff, _t1, _t2)
-
-                    else:
-                        for order in np.arange(1, max_order + 1):
-                            if order >= mfts.min_order:
-                                mfts = model("")
-                                _key = mfts.shortname + " n = " + str(order) + " " + pttr + " q = " + str(partition)
-                                mfts.partitioner = data_train_fs
-
-                                if dump: print(ct,_key)
-
-                                if _key not in objs:
-                                    objs[_key] = mfts
-                                    lcolors[_key] = colors[count % ncol]
-                                    crps_interval[_key] = []
-                                    crps_distr[_key] = []
-                                    times1[_key] = []
-                                    times2[_key] = []
-
-                                if transformation is not None:
-                                    mfts.append_transformation(transformation)
-
-                                _start = time.time()
-                                mfts.train(train, sets=data_train_fs.sets, order=order)
-                                _end = time.time()
-
-                                _tdiff = _end - _start
-
-                                _crps1, _crps2, _t1, _t2 = Measures.get_distribution_statistics(test, mfts, steps=steps,
-                                                                                       resolution=resolution)
-
-                                crps_interval[_key].append_rhs(_crps1)
-                                crps_distr[_key].append_rhs(_crps2)
-                                times1[_key] = _tdiff + _t1
-                                times2[_key] = _tdiff + _t2
-
-                                if dump: print(_crps1, _crps2, _tdiff, _t1, _t2)
-
-    return bUtil.save_dataframe_ahead(experiments, file, objs, crps_interval, crps_distr, times1, times2, save, synthetic)
-
-
-
-def all_ahead_forecasters(data_train, data_test, partitions, start, steps, resolution = None, max_order=3,save=False, file=None, tam=[20, 5],
-                           models=None, transformation=None, option=2):
-    if models is None:
-        models = [pwfts.ProbabilisticWeightedFTS]
-
-    if resolution is None: resolution = (max(data_train) - min(data_train)) / 100
-
-    objs = []
-
-    data_train_fs = Grid.GridPartitioner(data=data_train, npart=partitions, transformation=transformation).sets
-    lcolors = []
-
-    for count, model in cUtil.enumerate2(models, start=0, step=2):
-        mfts = model("")
-        if not mfts.is_high_order:
-            if transformation is not None:
-                mfts.append_transformation(transformation)
-            mfts.train(data_train, sets=data_train_fs.sets)
-            objs.append(mfts)
-            lcolors.append( colors[count % ncol] )
-        else:
-            for order in np.arange(1,max_order+1):
-                if order >= mfts.min_order:
-                    mfts = model(" n = " + str(order))
-                    if transformation is not None:
-                        mfts.append_transformation(transformation)
-                    mfts.train(data_train, sets=data_train_fs.sets, order=order)
-                    objs.append(mfts)
-                    lcolors.append(colors[count % ncol])
-
-    distributions = [False for k in objs]
-
-    distributions[0] = True
-
-    print_distribution_statistics(data_test[start:], objs, steps, resolution)
-
-    plot_compared_intervals_ahead(data_test, objs, lcolors, distributions=distributions, time_from=start, time_to=steps,
-                               interpol=False, save=save, file=file, tam=tam, resolution=resolution, option=option)
-
-
-
 
 
 def print_distribution_statistics(original, models, steps, resolution):
