@@ -147,10 +147,18 @@ def fuzzyfy_series(data, fuzzySets, method='maximum'):
     return fts
 
 
+def grant_bounds(data, sets, ordered_sets):
+    if data < sets[ordered_sets[0]].lower:
+        return sets[ordered_sets[0]].lower
+    elif data > sets[ordered_sets[-1]].upper:
+        return sets[ordered_sets[-1]].upper
+    else:
+        return data
+
 def check_bounds(data, sets, ordered_sets):
-    if data < sets[ordered_sets[0]].get_lower():
+    if data < sets[ordered_sets[0]].lower:
         return sets[ordered_sets[0]]
-    elif data > sets[ordered_sets[-1]].get_upper():
+    elif data > sets[ordered_sets[-1]].upper:
         return sets[ordered_sets[-1]]
 
 

@@ -294,19 +294,24 @@ def get_point_statistics(data, model, **kwargs):
     if indexer is not None:
         ndata = np.array(indexer.get_data(data))
     else:
-        ndata = np.array(data[model.order:])
+        ndata = np.array(data)
 
     ret = list()
 
     if steps_ahead == 1:
-        forecasts = model.predict(data, **kwargs)
+        forecasts = model.predict(ndata, **kwargs)
+
+        if not isinstance(forecasts, (list, np.ndarray)):
+            forecasts = [forecasts]
+
         if model.has_seasonality:
             nforecasts = np.array(forecasts)
         else:
             nforecasts = np.array(forecasts[:-1])
-        ret.append(np.round(rmse(ndata, nforecasts), 2))
-        ret.append(np.round(smape(ndata, nforecasts), 2))
-        ret.append(np.round(UStatistic(ndata, nforecasts), 2))
+
+        ret.append(np.round(rmse(ndata[model.order:], nforecasts), 2))
+        ret.append(np.round(smape(ndata[model.order:], nforecasts), 2))
+        ret.append(np.round(UStatistic(ndata[model.order:], nforecasts), 2))
     else:
         steps_ahead_sampler = kwargs.get('steps_ahead_sampler', 1)
         nforecasts = []

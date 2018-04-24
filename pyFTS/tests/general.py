@@ -17,7 +17,7 @@ dataset = TAIEX.get_data()
 
 from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures
 
-from pyFTS.models import pwfts
+from pyFTS.models import pwfts, song
 '''
 from pyFTS.partitioners import Grid, Util as pUtil
 partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10, transformation=tdiff)
@@ -32,12 +32,19 @@ print(Measures.get_distribution_statistics(dataset[800:1000], model, steps_ahead
 '''
 
 #'''
+
+from pyFTS.benchmarks import arima, naive, quantreg
+
 bchmk.sliding_window_benchmarks(dataset[:1000], 1000, train=0.8, inc=0.2,
-                                #methods=[pwfts.ProbabilisticWeightedFTS],
-                                benchmark_models=False,
-                                #transformations=[tdiff],
-                                orders=[1], #[1, 2, 3],
-                                partitions=[20], #np.arange(10, 100, 5),
+                                #methods=[song.ConventionalFTS], #[pwfts.ProbabilisticWeightedFTS],
+                                benchmark_models=True,
+                                benchmark_methods=[naive.Naive, arima.ARIMA,arima.ARIMA], #arima.ARIMA,arima.ARIMA],
+                                #benchmark_methods=[arima.ARIMA],
+                                benchmark_methods_parameters=[1,(1,0,0),(1,0,1)], #(2,0,1),(2,0,2)],
+                                #benchmark_methods_parameters=[(1,0,0)],
+                                transformations=[None, tdiff],
+                                orders=[1, 2, 3],
+                                partitions=[35], #np.arange(10, 100, 5),
                                 progress=True, type='point',
                                 #steps_ahead=[1,4,7,10], #steps_ahead=[1]
                                 #distributed=True, nodes=['192.168.0.110', '192.168.0.105','192.168.0.106'],

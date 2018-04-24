@@ -151,7 +151,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
             elif type == 'distribution':
                 benchmark_methods = get_benchmark_probabilistic_methods()
 
-        if benchmark_models is not None:
+        if isinstance(benchmark_models, list) :
             pool.extend(benchmark_models)
         elif benchmark_methods is not None:
             for count, model in enumerate(benchmark_methods, start=0):
@@ -342,6 +342,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
 
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "")
+        mfts.append_transformation(partitioner.transformation)
     else:
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
@@ -355,6 +356,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
     mfts.fit(train_data, order=mfts.order, **kwargs)
     _end = time.time()
     times = _end - _start
+
 
     _start = time.time()
     _rmse, _smape, _u = Measures.get_point_statistics(test_data, mfts, **kwargs)

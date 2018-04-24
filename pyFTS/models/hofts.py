@@ -46,6 +46,7 @@ class HighOrderFTS(fts.FTS):
         self.order = kwargs.get('order',1)
         self.setsDict = {}
         self.is_high_order = True
+        self.min_order = 2
 
     def generate_lhs_flrg(self, sample):
         lags = {}

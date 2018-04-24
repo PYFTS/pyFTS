@@ -31,20 +31,27 @@ class ARIMA(fts.FTS):
         self.min_order = 1
         self.alpha = kwargs.get("alpha", 0.05)
         self.shortname += str(self.alpha)
+        self._decompose_order(self.order)
 
-    def train(self, data, sets, order, parameters=None):
-        self.p = order[0]
-        self.d = order[1]
-        self.q = order[2]
-        self.order = self.p + self.q
-        self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ") - " + str(self.alpha)
+    def _decompose_order(self, order):
+        if isinstance(order, (tuple, set, list)):
+            self.p = order[0]
+            self.d = order[1]
+            self.q = order[2]
+            self.order = self.p + self.q + (self.q - 1 if self.q > 0 else 0)
+            self.d = len(self.transformations)
+            self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ") - " + str(self.alpha)
+
+    def train(self, data, **kwargs):
+        if kwargs.get('order', None) is not None:
+            order = kwargs.get('order', (1,0,0))
+            self._decompose_order(order)
 
         if self.indexer is not None:
             data = self.indexer.get_data(data)
 
-        data = self.apply_transformations(data, updateUoD=True)
+        #data = self.apply_transformations(data, updateUoD=True)
 
-        old_fit = self.model_fit
         try:
             self.model =  stats_arima(data, order=(self.p, self.d, self.q))
             self.model_fit = self.model.fit(disp=0)
@@ -58,34 +65,32 @@ class ARIMA(fts.FTS):
     def ma(self, data):
         return data.dot(self.model_fit.maparams)
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, ndata, **kwargs):
         if self.model_fit is None:
             return np.nan
 
-        if self.indexer is not None and isinstance(data, pd.DataFrame):
-            data = self.indexer.get_data(data)
+        if self.indexer is not None and isinstance(ndata, pd.DataFrame):
+            data = self.indexer.get_data(ndata)
 
-        ndata = np.array(self.apply_transformations(data))
+        ndata = np.array(ndata)
 
         l = len(ndata)
 
         ret = []
 
-        if self.d == 0:
-            ar = np.array([self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l+1)]) #+1 to forecast one step ahead given all available lags
-        else:
-            ar = np.array([ndata[k] + self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l+1)])
+        ar = np.array([self.ar(ndata[k - self.p: k]) for k in np.arange(self.p, l+1)]) #+1 to forecast one step ahead given all available lags
 
         if self.q > 0:
-            residuals = np.array([ndata[k] - ar[k - self.p] for k in np.arange(self.p, l)])
+            residuals = ndata[self.p-1:] - ar
 
-            ma = np.array([self.ma(residuals[k - self.q: k]) for k in np.arange(self.q, len(residuals)+1)])
+            ma = np.array([self.ma(residuals[k - self.q: k]) for k in np.arange(self.q, len(residuals) + 1)])
 
-            ret = ar[self.q:] + ma
+            ret = ar[self.q - 1:] + ma
+            ret = ret[self.q:]
         else:
             ret = ar
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
+        #ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])        nforecasts = np.array(forecasts)
 
         return ret
 
@@ -121,7 +126,7 @@ class ARIMA(fts.FTS):
 
         return ret
 
-    def forecast_ahead_interval(self, data, steps, **kwargs):
+    def forecast_ahead_interval(self, ndata, steps, **kwargs):
         if self.model_fit is None:
             return np.nan
 
@@ -129,7 +134,7 @@ class ARIMA(fts.FTS):
 
         sigma = np.sqrt(self.model_fit.sigma2)
 
-        ndata = np.array(self.apply_transformations(data))
+        #ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -147,12 +152,9 @@ class ARIMA(fts.FTS):
 
             ret.append(tmp)
 
-        ret = self.apply_inverse_transformations(ret, params=[[data[-1] for a in np.arange(0, steps)]], interval=True)
+        #ret = self.apply_inverse_transformations(ret, params=[[data[-1] for a in np.arange(0, steps)]], interval=True)
 
         return ret
-
-    def empty_grid(self, resolution):
-        return self.get_empty_grid(-(self.original_max*2), self.original_max*2, resolution)
 
     def forecast_distribution(self, data, **kwargs):
 

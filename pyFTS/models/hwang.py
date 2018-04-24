@@ -20,7 +20,11 @@ class HighOrderFTS(fts.FTS):
 
     def forecast(self, ndata, **kwargs):
 
-        ordered_sets = FuzzySet.set_ordered(self.sets)
+        if self.sets == None:
+            self.sets = self.partitioner.sets
+            ordered_sets = self.partitioner.ordered_sets
+        else:
+            ordered_sets = FuzzySet.set_ordered(self.sets)
 
         l = len(self.sets)
 
@@ -35,9 +39,9 @@ class HighOrderFTS(fts.FTS):
 
             for ix in range(l):
                 s = ordered_sets[ix]
-                cn[ix] = self.sets[s].membership(ndata[t])
+                cn[ix] = self.sets[s].membership( FuzzySet.grant_bounds(ndata[t], self.sets, ordered_sets))
                 for w in range(self.order - 1):
-                    ow[w, ix] = self.sets[s].membership(ndata[t - w])
+                    ow[w, ix] = self.sets[s].membership(FuzzySet.grant_bounds(ndata[t - w], self.sets, ordered_sets))
                     rn[w, ix] = ow[w, ix] * cn[ix]
                     ft[ix] = max(ft[ix], rn[w, ix])
             mft = max(ft)
@@ -55,4 +59,7 @@ class HighOrderFTS(fts.FTS):
     def train(self, data, **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
-        self.order = kwargs.get('order', 1)
+        else:
+            self.sets = self.partitioner.sets
+
+        self.order = kwargs.get('order', 2)

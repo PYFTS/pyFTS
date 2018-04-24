@@ -47,14 +47,17 @@ def insert_benchmark(data, conn):
 
 def process_common_data(dataset, tag, type, job):
     model = job["obj"]
-    if not model.benchmark_only:
+    if model.benchmark_only:
+        data = [dataset, tag, type, model.shortname,
+                str(model.transformations[0]) if len(model.transformations) > 0 else None,
+                model.order, None, None,
+                None, job['steps'], job['method']]
+    else:
         data = [dataset, tag, type, model.shortname,
                 str(model.partitioner.transformation) if model.partitioner.transformation is not None else None,
                 model.order, model.partitioner.name, str(model.partitioner.partitions),
                 len(model), job['steps'], job['method']]
-    else:
-        data = [tag, type, model.shortname, None, model.order, None, None,
-                None, job['steps'], job['method']]
+
     return data
 
 
