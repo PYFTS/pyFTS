@@ -56,10 +56,13 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     partitions and partitioning method will be created a partitioner model. And for each partitioner, order,
     steps ahead and FTS method a foreasting model will be trained.
 
-    Then all trained models are benchmarked on the test data and the metrics are stored in a datafame for
-    posterior analysis.
+    Then all trained models are benchmarked on the test data and the metrics are stored on a sqlite3 database
+    (identified by the 'file' parameter) for posterior analysis.
 
-    The number of experiments is determined by the windowsize and inc.
+    All these process can be distributed on a dispy cluster, setting the atributed 'distributed' to true and
+    informing the list of dispy nodes on 'nodes' parameter.
+
+    The number of experiments is determined by 'windowsize' and 'inc' parameters.
 
     :param data: test data
     :param windowsize: size of sliding window
@@ -67,35 +70,31 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     :param kwargs: dict, optional arguments
 
     :keyword
+        benchmark_methods:  a list with Non FTS models to benchmark. The default is None.
+        benchmark_methods_parameters:  a list with Non FTS models parameters. The default is None.
+        dataset: the dataset name to identify the current set of benchmarks results on database.
+        distributed: A boolean value indicating if the forecasting procedure will be distributed in a dispy cluster. . The default is False
+        file: file path to save the results. The default is benchmarks.db.
         inc: a float on interval [0,1] indicating the percentage of the windowsize to move the window
-        models: a list with prebuilt FTS objects. The default is None.
         methods: a list with FTS class names. The default depends on the forecasting type and contains the list of all FTS methods.
+        models: a list with prebuilt FTS objects. The default is None.
+        nodes: a list with the dispy cluster nodes addresses. The default is [127.0.0.1].
+        orders: a list with orders of the models (for high order models). The default is [1,2,3].
+        partitions: a list with the numbers of partitions on the Universe of Discourse. The default is [10].
         partitioners_models: a list with prebuilt Universe of Discourse partitioners objects. The default is None.
         partitioners_methods: a list with Universe of Discourse partitioners class names. The default is [partitioners.Grid.GridPartitioner].
-        partitions: a list with the numbers of partitions on the Universe of Discourse. The default is [10].
-        orders: a list with orders of the models (for high order models). The default is [1,2,3].
-        type: the forecasting type, one of these values: point(default), interval or distribution. . The default is point.
-        steps_ahead: a list with  the forecasting horizons, i. e., the number of steps ahead to forecast. The default is 1.
-        start: in the multi step forecasting, the index of the data where to start forecasting. The default is 0.
-        transformation: data transformation . The default is None.
-        indexer: seasonal indexer. . The default is None.
         progress: If true a progress bar will be displayed during the benchmarks. The default is False.
-        distributed: A boolean value indicating if the forecasting procedure will be distributed in a dispy cluster. . The default is False
-        nodes: a list with the dispy cluster nodes addresses. The default is [127.0.0.1].
-        benchmark_methods:  a list with Non FTS models to benchmark. The default is None.
-        benchmark_methods_parameters:  a list with Non FTS models parameters. . The default is None.
-        save: save results. The default is False.
-        file: file path to save the results. The default is None.
-        sintetic: if true only the average and standard deviation of the results. The de fault is False.
-
-    :return: DataFrame with the benchmark results
+        start: in the multi step forecasting, the index of the data where to start forecasting. The default is 0.
+        steps_ahead: a list with  the forecasting horizons, i. e., the number of steps ahead to forecast. The default is 1.
+        tag: a name to identify the current set of benchmarks results on database.
+        type: the forecasting type, one of these values: point(default), interval or distribution. The default is point.
+        transformations: a list with data transformations do apply . The default is [None].
     """
 
     tag = __pop('tag', None, kwargs)
     dataset = __pop('dataset', None, kwargs)
 
     distributed = __pop('distributed', False, kwargs)
-    save = __pop('save', False, kwargs)
 
     transformations = kwargs.get('transformations', [None])
     progress = kwargs.get('progress', None)

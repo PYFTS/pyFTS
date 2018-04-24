@@ -39,7 +39,7 @@ class ConventionalFTS(fts.FTS):
 
     def operation_matrix(self, flrs):
         l = len(self.sets)
-        if self.R is None:
+        if self.R is None or len(self.R) == 0 :
             self.R = np.zeros((l, l))
         for k in flrs:
             mm = self.flr_membership_matrix(k)
@@ -51,6 +51,8 @@ class ConventionalFTS(fts.FTS):
     def train(self, data, **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
+        else:
+            self.sets = self.partitioner.sets
 
         tmpdata = FuzzySet.fuzzyfy_series(data, self.sets, method='maximum')
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)

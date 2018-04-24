@@ -215,6 +215,17 @@ def pinball_mean(tau, targets, forecasts):
         print(ex)
 
 
+def brier_score(targets, densities):
+    '''Brier (1950). "Verification of Forecasts Expressed in Terms of Probability". Monthly Weather Review. 78: 1–3. '''
+    ret = []
+    for ct, d in enumerate(densities):
+        v = d.bin_index.find_ge(targets[ct])
+        score = sum([d.distribution[k] ** 2 for k in d.bins if k != v])
+        score += (d.distribution[v] - 1) ** 2
+        ret.append(score)
+    return sum(ret)/len(ret)
+
+
 def pmf_to_cdf(density):
     ret = []
     for row in density.index:
@@ -235,7 +246,6 @@ def heavyside_cdf(bins, targets):
         ret.append(result)
     df = pd.DataFrame(ret, columns=bins)
     return df
-
 
 def crps(targets, densities):
     '''
@@ -277,6 +287,7 @@ def get_point_statistics(data, model, **kwargs):
     '''
 
     steps_ahead = kwargs.get('steps_ahead',1)
+    kwargs['type'] = 'point'
 
     indexer = kwargs.get('indexer', None)
 
@@ -301,7 +312,7 @@ def get_point_statistics(data, model, **kwargs):
         nforecasts = []
         for k in np.arange(model.order, len(ndata)-steps_ahead,steps_ahead_sampler):
             sample = ndata[k - model.order: k]
-            tmp = model.forecast_ahead(sample, steps_ahead, **kwargs)
+            tmp = model.predict(sample, **kwargs)
             nforecasts.append(tmp[-1])
 
         start = model.order + steps_ahead -1
@@ -323,6 +334,7 @@ def get_interval_statistics(data, model, **kwargs):
     '''
 
     steps_ahead = kwargs.get('steps_ahead', 1)
+    kwargs['type'] = 'interval'
 
     ret = list()
 
@@ -339,7 +351,7 @@ def get_interval_statistics(data, model, **kwargs):
         forecasts = []
         for k in np.arange(model.order, len(data) - steps_ahead):
             sample = data[k - model.order: k]
-            tmp = model.predict(sample, steps_ahead, **kwargs)
+            tmp = model.predict(sample, **kwargs)
             forecasts.append(tmp[-1])
 
         start = model.order + steps_ahead -1
@@ -362,12 +374,13 @@ def get_distribution_statistics(data, model, **kwargs):
     :return: a list with the CRPS and execution time
     '''
     steps_ahead = kwargs.get('steps_ahead', 1)
+    kwargs['type'] = 'distribution'
 
     ret = list()
 
     if steps_ahead == 1:
         _s1 = time.time()
-        forecasts = model.forecast_distribution(data, **kwargs)
+        forecasts = model.predict(data, **kwargs)
         _e1 = time.time()
         ret.append(round(crps(data, forecasts), 3))
         ret.append(round(_e1 - _s1, 3))
@@ -377,7 +390,7 @@ def get_distribution_statistics(data, model, **kwargs):
         _s1 = time.time()
         for k in np.arange(model.order, len(data) - steps_ahead, skip):
             sample = data[k - model.order: k]
-            tmp = model.forecast_ahead_distribution(sample, steps_ahead, **kwargs)
+            tmp = model.predict(sample, **kwargs)
             forecasts.append(tmp[-1])
         _e1 = time.time()
 

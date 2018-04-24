@@ -50,7 +50,10 @@ class ConventionalFTS(fts.FTS):
     def train(self, data, **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
-        tmpdata = FuzzySet.fuzzyfy_series_old(data, self.sets)
+        else:
+            self.sets = self.partitioner.sets
+
+        tmpdata = FuzzySet.fuzzyfy_series(data, self.sets, method='maximum')
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs)
 

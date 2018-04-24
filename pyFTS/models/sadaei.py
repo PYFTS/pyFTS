@@ -69,6 +69,9 @@ class ExponentialyWeightedFTS(fts.FTS):
         self.c = kwargs.get('parameters', default_c)
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
+        else:
+            self.sets = self.partitioner.sets
+
         tmpdata = FuzzySet.fuzzyfy_series(data, self.sets, method='maximum')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs, self.c)
@@ -78,7 +81,7 @@ class ExponentialyWeightedFTS(fts.FTS):
 
         ordered_sets = FuzzySet.set_ordered(self.sets)
 
-        data = np.array(data)
+        data = np.array(ndata)
 
         l = len(ndata)
 

@@ -114,9 +114,9 @@ class FTS(object):
 
             ret = Util.distributed_predict(self, kwargs, nodes, ndata, num_batches)
 
-        if type != 'distribution' and not self.is_multivariate:
-            interval = True if type == 'interval' else False
-            ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], interval=interval)
+        if not self.is_multivariate:
+            kwargs['type'] = type
+            ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], **kwargs)
 
         return ret
 

@@ -60,8 +60,10 @@ class WeightedFTS(fts.FTS):
     def train(self, ndata, **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
+        else:
+            self.sets = self.partitioner.sets
 
-        tmpdata = FuzzySet.fuzzyfy_series_old(ndata, self.sets)
+        tmpdata = FuzzySet.fuzzyfy_series(ndata, self.sets, method='maximum')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_FLRG(flrs)
 

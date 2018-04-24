@@ -97,6 +97,8 @@ class HighOrderFTS(fts.FTS):
 
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
+        else:
+            self.sets = self.partitioner.sets
 
         self.generate_flrg(data)
 

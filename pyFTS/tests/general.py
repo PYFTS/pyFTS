@@ -15,33 +15,37 @@ from pyFTS.data import TAIEX
 
 dataset = TAIEX.get_data()
 
-from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil
+from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures
 
 from pyFTS.models import pwfts
-
+'''
 from pyFTS.partitioners import Grid, Util as pUtil
 partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10, transformation=tdiff)
 
 model = pwfts.ProbabilisticWeightedFTS('',partitioner=partitioner)
-#model.append_transformation(tdiff)
+model.append_transformation(tdiff)
 model.fit(dataset[:800])
-print(model.predict(dataset[800:1000], type='interval'))
-
-
+print(Measures.get_distribution_statistics(dataset[800:1000], model, steps_ahead=7))
+#tmp = model.predict(dataset[800:1000], type='distribution', steps_ahead=7)
+#for tmp2 in tmp:
+#    print(tmp2)
 '''
-bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2, methods=[pwfts.ProbabilisticWeightedFTS],
+
+#'''
+bchmk.sliding_window_benchmarks(dataset[:1000], 1000, train=0.8, inc=0.2,
+                                #methods=[pwfts.ProbabilisticWeightedFTS],
                                 benchmark_models=False,
                                 #transformations=[tdiff],
-                                orders=[1, 2, 3],
-                                partitions=np.arange(10, 100, 5),
-                                progress=False, type='distribution',
+                                orders=[1], #[1, 2, 3],
+                                partitions=[20], #np.arange(10, 100, 5),
+                                progress=True, type='point',
                                 #steps_ahead=[1,4,7,10], #steps_ahead=[1]
-                                distributed=True, nodes=['192.168.0.110', '192.168.0.100','192.168.0.106'],
-                                file="benchmarks.db", dataset="TAIEX", tag="partitioning")
+                                #distributed=True, nodes=['192.168.0.110', '192.168.0.105','192.168.0.106'],
+                                file="benchmarks.tmp", dataset="TAIEX", tag="comparisons")
                                 #save=True, file="tmp.db")
 
 
-'''
+#'''
 '''
 dat = pd.read_csv('pwfts_taiex_partitioning.csv', sep=';')
 print(bUtil.analytic_tabular_dataframe(dat))
