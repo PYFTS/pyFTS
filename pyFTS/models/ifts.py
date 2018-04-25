@@ -26,6 +26,7 @@ class IntervalFTS(hofts.HighOrderFTS):
         self.has_point_forecasting = False
         self.has_interval_forecasting = True
         self.is_high_order = True
+        self.min_order = 1
 
     def get_upper(self, flrg):
         if flrg.get_key() in self.flrgs:

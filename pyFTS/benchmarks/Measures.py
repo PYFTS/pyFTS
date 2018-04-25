@@ -387,7 +387,7 @@ def get_distribution_statistics(data, model, **kwargs):
         _s1 = time.time()
         forecasts = model.predict(data, **kwargs)
         _e1 = time.time()
-        ret.append(round(crps(data, forecasts), 3))
+        ret.append(round(crps(data[model.order:], forecasts), 3))
         ret.append(round(_e1 - _s1, 3))
     else:
         skip = kwargs.get('steps_ahead_sampler', 1)

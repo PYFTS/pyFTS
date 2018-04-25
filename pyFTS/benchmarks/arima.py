@@ -30,7 +30,7 @@ class ARIMA(fts.FTS):
         self.benchmark_only = True
         self.min_order = 1
         self.alpha = kwargs.get("alpha", 0.05)
-        self.shortname += str(self.alpha)
+        self.order = kwargs.get("order", (1,0,0))
         self._decompose_order(self.order)
 
     def _decompose_order(self, order):
@@ -43,14 +43,16 @@ class ARIMA(fts.FTS):
             self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ") - " + str(self.alpha)
 
     def train(self, data, **kwargs):
+
+        self.original_min = np.nanmin(data)
+        self.original_max = np.nanmax(data)
+
         if kwargs.get('order', None) is not None:
             order = kwargs.get('order', (1,0,0))
             self._decompose_order(order)
 
         if self.indexer is not None:
             data = self.indexer.get_data(data)
-
-        #data = self.apply_transformations(data, updateUoD=True)
 
         try:
             self.model =  stats_arima(data, order=(self.p, self.d, self.q))
@@ -68,9 +70,6 @@ class ARIMA(fts.FTS):
     def forecast(self, ndata, **kwargs):
         if self.model_fit is None:
             return np.nan
-
-        if self.indexer is not None and isinstance(ndata, pd.DataFrame):
-            data = self.indexer.get_data(ndata)
 
         ndata = np.array(ndata)
 
@@ -101,8 +100,6 @@ class ARIMA(fts.FTS):
 
         sigma = np.sqrt(self.model_fit.sigma2)
 
-        #ndata = np.array(self.apply_transformations(data))
-
         l = len(data)
 
         ret = []
@@ -122,8 +119,6 @@ class ARIMA(fts.FTS):
 
             ret.append(tmp)
 
-        #ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], point_to_interval=True)
-
         return ret
 
     def forecast_ahead_interval(self, ndata, steps, **kwargs):
@@ -133,8 +128,6 @@ class ARIMA(fts.FTS):
         smoothing = kwargs.get("smoothing",0.5)
 
         sigma = np.sqrt(self.model_fit.sigma2)
-
-        #ndata = np.array(self.apply_transformations(data))
 
         l = len(ndata)
 
@@ -152,14 +145,9 @@ class ARIMA(fts.FTS):
 
             ret.append(tmp)
 
-        #ret = self.apply_inverse_transformations(ret, params=[[data[-1] for a in np.arange(0, steps)]], interval=True)
-
         return ret
 
     def forecast_distribution(self, data, **kwargs):
-
-        if self.indexer is not None and isinstance(data, pd.DataFrame):
-            data = self.indexer.get_data(data)
 
         sigma = np.sqrt(self.model_fit.sigma2)
 
@@ -168,8 +156,6 @@ class ARIMA(fts.FTS):
         ret = []
 
         for k in np.arange(self.order, l + 1):
-            tmp = []
-
             sample = [data[i] for i in np.arange(k - self.order, k)]
 
             mean = self.forecast(sample)

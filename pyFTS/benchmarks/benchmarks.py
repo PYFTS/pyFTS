@@ -19,7 +19,7 @@ from pyFTS.probabilistic import ProbabilityDistribution
 from pyFTS.common import Transformations
 from pyFTS.models import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, hwang
 from pyFTS.models.ensemble import ensemble
-from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, quantreg
+from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, quantreg, knn
 from pyFTS.benchmarks import Util as bUtil
 from pyFTS.common import Util as cUtil
 # from sklearn.cross_validation import KFold
@@ -156,8 +156,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
         elif benchmark_methods is not None:
             for count, model in enumerate(benchmark_methods, start=0):
                 par = benchmark_methods_parameters[count]
-                mfts = model(str(par if par is not None else ""))
-                mfts.order = par
+                mfts = model("", **par)
                 pool.append(mfts)
 
     if type == 'point':
@@ -244,7 +243,6 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
         progressbar.close()
 
     if distributed:
-        jobs2 = []
 
         rng = jobs
 
@@ -268,10 +266,6 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
     conn.close()
 
-    sintetic = kwargs.get('sintetic', False)
-
-    #return synthesis_method(jobs, experiments, save, file, sintetic)
-
 
 def get_benchmark_point_methods():
     """Return all non FTS methods for point forecasting"""
@@ -287,7 +281,7 @@ def get_point_methods():
 
 def get_benchmark_interval_methods():
     """Return all non FTS methods for point_to_interval forecasting"""
-    return [quantreg.QuantileRegression]
+    return [ arima.ARIMA, quantreg.QuantileRegression]
 
 
 def get_interval_methods():
@@ -302,7 +296,7 @@ def get_probabilistic_methods():
 
 def get_benchmark_probabilistic_methods():
     """Return all FTS methods for probabilistic forecasting"""
-    return [arima.ARIMA, quantreg.QuantileRegression]
+    return [arima.ARIMA, quantreg.QuantileRegression, knn.KNearestNeighbors]
 
 
 def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
@@ -398,6 +392,7 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
     method = kwargs.get('method', None)
 
     if mfts.benchmark_only:
+        mfts.append_transformation(partitioner.transformation)
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
     else:
         pttr = str(partitioner.__module__).split('.')[-1]
@@ -444,10 +439,11 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
     from pyFTS.models import hofts, ifts, pwfts
     from pyFTS.models.ensemble import ensemble
     from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures, arima
+    from pyFTS.benchmarks import Measures, arima, quantreg, knn
     from pyFTS.models.seasonal import SeasonalIndexer
 
-    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA, ensemble.AllMethodEnsembleFTS]
+    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA,
+           ensemble.AllMethodEnsembleFTS, knn.KNearestNeighbors]
 
     tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
 
@@ -460,6 +456,7 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
 
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
+        mfts.append_transformation(partitioner.transformation)
     else:
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)

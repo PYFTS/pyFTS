@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from pyFTS.common import SortedCollection, fts, tree
 from pyFTS.models import chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu
+from pyFTS.probabilistic import ProbabilityDistribution
 import scipy.stats as st
 
 
@@ -171,29 +172,52 @@ class EnsembleFTS(fts.FTS):
 
         return ret
 
-    def empty_grid(self, resolution):
-        return self.get_empty_grid(-(self.original_max*2), self.original_max*2, resolution)
+    def forecast_distribution(self, data, **kwargs):
+        ret = []
+
+        smooth = kwargs.get("smooth", "KDE")
+        alpha = kwargs.get("alpha", None)
+
+        uod = self.get_UoD()
+
+        for k in np.arange(self.order, len(data)):
+
+            sample = data[k-self.order : k]
+
+            forecasts = self.get_models_forecasts(sample)
+
+            if alpha is None:
+                forecasts = np.ravel(forecasts).tolist()
+            else:
+                forecasts = self.get_distribution_interquantile(np.ravel(forecasts).tolist(), alpha)
+
+            dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, data=forecasts,
+                                                                   name="", **kwargs)
+
+            ret.append(dist)
+
+        return ret
+
 
     def forecast_ahead_distribution(self, data, steps, **kwargs):
         if 'method' in kwargs:
             self.point_method = kwargs.get('method','mean')
 
-        percentile_size = (self.original_max - self.original_min) / 100
-
-        resolution = kwargs.get('resolution', percentile_size)
-
-        grid = self.empty_grid(resolution)
-
-        index = SortedCollection.SortedCollection(iterable=grid.keys())
+        smooth = kwargs.get("smooth", "KDE")
+        alpha = kwargs.get("alpha", None)
 
         ret = []
 
-        samples = [[k] for k in data[-self.order:]]
+        start = kwargs.get('start', self.order)
 
-        for k in np.arange(self.order, steps + self.order):
+        uod = self.get_UoD()
+
+        sample = data[start - self.order: start]
+
+        for k in np.arange(self.order, steps+self.order):
             forecasts = []
             lags = {}
-            for i in np.arange(0, self.order): lags[i] = samples[k - self.order + i]
+            for i in np.arange(0, self.order): lags[i] = sample[k-self.order]
 
             # Build the tree with all possible paths
 
@@ -206,17 +230,19 @@ class EnsembleFTS(fts.FTS):
 
                 forecasts.extend(self.get_models_forecasts(path))
 
-            samples.append(sampler(forecasts, np.arange(0.1, 1, 0.1)))
+            sample.append(sampler(forecasts, np.arange(0.1, 1, 0.1)))
 
-            grid = self.gridCountPoint(grid, resolution, index, forecasts)
+            if alpha is None:
+                forecasts = np.ravel(forecasts).tolist()
+            else:
+                forecasts = self.get_distribution_interquantile(np.ravel(forecasts).tolist(), alpha)
 
-            tmp = np.array([grid[i] for i in sorted(grid)])
+            dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, data=forecasts,
+                                                                   name="", **kwargs)
 
-            ret.append(tmp / sum(tmp))
+            ret.append(dist)
 
-        grid = self.empty_grid(resolution)
-        df = pd.DataFrame(ret, columns=sorted(grid))
-        return df
+        return ret
 
 
 class AllMethodEnsembleFTS(EnsembleFTS):

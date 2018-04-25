@@ -105,6 +105,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         self.has_interval_forecasting = True
         self.has_probability_forecasting = True
         self.is_high_order = True
+        self.min_order = 1
         self.auto_update = kwargs.get('update',False)
 
 

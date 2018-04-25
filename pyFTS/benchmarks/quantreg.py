@@ -19,7 +19,7 @@ class QuantileRegression(fts.FTS):
         self.has_interval_forecasting = True
         self.has_probability_forecasting = True
         self.benchmark_only = True
-        self.minOrder = 1
+        self.min_order = 1
         self.alpha = kwargs.get("alpha", 0.05)
         self.dist = kwargs.get("dist", False)
         self.upper_qt = None
@@ -28,15 +28,14 @@ class QuantileRegression(fts.FTS):
         self.dist_qt = None
         self.shortname = "QAR("+str(self.order)+","+str(self.alpha)+")"
 
-    def train(self, data, sets, order=1, parameters=None):
-        self.order = order
+    def train(self, data, **kwargs):
+        if kwargs.get('order', None) is not None:
+            self.order = kwargs.get('order', 1)
 
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
 
-        tmp = np.array(self.apply_transformations(data, updateUoD=True))
-
-        lagdata, ndata = lagmat(tmp, maxlag=order, trim="both", original='sep')
+        lagdata, ndata = lagmat(data, maxlag=self.order, trim="both", original='sep')
 
         mqt = QuantReg(ndata, lagdata).fit(0.5)
         if self.alpha is not None:
@@ -76,12 +75,8 @@ class QuantileRegression(fts.FTS):
         up = self.linearmodel([k[1] for k in data], up_params)
         return [lo, up]
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, ndata, **kwargs):
 
-        if self.indexer is not None and isinstance(data, pd.DataFrame):
-            data = self.indexer.get_data(data)
-
-        ndata = np.array(self.apply_transformations(data))
         l = len(ndata)
 
         ret = []
@@ -91,16 +86,9 @@ class QuantileRegression(fts.FTS):
 
             ret.append(self.linearmodel(sample, self.mean_qt))
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]])
-
         return ret
 
-    def forecast_interval(self, data, **kwargs):
-
-        if self.indexer is not None and isinstance(data, pd.DataFrame):
-            data = self.indexer.get_data(data)
-
-        ndata = np.array(self.apply_transformations(data))
+    def forecast_interval(self, ndata, **kwargs):
 
         l = len(ndata)
 
@@ -110,16 +98,9 @@ class QuantileRegression(fts.FTS):
             sample = ndata[k - self.order: k]
             ret.append(self.point_to_interval(sample, self.lower_qt, self.upper_qt))
 
-        ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], interval=True)
-
         return ret
 
-    def forecast_ahead_interval(self, data, steps, **kwargs):
-
-        if self.indexer is not None and isinstance(data, pd.DataFrame):
-            data = self.indexer.get_data(data)
-
-        ndata = np.array(self.apply_transformations(data))
+    def forecast_ahead_interval(self, ndata, steps, **kwargs):
 
         smoothing = kwargs.get("smoothing", 0.9)
 
@@ -137,20 +118,13 @@ class QuantileRegression(fts.FTS):
 
             ret.append([intl[0]*(1 + k*smoothing), intl[1]*(1 + k*smoothing)])
 
-        ret = self.apply_inverse_transformations(ret, params=[[data[-1] for a in np.arange(0, steps + self.order)]], interval=True)
-
         return ret[-steps:]
 
-    def forecast_distribution(self, data, **kwargs):
-
-        if self.indexer is not None and isinstance(data, pd.DataFrame):
-            data = self.indexer.get_data(data)
-
-        ndata = np.array(self.apply_transformations(data))
+    def forecast_distribution(self, ndata, **kwargs):
 
         ret = []
 
-        l = len(data)
+        l = len(ndata)
 
         for k in np.arange(self.order, l + 1):
             dist = ProbabilityDistribution.ProbabilityDistribution(type="histogram",
@@ -167,12 +141,7 @@ class QuantileRegression(fts.FTS):
 
         return ret
 
-    def forecast_ahead_distribution(self, data, steps, **kwargs):
-
-        if self.indexer is not None and isinstance(data, pd.DataFrame):
-            data = self.indexer.get_data(data)
-
-        ndata = np.array(self.apply_transformations(data))
+    def forecast_ahead_distribution(self, ndata, steps, **kwargs):
 
         ret = []
 

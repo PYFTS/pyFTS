@@ -14,14 +14,24 @@ class ProbabilityDistribution(object):
     def __init__(self, type = "KDE", **kwargs):
         self.uod = kwargs.get("uod", None)
 
-        self.type = type
-        if self.type == "KDE":
-            self.kde = kde.KernelSmoothing(kwargs.get("h", 0.5), kwargs.get("kernel", "epanechnikov"))
+        self.data = []
 
-        self.nbins = kwargs.get("num_bins", 100)
+        self.type = type
 
         self.bins = kwargs.get("bins", None)
         self.labels = kwargs.get("bins_labels", None)
+
+        data = kwargs.get("data", None)
+
+        if self.type == "KDE":
+            self.kde = kde.KernelSmoothing(kwargs.get("h", 0.5), kwargs.get("kernel", "epanechnikov"))
+            _min = np.nanmin(data)
+            _min = _min * .7 if _min > 0 else _min * 1.3
+            _max = np.nanmax(data)
+            _max = _max * 1.3 if _max > 0 else _max * .7
+            self.uod = [_min, _max]
+
+        self.nbins = kwargs.get("num_bins", 100)
 
         if self.bins is None:
             self.bins = np.linspace(int(self.uod[0]), int(self.uod[1]), int(self.nbins)).tolist()
@@ -37,10 +47,6 @@ class ProbabilityDistribution(object):
         self.qtl = None
         self.count = 0
         for k in self.bins: self.distribution[k] = 0
-
-        self.data = []
-
-        data = kwargs.get("data",None)
 
         if data is not None:
             self.append(data)
@@ -228,10 +234,12 @@ class ProbabilityDistribution(object):
 
     def __str__(self):
         ret = ""
-        for k in sorted(self.distribution.keys()):
+        for k in sorted(self.bins):
             ret += str(round(k,2)) + ':\t'
             if self.type == "histogram":
                 ret +=  str(round(self.distribution[k]  / self.count,3))
+            elif self.type == "KDE":
+                ret +=  str(round(self.density(k),3))
             else:
                 ret += str(round(self.distribution[k], 6))
             ret += '\n'
