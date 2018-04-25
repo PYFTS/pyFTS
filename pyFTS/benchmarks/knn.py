@@ -6,6 +6,7 @@ from statsmodels.tsa.tsatools import lagmat
 from pyFTS.common import fts
 from pyFTS.probabilistic import ProbabilityDistribution
 
+
 class KNearestNeighbors(fts.FTS):
     """
     K-Nearest Neighbors
@@ -13,6 +14,7 @@ class KNearestNeighbors(fts.FTS):
     def __init__(self, name, **kwargs):
         super(KNearestNeighbors, self).__init__(1, "kNN"+name)
         self.name = "kNN"
+        self.shortname = "kNN"
         self.detail = "K-Nearest Neighbors"
         self.is_high_order = True
         self.has_point_forecasting = True

@@ -20,15 +20,17 @@ partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10) #, transformati
 '''
 from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, quantreg, arima
 
-'''
+
 from pyFTS.models import pwfts, song, ifts
 from pyFTS.models.ensemble import ensemble
 
-model = ensemble.AllMethodEnsembleFTS(partitioner=partitioner)
+'''
+model = knn.KNearestNeighbors("")
 model.fit(dataset[:800])
-tmp = model.predict(dataset[800:1000], type='distribution')
-for tmp2 in tmp:
-    print(tmp2)
+Measures.get_distribution_statistics(dataset[800:1000], model)
+#tmp = model.predict(dataset[800:1000], type='distribution')
+#for tmp2 in tmp:
+#    print(tmp2)
 '''
 
 
@@ -49,11 +51,12 @@ print(Measures.get_distribution_statistics(dataset[800:1000], model, steps_ahead
 
 from pyFTS.benchmarks import arima, naive, quantreg
 
-bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
-                                #methods=[ifts.IntervalFTS], #[pwfts.ProbabilisticWeightedFTS],
-                                benchmark_models=False,
+bchmk.sliding_window_benchmarks(dataset[:1000], 1000, train=0.8, inc=0.2,
+                                #methods=[pwfts.ProbabilisticWeightedFTS],
+                                benchmark_models=[],
                                 benchmark_methods=[arima.ARIMA for k in range(4)]
-                                    + [quantreg.QuantileRegression for k in range(2)],
+                                    + [quantreg.QuantileRegression for k in range(2)]
+                                    + [knn.KNearestNeighbors],
                                 benchmark_methods_parameters=[
                                     {'order': (1, 0, 0)},
                                     {'order': (1, 0, 1)},
@@ -61,14 +64,15 @@ bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
                                     {'order': (2, 0, 2)},
                                     {'order': 1, 'dist': True},
                                     {'order': 2, 'dist': True},
+                                    {}
                                 ],
-                                #transformations=[None, tdiff],
-                                orders=[1, 2, 3],
+                                #transformations=[tdiff],
+                                orders=[1],
                                 partitions=np.arange(30, 80, 5),
                                 progress=False, type='distribution',
                                 #steps_ahead=[1,4,7,10], #steps_ahead=[1]
-                                distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
-                                file="benchmarks.db", dataset="TAIEX", tag="comparisons")
+                                #distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                file="benchmarks.tmp", dataset="TAIEX", tag="comparisons")
 
 
 #'''

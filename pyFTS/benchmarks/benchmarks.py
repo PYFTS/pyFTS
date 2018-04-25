@@ -48,6 +48,38 @@ def __pop(key, default, kwargs):
         return default
 
 
+def get_benchmark_point_methods():
+    """Return all non FTS methods for point forecasting"""
+    return [naive.Naive, arima.ARIMA, quantreg.QuantileRegression]
+
+
+def get_point_methods():
+    """Return all FTS methods for point forecasting"""
+    return [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+            cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
+            pwfts.ProbabilisticWeightedFTS]
+
+
+def get_benchmark_interval_methods():
+    """Return all non FTS methods for point_to_interval forecasting"""
+    return [ arima.ARIMA, quantreg.QuantileRegression]
+
+
+def get_interval_methods():
+    """Return all FTS methods for point_to_interval forecasting"""
+    return [ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS]
+
+
+def get_probabilistic_methods():
+    """Return all FTS methods for probabilistic forecasting"""
+    return [ensemble.AllMethodEnsembleFTS, pwfts.ProbabilisticWeightedFTS]
+
+
+def get_benchmark_probabilistic_methods():
+    """Return all FTS methods for probabilistic forecasting"""
+    return [arima.ARIMA, quantreg.QuantileRegression, knn.KNearestNeighbors]
+
+
 def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     """
     Sliding window benchmarks for FTS forecasters.
@@ -141,6 +173,8 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     benchmark_methods = __pop("benchmark_methods", None, kwargs)
     benchmark_methods_parameters = __pop("benchmark_methods_parameters", None, kwargs)
 
+    benchmark_pool = [] if benchmark_models is None else benchmark_models
+
     if benchmark_models != False:
 
         if benchmark_models is None and benchmark_methods is None:
@@ -151,13 +185,13 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
             elif type == 'distribution':
                 benchmark_methods = get_benchmark_probabilistic_methods()
 
-        if isinstance(benchmark_models, list) :
-            pool.extend(benchmark_models)
-        elif benchmark_methods is not None:
-            for count, model in enumerate(benchmark_methods, start=0):
-                par = benchmark_methods_parameters[count]
-                mfts = model("", **par)
-                pool.append(mfts)
+        if benchmark_methods is not None:
+            for transformation in transformations:
+                for count, model in enumerate(benchmark_methods, start=0):
+                    par = benchmark_methods_parameters[count]
+                    mfts = model("", **par)
+                    mfts.append_transformation(transformation)
+                    benchmark_pool.append(mfts)
 
     if type == 'point':
         experiment_method = run_point
@@ -184,6 +218,10 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
     inc = __pop("inc", 0.1, kwargs)
 
+    file = kwargs.get('file', "benchmarks.db")
+
+    conn = bUtil.open_benchmark_db(file)
+
     for ct, train, test in cUtil.sliding_window(data, windowsize, train, inc=inc, **kwargs):
         experiments += 1
 
@@ -191,6 +229,18 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
             progressbar.update(windowsize * inc)
 
         partitioners_pool = []
+
+        for model in benchmark_pool:
+            for step in steps_ahead:
+                kwargs['steps_ahead'] = step
+
+                if not distributed:
+                    job = experiment_method(deepcopy(model), None, train, test, **kwargs)
+                    synthesis_method(dataset, tag, job, conn)
+                else:
+                    job = cluster.submit(deepcopy(model), None, train, test, **kwargs)
+                    jobs.append(job)
+
 
         if partitioners_models is None:
 
@@ -209,10 +259,6 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
         rng1 = steps_ahead
         if progress:
             rng1 = tqdm(steps_ahead, desc="Steps")
-
-        file = kwargs.get('file', "benchmarks.db")
-
-        conn = bUtil.open_benchmark_db(file)
 
         for step in rng1:
             rng2 = partitioners_pool
@@ -267,36 +313,6 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     conn.close()
 
 
-def get_benchmark_point_methods():
-    """Return all non FTS methods for point forecasting"""
-    return [naive.Naive, arima.ARIMA, quantreg.QuantileRegression]
-
-
-def get_point_methods():
-    """Return all FTS methods for point forecasting"""
-    return [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-            cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
-            pwfts.ProbabilisticWeightedFTS]
-
-
-def get_benchmark_interval_methods():
-    """Return all non FTS methods for point_to_interval forecasting"""
-    return [ arima.ARIMA, quantreg.QuantileRegression]
-
-
-def get_interval_methods():
-    """Return all FTS methods for point_to_interval forecasting"""
-    return [ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS]
-
-
-def get_probabilistic_methods():
-    """Return all FTS methods for probabilistic forecasting"""
-    return [ensemble.AllMethodEnsembleFTS, pwfts.ProbabilisticWeightedFTS]
-
-
-def get_benchmark_probabilistic_methods():
-    """Return all FTS methods for probabilistic forecasting"""
-    return [arima.ARIMA, quantreg.QuantileRegression, knn.KNearestNeighbors]
 
 
 def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
@@ -336,7 +352,6 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
 
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "")
-        mfts.append_transformation(partitioner.transformation)
     else:
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
@@ -347,7 +362,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
     _key += str(method) if method is not None else ""
 
     _start = time.time()
-    mfts.fit(train_data, order=mfts.order, **kwargs)
+    mfts.fit(train_data, **kwargs)
     _end = time.time()
     times = _end - _start
 
@@ -392,7 +407,6 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
     method = kwargs.get('method', None)
 
     if mfts.benchmark_only:
-        mfts.append_transformation(partitioner.transformation)
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
     else:
         pttr = str(partitioner.__module__).split('.')[-1]
@@ -404,7 +418,7 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
     _key += str(method) if method is not None else ""
 
     _start = time.time()
-    mfts.fit(train_data, order=mfts.order, **kwargs)
+    mfts.fit(train_data, **kwargs)
     _end = time.time()
     times = _end - _start
 
@@ -456,7 +470,6 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
 
     if mfts.benchmark_only:
         _key = mfts.shortname + str(mfts.order if mfts.order is not None else "") + str(mfts.alpha)
-        mfts.append_transformation(partitioner.transformation)
     else:
         pttr = str(partitioner.__module__).split('.')[-1]
         _key = mfts.shortname + " n = " + str(mfts.order) + " " + pttr + " q = " + str(partitioner.partitions)
@@ -469,20 +482,15 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
     if mfts.has_seasonality:
         mfts.indexer = indexer
 
-    try:
-        _start = time.time()
-        mfts.fit(train_data, order=mfts.order)
-        _end = time.time()
-        times = _end - _start
+    _start = time.time()
+    mfts.fit(train_data, **kwargs)
+    _end = time.time()
+    times = _end - _start
 
-        _crps1, _t1 = Measures.get_distribution_statistics(test_data, mfts, **kwargs)
-        _t1 += times
-    except Exception as e:
-        print(e)
-        _crps1 = np.nan
-        _t1 = np.nan
+    _crps1, _t1, _brier = Measures.get_distribution_statistics(test_data, mfts, **kwargs)
+    _t1 += times
 
-    ret = {'key': _key, 'obj': mfts, 'CRPS': _crps1, 'time': _t1, 'window': window_key,
+    ret = {'key': _key, 'obj': mfts, 'CRPS': _crps1, 'time': _t1, 'brier': _brier, 'window': window_key,
            'steps': steps_ahead, 'method': method}
 
     return ret
@@ -541,11 +549,14 @@ def process_probabilistic_jobs(dataset, tag,  job, conn):
     data = bUtil.process_common_data(dataset, tag,  'density', job)
 
     crps = deepcopy(data)
-    crps.extend(["CRPS",job["CRPS"]])
+    crps.extend(["crps",job["CRPS"]])
     bUtil.insert_benchmark(crps, conn)
     time = deepcopy(data)
     time.extend(["time", job["time"]])
     bUtil.insert_benchmark(time, conn)
+    brier = deepcopy(data)
+    brier.extend(["brier", job["brier"]])
+    bUtil.insert_benchmark(brier, conn)
 
 
 def print_point_statistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):

@@ -246,9 +246,10 @@ class EnsembleFTS(fts.FTS):
 
 
 class AllMethodEnsembleFTS(EnsembleFTS):
-    def __init__(self, **kwargs):
-        super(AllMethodEnsembleFTS, self).__init__(name="Ensemble FTS", **kwargs)
+    def __init__(self, name, **kwargs):
+        super(AllMethodEnsembleFTS, self).__init__(name="Ensemble FTS"+name, **kwargs)
         self.min_order = 3
+        self.shortname ="Ensemble FTS"
 
     def set_transformations(self, model):
         for t in self.transformations:

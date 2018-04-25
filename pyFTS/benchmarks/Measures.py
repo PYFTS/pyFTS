@@ -239,6 +239,9 @@ def pmf_to_cdf(density):
     return df
 
 
+def heavyside(bin, target):
+    return 1 if bin >= target else 0
+
 def heavyside_cdf(bins, targets):
     ret = []
     for t in targets:
@@ -255,24 +258,13 @@ def crps(targets, densities):
     :return: float
     '''
     _crps = float(0.0)
-    if isinstance(densities, pd.DataFrame):
-        l = len(densities.columns)
-        n = len(densities.index)
-        Ff = pmf_to_cdf(densities)
-        Fa = heavyside_cdf(densities.columns, targets)
-        for k in densities.index:
-            _crps += sum([ (Ff[col][k]-Fa[col][k])**2 for col in densities.columns])
-    elif isinstance(densities, ProbabilityDistribution.ProbabilityDistribution):
-        l = len(densities.bins)
-        n = 1
-        Fa = heavyside_cdf(densities.bins, targets)
-        _crps = sum([(densities.cummulative(val) - Fa[val][0]) ** 2 for val in densities.bins])
-    elif isinstance(densities, list):
-        l = len(densities[0].bins)
-        n = len(densities)
-        Fa = heavyside_cdf(densities[0].bins, targets)
-        for df in densities:
-            _crps += sum([(df.cummulative(val) - Fa[val][0]) ** 2 for val in df.bins])
+    if isinstance(densities, ProbabilityDistribution.ProbabilityDistribution):
+        densities = [densities]
+
+    l = len(densities[0].bins)
+    n = len(densities)
+    for ct, df in enumerate(densities):
+        _crps += sum([(df.cummulative(bin) - (1 if bin >= targets[ct] else 0)) ** 2 for bin in df.bins])
 
     return _crps / float(l * n)
 
@@ -387,8 +379,9 @@ def get_distribution_statistics(data, model, **kwargs):
         _s1 = time.time()
         forecasts = model.predict(data, **kwargs)
         _e1 = time.time()
-        ret.append(round(crps(data[model.order:], forecasts), 3))
+        ret.append(round(crps(data[model.order:], forecasts[:-1]), 3))
         ret.append(round(_e1 - _s1, 3))
+        ret.append(round(brier_score(data[model.order:], forecasts[:-1]), 3))
     else:
         skip = kwargs.get('steps_ahead_sampler', 1)
         forecasts = []
@@ -402,6 +395,7 @@ def get_distribution_statistics(data, model, **kwargs):
         start = model.order + steps_ahead
         ret.append(round(crps(data[start:-1:skip], forecasts), 3))
         ret.append(round(_e1 - _s1, 3))
+        ret.append(round(brier_score(data[start:-1:skip], forecasts), 3))
     return ret
 
 

@@ -8,6 +8,7 @@ from statsmodels.tsa.tsatools import lagmat
 from pyFTS.common import SortedCollection, fts
 from pyFTS.probabilistic import ProbabilityDistribution
 
+
 class QuantileRegression(fts.FTS):
     """Façade for statsmodels.regression.quantile_regression"""
     def __init__(self, name, **kwargs):
@@ -26,10 +27,11 @@ class QuantileRegression(fts.FTS):
         self.mean_qt = None
         self.lower_qt = None
         self.dist_qt = None
+        self.order = kwargs.get('order', 1)
         self.shortname = "QAR("+str(self.order)+","+str(self.alpha)+")"
 
     def train(self, data, **kwargs):
-        if kwargs.get('order', None) is not None:
+        if 'order' in kwargs:
             self.order = kwargs.get('order', 1)
 
         if self.indexer is not None and isinstance(data, pd.DataFrame):
