@@ -14,17 +14,22 @@ tdiff = Transformations.Differential(1)
 from pyFTS.data import TAIEX
 
 dataset = TAIEX.get_data()
-
+'''
+from pyFTS.partitioners import Grid, Util as pUtil
+partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10) #, transformation=tdiff)
+'''
 from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, quantreg, arima
 
+'''
 from pyFTS.models import pwfts, song, ifts
+from pyFTS.models.ensemble import ensemble
 
-model = arima.ARIMA("", order=(1,0,0))
+model = ensemble.AllMethodEnsembleFTS(partitioner=partitioner)
 model.fit(dataset[:800])
 tmp = model.predict(dataset[800:1000], type='distribution')
 for tmp2 in tmp:
     print(tmp2)
-
+'''
 
 
 '''
@@ -40,39 +45,33 @@ print(Measures.get_distribution_statistics(dataset[800:1000], model, steps_ahead
 #    print(tmp2)
 '''
 
-'''
+#'''
 
 from pyFTS.benchmarks import arima, naive, quantreg
 
 bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
-                                methods=[ifts.IntervalFTS], #[pwfts.ProbabilisticWeightedFTS],
-                                benchmark_models=True,
-                                benchmark_methods=[arima.ARIMA for k in range(8)]
-                                    + [quantreg.QuantileRegression for k in range(4)],
+                                #methods=[ifts.IntervalFTS], #[pwfts.ProbabilisticWeightedFTS],
+                                benchmark_models=False,
+                                benchmark_methods=[arima.ARIMA for k in range(4)]
+                                    + [quantreg.QuantileRegression for k in range(2)],
                                 benchmark_methods_parameters=[
-                                    {'order': (1, 0, 0), 'alpha': .05},
-                                    {'order': (1, 0, 0), 'alpha': .25},
-                                    {'order': (1, 0, 1), 'alpha': .05},
-                                    {'order': (1, 0, 1), 'alpha': .25},
-                                    {'order': (2, 0, 1), 'alpha': .05},
-                                    {'order': (2, 0, 1), 'alpha': .25},
-                                    {'order': (2, 0, 2), 'alpha': .05},
-                                    {'order': (2, 0, 2), 'alpha': .25},
-                                    {'order': 1, 'alpha': .05},
-                                    {'order': 1, 'alpha': .25},
-                                    {'order': 2, 'alpha': .05},
-                                    {'order': 2, 'alpha': .25},
+                                    {'order': (1, 0, 0)},
+                                    {'order': (1, 0, 1)},
+                                    {'order': (2, 0, 1)},
+                                    {'order': (2, 0, 2)},
+                                    {'order': 1, 'dist': True},
+                                    {'order': 2, 'dist': True},
                                 ],
-                                transformations=[None, tdiff],
-                                orders=[1], #2, 3],
-                                partitions=[3], #np.arange(3, 25, 2),
-                                progress=False, type='interval',
+                                #transformations=[None, tdiff],
+                                orders=[1, 2, 3],
+                                partitions=np.arange(30, 80, 5),
+                                progress=False, type='distribution',
                                 #steps_ahead=[1,4,7,10], #steps_ahead=[1]
                                 distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
                                 file="benchmarks.db", dataset="TAIEX", tag="comparisons")
 
 
-'''
+#'''
 '''
 dat = pd.read_csv('pwfts_taiex_partitioning.csv', sep=';')
 print(bUtil.analytic_tabular_dataframe(dat))

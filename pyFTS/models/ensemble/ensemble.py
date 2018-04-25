@@ -18,7 +18,7 @@ def sampler(data, quantiles):
 
 class EnsembleFTS(fts.FTS):
     def __init__(self, name, **kwargs):
-        super(EnsembleFTS, self).__init__(1, "Ensemble FTS")
+        super(EnsembleFTS, self).__init__(1, "Ensemble FTS", **kwargs)
         self.shortname = "Ensemble FTS " + name
         self.name = "Ensemble FTS"
         self.flrgs = {}
@@ -266,17 +266,17 @@ class AllMethodEnsembleFTS(EnsembleFTS):
         ho_methods = [hofts.HighOrderFTS, hwang.HighOrderFTS]
 
         for method in fo_methods:
-            model = method("")
+            model = method("", partitioner=self.partitioner)
             self.set_transformations(model)
-            model.train(data, **kwargs)
+            model.fit(data, **kwargs)
             self.append_model(model)
 
         for method in ho_methods:
             for o in np.arange(1, order+1):
-                model = method("")
+                model = method("", partitioner=self.partitioner)
                 if model.min_order >= o:
                     self.set_transformations(model)
-                    model.train(data, **kwargs)
+                    model.fit(data, **kwargs)
                     self.append_model(model)
 
 
