@@ -219,10 +219,14 @@ def brier_score(targets, densities):
     '''Brier (1950). "Verification of Forecasts Expressed in Terms of Probability". Monthly Weather Review. 78: 1–3. '''
     ret = []
     for ct, d in enumerate(densities):
-        v = d.bin_index.find_ge(targets[ct])
-        score = sum([d.distribution[k] ** 2 for k in d.bins if k != v])
-        score += (d.distribution[v] - 1) ** 2
-        ret.append(score)
+        try:
+            v = d.bin_index.find_ge(targets[ct])
+
+            score = sum([d.distribution[k] ** 2 for k in d.bins if k != v])
+            score += (d.distribution[v] - 1) ** 2
+            ret.append(score)
+        except ValueError as ex:
+            ret.append(sum([d.distribution[k] ** 2 for k in d.bins]))
     return sum(ret)/len(ret)
 
 

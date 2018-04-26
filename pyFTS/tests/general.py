@@ -11,9 +11,11 @@ from pyFTS.common import Transformations
 
 tdiff = Transformations.Differential(1)
 
-from pyFTS.data import TAIEX
+from pyFTS.data import TAIEX, SP500
 
-dataset = TAIEX.get_data()
+#dataset = TAIEX.get_data()
+dataset = SP500.get_data()[11500:16000]
+#print(len(dataset))
 '''
 from pyFTS.partitioners import Grid, Util as pUtil
 partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10) #, transformation=tdiff)
@@ -25,13 +27,17 @@ from pyFTS.models import pwfts, song, ifts
 from pyFTS.models.ensemble import ensemble
 
 '''
-model = knn.KNearestNeighbors("")
+#model = knn.KNearestNeighbors("")
+#model = ensemble.AllMethodEnsembleFTS("", partitioner=partitioner)
+#model = arima.ARIMA("", order=(2,0,2))
+#model = quantreg.QuantileRegression("", order=2, dist=True)
+model.append_transformation(tdiff)
 model.fit(dataset[:800])
 Measures.get_distribution_statistics(dataset[800:1000], model)
 #tmp = model.predict(dataset[800:1000], type='distribution')
 #for tmp2 in tmp:
 #    print(tmp2)
-'''
+#'''
 
 
 '''
@@ -51,28 +57,16 @@ print(Measures.get_distribution_statistics(dataset[800:1000], model, steps_ahead
 
 from pyFTS.benchmarks import arima, naive, quantreg
 
-bchmk.sliding_window_benchmarks(dataset[:1000], 1000, train=0.8, inc=0.2,
-                                #methods=[pwfts.ProbabilisticWeightedFTS],
-                                benchmark_models=[],
-                                benchmark_methods=[arima.ARIMA for k in range(4)]
-                                    + [quantreg.QuantileRegression for k in range(2)]
-                                    + [knn.KNearestNeighbors],
-                                benchmark_methods_parameters=[
-                                    {'order': (1, 0, 0)},
-                                    {'order': (1, 0, 1)},
-                                    {'order': (2, 0, 1)},
-                                    {'order': (2, 0, 2)},
-                                    {'order': 1, 'dist': True},
-                                    {'order': 2, 'dist': True},
-                                    {}
-                                ],
-                                #transformations=[tdiff],
-                                orders=[1],
-                                partitions=np.arange(30, 80, 5),
-                                progress=False, type='distribution',
+bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
+                                methods=[pwfts.ProbabilisticWeightedFTS],
+                                benchmark_models=False,
+                                transformations=[tdiff],
+                                orders=[1,2,3],
+                                partitions=np.arange(3, 50, 2),
+                                progress=False, type='point',
                                 #steps_ahead=[1,4,7,10], #steps_ahead=[1]
-                                #distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
-                                file="benchmarks.tmp", dataset="TAIEX", tag="comparisons")
+                                distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                file="benchmarks.db", dataset="SP500", tag="partitioning")
 
 
 #'''

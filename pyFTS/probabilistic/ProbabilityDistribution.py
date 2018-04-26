@@ -88,7 +88,7 @@ class ProbabilityDistribution(object):
         for k in values:
             if self.type == "histogram":
                 v = self.bin_index.find_ge(k)
-                ret.append(self.distribution[v] / self.count)
+                ret.append(self.distribution[v] / (self.count + 1e-5))
             elif self.type == "KDE":
                 v = self.kde.probability(k, self.data)
                 ret.append(v)
@@ -118,7 +118,6 @@ class ProbabilityDistribution(object):
         self.quantile_index = None
         self.cdf = None
         self.qtl = None
-
 
     def expected_value(self):
         return np.nansum([v * self.distribution[v] for v in self.bins])

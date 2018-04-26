@@ -5,7 +5,7 @@ import numpy as np
 
 def get_data():
     """
-    :param field: the dataset field name to extract
+    Get the univariate time series data.
     :return: numpy array
     """
     dat = get_dataframe()

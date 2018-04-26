@@ -168,14 +168,15 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
                 mfts.order = 1
                 pool.append(mfts)
 
-    benchmark_models = __pop("benchmark_models", None, kwargs)
-
-    benchmark_methods = __pop("benchmark_methods", None, kwargs)
-    benchmark_methods_parameters = __pop("benchmark_methods_parameters", None, kwargs)
-
-    benchmark_pool = [] if benchmark_models is None else benchmark_models
+    benchmark_models = __pop("benchmark_models", False, kwargs)
 
     if benchmark_models != False:
+
+        benchmark_methods = __pop("benchmark_methods", None, kwargs)
+        benchmark_methods_parameters = __pop("benchmark_methods_parameters", None, kwargs)
+
+        benchmark_pool = [] if ( benchmark_models is None or not isinstance(benchmark_models, list)) \
+            else benchmark_models
 
         if benchmark_models is None and benchmark_methods is None:
             if type == 'point'or type  == 'partition':
@@ -228,19 +229,19 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
         if progress:
             progressbar.update(windowsize * inc)
 
+        if benchmark_models != False:
+            for model in benchmark_pool:
+                for step in steps_ahead:
+                    kwargs['steps_ahead'] = step
+
+                    if not distributed:
+                        job = experiment_method(deepcopy(model), None, train, test, **kwargs)
+                        synthesis_method(dataset, tag, job, conn)
+                    else:
+                        job = cluster.submit(deepcopy(model), None, train, test, **kwargs)
+                        jobs.append(job)
+
         partitioners_pool = []
-
-        for model in benchmark_pool:
-            for step in steps_ahead:
-                kwargs['steps_ahead'] = step
-
-                if not distributed:
-                    job = experiment_method(deepcopy(model), None, train, test, **kwargs)
-                    synthesis_method(dataset, tag, job, conn)
-                else:
-                    job = cluster.submit(deepcopy(model), None, train, test, **kwargs)
-                    jobs.append(job)
-
 
         if partitioners_models is None:
 

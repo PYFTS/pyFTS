@@ -26,12 +26,15 @@ class KNearestNeighbors(fts.FTS):
         self.order = kwargs.get("order", 1)
         self.lag = None
         self.k = kwargs.get("k", 30)
+        self.uod = None
 
     def train(self, data, **kwargs):
         if kwargs.get('order', None) is not None:
             self.order = kwargs.get('order', 1)
 
-        self.data = data
+        self.data = np.array(data)
+        self.original_max = max(data)
+        self.original_min = min(data)
 
         #self.lagdata, = lagmat(data, maxlag=self.order, trim="both", original='sep')
 
@@ -47,8 +50,8 @@ class KNearestNeighbors(fts.FTS):
                 dist.append(sum([ (self.data[k - kk] - sample[kk])**2 for kk in range(self.order)]))
             ix = np.argsort(np.array(dist)) + self.order + 1
 
-        ix = np.clip(ix, 0, len(self.data)-1 )
-        return self.data[ix[:self.k]]
+        ix2 = np.clip(ix[:self.k], 0, len(self.data)-1)
+        return self.data[ix2]
 
     def forecast_distribution(self, data, **kwargs):
         ret = []
