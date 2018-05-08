@@ -10,12 +10,12 @@ from pyFTS.common import FuzzySet, FLR, Transformations, fts
 
 
 class HighOrderFTS(fts.FTS):
-    def __init__(self, name, **kwargs):
-        super(HighOrderFTS, self).__init__(1, name, **kwargs)
+    def __init__(self, **kwargs):
+        super(HighOrderFTS, self).__init__(**kwargs)
         self.is_high_order = True
         self.min_order = 2
         self.name = "Hwang High Order FTS"
-        self.shortname = "Hwang" + name
+        self.shortname = "Hwang"
         self.detail = "Hwang"
 
     def forecast(self, ndata, **kwargs):
@@ -57,9 +57,4 @@ class HighOrderFTS(fts.FTS):
         return ret
 
     def train(self, data, **kwargs):
-        if kwargs.get('sets', None) is not None:
-            self.sets = kwargs.get('sets', None)
-        else:
-            self.sets = self.partitioner.sets
-
-        self.order = kwargs.get('order', 2)
+        pass

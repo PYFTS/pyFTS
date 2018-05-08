@@ -11,7 +11,7 @@ class MVFTS(fts.FTS):
     Multivariate extension of Chen's ConventionalFTS method
     """
     def __init__(self, name, **kwargs):
-        super(MVFTS, self).__init__(1, name, **kwargs)
+        super(MVFTS, self).__init__(order=1, name=name, **kwargs)
         self.explanatory_variables = []
         self.target_variable = None
         self.flrgs = {}
@@ -90,8 +90,6 @@ class MVFTS(fts.FTS):
     def train(self, data, **kwargs):
 
         ndata = self.apply_transformations(data)
-
-        self.order = kwargs.get('order',1)
 
         flrs = self.generate_flrs(ndata)
         self.generate_flrg(flrs)

@@ -10,8 +10,8 @@ from pyFTS.common import FuzzySet, FLR, fts
 
 class ConventionalFTS(fts.FTS):
     """Traditional Fuzzy Time Series"""
-    def __init__(self, name, **kwargs):
-        super(ConventionalFTS, self).__init__(1, "FTS " + name, **kwargs)
+    def __init__(self, **kwargs):
+        super(ConventionalFTS, self).__init__(order=1, name="FTS", **kwargs)
         self.name = "Traditional FTS"
         self.detail = "Song & Chissom"
         if self.sets is not None and self.partitioner is not None:
@@ -49,10 +49,6 @@ class ConventionalFTS(fts.FTS):
 
 
     def train(self, data, **kwargs):
-        if kwargs.get('sets', None) is not None:
-            self.sets = kwargs.get('sets', None)
-        else:
-            self.sets = self.partitioner.sets
 
         tmpdata = FuzzySet.fuzzyfy_series(data, self.sets, method='maximum')
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
@@ -60,7 +56,10 @@ class ConventionalFTS(fts.FTS):
 
     def forecast(self, ndata, **kwargs):
 
-        ordered_set = FuzzySet.set_ordered(self.sets)
+        if self.partitioner is not None:
+            ordered_sets = self.partitioner.ordered_sets
+        else:
+            ordered_sets = FuzzySet.set_ordered(self.sets)
 
         l = len(ndata)
         npart = len(self.sets)
@@ -75,9 +74,9 @@ class ConventionalFTS(fts.FTS):
             fs = np.ravel(np.argwhere(r == max(r)))
 
             if len(fs) == 1:
-                ret.append(self.sets[ordered_set[fs[0]]].centroid)
+                ret.append(self.sets[ordered_sets[fs[0]]].centroid)
             else:
-                mp = [self.sets[ordered_set[s]].centroid for s in fs]
+                mp = [self.sets[ordered_sets[s]].centroid for s in fs]
 
                 ret.append( sum(mp)/len(mp))
 

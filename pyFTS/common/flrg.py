@@ -38,11 +38,11 @@ class FLRG(object):
                 self.key = self.key + n
         return self.key
 
-
     def get_membership(self, data, sets):
         ret = 0.0
         if isinstance(self.LHS, (list, set)):
-            ret = np.nanmin([sets[self.LHS[ct]].membership(dat) for ct, dat in enumerate(data)])
+            if len(self.LHS) == len(data):
+                ret = np.nanmin([sets[self.LHS[ct]].membership(dat) for ct, dat in enumerate(data)])
         else:
             ret = sets[self.LHS].membership(data)
         return ret

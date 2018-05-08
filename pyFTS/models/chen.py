@@ -33,10 +33,11 @@ class ConventionalFLRG(flrg.FLRG):
 
 class ConventionalFTS(fts.FTS):
     """Conventional Fuzzy Time Series"""
-    def __init__(self, name, **kwargs):
-        super(ConventionalFTS, self).__init__(1, "CFTS " + name, **kwargs)
+    def __init__(self, **kwargs):
+        super(ConventionalFTS, self).__init__(order=1, **kwargs)
         self.name = "Conventional FTS"
         self.detail = "Chen"
+        self.shortname = "CFTS"
         self.flrgs = {}
 
     def generate_flrg(self, flrs):
@@ -48,10 +49,6 @@ class ConventionalFTS(fts.FTS):
                 self.flrgs[flr.LHS].append_rhs(flr.RHS)
 
     def train(self, data, **kwargs):
-        if kwargs.get('sets', None) is not None:
-            self.sets = kwargs.get('sets', None)
-        else:
-            self.sets = self.partitioner.sets
 
         tmpdata = FuzzySet.fuzzyfy_series(data, self.sets, method='maximum')
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)

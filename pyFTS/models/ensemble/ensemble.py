@@ -17,9 +17,9 @@ def sampler(data, quantiles):
 
 
 class EnsembleFTS(fts.FTS):
-    def __init__(self, name, **kwargs):
-        super(EnsembleFTS, self).__init__(1, "Ensemble FTS", **kwargs)
-        self.shortname = "Ensemble FTS " + name
+    def __init__(self, **kwargs):
+        super(EnsembleFTS, self).__init__(**kwargs)
+        self.shortname = "Ensemble FTS"
         self.name = "Ensemble FTS"
         self.flrgs = {}
         self.has_point_forecasting = True
@@ -29,7 +29,6 @@ class EnsembleFTS(fts.FTS):
         self.models = []
         self.parameters = []
         self.alpha = kwargs.get("alpha", 0.05)
-        self.order = 1
         self.point_method = kwargs.get('point_method', 'mean')
         self.interval_method = kwargs.get('interval_method', 'quantile')
 
@@ -39,8 +38,7 @@ class EnsembleFTS(fts.FTS):
             self.order = model.order
 
     def train(self, data, **kwargs):
-        self.original_max = max(data)
-        self.original_min = min(data)
+        pass
 
     def get_models_forecasts(self,data):
         tmp = []
@@ -246,8 +244,8 @@ class EnsembleFTS(fts.FTS):
 
 
 class AllMethodEnsembleFTS(EnsembleFTS):
-    def __init__(self, name, **kwargs):
-        super(AllMethodEnsembleFTS, self).__init__(name="Ensemble FTS"+name, **kwargs)
+    def __init__(self, **kwargs):
+        super(AllMethodEnsembleFTS, self).__init__(**kwargs)
         self.min_order = 3
         self.shortname ="Ensemble FTS"
 
@@ -256,26 +254,22 @@ class AllMethodEnsembleFTS(EnsembleFTS):
             model.append_transformation(t)
 
     def train(self, data, **kwargs):
-        self.original_max = max(data)
-        self.original_min = min(data)
-
-        order = kwargs.get('order',2)
-
         fo_methods = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, cheng.TrendWeightedFTS,
                       sadaei.ExponentialyWeightedFTS, ismailefendi.ImprovedWeightedFTS]
 
         ho_methods = [hofts.HighOrderFTS, hwang.HighOrderFTS]
 
         for method in fo_methods:
-            model = method("", partitioner=self.partitioner)
+            model = method(partitioner=self.partitioner)
             self.set_transformations(model)
             model.fit(data, **kwargs)
             self.append_model(model)
 
         for method in ho_methods:
-            for o in np.arange(1, order+1):
-                model = method("", partitioner=self.partitioner)
+            for o in np.arange(1, self.order+1):
+                model = method(partitioner=self.partitioner)
                 if model.min_order >= o:
+                    model.order = o
                     self.set_transformations(model)
                     model.fit(data, **kwargs)
                     self.append_model(model)

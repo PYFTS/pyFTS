@@ -94,9 +94,9 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
 class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     """High Order Probabilistic Weighted Fuzzy Time Series"""
-    def __init__(self, name, **kwargs):
-        super(ProbabilisticWeightedFTS, self).__init__(name=name, **kwargs)
-        self.shortname = "PWFTS " + name
+    def __init__(self, **kwargs):
+        super(ProbabilisticWeightedFTS, self).__init__(**kwargs)
+        self.shortname = "PWFTS"
         self.name = "Probabilistic FTS"
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H."
         self.flrgs = {}
@@ -108,21 +108,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         self.min_order = 1
         self.auto_update = kwargs.get('update',False)
 
-
     def train(self, data, **kwargs):
 
-        data = self.apply_transformations(data, updateUoD=True)
-
         parameters = kwargs.get('parameters','fuzzy')
-
-        self.order = kwargs.get('order',1)
-
-        if kwargs.get('sets', None) is None and self.partitioner is not None:
-            self.sets = self.partitioner.sets
-            self.original_min = self.partitioner.min
-            self.original_max = self.partitioner.max
-        else:
-            self.sets = kwargs.get('sets',None)
 
         if parameters == 'monotonic':
             tmpdata = FuzzySet.fuzzyfy_series_old(data, self.sets)
@@ -237,7 +225,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             # this may be the problem! TEST IT!!!
             ##########################################
             pi = 1 / len(flrg.LHS)
-            ret = sum(np.array([pi * self.setsDict[s].membership(x) for s in flrg.LHS]))
+            ret = sum(np.array([pi * self.sets[s].membership(x) for s in flrg.LHS]))
         return ret
 
     def get_upper(self, flrg):

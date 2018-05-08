@@ -18,6 +18,11 @@ from pyFTS.common import Util
 
 def open_benchmark_db(name):
     conn = sqlite3.connect(name)
+
+    #performance optimizations
+    conn.execute("PRAGMA journal_mode = WAL")
+    conn.execute("PRAGMA synchronous = NORMAL")
+
     create_benchmark_tables(conn)
     return conn
 
@@ -31,7 +36,6 @@ def create_benchmark_tables(conn):
                  Scheme text, Partitions int,
                  Size int, Steps int, Method text, Measure text, Value real)''')
 
-    # Save (commit) the changes
     conn.commit()
 
 

@@ -7,7 +7,7 @@ class FTS(object):
     """
     Fuzzy Time Series object model
     """
-    def __init__(self, order, name, **kwargs):
+    def __init__(self, **kwargs):
         """
         Create a Fuzzy Time Series model
         :param order: model order
@@ -16,10 +16,10 @@ class FTS(object):
         """
         self.sets = {}
         self.flrgs = {}
-        self.order = order
-        self.shortname = name
-        self.name = name
-        self.detail = name
+        self.order = kwargs.get('order',"")
+        self.shortname = kwargs.get('name',"")
+        self.name = kwargs.get('name',"")
+        self.detail = kwargs.get('name',"")
         self.is_high_order = False
         self.min_order = 1
         self.has_seasonality = False
@@ -74,6 +74,8 @@ class FTS(object):
             ndata = data
         else:
             ndata = self.apply_transformations(data)
+
+        ndata = np.clip(ndata, self.original_min, self.original_max)
 
         if 'distributed' in kwargs:
             distributed = kwargs.pop('distributed')
@@ -221,6 +223,24 @@ class FTS(object):
             data = ndata
         else:
             data = self.apply_transformations(ndata)
+
+        self.original_min = np.nanmin(data)
+        self.original_max = np.nanmax(data)
+
+        if 'sets' in kwargs:
+            self.sets = kwargs.pop('sets')
+
+        if 'partitioner' in kwargs:
+            self.partitioner = kwargs.pop('partitioner')
+
+        if (self.sets is None or len(self.sets) == 0) and not self.benchmark_only:
+            if self.partitioner is not None:
+                self.sets = self.partitioner.sets
+            else:
+                raise Exception("Fuzzy sets were not provided for the model. Use 'sets' parameter or 'partitioner'. ")
+
+        if 'order' in kwargs:
+            self.order = kwargs.pop('order')
 
         dump = kwargs.get('dump', None)
 

@@ -17,9 +17,9 @@ class IntervalFTS(hofts.HighOrderFTS):
     """
     High Order Interval Fuzzy Time Series
     """
-    def __init__(self, name, **kwargs):
-        super(IntervalFTS, self).__init__(name="IFTS " + name, **kwargs)
-        self.shortname = "IFTS " + name
+    def __init__(self, **kwargs):
+        super(IntervalFTS, self).__init__(**kwargs)
+        self.shortname = "IFTS"
         self.name = "Interval FTS"
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H. (2016)"
         self.flrgs = {}
@@ -29,19 +29,23 @@ class IntervalFTS(hofts.HighOrderFTS):
         self.min_order = 1
 
     def get_upper(self, flrg):
-        if flrg.get_key() in self.flrgs:
-            tmp = self.flrgs[flrg.get_key()]
-            ret = tmp.get_upper(self.sets)
-        else:
-            ret = self.sets[flrg.LHS[-1]].upper
+        ret = np.nan
+        if len(flrg.LHS) > 0:
+            if flrg.get_key() in self.flrgs:
+                tmp = self.flrgs[flrg.get_key()]
+                ret = tmp.get_upper(self.sets)
+            else:
+                ret = self.sets[flrg.LHS[-1]].upper
         return ret
 
     def get_lower(self, flrg):
-        if flrg.get_key() in self.flrgs:
-            tmp = self.flrgs[flrg.get_key()]
-            ret = tmp.get_lower(self.sets)
-        else:
-            ret = self.sets[flrg.LHS[-1]].lower
+        ret = np.nan
+        if len(flrg.LHS) > 0:
+            if flrg.get_key() in self.flrgs:
+                tmp = self.flrgs[flrg.get_key()]
+                ret = tmp.get_lower(self.sets)
+            else:
+                ret = self.sets[flrg.LHS[-1]].lower
         return ret
 
     def get_sequence_membership(self, data, fuzzySets):
@@ -69,11 +73,12 @@ class IntervalFTS(hofts.HighOrderFTS):
             affected_flrgs_memberships = []
 
             for flrg in flrgs:
-                # achar o os bounds de cada FLRG, ponderados pela pertinência
-                mv = flrg.get_membership(sample, self.sets)
-                up.append(mv * self.get_upper(flrg))
-                lo.append(mv * self.get_lower(flrg))
-                affected_flrgs_memberships.append(mv)
+                if len(flrg.LHS) > 0:
+                    # achar o os bounds de cada FLRG, ponderados pela pertinência
+                    mv = flrg.get_membership(sample, self.sets)
+                    up.append(mv * self.get_upper(flrg))
+                    lo.append(mv * self.get_lower(flrg))
+                    affected_flrgs_memberships.append(mv)
 
             # gerar o intervalo
             norm = sum(affected_flrgs_memberships)

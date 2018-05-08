@@ -156,12 +156,12 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
     if models is None:
         for method in methods:
-            mfts = method("")
+            mfts = method()
 
             if mfts.is_high_order:
                 for order in orders:
                     if order >= mfts.min_order:
-                        mfts = method("")
+                        mfts = method()
                         mfts.order = order
                         pool.append(mfts)
             else:
@@ -190,7 +190,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
             for transformation in transformations:
                 for count, model in enumerate(benchmark_methods, start=0):
                     par = benchmark_methods_parameters[count]
-                    mfts = model("", **par)
+                    mfts = model(**par)
                     mfts.append_transformation(transformation)
                     benchmark_pool.append(mfts)
 
@@ -203,6 +203,8 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     elif type == 'distribution':
         experiment_method = run_probabilistic
         synthesis_method = process_probabilistic_jobs
+    else:
+        raise ValueError("Type parameter has a unkown value!")
 
     if distributed:
         import dispy, dispy.httpd
@@ -213,28 +215,29 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     experiments = 0
     jobs = []
 
+    inc = __pop("inc", 0.1, kwargs)
+
     if progress:
         from tqdm import tqdm
-        progressbar = tqdm(total=len(data), desc="Sliding Window:")
-
-    inc = __pop("inc", 0.1, kwargs)
+        _tdata = len(data) / (windowsize * inc)
+        _tasks = (len(partitioners_models) * len(orders) * len(partitions) * len(transformations) * len(steps_ahead))
+        _tbcmk = len(benchmark_pool)*len(steps_ahead)
+        progressbar = tqdm(total=_tdata*_tasks + _tdata*_tbcmk, desc="Benchmarks:")
 
     file = kwargs.get('file', "benchmarks.db")
 
     conn = bUtil.open_benchmark_db(file)
 
     for ct, train, test in cUtil.sliding_window(data, windowsize, train, inc=inc, **kwargs):
-        experiments += 1
-
-        if progress:
-            progressbar.update(windowsize * inc)
-
         if benchmark_models != False:
             for model in benchmark_pool:
                 for step in steps_ahead:
+
                     kwargs['steps_ahead'] = step
 
                     if not distributed:
+                        if progress:
+                            progressbar.update(1)
                         job = experiment_method(deepcopy(model), None, train, test, **kwargs)
                         synthesis_method(dataset, tag, job, conn)
                     else:
@@ -257,28 +260,17 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
         else:
             partitioners_pool = partitioners_models
 
-        rng1 = steps_ahead
-        if progress:
-            rng1 = tqdm(steps_ahead, desc="Steps")
+        for step in steps_ahead:
 
-        for step in rng1:
-            rng2 = partitioners_pool
+            for partitioner in partitioners_pool:
 
-            if progress:
-                rng2 = tqdm(partitioners_pool, desc="Partitioners")
-
-            for partitioner in rng2:
-
-                rng3 = enumerate(pool,start=0)
-
-                if progress:
-                    rng3 = enumerate(tqdm(pool, desc="Models"),start=0)
-
-                for _id, model in rng3:
+                for _id, model in enumerate(pool,start=0):
 
                     kwargs['steps_ahead'] = step
 
                     if not distributed:
+                        if progress:
+                            progressbar.update(1)
                         job = experiment_method(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
                         synthesis_method(dataset, tag, job, conn)
                     else:
@@ -291,12 +283,9 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
     if distributed:
 
-        rng = jobs
-
-        if progress:
-            rng = tqdm(jobs)
-
-        for job in rng:
+        for job in jobs:
+            if progress:
+                progressbar.update(1)
             job()
             if job.status == dispy.DispyJob.Finished and job is not None:
                 tmp = job.result
@@ -424,13 +413,15 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
     times = _end - _start
 
     _start = time.time()
-    _sharp, _res, _cov, _q05, _q25, _q75, _q95 = Measures.get_interval_statistics(test_data, mfts, **kwargs)
+    #_sharp, _res, _cov, _q05, _q25, _q75, _q95, _w05, _w25
+    metrics = Measures.get_interval_statistics(test_data, mfts, **kwargs)
     _end = time.time()
     times += _end - _start
 
-    ret = {'key': _key, 'obj': mfts, 'sharpness': _sharp, 'resolution': _res, 'coverage': _cov, 'time': times,
-           'Q05': _q05, 'Q25': _q25, 'Q75': _q75, 'Q95': _q95, 'window': window_key,
-           'steps': steps_ahead, 'method': method}
+    ret = {'key': _key, 'obj': mfts, 'sharpness': metrics[0], 'resolution': metrics[1], 'coverage': metrics[2],
+           'time': times,'Q05': metrics[3], 'Q25': metrics[4], 'Q75': metrics[5], 'Q95': metrics[6],
+           'winkler05': metrics[7], 'winkler25': metrics[8],
+           'window': window_key,'steps': steps_ahead, 'method': method}
 
     return ret
 
@@ -543,6 +534,12 @@ def process_interval_jobs(dataset, tag, job, conn):
     Q95 = deepcopy(data)
     Q95.extend(["Q95", job["Q95"]])
     bUtil.insert_benchmark(Q95, conn)
+    W05 = deepcopy(data)
+    W05.extend(["winkler05", job["winkler05"]])
+    bUtil.insert_benchmark(W05, conn)
+    W25 = deepcopy(data)
+    W25.extend(["winkler25", job["winkler25"]])
+    bUtil.insert_benchmark(W25, conn)
 
 
 def process_probabilistic_jobs(dataset, tag,  job, conn):

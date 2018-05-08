@@ -51,8 +51,8 @@ class ExponentialyWeightedFLRG(flrg.FLRG):
 
 class ExponentialyWeightedFTS(fts.FTS):
     """First Order Exponentialy Weighted Fuzzy Time Series"""
-    def __init__(self, name, **kwargs):
-        super(ExponentialyWeightedFTS, self).__init__(1, "EWFTS", **kwargs)
+    def __init__(self, **kwargs):
+        super(ExponentialyWeightedFTS, self).__init__(order=1, name="EWFTS", **kwargs)
         self.name = "Exponentialy Weighted FTS"
         self.detail = "Sadaei"
         self.c = kwargs.get('c', default_c)
@@ -66,12 +66,6 @@ class ExponentialyWeightedFTS(fts.FTS):
                 self.flrgs[flr.LHS].append_rhs(flr.RHS)
 
     def train(self, data, **kwargs):
-        self.c = kwargs.get('parameters', default_c)
-        if kwargs.get('sets', None) is not None:
-            self.sets = kwargs.get('sets', None)
-        else:
-            self.sets = self.partitioner.sets
-
         tmpdata = FuzzySet.fuzzyfy_series(data, self.sets, method='maximum')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs, self.c)
@@ -79,7 +73,10 @@ class ExponentialyWeightedFTS(fts.FTS):
     def forecast(self, ndata, **kwargs):
         l = 1
 
-        ordered_sets = FuzzySet.set_ordered(self.sets)
+        if self.partitioner is not None:
+            ordered_sets = self.partitioner.ordered_sets
+        else:
+            ordered_sets = FuzzySet.set_ordered(self.sets)
 
         data = np.array(ndata)
 

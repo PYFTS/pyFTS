@@ -13,8 +13,8 @@ class ARIMA(fts.FTS):
     """
     Façade for statsmodels.tsa.arima_model
     """
-    def __init__(self, name, **kwargs):
-        super(ARIMA, self).__init__(1, "ARIMA"+name)
+    def __init__(self, **kwargs):
+        super(ARIMA, self).__init__(**kwargs)
         self.name = "ARIMA"
         self.detail = "Auto Regressive Integrated Moving Average"
         self.is_high_order = True
@@ -44,11 +44,8 @@ class ARIMA(fts.FTS):
 
     def train(self, data, **kwargs):
 
-        self.original_min = np.nanmin(data)
-        self.original_max = np.nanmax(data)
-
-        if kwargs.get('order', None) is not None:
-            order = kwargs.get('order', (1,0,0))
+        if 'order' in kwargs:
+            order = kwargs.pop('order')
             self._decompose_order(order)
 
         if self.indexer is not None:

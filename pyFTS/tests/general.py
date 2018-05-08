@@ -11,35 +11,61 @@ from pyFTS.common import Transformations
 
 tdiff = Transformations.Differential(1)
 
-from pyFTS.data import TAIEX, SP500
+from pyFTS.data import TAIEX, SP500, NASDAQ
 
 #dataset = TAIEX.get_data()
 dataset = SP500.get_data()[11500:16000]
+#dataset = NASDAQ.get_data()
 #print(len(dataset))
 '''
 from pyFTS.partitioners import Grid, Util as pUtil
 partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10) #, transformation=tdiff)
 '''
-from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, quantreg, arima
+from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, quantreg, arima, naive
 
 
 from pyFTS.models import pwfts, song, ifts
 from pyFTS.models.ensemble import ensemble
 
 '''
-#model = knn.KNearestNeighbors("")
+model = knn.KNearestNeighbors(order=3)
 #model = ensemble.AllMethodEnsembleFTS("", partitioner=partitioner)
 #model = arima.ARIMA("", order=(2,0,2))
 #model = quantreg.QuantileRegression("", order=2, dist=True)
-model.append_transformation(tdiff)
+#model.append_transformation(tdiff)
 model.fit(dataset[:800])
-Measures.get_distribution_statistics(dataset[800:1000], model)
+print(Measures.get_distribution_statistics(dataset[800:1000], model))
 #tmp = model.predict(dataset[800:1000], type='distribution')
 #for tmp2 in tmp:
 #    print(tmp2)
 #'''
+#'''
+
+bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
+                                methods=[pwfts.ProbabilisticWeightedFTS],
+                                benchmark_models=False,
+                                transformations=[None],
+                                orders=[1, 2, 3],
+                                partitions=np.arange(10, 90, 5),
+                                progress=False, type="point",
+                                #steps_ahead=[1,2,4,6,8,10],
+                                distributed=True, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
+                                file="benchmarks.db", dataset="SP500", tag="partitioning")
 
 
+
+bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
+                                methods=[pwfts.ProbabilisticWeightedFTS],
+                                benchmark_models=False,
+                                transformations=[tdiff],
+                                orders=[1, 2, 3],
+                                partitions=np.arange(3, 30, 2),
+                                progress=False, type="point",
+                                #steps_ahead=[1,2,4,6,8,10],
+                                distributed=True, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
+                                file="benchmarks.db", dataset="SP500", tag="partitioning")
+
+#'''
 '''
 from pyFTS.partitioners import Grid, Util as pUtil
 partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10, transformation=tdiff)
@@ -52,24 +78,76 @@ print(Measures.get_distribution_statistics(dataset[800:1000], model, steps_ahead
 #for tmp2 in tmp:
 #    print(tmp2)
 '''
+'''
 
-#'''
+types = ['point','interval','distribution']
+benchmark_methods=[
+    [arima.ARIMA for k in range(4)] + [naive.Naive],
+    [arima.ARIMA for k in range(8)] + [quantreg.QuantileRegression for k in range(4)],
+    [arima.ARIMA for k in range(4)] + [quantreg.QuantileRegression for k in range(2)]
+    + [knn.KNearestNeighbors for k in range(3)]
+    ]
+benchmark_methods_parameters= [
+    [
+        {'order': (1, 0, 0)},
+        {'order': (1, 0, 1)},
+        {'order': (2, 0, 1)},
+        {'order': (2, 0, 2)},
+        {},
+    ],[
+        {'order': (1, 0, 0), 'alpha': .05},
+        {'order': (1, 0, 0), 'alpha': .25},
+        {'order': (1, 0, 1), 'alpha': .05},
+        {'order': (1, 0, 1), 'alpha': .25},
+        {'order': (2, 0, 1), 'alpha': .05},
+        {'order': (2, 0, 1), 'alpha': .25},
+        {'order': (2, 0, 2), 'alpha': .05},
+        {'order': (2, 0, 2), 'alpha': .25},
+        {'order': 1, 'alpha': .05},
+        {'order': 1, 'alpha': .25},
+        {'order': 2, 'alpha': .05},
+        {'order': 2, 'alpha': .25}
+    ],[
+        {'order': (1, 0, 0)},
+        {'order': (1, 0, 1)},
+        {'order': (2, 0, 1)},
+        {'order': (2, 0, 2)},
+        {'order': 1, 'dist': True},
+        {'order': 2, 'dist': True},
+        {'order': 1}, {'order': 2}, {'order': 3},
+    ]
+]
+dataset_name = "NASDAQ"
+tag = "comparisons"
 
 from pyFTS.benchmarks import arima, naive, quantreg
 
-bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
-                                methods=[pwfts.ProbabilisticWeightedFTS],
-                                benchmark_models=False,
-                                transformations=[tdiff],
-                                orders=[1,2,3],
-                                partitions=np.arange(3, 50, 2),
-                                progress=False, type='point',
-                                #steps_ahead=[1,4,7,10], #steps_ahead=[1]
-                                distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
-                                file="benchmarks.db", dataset="SP500", tag="partitioning")
+for ct, type in enumerate(types):
+
+    bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
+                                    benchmark_models=True,
+                                    benchmark_methods=benchmark_methods[ct],
+                                    benchmark_methods_parameters=benchmark_methods_parameters[ct],
+                                    transformations=[None],
+                                    orders=[1,2,3],
+                                    partitions=np.arange(15, 85, 5),
+                                    progress=False, type=type,
+                                    distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                    file="benchmarks.db", dataset=dataset_name, tag=tag)
+
+    bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
+                                    benchmark_models=True,
+                                    benchmark_methods=benchmark_methods[ct],
+                                    benchmark_methods_parameters=benchmark_methods_parameters[ct],
+                                    transformations=[tdiff],
+                                    orders=[1, 2, 3],
+                                    partitiTAIEXons=np.arange(3, 35, 2),
+                                    progress=False, type=type,
+                                    distributed=True, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
+                                    file="benchmarks.db", dataset=dataset_name, tag=tag)
 
 
-#'''
+'''
 '''
 dat = pd.read_csv('pwfts_taiex_partitioning.csv', sep=';')
 print(bUtil.analytic_tabular_dataframe(dat))

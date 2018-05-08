@@ -38,13 +38,11 @@ class HighOrderFLRG(flrg.FLRG):
 
 class HighOrderFTS(fts.FTS):
     """Conventional High Order Fuzzy Time Series"""
-    def __init__(self, name, **kwargs):
-        super(HighOrderFTS, self).__init__(1, name="HOFTS" + name, **kwargs)
+    def __init__(self, **kwargs):
+        super(HighOrderFTS, self).__init__(**kwargs)
         self.name = "High Order FTS"
-        self.shortname = "HOFTS" + name
+        self.shortname = "HOFTS"
         self.detail = "Chen"
-        self.order = kwargs.get('order',1)
-        self.setsDict = {}
         self.is_high_order = True
         self.min_order = 2
 
@@ -94,13 +92,6 @@ class HighOrderFTS(fts.FTS):
 
     def train(self, data, **kwargs):
 
-        self.order = kwargs.get('order',2)
-
-        if kwargs.get('sets', None) is not None:
-            self.sets = kwargs.get('sets', None)
-        else:
-            self.sets = self.partitioner.sets
-
         self.generate_flrg(data)
 
     def forecast(self, ndata, **kwargs):
@@ -115,10 +106,12 @@ class HighOrderFTS(fts.FTS):
         for k in np.arange(self.order, l+1):
             flrgs = self.generate_lhs_flrg(ndata[k - self.order: k])
 
+            tmp = []
             for flrg in flrgs:
-                tmp = []
+
                 if flrg.get_key() not in self.flrgs:
-                    tmp.append(self.sets[flrg.LHS[-1]].centroid)
+                    if len(flrg.LHS) > 0:
+                        tmp.append(self.sets[flrg.LHS[-1]].centroid)
                 else:
                     flrg = self.flrgs[flrg.get_key()]
                     tmp.append(flrg.get_midpoint(self.sets))

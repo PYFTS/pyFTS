@@ -47,8 +47,8 @@ class ImprovedWeightedFLRG(flrg.FLRG):
 
 class ImprovedWeightedFTS(fts.FTS):
     """First Order Improved Weighted Fuzzy Time Series"""
-    def __init__(self, name, **kwargs):
-        super(ImprovedWeightedFTS, self).__init__(1, "IWFTS " + name, **kwargs)
+    def __init__(self, **kwargs):
+        super(ImprovedWeightedFTS, self).__init__(order=1, name="IWFTS", **kwargs)
         self.name = "Improved Weighted FTS"
         self.detail = "Ismail & Efendi"
 
@@ -61,10 +61,6 @@ class ImprovedWeightedFTS(fts.FTS):
                 self.flrgs[flr.LHS].append_rhs(flr.RHS)
 
     def train(self, ndata, **kwargs):
-        if kwargs.get('sets', None) is not None:
-            self.sets = kwargs.get('sets', None)
-        else:
-            self.sets = self.partitioner.sets
 
         tmpdata = FuzzySet.fuzzyfy_series(ndata, self.sets, method='maximum')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
@@ -73,7 +69,10 @@ class ImprovedWeightedFTS(fts.FTS):
     def forecast(self, ndata, **kwargs):
         l = 1
 
-        ordered_sets = FuzzySet.set_ordered(self.sets)
+        if self.partitioner is not None:
+            ordered_sets = self.partitioner.ordered_sets
+        else:
+            ordered_sets = FuzzySet.set_ordered(self.sets)
 
         ndata = np.array(ndata)
         l = len(ndata)

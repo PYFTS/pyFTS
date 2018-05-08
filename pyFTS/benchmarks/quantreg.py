@@ -11,8 +11,8 @@ from pyFTS.probabilistic import ProbabilityDistribution
 
 class QuantileRegression(fts.FTS):
     """Façade for statsmodels.regression.quantile_regression"""
-    def __init__(self, name, **kwargs):
-        super(QuantileRegression, self).__init__(1, "")
+    def __init__(self, **kwargs):
+        super(QuantileRegression, self).__init__(**kwargs)
         self.name = "QR"
         self.detail = "Quantile Regression"
         self.is_high_order = True
@@ -27,13 +27,8 @@ class QuantileRegression(fts.FTS):
         self.mean_qt = None
         self.lower_qt = None
         self.dist_qt = None
-        self.order = kwargs.get('order', 1)
-        self.shortname = "QAR("+str(self.order)+","+str(self.alpha)+")"
 
     def train(self, data, **kwargs):
-        if 'order' in kwargs:
-            self.order = kwargs.get('order', 1)
-
         if self.indexer is not None and isinstance(data, pd.DataFrame):
             data = self.indexer.get_data(data)
 
@@ -57,9 +52,6 @@ class QuantileRegression(fts.FTS):
                 lo_qt = [k for k in lqt.params]
                 up_qt = [k for k in uqt.params]
                 self.dist_qt.append([lo_qt, up_qt])
-
-        self.original_min = min(data)
-        self.original_max = max(data)
 
         self.shortname = "QAR(" + str(self.order) + ") - " + str(self.alpha)
 

@@ -11,8 +11,8 @@ class KNearestNeighbors(fts.FTS):
     """
     K-Nearest Neighbors
     """
-    def __init__(self, name, **kwargs):
-        super(KNearestNeighbors, self).__init__(1, "kNN"+name)
+    def __init__(self, **kwargs):
+        super(KNearestNeighbors, self).__init__(**kwargs)
         self.name = "kNN"
         self.shortname = "kNN"
         self.detail = "K-Nearest Neighbors"
@@ -23,20 +23,12 @@ class KNearestNeighbors(fts.FTS):
         self.benchmark_only = True
         self.min_order = 1
         self.alpha = kwargs.get("alpha", 0.05)
-        self.order = kwargs.get("order", 1)
         self.lag = None
         self.k = kwargs.get("k", 30)
         self.uod = None
 
     def train(self, data, **kwargs):
-        if kwargs.get('order', None) is not None:
-            self.order = kwargs.get('order', 1)
-
         self.data = np.array(data)
-        self.original_max = max(data)
-        self.original_min = min(data)
-
-        #self.lagdata, = lagmat(data, maxlag=self.order, trim="both", original='sep')
 
 
     def knn(self, sample):

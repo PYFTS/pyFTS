@@ -205,14 +205,35 @@ def pinball_mean(tau, targets, forecasts):
     :param forecasts: list of prediction intervals
     :return: float, the pinball loss mean for tau quantile
     """
-    try:
-        if tau <= 0.5:
-            preds = [pinball(tau, targets[i], forecasts[i][0]) for i in np.arange(0, len(forecasts))]
-        else:
-            preds = [pinball(tau, targets[i], forecasts[i][1]) for i in np.arange(0, len(forecasts))]
-        return np.nanmean(preds)
-    except Exception as ex:
-        print(ex)
+    if tau <= 0.5:
+        preds = [pinball(tau, targets[i], forecasts[i][0]) for i in np.arange(0, len(forecasts))]
+    else:
+        preds = [pinball(tau, targets[i], forecasts[i][1]) for i in np.arange(0, len(forecasts))]
+    return np.nanmean(preds)
+
+
+def winkler_score(tau, target, forecast):
+    '''R. L. Winkler, A Decision-Theoretic Approach to Interval Estimation, J. Am. Stat. Assoc. 67 (337) (1972) 187–191. doi:10.2307/2284720. '''
+    delta = forecast[1] - forecast[0]
+    if forecast[0] < target and target < forecast[1]:
+        return delta
+    elif forecast[0] > target:
+        return delta + 2*(forecast[0] - target)/tau
+    elif forecast[1] < target:
+        return delta + 2*(target - forecast[1])/tau
+
+
+def winkler_mean(tau, targets, forecasts):
+    """
+    Mean Winkler score value of the forecast for a given tau-quantile of the targets
+    :param tau: quantile value in the range (0,1)
+    :param targets: list of target values
+    :param forecasts: list of prediction intervals
+    :return: float, the Winkler score mean for tau quantile
+    """
+    preds = [winkler_score(tau, targets[i], forecasts[i]) for i in np.arange(0, len(forecasts))]
+
+    return np.nanmean(preds)
 
 
 def brier_score(targets, densities):
@@ -348,6 +369,8 @@ def get_interval_statistics(data, model, **kwargs):
         ret.append(round(pinball_mean(0.25, data[model.order:], forecasts[:-1]), 2))
         ret.append(round(pinball_mean(0.75, data[model.order:], forecasts[:-1]), 2))
         ret.append(round(pinball_mean(0.95, data[model.order:], forecasts[:-1]), 2))
+        ret.append(round(winkler_mean(0.05, data[model.order:], forecasts[:-1]), 2))
+        ret.append(round(winkler_mean(0.25, data[model.order:], forecasts[:-1]), 2))
     else:
         forecasts = []
         for k in np.arange(model.order, len(data) - steps_ahead):
@@ -363,6 +386,8 @@ def get_interval_statistics(data, model, **kwargs):
         ret.append(round(pinball_mean(0.25, data[start:], forecasts), 2))
         ret.append(round(pinball_mean(0.75, data[start:], forecasts), 2))
         ret.append(round(pinball_mean(0.95, data[start:], forecasts), 2))
+        ret.append(round(winkler_mean(0.05, data[start:], forecasts), 2))
+        ret.append(round(winkler_mean(0.25, data[start:], forecasts), 2))
     return ret
 
 

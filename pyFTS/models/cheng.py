@@ -45,9 +45,9 @@ class TrendWeightedFLRG(yu.WeightedFLRG):
 
 class TrendWeightedFTS(yu.WeightedFTS):
     """First Order Trend Weighted Fuzzy Time Series"""
-    def __init__(self, name, **kwargs):
-        super(TrendWeightedFTS, self).__init__("", **kwargs)
-        self.shortname = "TWFTS " + name
+    def __init__(self, **kwargs):
+        super(TrendWeightedFTS, self).__init__(**kwargs)
+        self.shortname = "TWFTS"
         self.name = "Trend Weighted FTS"
         self.detail = "Cheng"
         self.is_high_order = False
