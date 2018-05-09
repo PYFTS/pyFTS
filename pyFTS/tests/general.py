@@ -24,7 +24,7 @@ partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10) #, transformati
 from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, quantreg, arima, naive
 
 
-from pyFTS.models import pwfts, song, ifts
+from pyFTS.models import pwfts, song, ifts, hofts
 from pyFTS.models.ensemble import ensemble
 
 '''
@@ -39,33 +39,33 @@ print(Measures.get_distribution_statistics(dataset[800:1000], model))
 #for tmp2 in tmp:
 #    print(tmp2)
 #'''
-#'''
+'''
 
 bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
-                                methods=[pwfts.ProbabilisticWeightedFTS],
+                                methods=[hofts.HighOrderFTS], #[pwfts.ProbabilisticWeightedFTS],
                                 benchmark_models=False,
                                 transformations=[None],
                                 orders=[1, 2, 3],
-                                partitions=np.arange(10, 90, 5),
+                                partitions=np.arange(30, 80, 5),
                                 progress=False, type="point",
                                 #steps_ahead=[1,2,4,6,8,10],
                                 distributed=True, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
-                                file="benchmarks.db", dataset="SP500", tag="partitioning")
+                                file="benchmarks.db", dataset="NASDAQ", tag="comparisons")
 
 
 
 bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
-                                methods=[pwfts.ProbabilisticWeightedFTS],
+                                methods=[hofts.HighOrderFTS],  # [pwfts.ProbabilisticWeightedFTS],
                                 benchmark_models=False,
                                 transformations=[tdiff],
                                 orders=[1, 2, 3],
-                                partitions=np.arange(3, 30, 2),
+                                partitions=np.arange(3, 25, 2),
                                 progress=False, type="point",
                                 #steps_ahead=[1,2,4,6,8,10],
                                 distributed=True, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
-                                file="benchmarks.db", dataset="SP500", tag="partitioning")
+                                file="benchmarks.db", dataset="NASDAQ", tag="comparisons")
 
-#'''
+'''
 '''
 from pyFTS.partitioners import Grid, Util as pUtil
 partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10, transformation=tdiff)
@@ -78,16 +78,34 @@ print(Measures.get_distribution_statistics(dataset[800:1000], model, steps_ahead
 #for tmp2 in tmp:
 #    print(tmp2)
 '''
-'''
+#'''
 
-types = ['point','interval','distribution']
+types = ['interval']#['point','interval','distribution']
+benchmark_methods=[[arima.ARIMA for k in range(8)] + [quantreg.QuantileRegression for k in range(4)]]
+'''
 benchmark_methods=[
     [arima.ARIMA for k in range(4)] + [naive.Naive],
     [arima.ARIMA for k in range(8)] + [quantreg.QuantileRegression for k in range(4)],
     [arima.ARIMA for k in range(4)] + [quantreg.QuantileRegression for k in range(2)]
     + [knn.KNearestNeighbors for k in range(3)]
-    ]
+    ]'''
 benchmark_methods_parameters= [
+    [
+        {'order': (1, 0, 0), 'alpha': .05},
+        {'order': (1, 0, 0), 'alpha': .25},
+        {'order': (1, 0, 1), 'alpha': .05},
+        {'order': (1, 0, 1), 'alpha': .25},
+        {'order': (2, 0, 1), 'alpha': .05},
+        {'order': (2, 0, 1), 'alpha': .25},
+        {'order': (2, 0, 2), 'alpha': .05},
+        {'order': (2, 0, 2), 'alpha': .25},
+        {'order': 1, 'alpha': .05},
+        {'order': 1, 'alpha': .25},
+        {'order': 2, 'alpha': .05},
+        {'order': 2, 'alpha': .25}
+    ]
+]
+'''benchmark_methods_parameters= [
     [
         {'order': (1, 0, 0)},
         {'order': (1, 0, 1)},
@@ -116,8 +134,8 @@ benchmark_methods_parameters= [
         {'order': 2, 'dist': True},
         {'order': 1}, {'order': 2}, {'order': 3},
     ]
-]
-dataset_name = "NASDAQ"
+]'''
+dataset_name = "SP500"
 tag = "comparisons"
 
 from pyFTS.benchmarks import arima, naive, quantreg
@@ -147,7 +165,7 @@ for ct, type in enumerate(types):
                                     file="benchmarks.db", dataset=dataset_name, tag=tag)
 
 
-'''
+#'''
 '''
 dat = pd.read_csv('pwfts_taiex_partitioning.csv', sep=';')
 print(bUtil.analytic_tabular_dataframe(dat))

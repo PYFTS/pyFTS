@@ -165,6 +165,7 @@ def sharpness(forecasts):
     return np.mean(tmp)
 
 
+
 def resolution(forecasts):
     """Resolution - Standard deviation of the intervals"""
     shp = sharpness(forecasts)
