@@ -50,7 +50,7 @@ bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
                                 progress=False, type="point",
                                 #steps_ahead=[1,2,4,6,8,10],
                                 distributed=True, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
-                                file="benchmarks.db", dataset="NASDAQ", tag="comparisons")
+                                file="benchmarks.db", dataset="TAIEX", tag="comparisons")
 
 
 
@@ -80,7 +80,7 @@ print(Measures.get_distribution_statistics(dataset[800:1000], model, steps_ahead
 '''
 #'''
 
-types = ['interval']#['point','interval','distribution']
+types = ['point','interval','distribution']
 benchmark_methods=[[arima.ARIMA for k in range(8)] + [quantreg.QuantileRegression for k in range(4)]]
 '''
 benchmark_methods=[
@@ -136,32 +136,36 @@ benchmark_methods_parameters= [
     ]
 ]'''
 dataset_name = "SP500"
-tag = "comparisons"
+tag = "ahead2"
 
 from pyFTS.benchmarks import arima, naive, quantreg
 
 for ct, type in enumerate(types):
 
-    bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
-                                    benchmark_models=True,
-                                    benchmark_methods=benchmark_methods[ct],
-                                    benchmark_methods_parameters=benchmark_methods_parameters[ct],
-                                    transformations=[None],
-                                    orders=[1,2,3],
-                                    partitions=np.arange(15, 85, 5),
-                                    progress=False, type=type,
-                                    distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
-                                    file="benchmarks.db", dataset=dataset_name, tag=tag)
 
     bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
-                                    benchmark_models=True,
-                                    benchmark_methods=benchmark_methods[ct],
-                                    benchmark_methods_parameters=benchmark_methods_parameters[ct],
+                                    methods=[pwfts.ProbabilisticWeightedFTS],
+                                    benchmark_models=False,
+                                    #benchmark_methods=benchmark_methods[ct],
+                                    #benchmark_methods_parameters=benchmark_methods_parameters[ct],
                                     transformations=[tdiff],
-                                    orders=[1, 2, 3],
-                                    partitiTAIEXons=np.arange(3, 35, 2),
+                                    orders=[1], #, 2, 3],
+                                    partitions=[5], #np.arange(3, 35, 2),
                                     progress=False, type=type,
+                                    steps_ahead=[2, 4, 6, 8, 10],
                                     distributed=True, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
+                                    file="benchmarks.db", dataset=dataset_name, tag=tag)
+    bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
+                                    methods=[pwfts.ProbabilisticWeightedFTS],
+                                    benchmark_models=False,
+                                    #benchmark_methods=benchmark_methods[ct],
+                                    #benchmark_methods_parameters=benchmark_methods_parameters[ct],
+                                    transformations=[None],
+                                    orders=[1], #,2,3],
+                                    partitions=[30], #np.arange(15, 85, 5),
+                                    progress=False, type=type,
+                                    steps_ahead=[2, 4, 6, 8, 10],
+                                    distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
                                     file="benchmarks.db", dataset=dataset_name, tag=tag)
 
 
