@@ -56,12 +56,13 @@ class FuzzySet(FS.FuzzySet):
     
     def perform_location(self, t, param):
         if self.location is None:
-            return param
-    
-        l = len(self.location)
-    
-        inc = sum([self.location[k](t + self.location_roots[k], self.location_params[k]) for k in np.arange(0, l)])
-    
+            inc = t
+        else:
+
+            l = len(self.location)
+
+            inc = sum([self.location[k](t + self.location_roots[k], self.location_params[k]) for k in np.arange(0, l)])
+
         if self.mf == Membership.gaussmf:
             # changes only the mean parameter
             return [param[0] + inc, param[1]]
@@ -76,12 +77,13 @@ class FuzzySet(FS.FuzzySet):
     
     def perform_width(self, t, param):
         if self.width is None:
-            return param
-    
-        l = len(self.width)
-    
-        inc = sum([self.width[k](t + self.width_roots[k], self.width_params[k]) for k in np.arange(0, l)])
-    
+            inc = t
+        else:
+
+            l = len(self.width)
+
+            inc = sum([self.width[k](t + self.width_roots[k], self.width_params[k]) for k in np.arange(0, l)])
+
         if self.mf == Membership.gaussmf:
             # changes only the variance parameter
             return [param[0], param[1] + inc]

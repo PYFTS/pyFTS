@@ -13,19 +13,26 @@ tdiff = Transformations.Differential(1)
 
 from pyFTS.data import TAIEX, SP500, NASDAQ
 
-#dataset = TAIEX.get_data()
-dataset = SP500.get_data()[11500:16000]
+dataset = TAIEX.get_data()
+#dataset = SP500.get_data()[11500:16000]
 #dataset = NASDAQ.get_data()
 #print(len(dataset))
-'''
+
 from pyFTS.partitioners import Grid, Util as pUtil
-partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10) #, transformation=tdiff)
-'''
+partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10, transformation=tdiff)
+
+
+from pyFTS.common import Util as cUtil
 from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, quantreg, arima, naive
 
-
-from pyFTS.models import pwfts, song, ifts, hofts
+from pyFTS.models import pwfts, song, chen, ifts, hofts
 from pyFTS.models.ensemble import ensemble
+
+model = chen.ConventionalFTS(partitioner=partitioner)
+model.append_transformation(tdiff)
+model.fit(dataset[:800])
+
+cUtil.plot_rules(model)
 
 '''
 model = knn.KNearestNeighbors(order=3)
@@ -78,17 +85,16 @@ print(Measures.get_distribution_statistics(dataset[800:1000], model, steps_ahead
 #for tmp2 in tmp:
 #    print(tmp2)
 '''
-#'''
+'''
 
 types = ['point','interval','distribution']
 benchmark_methods=[[arima.ARIMA for k in range(8)] + [quantreg.QuantileRegression for k in range(4)]]
-'''
 benchmark_methods=[
     [arima.ARIMA for k in range(4)] + [naive.Naive],
     [arima.ARIMA for k in range(8)] + [quantreg.QuantileRegression for k in range(4)],
     [arima.ARIMA for k in range(4)] + [quantreg.QuantileRegression for k in range(2)]
     + [knn.KNearestNeighbors for k in range(3)]
-    ]'''
+    ]
 benchmark_methods_parameters= [
     [
         {'order': (1, 0, 0), 'alpha': .05},
@@ -105,7 +111,7 @@ benchmark_methods_parameters= [
         {'order': 2, 'alpha': .25}
     ]
 ]
-'''benchmark_methods_parameters= [
+benchmark_methods_parameters= [
     [
         {'order': (1, 0, 0)},
         {'order': (1, 0, 1)},
@@ -134,7 +140,7 @@ benchmark_methods_parameters= [
         {'order': 2, 'dist': True},
         {'order': 1}, {'order': 2}, {'order': 3},
     ]
-]'''
+]
 dataset_name = "SP500"
 tag = "ahead2"
 
@@ -169,7 +175,7 @@ for ct, type in enumerate(types):
                                     file="benchmarks.db", dataset=dataset_name, tag=tag)
 
 
-#'''
+'''
 '''
 dat = pd.read_csv('pwfts_taiex_partitioning.csv', sep=';')
 print(bUtil.analytic_tabular_dataframe(dat))

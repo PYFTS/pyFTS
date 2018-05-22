@@ -109,22 +109,26 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
         pass
 
 
-class ConstantNonStationaryPartitioner(partitioner.Partitioner):
+class SimpleNonStationaryPartitioner(partitioner.Partitioner):
     """
     Non Stationary Universe of Discourse Partitioner
     """
 
     def __init__(self, data, part, **kwargs):
         """"""
-        super(ConstantNonStationaryPartitioner, self).__init__(name=part.name, data=data, npart=part.partitions,
-                                                                 func=part.membership_function, names=part.setnames,
-                                                                 prefix=part.prefix, transformation=part.transformation,
-                                                                 indexer=part.indexer)
-
-        self.sets = {}
+        super(SimpleNonStationaryPartitioner, self).__init__(name=part.name, data=data, npart=part.partitions,
+                                                             func=part.membership_function, names=part.setnames,
+                                                             prefix=part.prefix, transformation=part.transformation,
+                                                             indexer=part.indexer)#, preprocess=False)
 
         for key in part.sets.keys():
             set = part.sets[key]
             tmp = common.FuzzySet(set.name, set.mf, set.parameters, **kwargs)
+            tmp.centroid = set.centroid
 
             self.sets[key] =tmp
+
+        self.ordered_sets = stationary_fs.set_ordered(self.sets)
+
+    def build(self, data):
+        return {}

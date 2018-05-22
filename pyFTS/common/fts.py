@@ -38,6 +38,7 @@ class FTS(object):
         self.auto_update = False
         self.benchmark_only = False
         self.indexer = None
+        self.uod_clip = kwargs.get("uod_clip", True)
 
     def fuzzy(self, data):
         """
@@ -75,7 +76,8 @@ class FTS(object):
         else:
             ndata = self.apply_transformations(data)
 
-        ndata = np.clip(ndata, self.original_min, self.original_max)
+        if self.uod_clip:
+            ndata = np.clip(ndata, self.original_min, self.original_max)
 
         if 'distributed' in kwargs:
             distributed = kwargs.pop('distributed')

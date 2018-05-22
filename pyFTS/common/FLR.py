@@ -22,7 +22,7 @@ class FLR(object):
         self.RHS = RHS
 
     def __str__(self):
-        return self.LHS + " -> " + self.RHS
+        return str(self.LHS) + " -> " + str(self.RHS)
 
 
 class IndexedFLR(FLR):

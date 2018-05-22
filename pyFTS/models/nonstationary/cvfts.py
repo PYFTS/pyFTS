@@ -5,26 +5,20 @@ from pyFTS.common import FLR
 
 
 class ConditionalVarianceFTS(chen.ConventionalFTS):
-    def __init__(self, name, **kwargs):
-        super(ConditionalVarianceFTS, self).__init__("CVFTS " + name, **kwargs)
+    def __init__(self, **kwargs):
+        super(ConditionalVarianceFTS, self).__init__(**kwargs)
         self.name = "Conditional Variance FTS"
+        self.shortname = "CVFTS "
         self.detail = ""
         self.flrgs = {}
-        #self.append_transformation(Transformations.Differential(1))
-        if self.partitioner is None:
-            self.min_tx = None
-            self.max_tx = None
-        else:
-            self.min_tx = self.partitioner.min
-            self.max_tx = self.partitioner.max
+        if self.partitioner is not None:
             self.append_transformation(self.partitioner.transformation)
 
         self.min_stack = [0,0,0]
         self.max_stack = [0,0,0]
+        self.uod_clip = False
 
     def train(self, ndata, **kwargs):
-        self.min_tx = min(ndata)
-        self.max_tx = max(ndata)
 
         tmpdata = common.fuzzySeries(ndata, self.sets, self.partitioner.ordered_sets, method='fuzzy', const_t=0)
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
@@ -44,10 +38,10 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
     def perturbation_factors(self, data):
         _max = 0
         _min = 0
-        if data < self.min_tx:
-            _min = data - self.min_tx if data < 0 else self.min_tx - data
-        elif data > self.max_tx:
-            _max = data - self.max_tx if data > 0 else self.max_tx - data
+        if data < self.original_min:
+            _min = data - self.original_min if data < 0 else self.original_min - data
+        elif data > self.original_max:
+            _max = data - self.original_max if data > 0 else self.original_max - data
         self.min_stack.pop(2)
         self.min_stack.insert(0,_min)
         _min = min(self.min_stack)
@@ -96,21 +90,22 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
 
             if len(affected_sets) == 1:
                 ix = affected_sets[0][0]
-                aset = self.sets[ix]
-                if aset.name in self.flrgs:
-                    tmp.append(self.flrgs[aset.name].get_midpoint(perturb[ix]))
+                aset = self.partitioner.ordered_sets[ix]
+                if aset in self.flrgs:
+                    tmp.append(self.flrgs[aset].get_midpoint(perturb[ix]))
                 else:
-                    print('naive')
-                    tmp.append(aset.get_midpoint(perturb[ix]))
+                    fuzzy_set = self.sets[aset]
+                    tmp.append(fuzzy_set.get_midpoint(perturb[ix]))
             else:
                 for aset in affected_sets:
                     ix = aset[0]
-                    fs = self.sets[ix]
+                    fs = self.partitioner.ordered_sets[ix]
                     tdisp = perturb[ix]
-                    if fs.name in self.flrgs:
-                        tmp.append(self.flrgs[fs.name].get_midpoint(tdisp) * aset[1])
+                    if fs in self.flrgs:
+                        tmp.append(self.flrgs[fs].get_midpoint(tdisp) * aset[1])
                     else:
-                        tmp.append(fs.get_midpoint(tdisp) * aset[1])
+                        fuzzy_set = self.sets[fs]
+                        tmp.append(fuzzy_set.get_midpoint(tdisp) * aset[1])
 
             pto = sum(tmp)
 
@@ -137,24 +132,26 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
 
             if len(affected_sets) == 1:
                 ix = affected_sets[0][0]
-                aset = self.sets[ix]
-                if aset.name in self.flrgs:
-                    lower.append(self.flrgs[aset.name].get_lower(perturb[ix]))
-                    upper.append(self.flrgs[aset.name].get_upper(perturb[ix]))
+                aset = self.partitioner.ordered_sets[ix]
+                if aset in self.flrgs:
+                    lower.append(self.flrgs[aset].get_lower(perturb[ix]))
+                    upper.append(self.flrgs[aset].get_upper(perturb[ix]))
                 else:
-                    lower.append(aset.get_lower(perturb[ix]))
-                    upper.append(aset.get_upper(perturb[ix]))
+                    fuzzy_set = self.sets[aset]
+                    lower.append(fuzzy_set.get_lower(perturb[ix]))
+                    upper.append(fuzzy_set.get_upper(perturb[ix]))
             else:
                 for aset in affected_sets:
                     ix = aset[0]
-                    fs = self.sets[ix]
+                    fs = self.partitioner.ordered_sets[ix]
                     tdisp = perturb[ix]
-                    if fs.name in self.flrgs:
-                        lower.append(self.flrgs[fs.name].get_lower(tdisp) * aset[1])
-                        upper.append(self.flrgs[fs.name].get_upper(tdisp) * aset[1])
+                    if fs in self.flrgs:
+                        lower.append(self.flrgs[fs].get_lower(tdisp) * aset[1])
+                        upper.append(self.flrgs[fs].get_upper(tdisp) * aset[1])
                     else:
-                        lower.append(fs.get_lower(tdisp) * aset[1])
-                        upper.append(fs.get_upper(tdisp) * aset[1])
+                        fuzzy_set = self.sets[fs]
+                        lower.append(fuzzy_set.get_lower(tdisp) * aset[1])
+                        upper.append(fuzzy_set.get_upper(tdisp) * aset[1])
 
             itvl = [sum(lower), sum(upper)]
 

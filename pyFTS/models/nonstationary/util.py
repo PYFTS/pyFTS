@@ -54,23 +54,23 @@ def plot_sets(partitioner, start=0, end=10, step=1, tam=[5, 5], colors=None,
     Util.show_and_save_image(fig, file, save)
 
 
-def plot_sets_conditional(model, data, start=0, end=10, step=1, tam=[5, 5], colors=None,
+def plot_sets_conditional(model, data, step=1, size=[5, 5], colors=None,
                           save=False, file=None, axes=None):
-
-    range = np.arange(start,end,step)
+    range = np.arange(0, len(data), step)
     ticks = []
     if axes is None:
-        fig, axes = plt.subplots(nrows=1, ncols=1, figsize=tam)
+        fig, axes = plt.subplots(nrows=1, ncols=1, figsize=size)
 
-    for ct, key in enumerate(model.partitioner.ordered_sets):
-        set = model.partitioner.sets[key]
-        for t in range:
-            tdisp = model.perturbation_factors(data[t])
-            set.perturbate_parameters(tdisp[ct])
-            param = set.perturbated_parameters[str(tdisp[ct])]
+    for t in range:
+        perturb = model.perturbation_factors(data[t])
+
+        for ct, key in enumerate(model.partitioner.ordered_sets):
+            set = model.partitioner.sets[key]
+            set.perturbate_parameters(perturb[ct])
+            param = set.perturbated_parameters[str(perturb[ct])]
 
             if set.mf == Membership.trimf:
-                if t == start:
+                if t == 0:
                     line = axes.plot([t, t+1, t], param, label=set.name)
                     set.metadata['color'] = line[0].get_color()
                 else:
@@ -86,7 +86,7 @@ def plot_sets_conditional(model, data, start=0, end=10, step=1, tam=[5, 5], colo
     lgd = axes.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
 
     if data is not None:
-        axes.plot(np.arange(start, start + len(data), 1), data,c="black")
+        axes.plot(np.arange(0, len(data), 1), data,c="black")
 
     plt.tight_layout()
 
