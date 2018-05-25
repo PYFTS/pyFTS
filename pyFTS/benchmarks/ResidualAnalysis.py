@@ -33,25 +33,21 @@ def compare_residuals(data, models):
     Compare residual's statistics of several models
     :param data: test data
     :param models: 
-    :return: 
+    :return: a Pandas dataframe with the Box-Ljung statistic for each model
     """
-    ret = "Model		& Order     & Mean      & STD       & Box-Pierce    & Box-Ljung & P-value \\\\ \n"
+    from statsmodels.stats.diagnostic import acorr_ljungbox
+    rows = []
+    columns = ["Model","Order","AVG","STD","Box-Ljung","p-value"]
     for mfts in models:
         forecasts = mfts.forecast(data)
         res = residuals(data, forecasts, mfts.order)
         mu = np.mean(res)
         sig = np.std(res)
-        ret += mfts.shortname + "		& "
-        ret += str(mfts.order) + "		& "
-        ret += str(round(mu,2)) + "		& "
-        ret += str(round(sig,2)) + "		& "
-        q1 = Measures.BoxPierceStatistic(res, 10)
-        ret += str(round(q1,2)) + "		& "
-        q2 = Measures.BoxLjungStatistic(res, 10)
-        ret += str(round(q2,2)) + "		& "
-        ret += str(chi_squared(q2, 10))
-        ret += "	\\\\ \n"
-    return ret
+        row = [mfts.shortname, mfts.order, mu, sig]
+        stat, pval = acorr_ljungbox(res)
+        row.extend([stat, pval])
+        rows.append(row)
+    return pd.DataFrame(rows, columns=columns)
 
 
 def plotResiduals(targets, models, tam=[8, 8], save=False, file=None):
