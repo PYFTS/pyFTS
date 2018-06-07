@@ -76,8 +76,8 @@ class FTS(object):
         else:
             ndata = self.apply_transformations(data)
 
-        if self.uod_clip:
-            ndata = np.clip(ndata, self.original_min, self.original_max)
+            if self.uod_clip:
+                ndata = np.clip(ndata, self.original_min, self.original_max)
 
         if 'distributed' in kwargs:
             distributed = kwargs.pop('distributed')
