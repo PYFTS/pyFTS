@@ -59,7 +59,7 @@ model1.target_variable = vavg
 #model.fit(train, num_batches=60, save=True, batch_save=True, file_path='mvfts_sonda')
 
 model1.fit(train, num_batches=200, save=True, batch_save=True, file_path='mvfts_sonda', distributed=True,
-          nodes=['192.168.1.35'], batch_save_interval=10)
+          nodes=['192.168.0.110'], batch_save_interval=10)
 
 
 #model = Util.load_obj('mvfts_sonda')

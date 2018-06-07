@@ -1,10 +1,36 @@
 import numpy as np
-from pyFTS.models import chen
+from pyFTS.models import hofts
 from pyFTS.models.nonstationary import common,nsfts
-from pyFTS.common import FLR
+from pyFTS.common import FLR, flrg, tree
+
+class HighOrderNonstationaryFLRG(hofts.HighOrderFTS):
+    """Conventional High Order Fuzzy Logical Relationship Group"""
+    def __init__(self, order, **kwargs):
+        super(HighOrderNonstationaryFLRG, self).__init__(order, **kwargs)
+        self.LHS = []
+        self.RHS = {}
+        self.strlhs = ""
+
+    def append_rhs(self, c, **kwargs):
+        if c not in self.RHS:
+            self.RHS[c] = c
+
+    def append_lhs(self, c):
+        self.LHS.append(c)
+
+    def __str__(self):
+        tmp = ""
+        for c in sorted(self.RHS):
+            if len(tmp) > 0:
+                tmp = tmp + ","
+            tmp = tmp + c
+        return self.get_key() + " -> " + tmp
 
 
-class ConditionalVarianceFTS(chen.ConventionalFTS):
+    def __len__(self):
+        return len(self.RHS)
+
+class ConditionalVarianceFTS(hofts.HighOrderFTS):
     def __init__(self, **kwargs):
         super(ConditionalVarianceFTS, self).__init__(**kwargs)
         self.name = "Conditional Variance FTS"
@@ -17,6 +43,8 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
         self.min_stack = [0,0,0]
         self.max_stack = [0,0,0]
         self.uod_clip = False
+        self.order = 1
+        self.min_order = 1
 
     def train(self, ndata, **kwargs):
 
@@ -31,6 +59,7 @@ class ConditionalVarianceFTS(chen.ConventionalFTS):
             else:
                 self.flrgs[flr.LHS.name] = nsfts.ConventionalNonStationaryFLRG(flr.LHS)
                 self.flrgs[flr.LHS.name].append_rhs(flr.RHS)
+
 
     def _smooth(self, a):
         return .1 * a[0] + .3 * a[1] + .6 * a[2]

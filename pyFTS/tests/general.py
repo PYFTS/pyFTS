@@ -28,11 +28,14 @@ from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, 
 from pyFTS.models import pwfts, song, chen, ifts, hofts
 from pyFTS.models.ensemble import ensemble
 
-model = chen.ConventionalFTS(partitioner=partitioner)
+#model = chen.ConventionalFTS(partitioner=partitioner)
+model = hofts.HighOrderFTS(partitioner=partitioner,order=2)
 model.append_transformation(tdiff)
 model.fit(dataset[:800])
 
-cUtil.plot_rules(model)
+print(model)
+
+cUtil.plot_rules(model, size=[20,20], rules_by_axis=6, columns=1)
 
 '''
 model = knn.KNearestNeighbors(order=3)

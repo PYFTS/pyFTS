@@ -226,8 +226,8 @@ class FTS(object):
         else:
             data = self.apply_transformations(ndata)
 
-        self.original_min = np.nanmin(data)
-        self.original_max = np.nanmax(data)
+            self.original_min = np.nanmin(data)
+            self.original_max = np.nanmax(data)
 
         if 'sets' in kwargs:
             self.sets = kwargs.pop('sets')
@@ -235,7 +235,7 @@ class FTS(object):
         if 'partitioner' in kwargs:
             self.partitioner = kwargs.pop('partitioner')
 
-        if (self.sets is None or len(self.sets) == 0) and not self.benchmark_only:
+        if (self.sets is None or len(self.sets) == 0) and not self.benchmark_only and not self.is_multivariate:
             if self.partitioner is not None:
                 self.sets = self.partitioner.sets
             else:

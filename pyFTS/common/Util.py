@@ -8,41 +8,91 @@ import dill
 import numpy as np
 
 
-def plot_rules(model, size=[5, 5], axis=None):
+def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
+    if axis is None and rules_by_axis is None:
+        fig, axis = plt.subplots(nrows=1, ncols=1, figsize=size)
+    elif axis is None and rules_by_axis is not None:
+        rows = (((len(model.flrgs.keys())//rules_by_axis)) // columns)+1
+        fig, axis = plt.subplots(nrows=rows, ncols=columns, figsize=size)
+
+    if rules_by_axis is None:
+        draw_sets_on_axis(axis, model, size)
+
+    _lhs = model.partitioner.ordered_sets if not model.is_high_order else model.flrgs.keys()
+
+    for ct, key in enumerate(_lhs):
+
+        if rules_by_axis is None:
+            ax = axis
+        else:
+            colcount = (ct // rules_by_axis) % columns
+            rowcount = (ct // rules_by_axis) // columns
+
+            ax = axis[rowcount, colcount] if columns > 1 else axis[rowcount]
+
+            if ct % rules_by_axis == 0:
+                xticks = []
+                xtickslabels = []
+                draw_sets_on_axis(ax, model, size)
+
+        if not model.is_high_order:
+            if key in model.flrgs:
+                flrg = model.flrgs[key]
+                orig = model.sets[key].centroid
+                ax.plot([ct+1],[orig],'o')
+                xticks.append(ct+1)
+                xtickslabels.append(key)
+                for rhs in flrg.RHS:
+                    dest = model.sets[rhs].centroid
+                    ax.arrow(ct+1.1, orig, 0.8, dest - orig, #length_includes_head=True,
+                               head_width=0.1, head_length=0.1, shape='full', overhang=0,
+                               fc='k', ec='k')
+        else:
+            flrg = model.flrgs[key]
+            disp = (ct%rules_by_axis)*model.order + 1
+            for ct2, lhs in enumerate(flrg.LHS):
+                orig = model.sets[lhs].centroid
+                ax.plot([disp+ct2], [orig], 'o')
+                xticks.append(disp+ct2)
+                xtickslabels.append(lhs)
+            for ct2 in range(1, model.order):
+                fs1 = flrg.LHS[ct2-1]
+                fs2 = flrg.LHS[ct2]
+                orig = model.sets[fs1].centroid
+                dest = model.sets[fs2].centroid
+                ax.plot([disp+ct2-1,disp+ct2], [orig,dest],'-')
+
+            orig = model.sets[flrg.LHS[-1]].centroid
+            for rhs in flrg.RHS:
+                dest = model.sets[rhs].centroid
+                ax.arrow(disp + model.order -1 + .1, orig, 0.8, dest - orig,  # length_includes_head=True,
+                           head_width=0.1, head_length=0.1, shape='full', overhang=0,
+                           fc='k', ec='k')
+
+
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xtickslabels)
+
+    plt.tight_layout()
+    plt.show()
+
+
+def draw_sets_on_axis(axis, model, size):
     if axis is None:
         fig, axis = plt.subplots(nrows=1, ncols=1, figsize=size)
-
     for ct, key in enumerate(model.partitioner.ordered_sets):
         fs = model.sets[key]
         axis.plot([0, 1, 0], fs.parameters, label=fs.name)
         axis.axhline(fs.centroid, c="lightgray", alpha=0.5)
-
     axis.set_xlim([0, len(model.partitioner.ordered_sets)])
-    axis.set_xticks(range(0,len(model.partitioner.ordered_sets)))
+    axis.set_xticks(range(0, len(model.partitioner.ordered_sets)))
     tmp = ['']
     tmp.extend(model.partitioner.ordered_sets)
     axis.set_xticklabels(tmp)
     axis.set_ylim([model.partitioner.min, model.partitioner.max])
     axis.set_yticks([model.sets[k].centroid for k in model.partitioner.ordered_sets])
-    axis.set_yticklabels([str(round(model.sets[k].centroid,1)) + " - " + k
+    axis.set_yticklabels([str(round(model.sets[k].centroid, 1)) + " - " + k
                           for k in model.partitioner.ordered_sets])
-
-    if not model.is_high_order:
-        for ct, key in enumerate(model.partitioner.ordered_sets):
-            if key in model.flrgs:
-                flrg = model.flrgs[key]
-                orig = model.sets[key].centroid
-                axis.plot([ct+1],[orig],'o')
-                for rhs in flrg.RHS:
-                    dest = model.sets[rhs].centroid
-                    axis.arrow(ct+1.1, orig, 0.8, dest - orig, #length_includes_head=True,
-                               head_width=0.1, head_length=0.1, shape='full', overhang=0,
-                               fc='k', ec='k')
-    plt.tight_layout()
-    plt.show()
-    print("fim")
-
-
 
 
 current_milli_time = lambda: int(round(time.time() * 1000))
