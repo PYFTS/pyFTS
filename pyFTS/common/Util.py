@@ -22,6 +22,9 @@ def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
 
     for ct, key in enumerate(_lhs):
 
+        xticks = []
+        xtickslabels = []
+
         if rules_by_axis is None:
             ax = axis
         else:
@@ -31,47 +34,47 @@ def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
             ax = axis[rowcount, colcount] if columns > 1 else axis[rowcount]
 
             if ct % rules_by_axis == 0:
-                xticks = []
-                xtickslabels = []
                 draw_sets_on_axis(ax, model, size)
 
         if not model.is_high_order:
             if key in model.flrgs:
+                x = (ct % rules_by_axis) + 1
                 flrg = model.flrgs[key]
-                orig = model.sets[key].centroid
-                ax.plot([ct+1],[orig],'o')
-                xticks.append(ct+1)
+                y = model.sets[key].centroid
+                ax.plot([x],[y],'o')
+                xticks.append(x)
                 xtickslabels.append(key)
                 for rhs in flrg.RHS:
                     dest = model.sets[rhs].centroid
-                    ax.arrow(ct+1.1, orig, 0.8, dest - orig, #length_includes_head=True,
+                    ax.arrow(x+.1, y, 0.8, dest - y, #length_includes_head=True,
                                head_width=0.1, head_length=0.1, shape='full', overhang=0,
                                fc='k', ec='k')
         else:
             flrg = model.flrgs[key]
-            disp = (ct%rules_by_axis)*model.order + 1
+            x = (ct%rules_by_axis)*model.order + 1
             for ct2, lhs in enumerate(flrg.LHS):
-                orig = model.sets[lhs].centroid
-                ax.plot([disp+ct2], [orig], 'o')
-                xticks.append(disp+ct2)
+                y = model.sets[lhs].centroid
+                ax.plot([x+ct2], [y], 'o')
+                xticks.append(x+ct2)
                 xtickslabels.append(lhs)
             for ct2 in range(1, model.order):
                 fs1 = flrg.LHS[ct2-1]
                 fs2 = flrg.LHS[ct2]
-                orig = model.sets[fs1].centroid
+                y = model.sets[fs1].centroid
                 dest = model.sets[fs2].centroid
-                ax.plot([disp+ct2-1,disp+ct2], [orig,dest],'-')
+                ax.plot([x+ct2-1,x+ct2], [y,dest],'-')
 
-            orig = model.sets[flrg.LHS[-1]].centroid
+            y = model.sets[flrg.LHS[-1]].centroid
             for rhs in flrg.RHS:
                 dest = model.sets[rhs].centroid
-                ax.arrow(disp + model.order -1 + .1, orig, 0.8, dest - orig,  # length_includes_head=True,
+                ax.arrow(x + model.order -1 + .1, y, 0.8, dest - y,  # length_includes_head=True,
                            head_width=0.1, head_length=0.1, shape='full', overhang=0,
                            fc='k', ec='k')
 
 
         ax.set_xticks(xticks)
         ax.set_xticklabels(xtickslabels)
+        ax.set_xlim([0,rules_by_axis*model.order+1])
 
     plt.tight_layout()
     plt.show()

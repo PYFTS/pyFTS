@@ -19,7 +19,7 @@ dataset = TAIEX.get_data()
 #print(len(dataset))
 
 from pyFTS.partitioners import Grid, Util as pUtil
-partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10, transformation=tdiff)
+partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10)#, transformation=tdiff)
 
 
 from pyFTS.common import Util as cUtil
@@ -30,12 +30,16 @@ from pyFTS.models.ensemble import ensemble
 
 #model = chen.ConventionalFTS(partitioner=partitioner)
 model = hofts.HighOrderFTS(partitioner=partitioner,order=2)
-model.append_transformation(tdiff)
+#model.append_transformation(tdiff)
 model.fit(dataset[:800])
+
+cUtil.plot_rules(model, size=[20,20], rules_by_axis=5, columns=1)
 
 print(model)
 
-cUtil.plot_rules(model, size=[20,20], rules_by_axis=6, columns=1)
+print("fim")
+
+
 
 '''
 model = knn.KNearestNeighbors(order=3)
