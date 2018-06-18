@@ -19,7 +19,7 @@ dataset = TAIEX.get_data()
 #print(len(dataset))
 
 from pyFTS.partitioners import Grid, Util as pUtil
-partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10)#, transformation=tdiff)
+partitioner = Grid.GridPartitioner(data=dataset[:800], npart=10, transformation=tdiff)
 
 
 from pyFTS.common import Util as cUtil
@@ -28,9 +28,9 @@ from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, 
 from pyFTS.models import pwfts, song, chen, ifts, hofts
 from pyFTS.models.ensemble import ensemble
 
-#model = chen.ConventionalFTS(partitioner=partitioner)
-model = hofts.HighOrderFTS(partitioner=partitioner,order=2)
-#model.append_transformation(tdiff)
+model = chen.ConventionalFTS(partitioner=partitioner)
+#model = hofts.HighOrderFTS(partitioner=partitioner,order=2)
+model.append_transformation(tdiff)
 model.fit(dataset[:800])
 
 cUtil.plot_rules(model, size=[20,20], rules_by_axis=5, columns=1)

@@ -58,7 +58,6 @@ class FuzzySet(FS.FuzzySet):
         if self.location is None:
             inc = t
         else:
-
             l = len(self.location)
 
             inc = sum([self.location[k](t + self.location_roots[k], self.location_params[k]) for k in np.arange(0, l)])
