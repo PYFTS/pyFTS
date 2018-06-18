@@ -10,10 +10,11 @@ import numpy as np
 
 def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
     if axis is None and rules_by_axis is None:
-        fig, axis = plt.subplots(nrows=1, ncols=1, figsize=size)
+        rows = 1
     elif axis is None and rules_by_axis is not None:
         rows = (((len(model.flrgs.keys())//rules_by_axis)) // columns)+1
-        fig, axis = plt.subplots(nrows=rows, ncols=columns, figsize=size)
+
+    fig, axis = plt.subplots(nrows=rows, ncols=columns, figsize=size)
 
     if rules_by_axis is None:
         draw_sets_on_axis(axis, model, size)
@@ -31,7 +32,12 @@ def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
             colcount = (ct // rules_by_axis) % columns
             rowcount = (ct // rules_by_axis) // columns
 
-            ax = axis[rowcount, colcount] if columns > 1 else axis[rowcount]
+            if rows > 1 and columns > 1:
+                ax = axis[rowcount, colcount]
+            elif columns > 1:
+                ax = axis[rowcount]
+            else:
+                ax = axis
 
             if ct % rules_by_axis == 0:
                 draw_sets_on_axis(ax, model, size)

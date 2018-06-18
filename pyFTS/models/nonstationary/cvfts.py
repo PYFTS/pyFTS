@@ -69,10 +69,6 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
         self.forecasts = self.forecasts[-self.memory_window:]
         self.inputs = np.array(ndata[-self.memory_window:]).tolist()
 
-        print(self.mean_residual)
-        print(self.variance_residual)
-        print([self.original_min,self.original_max])
-
 
     def generate_flrg(self, flrs, **kwargs):
         for flr in flrs:
