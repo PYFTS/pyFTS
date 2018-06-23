@@ -22,12 +22,12 @@ class ConventionalFLRG(flrg.FLRG):
         self.RHS.add(c)
 
     def __str__(self):
-        tmp = self.LHS + " -> "
+        tmp = str(self.LHS) + " -> "
         tmp2 = ""
         for c in sorted(self.RHS, key=lambda s: s):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ","
-            tmp2 = tmp2 + c
+            tmp2 = tmp2 + str(c)
         return tmp + tmp2
 
 

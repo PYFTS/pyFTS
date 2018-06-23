@@ -8,43 +8,30 @@ import pandas as pd
 from pyFTS.common import Util
 from pyFTS.benchmarks import benchmarks as bchmk
 
-os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
+os.chdir("/home/petronio/Downloads")
 
-sonda = pd.read_csv("DataSets/SONDA_BSB_MOD.csv", sep=";")
+data = pd.read_csv("dress_data.csv", sep=",")
 
-sonda['data'] = pd.to_datetime(sonda['data'])
+#sonda['data'] = pd.to_datetime(sonda['data'])
 
-sonda = sonda[:][527041:]
+#data.index = np.arange(0,len(data.index))
 
-sonda.index = np.arange(0,len(sonda.index))
-
-
-sonda_treino = sonda[:1051200]
-sonda_teste = sonda[1051201:]
+data = data["a"].tolist()
 
 
-#res = bchmk.simpleSearch_RMSE(sonda_treino, sonda_teste,
-#                              sfts.SeasonalFTS,np.arange(3,30),[1],parameters=1440,
-#                              tam=[15,8], plotforecasts=False,elev=45, azim=40,
-#                               save=False,file="pictures/sonda_sfts_error_surface", intervals=False)
+from pyFTS.models.seasonal import sfts, cmsfts, SeasonalIndexer
 
-partitions = ['grid','entropy']
+ix = SeasonalIndexer.LinearSeasonalIndexer([7],[1])
 
-indexers = ['m15','Mh','Mhm15']
+from pyFTS.partitioners import Grid
 
-models = []
-ixs = []
+fs = Grid.GridPartitioner(data=data,npart=10)
 
-sample = sonda_teste[0:4300]
+model = sfts.SeasonalFTS(indexer=ix, partitioner=fs)
+#model = cmsfts.ContextualMultiSeasonalFTS(indexer=ix, partitioner=fs)
 
-for max_part in [10, 20, 30, 40, 50]:
-    for part in partitions:
-        for ind in indexers:
-            ix = Util.load_obj("models/sonda_ix_" + ind + ".pkl")
-            model = Util.load_obj("models/sonda_msfts_" + part + "_" + str(max_part) + "_" + ind + ".pkl")
-            model.shortname = part + "_" + str(max_part) + "_" + ind
+model.fit(data)
 
-            models.append(model)
-            ixs.append(ix)
+print(model)
 
-print(bchmk.print_point_statistics(sample, models, indexers=ixs))
+print(model.predict(data))

@@ -7,13 +7,13 @@ S.-M. Chen, “Forecasting enrollments based on fuzzy time series,” Fuzzy Sets
 """
 
 import numpy as np
-from pyFTS.common import FuzzySet, FLR, fts
+from pyFTS.common import FuzzySet, FLR, flrg, fts
 
 
-class SeasonalFLRG(FLR.FLRG):
+class SeasonalFLRG(flrg.FLRG):
     """First Order Seasonal Fuzzy Logical Relationship Group"""
     def __init__(self, seasonality):
-        super(SeasonalFLRG, self).__init__(None,None)
+        super(SeasonalFLRG, self).__init__(1)
         self.LHS = seasonality
         self.RHS = []
 
@@ -26,10 +26,10 @@ class SeasonalFLRG(FLR.FLRG):
     def __str__(self):
         tmp = str(self.LHS) + " -> "
         tmp2 = ""
-        for c in sorted(self.RHS, key=lambda s: s.name):
+        for c in sorted(self.RHS, key=lambda s: str(s)):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ","
-            tmp2 = tmp2 + c.name
+            tmp2 = tmp2 + str(c)
         return tmp + tmp2
 
     def __len__(self):
@@ -38,10 +38,11 @@ class SeasonalFLRG(FLR.FLRG):
 
 class SeasonalFTS(fts.FTS):
     """First Order Seasonal Fuzzy Time Series"""
-    def __init__(self, name, **kwargs):
-        super(SeasonalFTS, self).__init__(1, "SFTS", **kwargs)
+    def __init__(self, **kwargs):
+        super(SeasonalFTS, self).__init__(**kwargs)
         self.name = "Seasonal FTS"
-        self.detail = "Chen"
+        self.shortname = "SFTS"
+        self.order = 1
         self.seasonality = 1
         self.has_seasonality = True
         self.has_point_forecasting = True
@@ -62,11 +63,15 @@ class SeasonalFTS(fts.FTS):
             #print(season)
             self.flrgs[ss].append_rhs(flr.RHS)
 
+    def get_midpoints(self, flrg):
+        ret = np.array([self.sets[s].centroid for s in flrg.RHS])
+        return ret
+
     def train(self, data,  **kwargs):
         if kwargs.get('sets', None) is not None:
             self.sets = kwargs.get('sets', None)
         tmpdata = FuzzySet.fuzzyfy_series_old(data, self.sets)
-        flrs = FLR.generate_recurrent_flrs(tmpdata)
+        flrs = FLR.generate_non_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs)
 
     def forecast(self, data, **kwargs):
@@ -81,7 +86,7 @@ class SeasonalFTS(fts.FTS):
 
             flrg = self.flrgs[str(season)]
 
-            mp = self.getMidpoints(flrg)
+            mp = self.get_midpoints(flrg)
 
             ret.append(np.percentile(mp, 50))
 

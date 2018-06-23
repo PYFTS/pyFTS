@@ -31,7 +31,7 @@ class SeasonalIndexer(object):
 
 
 class LinearSeasonalIndexer(SeasonalIndexer):
-    def __init__(self,seasons,units,ignore=None, **kwargs):
+    def __init__(self, seasons, units, ignore=None, **kwargs):
         super(LinearSeasonalIndexer, self).__init__(len(seasons), **kwargs)
         self.seasons = seasons
         self.units = units
@@ -40,7 +40,7 @@ class LinearSeasonalIndexer(SeasonalIndexer):
     def get_season_of_data(self,data):
         return self.get_season_by_index(np.arange(0, len(data)).tolist())
 
-    def get_season_by_index(self,index):
+    def get_season_by_index(self, index):
         ret = []
         if not isinstance(index, (list, np.ndarray)):
             if self.num_seasons == 1:

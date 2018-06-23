@@ -37,7 +37,7 @@ class FTS(object):
             self.sets = self.partitioner.sets
         self.auto_update = False
         self.benchmark_only = False
-        self.indexer = None
+        self.indexer = kwargs.get("indexer", None)
         self.uod_clip = kwargs.get("uod_clip", True)
 
     def fuzzy(self, data):

@@ -13,11 +13,11 @@ class ContextualSeasonalFLRG(sfts.SeasonalFLRG):
         self.RHS = {}
 
     def append_rhs(self, flr, **kwargs):
-        if flr.LHS in self.RHS:
-            self.RHS[flr.LHS].append_rhs(flr.RHS)
+        if flr.LHS.name in self.RHS:
+            self.RHS[flr.LHS.name].append_rhs(flr.RHS.name)
         else:
-            self.RHS[flr.LHS] = chen.ConventionalFLRG(flr.LHS)
-            self.RHS[flr.LHS].append_rhs(flr.RHS)
+            self.RHS[flr.LHS.name] = chen.ConventionalFLRG(flr.LHS.name)
+            self.RHS[flr.LHS.name].append_rhs(flr.RHS.name)
 
     def __str__(self):
         tmp = str(self.LHS) + ": \n "
@@ -31,17 +31,17 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
     """
     Contextual Multi-Seasonal Fuzzy Time Series
     """
-    def __init__(self, name, indexer, **kwargs):
-        super(ContextualMultiSeasonalFTS, self).__init__("CMSFTS")
+    def __init__(self, **kwargs):
+        super(ContextualMultiSeasonalFTS, self).__init__(**kwargs)
         self.name = "Contextual Multi Seasonal FTS"
-        self.shortname = "CMSFTS " + name
+        self.shortname = "CMSFTS "
         self.detail = ""
         self.seasonality = 1
         self.has_seasonality = True
         self.has_point_forecasting = True
         self.is_high_order = True
         self.is_multivariate = True
-        self.indexer = indexer
+        self.order = 1
         self.flrgs = {}
 
     def generate_flrg(self, flrs):
@@ -61,11 +61,11 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
         self.generate_flrg(flrs)
 
     def get_midpoints(self, flrg, data):
-        if data in flrg.flrgs:
-            ret = np.array([self.sets[s].centroid for s in flrg.flrgs[data.name].RHS])
+        if data.name in flrg.RHS:
+            ret = np.array([self.sets[s].centroid for s in flrg.RHS[data.name].RHS])
             return ret
         else:
-            return  np.array([self.sets[data].centroid])
+            return  np.array([self.sets[data.name].centroid])
 
     def forecast(self, data, **kwargs):
         ordered_sets = FuzzySet.set_ordered(self.sets)
@@ -97,3 +97,5 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
             ret.append(sum(mp) / len(mp))
 
         return ret
+
+
