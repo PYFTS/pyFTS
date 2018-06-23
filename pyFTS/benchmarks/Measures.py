@@ -323,10 +323,7 @@ def get_point_statistics(data, model, **kwargs):
         if not isinstance(forecasts, (list, np.ndarray)):
             forecasts = [forecasts]
 
-        if model.has_seasonality:
-            nforecasts = np.array(forecasts)
-        else:
-            nforecasts = np.array(forecasts[:-1])
+        nforecasts = np.array(forecasts[:-1])
 
         ret.append(np.round(rmse(ndata[model.order:], nforecasts), 2))
         ret.append(np.round(smape(ndata[model.order:], nforecasts), 2))

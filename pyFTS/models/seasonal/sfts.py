@@ -80,7 +80,7 @@ class SeasonalFTS(fts.FTS):
 
         ret = []
 
-        for k in np.arange(1, l):
+        for k in np.arange(0, l):
 
             season = self.indexer.get_season_by_index(k)[0]
 

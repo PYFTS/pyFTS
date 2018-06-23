@@ -35,3 +35,7 @@ model.fit(data)
 print(model)
 
 print(model.predict(data))
+
+from pyFTS.benchmarks import Measures
+
+Measures.get_point_statistics(data, model)
