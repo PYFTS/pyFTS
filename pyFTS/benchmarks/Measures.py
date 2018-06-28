@@ -325,7 +325,7 @@ def get_point_statistics(data, model, **kwargs):
         forecasts = model.predict(ndata, **kwargs)
         
         if model.is_multivariate:
-            ndata = ndata[model1.target_variable.data_label].values
+            ndata = ndata[model.target_variable.data_label].values
 
         if not isinstance(forecasts, (list, np.ndarray)):
             forecasts = [forecasts]
