@@ -326,7 +326,7 @@ def get_point_statistics(data, model, **kwargs):
         nforecasts = np.array(forecasts[:-1])
 
         ret.append(np.round(rmse(ndata[model.order:], nforecasts), 2))
-        ret.append(np.round(smape(ndata[model.order:], nforecasts), 2))
+        ret.append(np.round(mape(ndata[model.order:], nforecasts), 2))
         ret.append(np.round(UStatistic(ndata[model.order:], nforecasts), 2))
     else:
         steps_ahead_sampler = kwargs.get('steps_ahead_sampler', 1)
@@ -338,7 +338,7 @@ def get_point_statistics(data, model, **kwargs):
 
         start = model.order + steps_ahead -1
         ret.append(np.round(rmse(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
-        ret.append(np.round(smape(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
+        ret.append(np.round(mape(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
         ret.append(np.round(UStatistic(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
 
     return ret
