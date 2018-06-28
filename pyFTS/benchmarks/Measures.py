@@ -312,6 +312,10 @@ def get_point_statistics(data, model, **kwargs):
 
     if indexer is not None:
         ndata = np.array(indexer.get_data(data))
+    elif model.is_multivariate:
+        if not isinstance(data, pd.DataFrame):
+            raise ValueError("Multivariate data must be a Pandas DataFrame!")
+        ndata = data
     else:
         ndata = np.array(data)
 
