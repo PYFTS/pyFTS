@@ -64,7 +64,7 @@ class Differential(Transformation):
             data = data.tolist()
 
         n = len(data)
-        diff = [data[t - self.lag] - data[t] for t in np.arange(self.lag, n)]
+        diff = [data[t] - data[t - self.lag] for t in np.arange(self.lag, n)]
         for t in np.arange(0, self.lag): diff.insert(0, 0)
         return diff
 
