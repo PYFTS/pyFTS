@@ -40,7 +40,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
         self.has_seasonality = True
         self.has_point_forecasting = True
         self.is_high_order = True
-        self.is_multivariate = True
+        self.is_multivariate = False
         self.order = 1
         self.flrgs = {}
 
