@@ -324,7 +324,9 @@ def get_point_statistics(data, model, **kwargs):
     if steps_ahead == 1:
         forecasts = model.predict(ndata, **kwargs)
         
-        if model.is_multivariate:
+        if model.is_multivariate and model.has_seasonality:
+            ndata = model.indexer.get_data(ndata)
+        elif model.is_multivariate:
             ndata = ndata[model.target_variable.data_label].values
 
         if not isinstance(forecasts, (list, np.ndarray)):
