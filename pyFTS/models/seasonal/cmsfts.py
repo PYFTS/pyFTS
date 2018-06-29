@@ -13,7 +13,6 @@ class ContextualSeasonalFLRG(sfts.SeasonalFLRG):
         self.RHS = {}
 
     def append_rhs(self, flr, **kwargs):
-        print(flr)
         if flr.LHS in self.RHS:
             self.RHS[flr.LHS].append_rhs(flr.RHS)
         else:
