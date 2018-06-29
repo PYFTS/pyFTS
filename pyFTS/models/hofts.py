@@ -52,7 +52,8 @@ class HighOrderFTS(fts.FTS):
         flrgs = []
 
         for o in np.arange(0, self.order):
-            lhs = [key for key in self.partitioner.ordered_sets if self.sets[key].membership(sample[o]) > 0.0]
+            lhs = [key for key in self.partitioner.ordered_sets
+                   if self.sets[key].membership(sample[o]) > self.alpha_cut]
             lags[o] = lhs
 
         root = tree.FLRGTreeNode(None)
@@ -78,7 +79,8 @@ class HighOrderFTS(fts.FTS):
 
             sample = data[k - self.order: k]
 
-            rhs = [key for key in self.partitioner.ordered_sets if self.sets[key].membership(data[k]) > 0.0]
+            rhs = [key for key in self.partitioner.ordered_sets
+                   if self.sets[key].membership(data[k]) > self.alpha_cut]
 
             flrgs = self.generate_lhs_flrg(sample)
 

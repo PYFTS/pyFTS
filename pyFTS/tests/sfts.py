@@ -12,23 +12,25 @@ os.chdir("/home/petronio/Downloads")
 
 data = pd.read_csv("dress_data.csv", sep=",")
 
-#sonda['data'] = pd.to_datetime(sonda['data'])
+data["date"] = pd.to_datetime(data["date"], format='%Y%m%d')
 
 #data.index = np.arange(0,len(data.index))
 
-data = data["a"].tolist()
+#data = data["a"].tolist()
 
+from pyFTS.models.seasonal import sfts, cmsfts, SeasonalIndexer, common
 
-from pyFTS.models.seasonal import sfts, cmsfts, SeasonalIndexer
+# ix = SeasonalIndexer.LinearSeasonalIndexer([7],[1])
 
-ix = SeasonalIndexer.LinearSeasonalIndexer([7],[1])
+ix = SeasonalIndexer.DateTimeSeasonalIndexer("date", [common.DateTime.day_of_week],
+                                               [None, None], 'a', name="weekday")
 
 from pyFTS.partitioners import Grid
 
-fs = Grid.GridPartitioner(data=data,npart=10)
+fs = Grid.GridPartitioner(data=data,npart=10,indexer=ix)
 
-model = sfts.SeasonalFTS(indexer=ix, partitioner=fs)
-#model = cmsfts.ContextualMultiSeasonalFTS(indexer=ix, partitioner=fs)
+#model = sfts.SeasonalFTS(indexer=ix, partitioner=fs)
+model = cmsfts.ContextualMultiSeasonalFTS(indexer=ix, partitioner=fs)
 
 model.fit(data)
 

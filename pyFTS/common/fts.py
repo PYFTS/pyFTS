@@ -10,10 +10,31 @@ class FTS(object):
     def __init__(self, **kwargs):
         """
         Create a Fuzzy Time Series model
-        :param order: model order
-        :param name: model name
         :param kwargs: model specific parameters
+
+        alpha_cut: Minimal membership to be considered on fuzzyfication process
+        auto_update: Boolean, indicate that model is incremental
+        benchmark_only: Boolean, indicates a façade for external (non-FTS) model used on benchmarks or ensembles.
+        indexer: SeasonalIndexer used for SeasonalModels, default: None
+        is_high_order: Boolean, if the model support orders greater than 1, default: False
+        is_multivariate = False
+        has_seasonality: Boolean, if the model support seasonal indexers, default: False
+        has_point_forecasting: Boolean, if the model support point forecasting, default: True
+        has_interval_forecasting: Boolean, if the model support interval forecasting, default: False
+        has_probability_forecasting: Boolean, if the model support probabilistic forecasting, default: False
+        min_order: Integer, minimal order supported for the model, default: 1
+        name: Model name
+        order: model order (number of past lags are used on forecasting)
+        original_max: Real, the upper limit of the Universe of Discourse, the maximal value found on training data
+        original_min: Real, the lower limit of the Universe of Discourse, the minimal value found on training data
+        partitioner: partitioner object
+        sets: List, fuzzy sets used on this model
+        shortname: Acronymn for the model
+        transformations: List, data transformations (common.Transformations) applied on model pre and post processing, default: []
+        transformations_param:List, specific parameters for each data transformation
+        uod_clip: If the test data will be clipped inside the training Universe of Discourse
         """
+
         self.sets = {}
         self.flrgs = {}
         self.order = kwargs.get('order',"")
@@ -39,6 +60,7 @@ class FTS(object):
         self.benchmark_only = False
         self.indexer = kwargs.get("indexer", None)
         self.uod_clip = kwargs.get("uod_clip", True)
+        self.alpha_cut = kwargs.get("alpha_cut", 0.0)
 
     def fuzzy(self, data):
         """

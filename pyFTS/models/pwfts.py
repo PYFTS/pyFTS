@@ -125,7 +125,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         flrgs = []
 
         for o in np.arange(0, self.order):
-            lhs = [key for key in self.partitioner.ordered_sets if self.sets[key].membership(sample[o]) > 0.0]
+            lhs = [key for key in self.partitioner.ordered_sets
+                   if self.sets[key].membership(sample[o])  > self.alpha_cut]
             lags[o] = lhs
 
         root = tree.FLRGTreeNode(None)
@@ -161,7 +162,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                     self.flrgs[flrg.get_key()] = flrg;
 
                 fuzzyfied = [(s, self.sets[s].membership(data[k]))
-                             for s in self.sets.keys() if self.sets[s].membership(data[k]) > 0]
+                             for s in self.sets.keys()
+                             if self.sets[s].membership(data[k]) >  self.alpha_cut]
 
                 mvs = []
                 for set, mv in fuzzyfied:

@@ -13,11 +13,12 @@ class ContextualSeasonalFLRG(sfts.SeasonalFLRG):
         self.RHS = {}
 
     def append_rhs(self, flr, **kwargs):
-        if flr.LHS.name in self.RHS:
-            self.RHS[flr.LHS.name].append_rhs(flr.RHS.name)
+        print(flr)
+        if flr.LHS in self.RHS:
+            self.RHS[flr.LHS].append_rhs(flr.RHS)
         else:
-            self.RHS[flr.LHS.name] = chen.ConventionalFLRG(flr.LHS.name)
-            self.RHS[flr.LHS.name].append_rhs(flr.RHS.name)
+            self.RHS[flr.LHS] = chen.ConventionalFLRG(flr.LHS)
+            self.RHS[flr.LHS].append_rhs(flr.RHS)
 
     def __str__(self):
         tmp = str(self.LHS) + ": \n "
@@ -57,15 +58,20 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
             self.sets = kwargs.get('sets', None)
         if kwargs.get('parameters', None) is not None:
             self.seasonality = kwargs.get('parameters', None)
-        flrs = FLR.generate_indexed_flrs(self.sets, self.indexer, data)
+        flrs = FLR.generate_indexed_flrs(self.sets, self.indexer, data,
+                                         transformation=self.partitioner.transformation,
+                                         alpha_cut=self.alpha_cut)
         self.generate_flrg(flrs)
 
     def get_midpoints(self, flrg, data):
-        if data.name in flrg.RHS:
-            ret = np.array([self.sets[s].centroid for s in flrg.RHS[data.name].RHS])
-            return ret
-        else:
-            return  np.array([self.sets[data.name].centroid])
+        ret = []
+        for d in data:
+            if d in flrg.RHS:
+                ret.extend([self.sets[s].centroid for s in flrg.RHS[d].RHS])
+            else:
+                ret.extend([self.sets[d].centroid])
+
+        return np.array(ret)
 
     def forecast(self, data, **kwargs):
         ordered_sets = FuzzySet.set_ordered(self.sets)
@@ -79,7 +85,7 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
 
             flrg = self.flrgs[str(index[k])]
 
-            d = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets, ordered_sets)
+            d = FuzzySet.get_fuzzysets(ndata[k], self.sets, ordered_sets, alpha_cut=self.alpha_cut)
 
             mp = self.get_midpoints(flrg, d)
 

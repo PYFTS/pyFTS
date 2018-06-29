@@ -38,7 +38,7 @@ class IndexedFLR(FLR):
         self.index = index
 
     def __str__(self):
-        return str(self.index) + ": "+ self.LHS + " -> " + self.RHS
+        return str(self.index) + ": "+ str(self.LHS) + " -> " + str(self.RHS)
 
 
 def generate_high_order_recurrent_flr(fuzzyData):
@@ -70,24 +70,12 @@ def generate_recurrent_flrs(fuzzyData):
     """
     flrs = []
     for i in np.arange(1,len(fuzzyData)):
-        lhs = fuzzyData[i - 1]
-        rhs = fuzzyData[i]
-        if isinstance(lhs, list) and isinstance(rhs, list):
-            for l in lhs:
-                for r in rhs:
-                    tmp = FLR(l, r)
-                    flrs.append(tmp)
-        elif isinstance(lhs, list) and not isinstance(rhs, list):
-            for l in lhs:
-                tmp = FLR(l, rhs)
+        lhs = [fuzzyData[i - 1]]
+        rhs = [fuzzyData[i]]
+        for l in np.array(lhs).flatten():
+            for r in np.array(rhs).flatten():
+                tmp = FLR(l, r)
                 flrs.append(tmp)
-        elif not isinstance(lhs, list) and isinstance(rhs, list):
-            for r in rhs:
-                tmp = FLR(lhs, r)
-                flrs.append(tmp)
-        else:
-            tmp = FLR(lhs,rhs)
-            flrs.append(tmp)
     return flrs
 
 
@@ -104,7 +92,7 @@ def generate_non_recurrent_flrs(fuzzyData):
     return ret
 
 
-def generate_indexed_flrs(sets, indexer, data, transformation=None):
+def generate_indexed_flrs(sets, indexer, data, transformation=None, alpha_cut=0.0):
     """
     Create a season-indexed ordered FLR set from a list of fuzzy sets with recurrence
     :param sets: fuzzy sets
@@ -118,9 +106,11 @@ def generate_indexed_flrs(sets, indexer, data, transformation=None):
     if transformation is not None:
         ndata = transformation.apply(ndata)
     for k in np.arange(1,len(ndata)):
-        lhs = FuzzySet.get_maximum_membership_fuzzyset(ndata[k - 1], sets)
-        rhs = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], sets)
+        lhs = FuzzySet.fuzzyfy_series([ndata[k - 1]], sets, method='fuzzy',alpha_cut=alpha_cut)
+        rhs = FuzzySet.fuzzyfy_series([ndata[k]], sets, method='fuzzy',alpha_cut=alpha_cut)
         season = index[k]
-        flr = IndexedFLR(season,lhs,rhs)
-        flrs.append(flr)
+        for _l in np.array(lhs).flatten():
+            for _r in np.array(rhs).flatten():
+                flr = IndexedFLR(season,_l,_r)
+                flrs.append(flr)
     return flrs

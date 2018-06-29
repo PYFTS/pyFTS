@@ -97,6 +97,21 @@ def fuzzyfy_instances(data, fuzzySets, ordered_sets=None):
     return ret
 
 
+def get_fuzzysets(inst, fuzzySets, ordered_sets=None, alpha_cut=0.0):
+    """
+    Return the fuzzy sets which membership value for a inst is greater than the alpha_cut
+    :param inst: data point
+    :param fuzzySets: dict of fuzzy sets
+    :param alpha_cut: Minimal membership to be considered on fuzzyfication process
+    :return: array of membership values
+    """
+
+    if ordered_sets is None:
+        ordered_sets = set_ordered(fuzzySets)
+
+    fs = [key for key in ordered_sets if fuzzySets[key].membership(inst) > alpha_cut]
+    return fs
+
 def get_maximum_membership_fuzzyset(inst, fuzzySets, ordered_sets=None):
     """
     Fuzzify a data point, returning the fuzzy set with maximum membership value
@@ -129,7 +144,7 @@ def fuzzyfy_series_old(data, fuzzySets, method='maximum'):
     return fts
 
 
-def fuzzyfy_series(data, fuzzySets, method='maximum'):
+def fuzzyfy_series(data, fuzzySets, method='maximum', alpha_cut=0.0):
     fts = []
     ordered_sets = set_ordered(fuzzySets)
     for t, i in enumerate(data):
@@ -138,7 +153,7 @@ def fuzzyfy_series(data, fuzzySets, method='maximum'):
             sets = check_bounds(i, fuzzySets.items(), ordered_sets)
         else:
             if method == 'fuzzy':
-                ix = np.ravel(np.argwhere(mv > 0.0))
+                ix = np.ravel(np.argwhere(mv > alpha_cut))
                 sets = [fuzzySets[ordered_sets[i]].name for i in ix]
             elif method == 'maximum':
                 mx = max(mv)
