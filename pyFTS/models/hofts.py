@@ -45,16 +45,32 @@ class HighOrderFTS(fts.FTS):
         self.detail = "Chen"
         self.is_high_order = True
         self.min_order = 2
+        self.order= kwargs.get("order", 2)
+        self.lags = kwargs.get("lags", None)
+        self.configure_lags(**kwargs)
+
+    def configure_lags(self, **kwargs):
+        if "order" in kwargs:
+            self.order = kwargs.get("order", 2)
+
+        if "lags" in kwargs:
+            self.lags = kwargs.get("lags", None)
+
+        if self.lags is not None:
+            self.max_lag = max(self.lags)
+        else:
+            self.max_lag = self.order
+            self.lags = np.arange(1, self.order+1)
 
     def generate_lhs_flrg(self, sample):
         lags = {}
 
         flrgs = []
 
-        for o in np.arange(0, self.order):
+        for ct, o in enumerate(self.lags):
             lhs = [key for key in self.partitioner.ordered_sets
-                   if self.sets[key].membership(sample[o]) > self.alpha_cut]
-            lags[o] = lhs
+                   if self.sets[key].membership(sample[o-1]) > self.alpha_cut]
+            lags[ct] = lhs
 
         root = tree.FLRGTreeNode(None)
 
@@ -74,10 +90,10 @@ class HighOrderFTS(fts.FTS):
 
     def generate_flrg(self, data):
         l = len(data)
-        for k in np.arange(self.order, l):
+        for k in np.arange(self.max_lag, l):
             if self.dump: print("FLR: " + str(k))
 
-            sample = data[k - self.order: k]
+            sample = data[k - self.max_lag: k]
 
             rhs = [key for key in self.partitioner.ordered_sets
                    if self.sets[key].membership(data[k]) > self.alpha_cut]
@@ -91,9 +107,8 @@ class HighOrderFTS(fts.FTS):
                 for st in rhs:
                     self.flrgs[flrg.get_key()].append_rhs(st)
 
-
     def train(self, data, **kwargs):
-
+        self.configure_lags(**kwargs)
         self.generate_flrg(data)
 
     def forecast(self, ndata, **kwargs):
@@ -102,11 +117,11 @@ class HighOrderFTS(fts.FTS):
 
         l = len(ndata)
 
-        if l <= self.order:
+        if l <= self.max_lag:
             return ndata
 
-        for k in np.arange(self.order, l+1):
-            flrgs = self.generate_lhs_flrg(ndata[k - self.order: k])
+        for k in np.arange(self.max_lag, l+1):
+            flrgs = self.generate_lhs_flrg(ndata[k - self.max_lag: k])
 
             tmp = []
             for flrg in flrgs:

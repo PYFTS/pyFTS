@@ -64,7 +64,7 @@ def mape(targets, forecasts):
         targets = np.array(targets)
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
-    return np.mean(np.abs(targets - forecasts) / targets) * 100
+    return np.mean(np.abs((targets - forecasts) / targets)) * 100
 
 
 def smape(targets, forecasts, type=2):
@@ -334,9 +334,9 @@ def get_point_statistics(data, model, **kwargs):
 
         nforecasts = np.array(forecasts[:-1])
 
-        ret.append(np.round(rmse(ndata[model.order:], nforecasts), 2))
-        ret.append(np.round(mape(ndata[model.order:], nforecasts), 2))
-        ret.append(np.round(UStatistic(ndata[model.order:], nforecasts), 2))
+        ret.append(np.round(rmse(ndata[model.max_lag:], nforecasts), 2))
+        ret.append(np.round(mape(ndata[model.max_lag:], nforecasts), 2))
+        ret.append(np.round(UStatistic(ndata[model.max_lag:], nforecasts), 2))
     else:
         steps_ahead_sampler = kwargs.get('steps_ahead_sampler', 1)
         nforecasts = []
@@ -345,7 +345,7 @@ def get_point_statistics(data, model, **kwargs):
             tmp = model.predict(sample, **kwargs)
             nforecasts.append(tmp[-1])
 
-        start = model.order + steps_ahead -1
+        start = model.max_lag + steps_ahead -1
         ret.append(np.round(rmse(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
         ret.append(np.round(mape(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
         ret.append(np.round(UStatistic(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
@@ -373,12 +373,12 @@ def get_interval_statistics(data, model, **kwargs):
         ret.append(round(sharpness(forecasts), 2))
         ret.append(round(resolution(forecasts), 2))
         ret.append(round(coverage(data[model.order:], forecasts[:-1]), 2))
-        ret.append(round(pinball_mean(0.05, data[model.order:], forecasts[:-1]), 2))
-        ret.append(round(pinball_mean(0.25, data[model.order:], forecasts[:-1]), 2))
-        ret.append(round(pinball_mean(0.75, data[model.order:], forecasts[:-1]), 2))
-        ret.append(round(pinball_mean(0.95, data[model.order:], forecasts[:-1]), 2))
-        ret.append(round(winkler_mean(0.05, data[model.order:], forecasts[:-1]), 2))
-        ret.append(round(winkler_mean(0.25, data[model.order:], forecasts[:-1]), 2))
+        ret.append(round(pinball_mean(0.05, data[model.max_lag:], forecasts[:-1]), 2))
+        ret.append(round(pinball_mean(0.25, data[model.max_lag:], forecasts[:-1]), 2))
+        ret.append(round(pinball_mean(0.75, data[model.max_lag:], forecasts[:-1]), 2))
+        ret.append(round(pinball_mean(0.95, data[model.max_lag:], forecasts[:-1]), 2))
+        ret.append(round(winkler_mean(0.05, data[model.max_lag:], forecasts[:-1]), 2))
+        ret.append(round(winkler_mean(0.25, data[model.max_lag:], forecasts[:-1]), 2))
     else:
         forecasts = []
         for k in np.arange(model.order, len(data) - steps_ahead):
@@ -386,10 +386,10 @@ def get_interval_statistics(data, model, **kwargs):
             tmp = model.predict(sample, **kwargs)
             forecasts.append(tmp[-1])
 
-        start = model.order + steps_ahead -1
+        start = model.max_lag + steps_ahead -1
         ret.append(round(sharpness(forecasts), 2))
         ret.append(round(resolution(forecasts), 2))
-        ret.append(round(coverage(data[model.order:], forecasts), 2))
+        ret.append(round(coverage(data[model.max_lag:], forecasts), 2))
         ret.append(round(pinball_mean(0.05, data[start:], forecasts), 2))
         ret.append(round(pinball_mean(0.25, data[start:], forecasts), 2))
         ret.append(round(pinball_mean(0.75, data[start:], forecasts), 2))
@@ -416,20 +416,20 @@ def get_distribution_statistics(data, model, **kwargs):
         _s1 = time.time()
         forecasts = model.predict(data, **kwargs)
         _e1 = time.time()
-        ret.append(round(crps(data[model.order:], forecasts[:-1]), 3))
+        ret.append(round(crps(data[model.max_lag:], forecasts[:-1]), 3))
         ret.append(round(_e1 - _s1, 3))
-        ret.append(round(brier_score(data[model.order:], forecasts[:-1]), 3))
+        ret.append(round(brier_score(data[model.max_lag:], forecasts[:-1]), 3))
     else:
         skip = kwargs.get('steps_ahead_sampler', 1)
         forecasts = []
         _s1 = time.time()
-        for k in np.arange(model.order, len(data) - steps_ahead, skip):
-            sample = data[k - model.order: k]
+        for k in np.arange(model.max_lag, len(data) - steps_ahead, skip):
+            sample = data[k - model.max_lag: k]
             tmp = model.predict(sample, **kwargs)
             forecasts.append(tmp[-1])
         _e1 = time.time()
 
-        start = model.order + steps_ahead
+        start = model.max_lag + steps_ahead
         ret.append(round(crps(data[start:-1:skip], forecasts), 3))
         ret.append(round(_e1 - _s1, 3))
         ret.append(round(brier_score(data[start:-1:skip], forecasts), 3))

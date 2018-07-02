@@ -21,7 +21,8 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
     def get_membership(self, data, sets):
         if isinstance(data, (np.ndarray, list)):
-            return np.nanprod([sets[key].membership(data[count]) for count, key in enumerate(self.LHS)])
+            return np.nanprod([sets[key].membership(data[count])
+                               for count, key in enumerate(self.LHS, start=0)])
         else:
             return sets[self.LHS[0]].membership(data)
 
@@ -107,9 +108,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         self.is_high_order = True
         self.min_order = 1
         self.auto_update = kwargs.get('update',False)
+        self.configure_lags(**kwargs)
 
     def train(self, data, **kwargs):
 
+        self.configure_lags(**kwargs)
         parameters = kwargs.get('parameters','fuzzy')
 
         if parameters == 'monotonic':
@@ -124,10 +127,10 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         flrgs = []
 
-        for o in np.arange(0, self.order):
+        for ct, o in enumerate(self.lags):
             lhs = [key for key in self.partitioner.ordered_sets
-                   if self.sets[key].membership(sample[o])  > self.alpha_cut]
-            lags[o] = lhs
+                   if self.sets[key].membership(sample[o-1]) > self.alpha_cut]
+            lags[ct] = lhs
 
         root = tree.FLRGTreeNode(None)
 
@@ -147,10 +150,10 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def generate_flrg(self, data):
         l = len(data)
-        for k in np.arange(self.order, l):
+        for k in np.arange(self.max_lag, l):
             if self.dump: print("FLR: " + str(k))
 
-            sample = data[k - self.order: k]
+            sample = data[k - self.max_lag: k]
 
             flrgs = self.generate_lhs_flrg(sample)
 
@@ -253,8 +256,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         ret = []
 
-        for k in np.arange(self.order - 1, l):
-            sample = data[k - (self.order - 1): k + 1]
+        for k in np.arange(self.max_lag - 1, l):
+            sample = data[k - (self.max_lag - 1): k + 1]
 
             if method == 'heuristic':
                 ret.append(self.point_heuristic(sample, **kwargs))
@@ -300,9 +303,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         ret = []
 
-        for k in np.arange(self.order - 1, l):
+        for k in np.arange(self.max_lag - 1, l):
 
-            sample = ndata[k - (self.order - 1): k + 1]
+            sample = ndata[k - (self.max_lag - 1): k + 1]
 
             if method == 'heuristic':
                 ret.append(self.interval_heuristic(sample))
@@ -358,8 +361,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         ret = []
 
-        for k in np.arange(self.order - 1, l):
-            sample = ndata[k - (self.order - 1): k + 1]
+        for k in np.arange(self.max_lag - 1, l):
+            sample = ndata[k - (self.max_lag - 1): k + 1]
 
             flrgs = self.generate_lhs_flrg(sample)
 
@@ -398,19 +401,19 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         l = len(data)
 
-        start = kwargs.get('start', self.order)
+        start = kwargs.get('start', self.max_lag)
 
-        ret = data[start - self.order: start].tolist()
+        ret = data[start - self.max_lag: start].tolist()
 
-        for k in np.arange(self.order, steps+self.order):
+        for k in np.arange(self.max_lag, steps+self.max_lag):
 
             if self.__check_point_bounds(ret[-1]) :
                 ret.append(ret[-1])
             else:
-                mp = self.forecast(ret[k - self.order: k], **kwargs)
+                mp = self.forecast(ret[k - self.max_lag: k], **kwargs)
                 ret.append(mp[0])
 
-        return ret[self.order:]
+        return ret[self.max_lag:]
 
     def __check_interval_bounds(self, interval):
         if len(self.transformations) > 0:
@@ -424,21 +427,21 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         l = len(data)
 
-        start = kwargs.get('start', self.order)
+        start = kwargs.get('start', self.max_lag)
 
-        sample = data[start - self.order: start]
+        sample = data[start - self.max_lag: start]
 
         ret = [[k, k] for k in sample]
         
         ret.append(self.forecast_interval(sample)[0])
 
-        for k in np.arange(self.order+1, steps+self.order):
+        for k in np.arange(self.max_lag+1, steps+self.max_lag):
 
             if len(ret) > 0 and self.__check_interval_bounds(ret[-1]):
                 ret.append(ret[-1])
             else:
-                lower = self.forecast_interval([ret[x][0] for x in np.arange(k - self.order, k)], **kwargs)
-                upper = self.forecast_interval([ret[x][1] for x in np.arange(k - self.order, k)], **kwargs)
+                lower = self.forecast_interval([ret[x][0] for x in np.arange(k - self.max_lag, k)], **kwargs)
+                upper = self.forecast_interval([ret[x][1] for x in np.arange(k - self.max_lag, k)], **kwargs)
 
                 ret.append([np.min(lower), np.max(upper)])
 
@@ -459,9 +462,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             nbins = kwargs.get("num_bins", 100)
             _bins = np.linspace(uod[0], uod[1], nbins)
 
-        start = kwargs.get('start', self.order)
+        start = kwargs.get('start', self.max_lag)
 
-        sample = ndata[start - self.order: start]
+        sample = ndata[start - self.max_lag: start]
 
         for dat in sample:
             if 'type' in kwargs:
@@ -474,14 +477,15 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         ret.append(dist)
 
-        for k in np.arange(self.order+1, steps+self.order+1):
+        for k in np.arange(self.max_lag+1, steps+self.max_lag+1):
             dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
 
             lags = {}
 
             # Find all bins of past distributions with probability greater than zero
 
-            for ct, dd in enumerate(ret[k - self.order: k]):
+            for ct, d in enumerate(self.lags):
+                dd = ret[k - d]
                 vals = [float(v) for v in dd.bins if round(dd.density(v), 4) > 0]
                 lags[ct] = sorted(vals)
 
@@ -496,8 +500,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 # get the combined probabilities for this path
 
-                pk = np.prod([ret[k - self.order + o].density(path[o])
-                              for o in np.arange(0, self.order)])
+                pk = np.prod([ret[k - self.max_lag + o].density(path[ct])
+                              for ct, o in enumerate(self.lags)])
 
 
                 d = self.forecast_distribution(path)[0]

@@ -22,6 +22,7 @@ class FTS(object):
         has_point_forecasting: Boolean, if the model support point forecasting, default: True
         has_interval_forecasting: Boolean, if the model support interval forecasting, default: False
         has_probability_forecasting: Boolean, if the model support probabilistic forecasting, default: False
+        max_lag: Integer, maximum lag index used by the model, default: 1
         min_order: Integer, minimal order supported for the model, default: 1
         name: Model name
         order: model order (number of past lags are used on forecasting)
@@ -37,7 +38,7 @@ class FTS(object):
 
         self.sets = {}
         self.flrgs = {}
-        self.order = kwargs.get('order',"")
+        self.order = kwargs.get('order',1)
         self.shortname = kwargs.get('name',"")
         self.name = kwargs.get('name',"")
         self.detail = kwargs.get('name',"")
@@ -61,6 +62,7 @@ class FTS(object):
         self.indexer = kwargs.get("indexer", None)
         self.uod_clip = kwargs.get("uod_clip", True)
         self.alpha_cut = kwargs.get("alpha_cut", 0.0)
+        self.max_lag = self.order
 
     def fuzzy(self, data):
         """

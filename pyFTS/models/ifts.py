@@ -62,9 +62,9 @@ class IntervalFTS(hofts.HighOrderFTS):
         if l <= self.order:
             return ndata
 
-        for k in np.arange(self.order, l+1):
+        for k in np.arange(self.max_lag, l+1):
 
-            sample = ndata[k - self.order: k]
+            sample = ndata[k - self.max_lag: k]
 
             flrgs = self.generate_lhs_flrg(sample)
 
