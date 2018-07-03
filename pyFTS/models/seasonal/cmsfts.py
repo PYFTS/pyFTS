@@ -81,14 +81,18 @@ class ContextualMultiSeasonalFTS(sfts.SeasonalFTS):
         ndata = self.indexer.get_data(data)
 
         for k in np.arange(0, len(data)):
+            
+            if str(index[k]) in self.flrgs:
 
-            flrg = self.flrgs[str(index[k])]
+                flrg = self.flrgs[str(index[k])]
 
-            d = FuzzySet.get_fuzzysets(ndata[k], self.sets, ordered_sets, alpha_cut=self.alpha_cut)
+                d = FuzzySet.get_fuzzysets(ndata[k], self.sets, ordered_sets, alpha_cut=self.alpha_cut)
 
-            mp = self.get_midpoints(flrg, d)
+                mp = self.get_midpoints(flrg, d)
 
-            ret.append(sum(mp) / len(mp))
+                ret.append(sum(mp) / len(mp))
+            else:
+                ret.append(np.nan)
 
         return ret
 
