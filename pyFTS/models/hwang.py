@@ -19,6 +19,10 @@ class HighOrderFTS(fts.FTS):
         self.detail = "Hwang"
 
     def forecast(self, ndata, **kwargs):
+        
+        if 'order' in kwargs:
+            self.order = kwargs.get('order',self.order)
+            self.max_lag = self.order
 
         if self.sets == None:
             self.sets = self.partitioner.sets
