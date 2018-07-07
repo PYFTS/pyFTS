@@ -24,6 +24,7 @@ class Variable:
         self.transformation = kwargs.get('transformation', None)
         self.transformation_params = kwargs.get('transformation_params', None)
         self.partitioner = None
+        self.alpha_cut = kwargs.get('alpha_cut', 0.0)
 
         if kwargs.get('data', None) is not None:
             self.build(**kwargs)

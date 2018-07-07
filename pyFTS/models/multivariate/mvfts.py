@@ -41,7 +41,7 @@ class MVFTS(fts.FTS):
         lags = {}
         for vc, var in enumerate(self.explanatory_variables):
             data_point = data[var.data_label]
-            lags[vc] = common.fuzzyfy_instance(data_point, var, self.alpha_cut)
+            lags[vc] = common.fuzzyfy_instance(data_point, var)
 
         root = tree.FLRGTreeNode(None)
 
