@@ -39,6 +39,7 @@ class ARIMA(fts.FTS):
             self.d = order[1]
             self.q = order[2]
             self.order = self.p + self.q + (self.q - 1 if self.q > 0 else 0)
+            self.max_lag = self.order
             self.d = len(self.transformations)
             self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ") - " + str(self.alpha)
 

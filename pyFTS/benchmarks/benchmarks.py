@@ -104,6 +104,8 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     :keyword
         benchmark_methods:  a list with Non FTS models to benchmark. The default is None.
         benchmark_methods_parameters:  a list with Non FTS models parameters. The default is None.
+        benchmark_models: A boolean value indicating if external FTS methods will be used on benchmark. The default is False.
+        build_methods: A boolean value indicating if the default FTS methods will be used on benchmark. The default is True.
         dataset: the dataset name to identify the current set of benchmarks results on database.
         distributed: A boolean value indicating if the forecasting procedure will be distributed in a dispy cluster. . The default is False
         file: file path to save the results. The default is benchmarks.db.
@@ -146,7 +148,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
     pool = [] if models is None else models
 
-    if models is None and methods is None:
+    if methods is None:
         if type  == 'point':
             methods = get_point_methods()
         elif type == 'interval':
@@ -154,7 +156,9 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
         elif type == 'distribution':
             methods = get_probabilistic_methods()
 
-    if models is None:
+    build_methods = __pop("build_methods", True, kwargs)
+
+    if build_methods:
         for method in methods:
             mfts = method()
 
