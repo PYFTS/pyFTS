@@ -334,8 +334,6 @@ def get_point_statistics(data, model, **kwargs):
 
         nforecasts = np.array(forecasts[:-1])
 
-        print(model.shortname)
-
         ret.append(np.round(rmse(ndata[model.max_lag:], nforecasts), 2))
         ret.append(np.round(mape(ndata[model.max_lag:], nforecasts), 2))
         ret.append(np.round(UStatistic(ndata[model.max_lag:], nforecasts), 2))
