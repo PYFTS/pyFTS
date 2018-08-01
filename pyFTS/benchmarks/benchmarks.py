@@ -257,6 +257,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
                 for partition in partitions:
 
                     for partitioner in partitioners_methods:
+                        print(transformation, partition)
 
                         data_train_fs = partitioner(data=train, npart=partition, transformation=transformation)
 

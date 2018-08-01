@@ -48,7 +48,11 @@ class Partitioner(object):
             if self.indexer is not None:
                 ndata = self.indexer.get_data(ndata)
 
-            _min = min(ndata)
+            _min = np.nanmin(ndata)
+            if _min == -np.inf:
+                ndata[ndata == -np.inf] = 0
+                _min = np.nanmin(ndata)
+
             if _min < 0:
                 self.min = _min * 1.1
             else:
