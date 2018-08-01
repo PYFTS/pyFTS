@@ -216,7 +216,6 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
         nodes = kwargs.get("nodes", ['127.0.0.1'])
         cluster, http_server = cUtil.start_dispy_cluster(experiment_method, nodes)
 
-    experiments = 0
     jobs = []
 
     inc = __pop("inc", 0.1, kwargs)
@@ -242,8 +241,12 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
                     if not distributed:
                         if progress:
                             progressbar.update(1)
-                        job = experiment_method(deepcopy(model), None, train, test, **kwargs)
-                        synthesis_method(dataset, tag, job, conn)
+                        try:
+                            job = experiment_method(deepcopy(model), None, train, test, **kwargs)
+                            synthesis_method(dataset, tag, job, conn)
+                        except Exception as ex:
+                            print("Error evaluating model " + model.shortname)
+                            print(ex)
                     else:
                         job = cluster.submit(deepcopy(model), None, train, test, **kwargs)
                         jobs.append(job)
@@ -257,7 +260,6 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
                 for partition in partitions:
 
                     for partitioner in partitioners_methods:
-                        print(transformation, partition)
 
                         data_train_fs = partitioner(data=train, npart=partition, transformation=transformation)
 
@@ -276,8 +278,12 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
                     if not distributed:
                         if progress:
                             progressbar.update(1)
-                        job = experiment_method(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
-                        synthesis_method(dataset, tag, job, conn)
+                        try:
+                            job = experiment_method(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
+                            synthesis_method(dataset, tag, job, conn)
+                        except Exception as ex:
+                            print("Error evaluating model " + model.shortname + " " + str(partitioner))
+                            print(ex)
                     else:
                         job = cluster.submit(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
                         job.id = id  # associate an ID to identify jobs (if needed later)

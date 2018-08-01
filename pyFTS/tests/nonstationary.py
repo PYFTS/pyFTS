@@ -39,15 +39,44 @@ from pyFTS.partitioners import Grid, Util as pUtil
 from pyFTS.benchmarks import benchmarks as bchmk
 from pyFTS.models import chen
 
-tag = 'chen_partitioning'
+partitions = {'CMIV': {'BoxCox(0)': 17, 'Differential(1)': 7, 'None': 13},
+ 'IMCV': {'BoxCox(0)': 22, 'Differential(1)': 9, 'None': 25},
+ 'IMIV': {'BoxCox(0)': 27, 'Differential(1)': 11, 'None': 6},
+ 'NASDAQ': {'BoxCox(0)': 39, 'Differential(1)': 10, 'None': 34},
+ 'SP500': {'BoxCox(0)': 38, 'Differential(1)': 15, 'None': 39},
+ 'TAIEX': {'BoxCox(0)': 36, 'Differential(1)': 18, 'None': 38}}
 
-for ds in ['IMIV0']: #datasets.keys():
+
+tag = 'benchmarks'
+
+def nsfts_partitioner_builder(data, npart, transformation):
+    from pyFTS.partitioners import Grid
+    from pyFTS.models.nonstationary import perturbation, partitioners
+
+    tmp_fs = Grid.GridPartitioner(data=data, npart=npart, transformation=transformation)
+    fs = partitioners.SimpleNonStationaryPartitioner(data, tmp_fs,
+                                                     location=perturbation.polynomial,
+                                                     location_params=[1, 0],
+                                                     location_roots=0,
+                                                     width=perturbation.polynomial,
+                                                     width_params=[1, 0],
+                                                     width_roots=0)
+    return fs
+
+
+for ds in datasets.keys():
     dataset = datasets[ds]
 
-    bchmk.sliding_window_benchmarks(dataset, 4000, train=0.2, inc=0.2,
-                                    methods=[chen.ConventionalFTS],
-                                    benchmark_models=False,
-                                    transformations=[boxcox], #transformations[t] for t in transformations.keys()],
-                                    partitions=np.arange(3, 40, 1),
-                                    progress=False, type='point',
-                                    file="nsfts_benchmarks.db", dataset=ds, tag=tag)
+    for tf in transformations.keys():
+        transformation = transformations[tf]
+
+        partitioning = partitions[ds][tf]
+
+        bchmk.sliding_window_benchmarks(dataset, 2000, train=0.2, inc=0.2,
+                                        benchmark_models=False,
+                                        methods=[cvfts.ConditionalVarianceFTS],
+                                        partitioners_methods=[nsfts_partitioner_builder],
+                                        transformations=[transformation],
+                                        partitions=[partitioning],
+                                        progress=False, type='point',
+                                        file="nsfts_benchmarks.db", dataset=ds, tag=tag)

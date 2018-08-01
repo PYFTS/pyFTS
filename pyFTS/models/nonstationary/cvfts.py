@@ -46,6 +46,7 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
         self.uod_clip = False
         self.order = 1
         self.min_order = 1
+        self.max_lag = 1
         self.inputs = []
         self.forecasts = []
         self.residuals = []

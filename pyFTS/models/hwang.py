@@ -17,18 +17,15 @@ class HighOrderFTS(fts.FTS):
         self.name = "Hwang High Order FTS"
         self.shortname = "Hwang"
         self.detail = "Hwang"
+        self.configure_lags(**kwargs)
+
+    def configure_lags(self, **kwargs):
+        if "order" in kwargs:
+            self.order = kwargs.get("order", 2)
+
+        self.max_lag = self.order
 
     def forecast(self, ndata, **kwargs):
-        
-        if 'order' in kwargs:
-            self.order = kwargs.get('order',self.order)
-            self.max_lag = self.order
-
-        if self.sets == None:
-            self.sets = self.partitioner.sets
-            ordered_sets = self.partitioner.ordered_sets
-        else:
-            ordered_sets = FuzzySet.set_ordered(self.sets)
 
         l = len(self.sets)
 
@@ -42,17 +39,17 @@ class HighOrderFTS(fts.FTS):
         for t in np.arange(self.order-1, len(ndata)):
 
             for ix in range(l):
-                s = ordered_sets[ix]
-                cn[ix] = self.sets[s].membership( FuzzySet.grant_bounds(ndata[t], self.sets, ordered_sets))
-                for w in range(self.order - 1):
-                    ow[w, ix] = self.sets[s].membership(FuzzySet.grant_bounds(ndata[t - w], self.sets, ordered_sets))
+                s = self.partitioner.ordered_sets[ix]
+                cn[ix] = self.sets[s].membership( FuzzySet.grant_bounds(ndata[t], self.sets, self.partitioner.ordered_sets))
+                for w in np.arange(self.order-1):
+                    ow[w, ix] = self.sets[s].membership(FuzzySet.grant_bounds(ndata[t - w], self.sets, self.partitioner.ordered_sets))
                     rn[w, ix] = ow[w, ix] * cn[ix]
                     ft[ix] = max(ft[ix], rn[w, ix])
             mft = max(ft)
             out = 0.0
             count = 0.0
             for ix in range(l):
-                s = ordered_sets[ix]
+                s = self.partitioner.ordered_sets[ix]
                 if ft[ix] == mft:
                     out = out + self.sets[s].centroid
                     count += 1.0
@@ -61,4 +58,8 @@ class HighOrderFTS(fts.FTS):
         return ret
 
     def train(self, data, **kwargs):
-        pass
+
+        if self.sets == None:
+            self.sets = self.partitioner.sets
+
+        self.configure_lags(**kwargs)
