@@ -53,16 +53,10 @@ class Partitioner(object):
                 ndata[ndata == -np.inf] = 0
                 _min = np.nanmin(ndata)
 
-            if _min < 0:
-                self.min = _min * 1.1
-            else:
-                self.min = _min * 0.9
+            self.min = float(_min * 1.1 if _min < 0 else _min * 0.9)
 
             _max = max(ndata)
-            if _max > 0:
-                self.max = _max * 1.1
-            else:
-                self.max = _max * 0.9
+            self.max = float(_max * 1.1 if _max > 0 else _max * 0.9)
 
             self.sets = self.build(ndata)
 

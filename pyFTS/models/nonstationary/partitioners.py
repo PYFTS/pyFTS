@@ -134,7 +134,6 @@ class SimpleNonStationaryPartitioner(partitioner.Partitioner):
         return {}
 
 
-
 def simplenonstationary_gridpartitioner_builder(data, npart, transformation):
     from pyFTS.partitioners import Grid
     from pyFTS.models.nonstationary import perturbation, partitioners

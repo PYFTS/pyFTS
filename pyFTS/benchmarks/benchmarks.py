@@ -280,8 +280,6 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
                         if progress:
                             progressbar.update(1)
                         try:
-                            print(model.shortname, model.order, partitioner.name,
-                                  partitioner.partitions, str(partitioner.transformation))
                             job = experiment_method(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
                             synthesis_method(dataset, tag, job, conn)
                         except Exception as ex:

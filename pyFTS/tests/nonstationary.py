@@ -11,17 +11,17 @@ import pandas as pd
 from pyFTS.data import TAIEX, NASDAQ, SP500, artificial
 
 datasets = {
-    "TAIEX": TAIEX.get_data()[:4000],
+    #"TAIEX": TAIEX.get_data()[:4000],
     "SP500": SP500.get_data()[10000:14000],
-    "NASDAQ": NASDAQ.get_data()[:4000],
+    #"NASDAQ": NASDAQ.get_data()[:4000],
     # Incremental Mean and Incremental Variance
-    "IMIV": artificial.generate_gaussian_linear(1,0.2,0.2,0.05,it=100, num=40),
+    #"IMIV": artificial.generate_gaussian_linear(1,0.2,0.2,0.05,it=100, num=40),
     # Incremental Mean and Incremental Variance, lower bound equals to 0
-    "IMIV0": artificial.generate_gaussian_linear(1,0.2,0.,0.05, vmin=0,it=100, num=40),
+    #"IMIV0": artificial.generate_gaussian_linear(1,0.2,0.,0.05, vmin=0,it=100, num=40),
     # Constant Mean and Incremental Variance
-    "CMIV": artificial.generate_gaussian_linear(5,0.1,0,0.02,it=100, num=40),
+    #"CMIV": artificial.generate_gaussian_linear(5,0.1,0,0.02,it=100, num=40),
     # Incremental Mean and Constant Variance
-    "IMCV": artificial.generate_gaussian_linear(1,0.6,0.1,0,it=100, num=40)
+    #"IMCV": artificial.generate_gaussian_linear(1,0.6,0.1,0,it=100, num=40)
 }
 
 train_split = 2000
@@ -34,9 +34,9 @@ tdiff = Transformations.Differential(1)
 boxcox = Transformations.BoxCox(0)
 
 transformations = {
-    'None': None,
+    #'None': None,
     'Differential(1)': tdiff,
-    'BoxCox(0)': boxcox
+    #'BoxCox(0)': boxcox
 }
 
 from pyFTS.partitioners import Grid, Util as pUtil
@@ -77,6 +77,8 @@ for ds in datasets.keys():
 
 for ds in datasets.keys():
     dataset = datasets[ds]
+
+    print(ds)
 
     for tf in transformations.keys():
         transformation = transformations[tf]

@@ -101,7 +101,7 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
 
         _range = (_max - _min)/2
 
-        translate = np.linspace(_min, _max, self.partitioner.partitions)
+        translate = np.linspace(_min, _max, len(self.partitioner.sets))
 
         var = np.std(self.residuals)
 
@@ -111,7 +111,7 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
 
         location = [_range + w + loc + k for k in np.linspace(-var,var) for w in translate]
 
-        perturb = [[location[k], var] for k in np.arange(0, self.partitioner.partitions)]
+        perturb = [[location[k], var] for k in np.arange(len(self.partitioner.sets))]
 
         return perturb
 
@@ -138,11 +138,14 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
 
         return perturb
 
+    def _fsset_key(self, ix):
+        return self.partitioner.ordered_sets[ix]
+
     def _affected_sets(self, sample, perturb):
 
-        affected_sets = [[ct, self.sets[key].membership(sample, perturb[ct])]
-                         for ct, key in enumerate(self.partitioner.ordered_sets)
-                         if self.sets[key].membership(sample, perturb[ct]) > 0.0]
+        affected_sets = [[ct, self.sets[self._fsset_key(ct)].membership(sample, perturb[ct])]
+                         for ct in np.arange(self.partitioner.partitions)
+                         if self.sets[self._fsset_key(ct)].membership(sample, perturb[ct]) > 0.0]
 
         if len(affected_sets) == 0:
             if sample < self.partitioner.lower_set().get_lower(perturb[0]):
@@ -167,7 +170,7 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
             if not no_update:
                 perturb = self.perturbation_factors(sample)
             else:
-                perturb = [[0, 1] for k in np.arange(0, self.partitioner.partitions)]
+                perturb = [[0, 1] for k in np.arange(len(self.partitioner.sets))]
 
             affected_sets = self._affected_sets(sample, perturb)
 
