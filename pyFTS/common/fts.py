@@ -144,7 +144,7 @@ class FTS(object):
 
         if not self.is_multivariate:
             kwargs['type'] = type
-            ret = self.apply_inverse_transformations(ret, params=[data[self.order - 1:]], **kwargs)
+            ret = self.apply_inverse_transformations(ret, params=[data[self.max_lag - 1:]], **kwargs)
 
         return ret
 

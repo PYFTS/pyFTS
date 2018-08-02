@@ -38,6 +38,7 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
         self.shortname = "CVFTS "
         self.detail = ""
         self.flrgs = {}
+        self.is_high_order = False
         if self.partitioner is not None:
             self.append_transformation(self.partitioner.transformation)
 

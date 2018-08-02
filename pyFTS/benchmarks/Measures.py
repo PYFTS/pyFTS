@@ -332,11 +332,11 @@ def get_point_statistics(data, model, **kwargs):
         if not isinstance(forecasts, (list, np.ndarray)):
             forecasts = [forecasts]
 
-        nforecasts = np.array(forecasts[:-1])
+        forecasts = np.array(forecasts[:-1])
 
-        ret.append(np.round(rmse(ndata[model.max_lag:], nforecasts), 2))
-        ret.append(np.round(mape(ndata[model.max_lag:], nforecasts), 2))
-        ret.append(np.round(UStatistic(ndata[model.max_lag:], nforecasts), 2))
+        ret.append(np.round(rmse(ndata[model.max_lag:], forecasts), 2))
+        ret.append(np.round(mape(ndata[model.max_lag:], forecasts), 2))
+        ret.append(np.round(UStatistic(ndata[model.max_lag:], forecasts), 2))
     else:
         steps_ahead_sampler = kwargs.get('steps_ahead_sampler', 1)
         nforecasts = []

@@ -7,6 +7,7 @@
 import datetime
 import time
 from copy import deepcopy
+import traceback
 
 import matplotlib as plt
 import matplotlib.cm as cmx
@@ -245,8 +246,8 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
                             job = experiment_method(deepcopy(model), None, train, test, **kwargs)
                             synthesis_method(dataset, tag, job, conn)
                         except Exception as ex:
-                            print("Error evaluating model " + model.shortname)
-                            print(ex)
+                            print('EXCEPTION! ', model.shortname, model.order)
+                            traceback.print_exc()
                     else:
                         job = cluster.submit(deepcopy(model), None, train, test, **kwargs)
                         jobs.append(job)
@@ -279,11 +280,14 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
                         if progress:
                             progressbar.update(1)
                         try:
+                            print(model.shortname, model.order, partitioner.name,
+                                  partitioner.partitions, str(partitioner.transformation))
                             job = experiment_method(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
                             synthesis_method(dataset, tag, job, conn)
                         except Exception as ex:
-                            print("Error evaluating model " + model.shortname + " " + str(partitioner))
-                            print(ex)
+                            print('EXCEPTION! ',model.shortname, model.order, partitioner.name,
+                                  partitioner.partitions, str(partitioner.transformation))
+                            traceback.print_exc()
                     else:
                         job = cluster.submit(deepcopy(model), deepcopy(partitioner), train, test, **kwargs)
                         job.id = id  # associate an ID to identify jobs (if needed later)

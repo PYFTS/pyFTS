@@ -132,3 +132,19 @@ class SimpleNonStationaryPartitioner(partitioner.Partitioner):
 
     def build(self, data):
         return {}
+
+
+
+def simplenonstationary_gridpartitioner_builder(data, npart, transformation):
+    from pyFTS.partitioners import Grid
+    from pyFTS.models.nonstationary import perturbation, partitioners
+
+    tmp_fs = Grid.GridPartitioner(data=data, npart=npart, transformation=transformation)
+    fs = partitioners.SimpleNonStationaryPartitioner(data, tmp_fs,
+                                                     location=perturbation.polynomial,
+                                                     location_params=[1, 0],
+                                                     location_roots=0,
+                                                     width=perturbation.polynomial,
+                                                     width_params=[1, 0],
+                                                     width_roots=0)
+    return fs
