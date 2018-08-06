@@ -11,17 +11,17 @@ import pandas as pd
 from pyFTS.data import TAIEX, NASDAQ, SP500, artificial
 
 datasets = {
-    #"TAIEX": TAIEX.get_data()[:4000],
+    "TAIEX": TAIEX.get_data()[:4000],
     "SP500": SP500.get_data()[10000:14000],
-    #"NASDAQ": NASDAQ.get_data()[:4000],
+    "NASDAQ": NASDAQ.get_data()[:4000],
     # Incremental Mean and Incremental Variance
-    #"IMIV": artificial.generate_gaussian_linear(1,0.2,0.2,0.05,it=100, num=40),
+    "IMIV": artificial.generate_gaussian_linear(1,0.2,0.2,0.05,it=100, num=40),
     # Incremental Mean and Incremental Variance, lower bound equals to 0
-    #"IMIV0": artificial.generate_gaussian_linear(1,0.2,0.,0.05, vmin=0,it=100, num=40),
+    "IMIV0": artificial.generate_gaussian_linear(1,0.2,0.,0.05, vmin=0,it=100, num=40),
     # Constant Mean and Incremental Variance
-    #"CMIV": artificial.generate_gaussian_linear(5,0.1,0,0.02,it=100, num=40),
+    "CMIV": artificial.generate_gaussian_linear(5,0.1,0,0.02,it=100, num=40),
     # Incremental Mean and Constant Variance
-    #"IMCV": artificial.generate_gaussian_linear(1,0.6,0.1,0,it=100, num=40)
+    "IMCV": artificial.generate_gaussian_linear(1,0.6,0.1,0,it=100, num=40)
 }
 
 train_split = 2000
@@ -34,9 +34,9 @@ tdiff = Transformations.Differential(1)
 boxcox = Transformations.BoxCox(0)
 
 transformations = {
-    #'None': None,
+    'None': None,
     'Differential(1)': tdiff,
-    #'BoxCox(0)': boxcox
+    'BoxCox(0)': boxcox
 }
 
 from pyFTS.partitioners import Grid, Util as pUtil
@@ -74,14 +74,28 @@ for ds in datasets.keys():
                                         progress=False, type='point',
                                         file="nsfts_benchmarks.db", dataset=ds, tag=tag)
 '''
-
+train_split = 200
+test_split = 2000
 for ds in datasets.keys():
     dataset = datasets[ds]
 
     print(ds)
 
-    for tf in transformations.keys():
+    for tf in ['None']: #transformations.keys():
         transformation = transformations[tf]
+        train = dataset[:train_split]
+        test = dataset[train_split:test_split]
+
+        fs = nspart.simplenonstationary_gridpartitioner_builder(data=train, npart=partitions[ds][tf], transformation=transformation)
+        print(fs)
+        #cvfts1 = cvfts.ConditionalVarianceFTS(partitioner=fs)
+        model = nsfts.NonStationaryFTS(partitioner=fs)
+        model.fit(train)
+        print(model)
+
+        forecasts = model.predict(test)
+        '''
+        #print(forecasts)
 
         partitioning = partitions[ds][tf]
 
@@ -93,3 +107,4 @@ for ds in datasets.keys():
                                         partitions=[partitioning],
                                         progress=False, type='point',
                                         file="nsfts_benchmarks.db", dataset=ds, tag=tag)
+'''

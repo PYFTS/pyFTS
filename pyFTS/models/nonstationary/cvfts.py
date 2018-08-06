@@ -3,6 +3,7 @@ from pyFTS.models import hofts
 from pyFTS.models.nonstationary import common,nsfts
 from pyFTS.common import FLR, flrg, tree
 
+
 class HighOrderNonstationaryFLRG(hofts.HighOrderFTS):
     """Conventional High Order Fuzzy Logical Relationship Group"""
     def __init__(self, order, **kwargs):
@@ -57,7 +58,9 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
 
     def train(self, ndata, **kwargs):
 
-        tmpdata = common.fuzzySeries(ndata, self.sets, self.partitioner.ordered_sets, method='fuzzy', const_t=0)
+        tmpdata = common.fuzzySeries(ndata, self.sets,
+                                     self.partitioner.ordered_sets,
+                                     method='fuzzy', const_t=0)
         flrs = FLR.generate_non_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs)
 
@@ -75,17 +78,17 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
     def generate_flrg(self, flrs, **kwargs):
         for flr in flrs:
             if flr.LHS.name in self.flrgs:
-                self.flrgs[flr.LHS.name].append_rhs(flr.RHS)
+                self.flrgs[flr.LHS.name].append_rhs(flr.RHS.name)
             else:
-                self.flrgs[flr.LHS.name] = nsfts.ConventionalNonStationaryFLRG(flr.LHS)
-                self.flrgs[flr.LHS.name].append_rhs(flr.RHS)
+                self.flrgs[flr.LHS.name] = nsfts.ConventionalNonStationaryFLRG(flr.LHS.name)
+                self.flrgs[flr.LHS.name].append_rhs(flr.RHS.name)
 
 
     def _smooth(self, a):
         return .1 * a[0] + .3 * a[1] + .6 * a[2]
 
     def perturbation_factors(self, data, **kwargs):
-
+        npart = len(self.partitioner.sets)
         _max = 0
         _min = 0
         if data < self.original_min:
@@ -101,7 +104,7 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
 
         _range = (_max - _min)/2
 
-        translate = np.linspace(_min, _max, len(self.partitioner.sets))
+        translate = np.linspace(_min, _max, npart)
 
         var = np.std(self.residuals)
 
@@ -109,13 +112,18 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
 
         loc = (self.mean_residual + np.mean(self.residuals))
 
-        location = [_range + w + loc + k for k in np.linspace(-var,var) for w in translate]
+        location = [_range + w + loc + k for k in np.linspace(-var,var, npart) for w in translate]
 
-        perturb = [[location[k], var] for k in np.arange(len(self.partitioner.sets))]
+        scale = [abs(location[0] - location[2])]
+        scale.extend([abs(location[k - 1] - location[k + 1]) for k in np.arange(1, npart)])
+        scale.append(abs(location[-1] - location[-3]))
+
+        perturb = [[location[k], scale[k]] for k in np.arange(npart)]
 
         return perturb
 
     def perturbation_factors__old(self, data):
+        npart = len(self.partitioner.sets)
         _max = 0
         _min = 0
         if data < self.original_min:
@@ -129,12 +137,12 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
         self.max_stack.insert(0, _max)
         _max = max(self.max_stack)
 
-        location = np.linspace(_min, _max, self.partitioner.partitions)
+        location = np.linspace(_min, _max, npart)
         scale = [abs(location[0] - location[2])]
-        scale.extend([abs(location[k-1] - location[k+1]) for k in np.arange(1,self.partitioner.partitions-1)])
+        scale.extend([abs(location[k-1] - location[k+1]) for k in np.arange(1, npart)])
         scale.append(abs(location[-1] - location[-3]))
 
-        perturb = [[location[k], scale[k]] for k in np.arange(0, self.partitioner.partitions)]
+        perturb = [[location[k], scale[k]] for k in np.arange(0, npart)]
 
         return perturb
 
@@ -144,15 +152,15 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
     def _affected_sets(self, sample, perturb):
 
         affected_sets = [[ct, self.sets[self._fsset_key(ct)].membership(sample, perturb[ct])]
-                         for ct in np.arange(self.partitioner.partitions)
+                         for ct in np.arange(len(self.partitioner.sets))
                          if self.sets[self._fsset_key(ct)].membership(sample, perturb[ct]) > 0.0]
 
         if len(affected_sets) == 0:
+
             if sample < self.partitioner.lower_set().get_lower(perturb[0]):
                 affected_sets.append([0, 1])
             elif sample > self.partitioner.upper_set().get_upper(perturb[-1]):
                 affected_sets.append([len(self.sets) - 1, 1])
-
 
         return affected_sets
 
@@ -181,7 +189,7 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
                 ix = affected_sets[0][0]
                 aset = self.partitioner.ordered_sets[ix]
                 if aset in self.flrgs:
-                    numerator.append(self.flrgs[aset].get_midpoint(perturb[ix]))
+                    numerator.append(self.flrgs[aset].get_midpoint(self.sets, perturb[ix]))
                 else:
                     fuzzy_set = self.sets[aset]
                     numerator.append(fuzzy_set.get_midpoint(perturb[ix]))
@@ -192,7 +200,7 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
                     fs = self.partitioner.ordered_sets[ix]
                     tdisp = perturb[ix]
                     if fs in self.flrgs:
-                        numerator.append(self.flrgs[fs].get_midpoint(tdisp) * aset[1])
+                        numerator.append(self.flrgs[fs].get_midpoint(self.sets, tdisp) * aset[1])
                     else:
                         fuzzy_set = self.sets[fs]
                         numerator.append(fuzzy_set.get_midpoint(tdisp) * aset[1])

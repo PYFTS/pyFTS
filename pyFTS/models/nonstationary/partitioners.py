@@ -56,7 +56,7 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
 
     def get_polynomial_perturbations(self, data, **kwargs):
         w = kwargs.get("window_size", int(len(data) / 5))
-        deg = kwargs.get("degree", 2)
+        degree = kwargs.get("degree", 2)
         xmax = [data[0]]
         tmax = [0]
         xmin = [data[0]]
@@ -73,17 +73,17 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
             xmin.append(tn)
             tmin.append(np.ravel(np.argwhere(data == tn)).tolist()[0])
 
-        cmax = np.polyfit(tmax, xmax, deg=deg)
-        cmin = np.polyfit(tmin, xmin, deg=deg)
+        cmax = np.polyfit(tmax, xmax, deg=degree)
+        cmin = np.polyfit(tmin, xmin, deg=degree)
 
         cmed = []
 
-        for d in np.arange(0, deg + 1):
+        for d in np.arange(0, degree + 1):
             cmed.append(np.linspace(cmin[d], cmax[d], self.partitions)[1:self.partitions - 1])
 
         loc_params = [cmin.tolist()]
         for i in np.arange(0, self.partitions - 2):
-            tmp = [cmed[k][i] for k in np.arange(0, deg + 1)]
+            tmp = [cmed[k][i] for k in np.arange(0, degree + 1)]
             loc_params.append(tmp)
         loc_params.append(cmax.tolist())
 
@@ -92,13 +92,13 @@ class PolynomialNonStationaryPartitioner(partitioner.Partitioner):
         clen = []
 
         for i in np.arange(1, self.partitions-1):
-            tmp = self.poly_width(loc_params[i - 1], loc_params[i + 1], rng, deg)
+            tmp = self.poly_width(loc_params[i - 1], loc_params[i + 1], rng, degree)
             clen.append(tmp)
 
-        tmp = self.poly_width(loc_params[0], loc_params[1], rng, deg)
+        tmp = self.poly_width(loc_params[0], loc_params[1], rng, degree)
         clen.insert(0, tmp)
 
-        tmp = self.poly_width(loc_params[self.partitions-2], loc_params[self.partitions-1], rng, deg)
+        tmp = self.poly_width(loc_params[self.partitions-2], loc_params[self.partitions-1], rng, degree)
         clen.append(tmp)
 
         tmp = (loc_params, clen)

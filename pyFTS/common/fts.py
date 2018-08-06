@@ -413,7 +413,7 @@ class FTS(object):
 
     def __str__(self):
         tmp = self.name + ":\n"
-        for r in sorted(self.flrgs):
+        for r in sorted(self.flrgs, key=lambda key: self.flrgs[key].get_midpoint(self.sets)):
             tmp = tmp + str(self.flrgs[r]) + "\n"
         return tmp
 
