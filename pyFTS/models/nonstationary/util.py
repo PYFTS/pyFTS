@@ -63,7 +63,7 @@ def plot_sets_conditional(model, data, step=1, size=[5, 5], colors=None,
 
     for t in range:
         model.forecast([data[t]])
-        perturb = model.perturbation_factors(data[t])
+        perturb = model.conditional_perturbation_factors(data[t])
 
         for ct, key in enumerate(model.partitioner.ordered_sets):
             set = model.partitioner.sets[key]
