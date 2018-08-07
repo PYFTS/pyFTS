@@ -8,8 +8,10 @@ import matplotlib.pyplot as plt
 from pyFTS.common import Util as cUtil
 import pandas as pd
 
-from pyFTS.data import TAIEX, NASDAQ, SP500, artificial
+from pyFTS.data import TAIEX, NASDAQ, SP500, artificial, mackey_glass
 
+mackey_glass.get_data()
+'''
 datasets = {
     "TAIEX": TAIEX.get_data()[:4000],
     "SP500": SP500.get_data()[10000:14000],
@@ -54,7 +56,7 @@ partitions = {'CMIV': {'BoxCox(0)': 36, 'Differential(1)': 11, 'None': 8},
 
 tag = 'benchmarks'
 
-'''
+
 for ds in datasets.keys():
     dataset = datasets[ds]
 
@@ -74,7 +76,7 @@ for ds in datasets.keys():
                                         partitions=[partitioning],
                                         progress=False, type='point',
                                         file="nsfts_benchmarks.db", dataset=ds, tag=tag)
-'''
+
 train_split = 200
 test_split = 2000
 for ds in datasets.keys():
@@ -99,7 +101,7 @@ for ds in datasets.keys():
         forecasts = model.predict(test)
     
         #print(forecasts)
-        '''
+  
         partitioning = partitions[ds][tf]
 
         bchmk.sliding_window_benchmarks(dataset, 2000, train=0.2, inc=0.2,

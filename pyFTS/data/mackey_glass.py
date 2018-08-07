@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def get_data(b=0.1, c=0.2, tau=17, initial_values = np.linspace(0.5,1.5,18), iterations=1000):
+def get_data(b=0.1, c=0.2, tau=17, initial_values = np.linspace(0.5,1.5, 18), iterations=1000):
     '''
     Mackey, M. C. and Glass, L. (1977). Oscillation and chaos in physiological control systems.
     Science, 197(4300):287-289.
