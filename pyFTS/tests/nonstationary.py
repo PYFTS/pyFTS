@@ -53,6 +53,7 @@ partitions = {'CMIV': {'BoxCox(0)': 36, 'Differential(1)': 11, 'None': 8},
 
 
 tag = 'benchmarks'
+
 '''
 for ds in datasets.keys():
     dataset = datasets[ds]
@@ -62,11 +63,11 @@ for ds in datasets.keys():
 
         partitioning = partitions[ds][tf]
 
-        bchmk.sliding_window_benchmarks(dataset, 2000, train=0.2, inc=0.2,
-                                        methods=[
-                                            hwang.HighOrderFTS,
-                                            hofts.HighOrderFTS,
-                                            pwfts.ProbabilisticWeightedFTS],
+        bchmk.sliding_window_benchmarks(dataset, 3000, train=0.1, inc=0.1,
+                                        #methods=[
+                                        #    hwang.HighOrderFTS,
+                                        #    hofts.HighOrderFTS,
+                                        #    pwfts.ProbabilisticWeightedFTS],
                                         #orders = [3],
                                         benchmark_models=False,
                                         transformations=[transformation],
@@ -86,7 +87,9 @@ for ds in datasets.keys():
         train = dataset[:train_split]
         test = dataset[train_split:test_split]
 
-        fs = nspart.simplenonstationary_gridpartitioner_builder(data=train, npart=partitions[ds][tf], transformation=transformation)
+        fs = nspart.simplenonstationary_gridpartitioner_builder(data=train,
+                                                                npart=partitions[ds][tf],
+                                                                transformation=transformation)
         print(fs)
         #cvfts1 = cvfts.ConditionalVarianceFTS(partitioner=fs)
         model = nsfts.NonStationaryFTS(partitioner=fs)
@@ -94,9 +97,9 @@ for ds in datasets.keys():
         print(model)
 
         forecasts = model.predict(test)
-        '''
+    
         #print(forecasts)
-
+        '''
         partitioning = partitions[ds][tf]
 
         bchmk.sliding_window_benchmarks(dataset, 2000, train=0.2, inc=0.2,
