@@ -17,7 +17,7 @@ def get_data(b=0.1, c=0.2, tau=17, initial_values = np.linspace(0.5,1.5, 18), it
     '''
     y = initial_values.tolist()
 
-    for n in np.arange(len(y), iterations+100):
+    for n in np.arange(len(y)-1, iterations+100):
         y.append(y[n] - b * y[n] + c * y[n - tau] / (1 + y[n - tau] ** 10))
 
     return y[100:]
