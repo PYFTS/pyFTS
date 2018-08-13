@@ -42,9 +42,9 @@ class HighOrderFTS(fts.FTS):
         super(HighOrderFTS, self).__init__(**kwargs)
         self.name = "High Order FTS"
         self.shortname = "HOFTS"
-        self.detail = "Chen"
+        self.detail = "Severiano, Silva, Sadaei and Guimarães"
         self.is_high_order = True
-        self.min_order = 2
+        self.min_order = 1
         self.order= kwargs.get("order", 2)
         self.lags = kwargs.get("lags", None)
         self.configure_lags(**kwargs)
