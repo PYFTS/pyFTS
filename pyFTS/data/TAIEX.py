@@ -1,3 +1,10 @@
+"""
+The Taiwan Stock Exchange Capitalization Weighted Stock Index (TAIEX)
+
+Daily averaged index by business day, from 1995 to 2014.
+
+Source: http://www.twse.com.tw/en/products/indices/Index_Series.php
+"""
 from pyFTS.data import common
 import pandas as pd
 import numpy as np

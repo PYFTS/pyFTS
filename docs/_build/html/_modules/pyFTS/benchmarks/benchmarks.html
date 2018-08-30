@@ -1,29 +1,59 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!doctype html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>pyFTS.benchmarks.benchmarks &#8212; pyFTS 1.2.3 documentation</title>
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo_heading2.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -352,7 +382,7 @@
 
 <div class="viewcode-block" id="run_point"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.run_point">[docs]</a><span class="k">def</span> <span class="nf">run_point</span><span class="p">(</span><span class="n">mfts</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span> <span class="n">window_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Point forecast benchmark function to be executed on cluster nodes</span>
+<span class="sd">    Run the point forecasting benchmarks</span>
 
 <span class="sd">    :param mfts: FTS model</span>
 <span class="sd">    :param partitioner: Universe of Discourse partitioner</span>
@@ -416,7 +446,7 @@
 
 <div class="viewcode-block" id="run_interval"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.run_interval">[docs]</a><span class="k">def</span> <span class="nf">run_interval</span><span class="p">(</span><span class="n">mfts</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span> <span class="n">window_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Interval forecast benchmark function to be executed on cluster nodes</span>
+<span class="sd">    Run the interval forecasting benchmarks</span>
 
 <span class="sd">    :param mfts: FTS model</span>
 <span class="sd">    :param partitioner: Universe of Discourse partitioner</span>
@@ -475,7 +505,7 @@
 
 <div class="viewcode-block" id="run_probabilistic"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.run_probabilistic">[docs]</a><span class="k">def</span> <span class="nf">run_probabilistic</span><span class="p">(</span><span class="n">mfts</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span> <span class="n">window_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Probabilistic forecast benchmark function to be executed on cluster nodes</span>
+<span class="sd">    Run the probabilistic forecasting benchmarks</span>
 
 <span class="sd">    :param mfts: FTS model</span>
 <span class="sd">    :param partitioner: Universe of Discourse partitioner</span>
@@ -537,6 +567,15 @@
 
 
 <div class="viewcode-block" id="process_point_jobs"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.process_point_jobs">[docs]</a><span class="k">def</span> <span class="nf">process_point_jobs</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span>  <span class="n">job</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract information from a dictionary with point benchmark results and save it on a database</span>
+
+<span class="sd">    :param dataset: the benchmark dataset name</span>
+<span class="sd">    :param tag: alias for the benchmark group being executed</span>
+<span class="sd">    :param job: a dictionary with the benchmark results</span>
+<span class="sd">    :param conn: a connection to a Sqlite database</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">bUtil</span><span class="o">.</span><span class="n">process_common_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;point&#39;</span><span class="p">,</span><span class="n">job</span><span class="p">)</span>
 
@@ -555,6 +594,15 @@
 
 
 <div class="viewcode-block" id="process_interval_jobs"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.process_interval_jobs">[docs]</a><span class="k">def</span> <span class="nf">process_interval_jobs</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract information from an dictionary with interval benchmark results and save it on a database</span>
+
+<span class="sd">    :param dataset: the benchmark dataset name</span>
+<span class="sd">    :param tag: alias for the benchmark group being executed</span>
+<span class="sd">    :param job: a dictionary with the benchmark results</span>
+<span class="sd">    :param conn: a connection to a Sqlite database</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">bUtil</span><span class="o">.</span><span class="n">process_common_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">job</span><span class="p">)</span>
 
@@ -591,6 +639,15 @@
 
 
 <div class="viewcode-block" id="process_probabilistic_jobs"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.process_probabilistic_jobs">[docs]</a><span class="k">def</span> <span class="nf">process_probabilistic_jobs</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span>  <span class="n">job</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract information from an dictionary with probabilistic benchmark results and save it on a database</span>
+
+<span class="sd">    :param dataset: the benchmark dataset name</span>
+<span class="sd">    :param tag: alias for the benchmark group being executed</span>
+<span class="sd">    :param job: a dictionary with the benchmark results</span>
+<span class="sd">    :param conn: a connection to a Sqlite database</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">bUtil</span><span class="o">.</span><span class="n">process_common_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span>  <span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">job</span><span class="p">)</span>
 
@@ -606,6 +663,16 @@
 
 
 <div class="viewcode-block" id="print_point_statistics"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.print_point_statistics">[docs]</a><span class="k">def</span> <span class="nf">print_point_statistics</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">externalmodels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">externalforecasts</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">indexers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run point benchmarks on given models and data and print the results</span>
+
+<span class="sd">    :param data: test data</span>
+<span class="sd">    :param models: a list of FTS models to benchmark</span>
+<span class="sd">    :param externalmodels: a list with benchmark models (façades for other methods)</span>
+<span class="sd">    :param externalforecasts:</span>
+<span class="sd">    :param indexers:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;Model		&amp; Order     &amp; RMSE		&amp; SMAPE      &amp; Theil&#39;s U		</span><span class="se">\\\\</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">for</span> <span class="n">count</span><span class="p">,</span><span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">models</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="n">_rmse</span><span class="p">,</span> <span class="n">_smape</span><span class="p">,</span> <span class="n">_u</span> <span class="o">=</span> <span class="n">Measures</span><span class="o">.</span><span class="n">get_point_statistics</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">indexers</span><span class="p">)</span>
@@ -629,6 +696,13 @@
 
 
 <div class="viewcode-block" id="print_interval_statistics"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.print_interval_statistics">[docs]</a><span class="k">def</span> <span class="nf">print_interval_statistics</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">models</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run interval benchmarks on given models and data and print the results</span>
+
+<span class="sd">    :param data: test data</span>
+<span class="sd">    :param models: a list of FTS models to benchmark</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;Model	&amp; Order     &amp; Sharpness		&amp; Resolution		&amp; Coverage &amp; .05  &amp; .25 &amp; .75 &amp; .95	</span><span class="se">\\\\</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">for</span> <span class="n">fts</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
         <span class="n">_sharp</span><span class="p">,</span> <span class="n">_res</span><span class="p">,</span> <span class="n">_cov</span><span class="p">,</span> <span class="n">_q5</span><span class="p">,</span> <span class="n">_q25</span><span class="p">,</span> <span class="n">_q75</span><span class="p">,</span> <span class="n">_q95</span>  <span class="o">=</span> <span class="n">Measures</span><span class="o">.</span><span class="n">get_interval_statistics</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">fts</span><span class="p">)</span>
@@ -645,6 +719,13 @@
 
 
 <div class="viewcode-block" id="print_distribution_statistics"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.print_distribution_statistics">[docs]</a><span class="k">def</span> <span class="nf">print_distribution_statistics</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">resolution</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run probabilistic benchmarks on given models and data and print the results</span>
+
+<span class="sd">    :param data: test data</span>
+<span class="sd">    :param models: a list of FTS models to benchmark</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;Model	&amp; Order     &amp;  Interval &amp; Distribution	</span><span class="se">\\\\</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">for</span> <span class="n">fts</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
         <span class="n">_crps1</span><span class="p">,</span> <span class="n">_crps2</span><span class="p">,</span> <span class="n">_t1</span><span class="p">,</span> <span class="n">_t2</span> <span class="o">=</span> <span class="n">Measures</span><span class="o">.</span><span class="n">get_distribution_statistics</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">fts</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span>
@@ -736,6 +817,9 @@
 
 
 <div class="viewcode-block" id="plot_density_rectange"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.benchmarks.plot_density_rectange">[docs]</a><span class="k">def</span> <span class="nf">plot_density_rectange</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">density</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">time_from</span><span class="p">,</span> <span class="n">time_to</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Auxiliar function to plot_compared_intervals_ahead</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="k">import</span> <span class="n">Rectangle</span>
     <span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="k">import</span> <span class="n">PatchCollection</span>
     <span class="n">patches</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1192,43 +1276,24 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+    </div>
   </body>
 </html>

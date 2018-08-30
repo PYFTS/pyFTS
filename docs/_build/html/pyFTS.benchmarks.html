@@ -1,29 +1,98 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!doctype html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>pyFTS.benchmarks package &#8212; pyFTS 1.2.3 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="next" title="pyFTS.common package" href="pyFTS.common.html" />
+    <link rel="prev" title="pyFTS package" href="pyFTS.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyFTS.common.html" title="pyFTS.common package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyFTS.html" title="pyFTS package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyFTS.html" accesskey="U">pyFTS package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_heading2.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyFTS.benchmarks package</a><ul>
+<li><a class="reference internal" href="#module-pyFTS.benchmarks">Module contents</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyFTS.benchmarks.benchmarks">pyFTS.benchmarks.benchmarks module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.benchmarks.Measures">pyFTS.benchmarks.Measures module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.benchmarks.ResidualAnalysis">pyFTS.benchmarks.ResidualAnalysis module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.benchmarks.Util">pyFTS.benchmarks.Util module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.benchmarks.arima">pyFTS.benchmarks.arima module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.benchmarks.knn">pyFTS.benchmarks.knn module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.benchmarks.naive">pyFTS.benchmarks.naive module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.benchmarks.quantreg">pyFTS.benchmarks.quantreg module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyFTS.html"
+                        title="previous chapter">pyFTS package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyFTS.common.html"
+                        title="next chapter">pyFTS.common package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pyFTS.benchmarks.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -32,8 +101,433 @@
             
   <div class="section" id="pyfts-benchmarks-package">
 <h1>pyFTS.benchmarks package<a class="headerlink" href="#pyfts-benchmarks-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pyFTS.benchmarks">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.benchmarks" title="Permalink to this headline">¶</a></h2>
+<p>pyFTS module for benchmarking the FTS models</p>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyFTS.benchmarks.benchmarks">
+<span id="pyfts-benchmarks-benchmarks-module"></span><h2>pyFTS.benchmarks.benchmarks module<a class="headerlink" href="#module-pyFTS.benchmarks.benchmarks" title="Permalink to this headline">¶</a></h2>
+<p>Benchmarks methods for FTS methods</p>
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.SelecaoSimples_MenorRMSE">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">SelecaoSimples_MenorRMSE</code><span class="sig-paren">(</span><em>original</em>, <em>parameters</em>, <em>modelo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#SelecaoSimples_MenorRMSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.SelecaoSimples_MenorRMSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.compareModelsPlot">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">compareModelsPlot</code><span class="sig-paren">(</span><em>original</em>, <em>models_fo</em>, <em>models_ho</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#compareModelsPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.compareModelsPlot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.compareModelsTable">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">compareModelsTable</code><span class="sig-paren">(</span><em>original</em>, <em>models_fo</em>, <em>models_ho</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#compareModelsTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.compareModelsTable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.get_benchmark_interval_methods">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_benchmark_interval_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_benchmark_interval_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_benchmark_interval_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all non FTS methods for point_to_interval forecasting</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.get_benchmark_point_methods">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_benchmark_point_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_benchmark_point_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_benchmark_point_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all non FTS methods for point forecasting</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.get_benchmark_probabilistic_methods">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_benchmark_probabilistic_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_benchmark_probabilistic_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_benchmark_probabilistic_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all FTS methods for probabilistic forecasting</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.get_interval_methods">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_interval_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_interval_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_interval_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all FTS methods for point_to_interval forecasting</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.get_point_methods">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_point_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_point_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_point_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all FTS methods for point forecasting</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.get_probabilistic_methods">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_probabilistic_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_probabilistic_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_probabilistic_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all FTS methods for probabilistic forecasting</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.pftsExploreOrderAndPartitions">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">pftsExploreOrderAndPartitions</code><span class="sig-paren">(</span><em>data</em>, <em>save=False</em>, <em>file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#pftsExploreOrderAndPartitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.pftsExploreOrderAndPartitions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.plotCompared">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plotCompared</code><span class="sig-paren">(</span><em>original</em>, <em>forecasts</em>, <em>labels</em>, <em>title</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plotCompared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plotCompared" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.plot_compared_intervals_ahead">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_compared_intervals_ahead</code><span class="sig-paren">(</span><em>original, models, colors, distributions, time_from, time_to, intervals=True, save=False, file=None, tam=[20, 5], resolution=None, cmap='Blues', linewidth=1.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_compared_intervals_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_compared_intervals_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the forecasts of several one step ahead models, by point or by interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>original</strong> – Original time series data (list)</li>
+<li><strong>models</strong> – List of models to compare</li>
+<li><strong>colors</strong> – List of models colors</li>
+<li><strong>distributions</strong> – True to plot a distribution</li>
+<li><strong>time_from</strong> – index of data poit to start the ahead forecasting</li>
+<li><strong>time_to</strong> – number of steps ahead to forecast</li>
+<li><strong>interpol</strong> – Fill space between distribution plots</li>
+<li><strong>save</strong> – Save the picture on file</li>
+<li><strong>file</strong> – Filename to save the picture</li>
+<li><strong>tam</strong> – Size of the picture</li>
+<li><strong>resolution</strong> – </li>
+<li><strong>cmap</strong> – Color map to be used on distribution plot</li>
+<li><strong>option</strong> – Distribution type to be passed for models</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.plot_compared_series">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_compared_series</code><span class="sig-paren">(</span><em>original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5], points=True, intervals=True, linewidth=1.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_compared_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_compared_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the forecasts of several one step ahead models, by point or by interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>original</strong> – Original time series data (list)</li>
+<li><strong>models</strong> – List of models to compare</li>
+<li><strong>colors</strong> – List of models colors</li>
+<li><strong>typeonlegend</strong> – Add the type of forecast (point / interval) on legend</li>
+<li><strong>save</strong> – Save the picture on file</li>
+<li><strong>file</strong> – Filename to save the picture</li>
+<li><strong>tam</strong> – Size of the picture</li>
+<li><strong>points</strong> – True to plot the point forecasts, False otherwise</li>
+<li><strong>intervals</strong> – True to plot the interval forecasts, False otherwise</li>
+<li><strong>linewidth</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.plot_density_rectange">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_density_rectange</code><span class="sig-paren">(</span><em>ax</em>, <em>cmap</em>, <em>density</em>, <em>fig</em>, <em>resolution</em>, <em>time_from</em>, <em>time_to</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_density_rectange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_density_rectange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Auxiliar function to plot_compared_intervals_ahead</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.plot_distribution">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_distribution</code><span class="sig-paren">(</span><em>ax</em>, <em>cmap</em>, <em>probabilitydist</em>, <em>fig</em>, <em>time_from</em>, <em>reference_data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_distribution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.plot_interval">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_interval</code><span class="sig-paren">(</span><em>axis</em>, <em>intervals</em>, <em>order</em>, <em>label</em>, <em>color='red'</em>, <em>typeonlegend=False</em>, <em>ls='-'</em>, <em>linewidth=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_interval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.plot_point">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_point</code><span class="sig-paren">(</span><em>axis</em>, <em>points</em>, <em>order</em>, <em>label</em>, <em>color='red'</em>, <em>ls='-'</em>, <em>linewidth=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.plot_probability_distributions">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_probability_distributions</code><span class="sig-paren">(</span><em>pmfs, lcolors, tam=[15, 7]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_probability_distributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_probability_distributions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.print_distribution_statistics">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">print_distribution_statistics</code><span class="sig-paren">(</span><em>original</em>, <em>models</em>, <em>steps</em>, <em>resolution</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#print_distribution_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.print_distribution_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run probabilistic benchmarks on given models and data and print the results</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – test data</li>
+<li><strong>models</strong> – a list of FTS models to benchmark</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.print_interval_statistics">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">print_interval_statistics</code><span class="sig-paren">(</span><em>original</em>, <em>models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#print_interval_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.print_interval_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run interval benchmarks on given models and data and print the results</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – test data</li>
+<li><strong>models</strong> – a list of FTS models to benchmark</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.print_point_statistics">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">print_point_statistics</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>externalmodels=None</em>, <em>externalforecasts=None</em>, <em>indexers=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#print_point_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.print_point_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run point benchmarks on given models and data and print the results</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – test data</li>
+<li><strong>models</strong> – a list of FTS models to benchmark</li>
+<li><strong>externalmodels</strong> – a list with benchmark models (façades for other methods)</li>
+<li><strong>externalforecasts</strong> – </li>
+<li><strong>indexers</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.process_interval_jobs">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">process_interval_jobs</code><span class="sig-paren">(</span><em>dataset</em>, <em>tag</em>, <em>job</em>, <em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#process_interval_jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.process_interval_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract information from an dictionary with interval benchmark results and save it on a database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataset</strong> – the benchmark dataset name</li>
+<li><strong>tag</strong> – alias for the benchmark group being executed</li>
+<li><strong>job</strong> – a dictionary with the benchmark results</li>
+<li><strong>conn</strong> – a connection to a Sqlite database</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.process_point_jobs">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">process_point_jobs</code><span class="sig-paren">(</span><em>dataset</em>, <em>tag</em>, <em>job</em>, <em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#process_point_jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.process_point_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract information from a dictionary with point benchmark results and save it on a database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataset</strong> – the benchmark dataset name</li>
+<li><strong>tag</strong> – alias for the benchmark group being executed</li>
+<li><strong>job</strong> – a dictionary with the benchmark results</li>
+<li><strong>conn</strong> – a connection to a Sqlite database</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.process_probabilistic_jobs">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">process_probabilistic_jobs</code><span class="sig-paren">(</span><em>dataset</em>, <em>tag</em>, <em>job</em>, <em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#process_probabilistic_jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.process_probabilistic_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract information from an dictionary with probabilistic benchmark results and save it on a database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataset</strong> – the benchmark dataset name</li>
+<li><strong>tag</strong> – alias for the benchmark group being executed</li>
+<li><strong>job</strong> – a dictionary with the benchmark results</li>
+<li><strong>conn</strong> – a connection to a Sqlite database</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.run_interval">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">run_interval</code><span class="sig-paren">(</span><em>mfts</em>, <em>partitioner</em>, <em>train_data</em>, <em>test_data</em>, <em>window_key=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#run_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.run_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the interval forecasting benchmarks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mfts</strong> – FTS model</li>
+<li><strong>partitioner</strong> – Universe of Discourse partitioner</li>
+<li><strong>train_data</strong> – data used to train the model</li>
+<li><strong>test_data</strong> – ata used to test the model</li>
+<li><strong>window_key</strong> – id of the sliding window</li>
+<li><strong>transformation</strong> – data transformation</li>
+<li><strong>indexer</strong> – seasonal indexer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dictionary with the benchmark results</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.run_point">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">run_point</code><span class="sig-paren">(</span><em>mfts</em>, <em>partitioner</em>, <em>train_data</em>, <em>test_data</em>, <em>window_key=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#run_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.run_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the point forecasting benchmarks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mfts</strong> – FTS model</li>
+<li><strong>partitioner</strong> – Universe of Discourse partitioner</li>
+<li><strong>train_data</strong> – data used to train the model</li>
+<li><strong>test_data</strong> – ata used to test the model</li>
+<li><strong>window_key</strong> – id of the sliding window</li>
+<li><strong>transformation</strong> – data transformation</li>
+<li><strong>indexer</strong> – seasonal indexer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dictionary with the benchmark results</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.run_probabilistic">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">run_probabilistic</code><span class="sig-paren">(</span><em>mfts</em>, <em>partitioner</em>, <em>train_data</em>, <em>test_data</em>, <em>window_key=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#run_probabilistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.run_probabilistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the probabilistic forecasting benchmarks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mfts</strong> – FTS model</li>
+<li><strong>partitioner</strong> – Universe of Discourse partitioner</li>
+<li><strong>train_data</strong> – data used to train the model</li>
+<li><strong>test_data</strong> – ata used to test the model</li>
+<li><strong>steps</strong> – </li>
+<li><strong>resolution</strong> – </li>
+<li><strong>window_key</strong> – id of the sliding window</li>
+<li><strong>transformation</strong> – data transformation</li>
+<li><strong>indexer</strong> – seasonal indexer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dictionary with the benchmark results</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.simpleSearch_RMSE">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">simpleSearch_RMSE</code><span class="sig-paren">(</span><em>train, test, model, partitions, orders, save=False, file=None, tam=[10, 15], plotforecasts=False, elev=30, azim=144, intervals=False, parameters=None, partitioner=&lt;class 'pyFTS.partitioners.Grid.GridPartitioner'&gt;, transformation=None, indexer=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#simpleSearch_RMSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.simpleSearch_RMSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.sliding_window_benchmarks">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">sliding_window_benchmarks</code><span class="sig-paren">(</span><em>data</em>, <em>windowsize</em>, <em>train=0.8</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#sliding_window_benchmarks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.sliding_window_benchmarks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sliding window benchmarks for FTS forecasters.</p>
+<p>For each data window, a train and test datasets will be splitted. For each train split, number of
+partitions and partitioning method will be created a partitioner model. And for each partitioner, order,
+steps ahead and FTS method a foreasting model will be trained.</p>
+<p>Then all trained models are benchmarked on the test data and the metrics are stored on a sqlite3 database
+(identified by the ‘file’ parameter) for posterior analysis.</p>
+<p>All these process can be distributed on a dispy cluster, setting the atributed ‘distributed’ to true and
+informing the list of dispy nodes on ‘nodes’ parameter.</p>
+<p>The number of experiments is determined by ‘windowsize’ and ‘inc’ parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – test data</li>
+<li><strong>windowsize</strong> – size of sliding window</li>
+<li><strong>train</strong> – percentual of sliding window data used to train the models</li>
+<li><strong>kwargs</strong> – dict, optional arguments</li>
+<li><strong>benchmark_methods</strong> – a list with Non FTS models to benchmark. The default is None.</li>
+<li><strong>benchmark_methods_parameters</strong> – a list with Non FTS models parameters. The default is None.</li>
+<li><strong>benchmark_models</strong> – A boolean value indicating if external FTS methods will be used on benchmark. The default is False.</li>
+<li><strong>build_methods</strong> – A boolean value indicating if the default FTS methods will be used on benchmark. The default is True.</li>
+<li><strong>dataset</strong> – the dataset name to identify the current set of benchmarks results on database.</li>
+<li><strong>distributed</strong> – A boolean value indicating if the forecasting procedure will be distributed in a dispy cluster. . The default is False</li>
+<li><strong>file</strong> – file path to save the results. The default is benchmarks.db.</li>
+<li><strong>inc</strong> – a float on interval [0,1] indicating the percentage of the windowsize to move the window</li>
+<li><strong>methods</strong> – a list with FTS class names. The default depends on the forecasting type and contains the list of all FTS methods.</li>
+<li><strong>models</strong> – a list with prebuilt FTS objects. The default is None.</li>
+<li><strong>nodes</strong> – a list with the dispy cluster nodes addresses. The default is [127.0.0.1].</li>
+<li><strong>orders</strong> – a list with orders of the models (for high order models). The default is [1,2,3].</li>
+<li><strong>partitions</strong> – a list with the numbers of partitions on the Universe of Discourse. The default is [10].</li>
+<li><strong>partitioners_models</strong> – a list with prebuilt Universe of Discourse partitioners objects. The default is None.</li>
+<li><strong>partitioners_methods</strong> – a list with Universe of Discourse partitioners class names. The default is [partitioners.Grid.GridPartitioner].</li>
+<li><strong>progress</strong> – If true a progress bar will be displayed during the benchmarks. The default is False.</li>
+<li><strong>start</strong> – in the multi step forecasting, the index of the data where to start forecasting. The default is 0.</li>
+<li><strong>steps_ahead</strong> – a list with  the forecasting horizons, i. e., the number of steps ahead to forecast. The default is 1.</li>
+<li><strong>tag</strong> – a name to identify the current set of benchmarks results on database.</li>
+<li><strong>type</strong> – the forecasting type, one of these values: point(default), interval or distribution. The default is point.</li>
+<li><strong>transformations</strong> – a list with data transformations do apply . The default is [None].</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyFTS.benchmarks.Measures">
 <span id="pyfts-benchmarks-measures-module"></span><h2>pyFTS.benchmarks.Measures module<a class="headerlink" href="#module-pyFTS.benchmarks.Measures" title="Permalink to this headline">¶</a></h2>
@@ -575,7 +1069,16 @@
 <dl class="function">
 <dt id="pyFTS.benchmarks.Util.create_benchmark_tables">
 <code class="descclassname">pyFTS.benchmarks.Util.</code><code class="descname">create_benchmark_tables</code><span class="sig-paren">(</span><em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/Util.html#create_benchmark_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.Util.create_benchmark_tables" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Create a sqlite3 table designed to store benchmark results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>conn</strong> – a sqlite3 database connection</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.benchmarks.Util.extract_measure">
@@ -590,12 +1093,61 @@
 <dl class="function">
 <dt id="pyFTS.benchmarks.Util.get_dataframe_from_bd">
 <code class="descclassname">pyFTS.benchmarks.Util.</code><code class="descname">get_dataframe_from_bd</code><span class="sig-paren">(</span><em>file</em>, <em>filter</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/Util.html#get_dataframe_from_bd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.Util.get_dataframe_from_bd" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Query the sqlite benchmark database and return a pandas dataframe with the results</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file</strong> – the url of the benchmark database</li>
+<li><strong>filter</strong> – sql conditions to filter</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">pandas dataframe with the query results</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.benchmarks.Util.insert_benchmark">
 <code class="descclassname">pyFTS.benchmarks.Util.</code><code class="descname">insert_benchmark</code><span class="sig-paren">(</span><em>data</em>, <em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/Util.html#insert_benchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.Util.insert_benchmark" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Insert benchmark data on database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – a tuple with the benchmark data with format:</td>
+</tr>
+</tbody>
+</table>
+<p>ID: integer incremental primary key
+Date: Date/hour of benchmark execution
+Dataset: Identify on which dataset the dataset was performed
+Tag: a user defined word that indentify a benchmark set
+Type: forecasting type (point, interval, distribution)
+Model: FTS model
+Transformation: The name of data transformation, if one was used
+Order: the order of the FTS method
+Scheme: UoD partitioning scheme
+Partitions: Number of partitions
+Size: Number of rules of the FTS model
+Steps: prediction horizon, i. e., the number of steps ahead
+Measure: accuracy measure
+Value: the measure value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>conn</strong> – a sqlite3 database connection</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.benchmarks.Util.interval_dataframe_analytic_columns">
@@ -610,7 +1162,18 @@
 <dl class="function">
 <dt id="pyFTS.benchmarks.Util.open_benchmark_db">
 <code class="descclassname">pyFTS.benchmarks.Util.</code><code class="descname">open_benchmark_db</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/Util.html#open_benchmark_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.Util.open_benchmark_db" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Open a connection with a Sqlite database designed to store benchmark results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – database filenem</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a sqlite3 database connection</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.benchmarks.Util.plot_dataframe_interval">
@@ -655,7 +1218,25 @@
 <dl class="function">
 <dt id="pyFTS.benchmarks.Util.process_common_data">
 <code class="descclassname">pyFTS.benchmarks.Util.</code><code class="descname">process_common_data</code><span class="sig-paren">(</span><em>dataset</em>, <em>tag</em>, <em>type</em>, <em>job</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/Util.html#process_common_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.Util.process_common_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Wraps benchmark information on a tuple for sqlite database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataset</strong> – benchmark dataset</li>
+<li><strong>tag</strong> – benchmark set alias</li>
+<li><strong>type</strong> – forecasting type</li>
+<li><strong>job</strong> – a dictionary with benchmark data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple for sqlite database</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.benchmarks.Util.save_dataframe_interval">
@@ -892,324 +1473,6 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-pyFTS.benchmarks.benchmarks">
-<span id="pyfts-benchmarks-benchmarks-module"></span><h2>pyFTS.benchmarks.benchmarks module<a class="headerlink" href="#module-pyFTS.benchmarks.benchmarks" title="Permalink to this headline">¶</a></h2>
-<p>Benchmarks methods for FTS methods</p>
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.SelecaoSimples_MenorRMSE">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">SelecaoSimples_MenorRMSE</code><span class="sig-paren">(</span><em>original</em>, <em>parameters</em>, <em>modelo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#SelecaoSimples_MenorRMSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.SelecaoSimples_MenorRMSE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.compareModelsPlot">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">compareModelsPlot</code><span class="sig-paren">(</span><em>original</em>, <em>models_fo</em>, <em>models_ho</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#compareModelsPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.compareModelsPlot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.compareModelsTable">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">compareModelsTable</code><span class="sig-paren">(</span><em>original</em>, <em>models_fo</em>, <em>models_ho</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#compareModelsTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.compareModelsTable" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.get_benchmark_interval_methods">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_benchmark_interval_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_benchmark_interval_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_benchmark_interval_methods" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all non FTS methods for point_to_interval forecasting</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.get_benchmark_point_methods">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_benchmark_point_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_benchmark_point_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_benchmark_point_methods" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all non FTS methods for point forecasting</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.get_benchmark_probabilistic_methods">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_benchmark_probabilistic_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_benchmark_probabilistic_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_benchmark_probabilistic_methods" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all FTS methods for probabilistic forecasting</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.get_interval_methods">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_interval_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_interval_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_interval_methods" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all FTS methods for point_to_interval forecasting</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.get_point_methods">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_point_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_point_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_point_methods" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all FTS methods for point forecasting</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.get_probabilistic_methods">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_probabilistic_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#get_probabilistic_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_probabilistic_methods" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all FTS methods for probabilistic forecasting</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.pftsExploreOrderAndPartitions">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">pftsExploreOrderAndPartitions</code><span class="sig-paren">(</span><em>data</em>, <em>save=False</em>, <em>file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#pftsExploreOrderAndPartitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.pftsExploreOrderAndPartitions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.plotCompared">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plotCompared</code><span class="sig-paren">(</span><em>original</em>, <em>forecasts</em>, <em>labels</em>, <em>title</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plotCompared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plotCompared" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.plot_compared_intervals_ahead">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_compared_intervals_ahead</code><span class="sig-paren">(</span><em>original, models, colors, distributions, time_from, time_to, intervals=True, save=False, file=None, tam=[20, 5], resolution=None, cmap='Blues', linewidth=1.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_compared_intervals_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_compared_intervals_ahead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the forecasts of several one step ahead models, by point or by interval</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>original</strong> – Original time series data (list)</li>
-<li><strong>models</strong> – List of models to compare</li>
-<li><strong>colors</strong> – List of models colors</li>
-<li><strong>distributions</strong> – True to plot a distribution</li>
-<li><strong>time_from</strong> – index of data poit to start the ahead forecasting</li>
-<li><strong>time_to</strong> – number of steps ahead to forecast</li>
-<li><strong>interpol</strong> – Fill space between distribution plots</li>
-<li><strong>save</strong> – Save the picture on file</li>
-<li><strong>file</strong> – Filename to save the picture</li>
-<li><strong>tam</strong> – Size of the picture</li>
-<li><strong>resolution</strong> – </li>
-<li><strong>cmap</strong> – Color map to be used on distribution plot</li>
-<li><strong>option</strong> – Distribution type to be passed for models</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.plot_compared_series">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_compared_series</code><span class="sig-paren">(</span><em>original, models, colors, typeonlegend=False, save=False, file=None, tam=[20, 5], points=True, intervals=True, linewidth=1.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_compared_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_compared_series" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the forecasts of several one step ahead models, by point or by interval</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>original</strong> – Original time series data (list)</li>
-<li><strong>models</strong> – List of models to compare</li>
-<li><strong>colors</strong> – List of models colors</li>
-<li><strong>typeonlegend</strong> – Add the type of forecast (point / interval) on legend</li>
-<li><strong>save</strong> – Save the picture on file</li>
-<li><strong>file</strong> – Filename to save the picture</li>
-<li><strong>tam</strong> – Size of the picture</li>
-<li><strong>points</strong> – True to plot the point forecasts, False otherwise</li>
-<li><strong>intervals</strong> – True to plot the interval forecasts, False otherwise</li>
-<li><strong>linewidth</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.plot_density_rectange">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_density_rectange</code><span class="sig-paren">(</span><em>ax</em>, <em>cmap</em>, <em>density</em>, <em>fig</em>, <em>resolution</em>, <em>time_from</em>, <em>time_to</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_density_rectange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_density_rectange" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.plot_distribution">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_distribution</code><span class="sig-paren">(</span><em>ax</em>, <em>cmap</em>, <em>probabilitydist</em>, <em>fig</em>, <em>time_from</em>, <em>reference_data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_distribution" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.plot_interval">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_interval</code><span class="sig-paren">(</span><em>axis</em>, <em>intervals</em>, <em>order</em>, <em>label</em>, <em>color='red'</em>, <em>typeonlegend=False</em>, <em>ls='-'</em>, <em>linewidth=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_interval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.plot_point">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_point</code><span class="sig-paren">(</span><em>axis</em>, <em>points</em>, <em>order</em>, <em>label</em>, <em>color='red'</em>, <em>ls='-'</em>, <em>linewidth=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_point" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.plot_probability_distributions">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">plot_probability_distributions</code><span class="sig-paren">(</span><em>pmfs, lcolors, tam=[15, 7]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#plot_probability_distributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.plot_probability_distributions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.print_distribution_statistics">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">print_distribution_statistics</code><span class="sig-paren">(</span><em>original</em>, <em>models</em>, <em>steps</em>, <em>resolution</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#print_distribution_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.print_distribution_statistics" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.print_interval_statistics">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">print_interval_statistics</code><span class="sig-paren">(</span><em>original</em>, <em>models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#print_interval_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.print_interval_statistics" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.print_point_statistics">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">print_point_statistics</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>externalmodels=None</em>, <em>externalforecasts=None</em>, <em>indexers=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#print_point_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.print_point_statistics" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.process_interval_jobs">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">process_interval_jobs</code><span class="sig-paren">(</span><em>dataset</em>, <em>tag</em>, <em>job</em>, <em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#process_interval_jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.process_interval_jobs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.process_point_jobs">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">process_point_jobs</code><span class="sig-paren">(</span><em>dataset</em>, <em>tag</em>, <em>job</em>, <em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#process_point_jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.process_point_jobs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.process_probabilistic_jobs">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">process_probabilistic_jobs</code><span class="sig-paren">(</span><em>dataset</em>, <em>tag</em>, <em>job</em>, <em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#process_probabilistic_jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.process_probabilistic_jobs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.run_interval">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">run_interval</code><span class="sig-paren">(</span><em>mfts</em>, <em>partitioner</em>, <em>train_data</em>, <em>test_data</em>, <em>window_key=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#run_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.run_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast benchmark function to be executed on cluster nodes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mfts</strong> – FTS model</li>
-<li><strong>partitioner</strong> – Universe of Discourse partitioner</li>
-<li><strong>train_data</strong> – data used to train the model</li>
-<li><strong>test_data</strong> – ata used to test the model</li>
-<li><strong>window_key</strong> – id of the sliding window</li>
-<li><strong>transformation</strong> – data transformation</li>
-<li><strong>indexer</strong> – seasonal indexer</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dictionary with the benchmark results</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.run_point">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">run_point</code><span class="sig-paren">(</span><em>mfts</em>, <em>partitioner</em>, <em>train_data</em>, <em>test_data</em>, <em>window_key=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#run_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.run_point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast benchmark function to be executed on cluster nodes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mfts</strong> – FTS model</li>
-<li><strong>partitioner</strong> – Universe of Discourse partitioner</li>
-<li><strong>train_data</strong> – data used to train the model</li>
-<li><strong>test_data</strong> – ata used to test the model</li>
-<li><strong>window_key</strong> – id of the sliding window</li>
-<li><strong>transformation</strong> – data transformation</li>
-<li><strong>indexer</strong> – seasonal indexer</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dictionary with the benchmark results</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.run_probabilistic">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">run_probabilistic</code><span class="sig-paren">(</span><em>mfts</em>, <em>partitioner</em>, <em>train_data</em>, <em>test_data</em>, <em>window_key=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#run_probabilistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.run_probabilistic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Probabilistic forecast benchmark function to be executed on cluster nodes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mfts</strong> – FTS model</li>
-<li><strong>partitioner</strong> – Universe of Discourse partitioner</li>
-<li><strong>train_data</strong> – data used to train the model</li>
-<li><strong>test_data</strong> – ata used to test the model</li>
-<li><strong>steps</strong> – </li>
-<li><strong>resolution</strong> – </li>
-<li><strong>window_key</strong> – id of the sliding window</li>
-<li><strong>transformation</strong> – data transformation</li>
-<li><strong>indexer</strong> – seasonal indexer</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dictionary with the benchmark results</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.simpleSearch_RMSE">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">simpleSearch_RMSE</code><span class="sig-paren">(</span><em>train, test, model, partitions, orders, save=False, file=None, tam=[10, 15], plotforecasts=False, elev=30, azim=144, intervals=False, parameters=None, partitioner=&lt;class 'pyFTS.partitioners.Grid.GridPartitioner'&gt;, transformation=None, indexer=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#simpleSearch_RMSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.simpleSearch_RMSE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.benchmarks.sliding_window_benchmarks">
-<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">sliding_window_benchmarks</code><span class="sig-paren">(</span><em>data</em>, <em>windowsize</em>, <em>train=0.8</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/benchmarks.html#sliding_window_benchmarks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.sliding_window_benchmarks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sliding window benchmarks for FTS forecasters.</p>
-<p>For each data window, a train and test datasets will be splitted. For each train split, number of
-partitions and partitioning method will be created a partitioner model. And for each partitioner, order,
-steps ahead and FTS method a foreasting model will be trained.</p>
-<p>Then all trained models are benchmarked on the test data and the metrics are stored on a sqlite3 database
-(identified by the ‘file’ parameter) for posterior analysis.</p>
-<p>All these process can be distributed on a dispy cluster, setting the atributed ‘distributed’ to true and
-informing the list of dispy nodes on ‘nodes’ parameter.</p>
-<p>The number of experiments is determined by ‘windowsize’ and ‘inc’ parameters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – test data</li>
-<li><strong>windowsize</strong> – size of sliding window</li>
-<li><strong>train</strong> – percentual of sliding window data used to train the models</li>
-<li><strong>kwargs</strong> – dict, optional arguments</li>
-<li><strong>benchmark_methods</strong> – a list with Non FTS models to benchmark. The default is None.</li>
-<li><strong>benchmark_methods_parameters</strong> – a list with Non FTS models parameters. The default is None.</li>
-<li><strong>benchmark_models</strong> – A boolean value indicating if external FTS methods will be used on benchmark. The default is False.</li>
-<li><strong>build_methods</strong> – A boolean value indicating if the default FTS methods will be used on benchmark. The default is True.</li>
-<li><strong>dataset</strong> – the dataset name to identify the current set of benchmarks results on database.</li>
-<li><strong>distributed</strong> – A boolean value indicating if the forecasting procedure will be distributed in a dispy cluster. . The default is False</li>
-<li><strong>file</strong> – file path to save the results. The default is benchmarks.db.</li>
-<li><strong>inc</strong> – a float on interval [0,1] indicating the percentage of the windowsize to move the window</li>
-<li><strong>methods</strong> – a list with FTS class names. The default depends on the forecasting type and contains the list of all FTS methods.</li>
-<li><strong>models</strong> – a list with prebuilt FTS objects. The default is None.</li>
-<li><strong>nodes</strong> – a list with the dispy cluster nodes addresses. The default is [127.0.0.1].</li>
-<li><strong>orders</strong> – a list with orders of the models (for high order models). The default is [1,2,3].</li>
-<li><strong>partitions</strong> – a list with the numbers of partitions on the Universe of Discourse. The default is [10].</li>
-<li><strong>partitioners_models</strong> – a list with prebuilt Universe of Discourse partitioners objects. The default is None.</li>
-<li><strong>partitioners_methods</strong> – a list with Universe of Discourse partitioners class names. The default is [partitioners.Grid.GridPartitioner].</li>
-<li><strong>progress</strong> – If true a progress bar will be displayed during the benchmarks. The default is False.</li>
-<li><strong>start</strong> – in the multi step forecasting, the index of the data where to start forecasting. The default is 0.</li>
-<li><strong>steps_ahead</strong> – a list with  the forecasting horizons, i. e., the number of steps ahead to forecast. The default is 1.</li>
-<li><strong>tag</strong> – a name to identify the current set of benchmarks results on database.</li>
-<li><strong>type</strong> – the forecasting type, one of these values: point(default), interval or distribution. The default is point.</li>
-<li><strong>transformations</strong> – a list with data transformations do apply . The default is [None].</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="pyfts-benchmarks-distributed-benchmarks-module">
-<h2>pyFTS.benchmarks.distributed_benchmarks module<a class="headerlink" href="#pyfts-benchmarks-distributed-benchmarks-module" title="Permalink to this headline">¶</a></h2>
-</div>
 <div class="section" id="module-pyFTS.benchmarks.knn">
 <span id="pyfts-benchmarks-knn-module"></span><h2>pyFTS.benchmarks.knn module<a class="headerlink" href="#module-pyFTS.benchmarks.knn" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -1292,115 +1555,6 @@ informing the list of dispy nodes on ‘nodes’ parameter.</p>
 </table>
 </dd></dl>
 
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.benchmarks.parallel_benchmarks">
-<span id="pyfts-benchmarks-parallel-benchmarks-module"></span><h2>pyFTS.benchmarks.parallel_benchmarks module<a class="headerlink" href="#module-pyFTS.benchmarks.parallel_benchmarks" title="Permalink to this headline">¶</a></h2>
-<p>joblib Parallelized Benchmarks to FTS methods</p>
-<dl class="function">
-<dt id="pyFTS.benchmarks.parallel_benchmarks.ahead_sliding_window">
-<code class="descclassname">pyFTS.benchmarks.parallel_benchmarks.</code><code class="descname">ahead_sliding_window</code><span class="sig-paren">(</span><em>data, windowsize, train, steps, resolution, models=None, partitioners=[&lt;class 'pyFTS.partitioners.Grid.GridPartitioner'&gt;], partitions=[10], max_order=3, transformation=None, indexer=None, dump=False, save=False, file=None, sintetic=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/parallel_benchmarks.html#ahead_sliding_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.parallel_benchmarks.ahead_sliding_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parallel sliding window benchmarks for FTS probabilistic forecasters
-:param data: 
-:param windowsize: size of sliding window
-:param train: percentual of sliding window data used to train the models
-:param steps: 
-:param resolution: 
-:param models: FTS point forecasters
-:param partitioners: Universe of Discourse partitioner
-:param partitions: the max number of partitions on the Universe of Discourse 
-:param max_order: the max order of the models (for high order models)
-:param transformation: data transformation
-:param indexer: seasonal indexer
-:param dump: 
-:param save: save results
-:param file: file path to save the results
-:param sintetic: if true only the average and standard deviation of the results
-:return: DataFrame with the results</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.parallel_benchmarks.interval_sliding_window">
-<code class="descclassname">pyFTS.benchmarks.parallel_benchmarks.</code><code class="descname">interval_sliding_window</code><span class="sig-paren">(</span><em>data, windowsize, train=0.8, models=None, partitioners=[&lt;class 'pyFTS.partitioners.Grid.GridPartitioner'&gt;], partitions=[10], max_order=3, transformation=None, indexer=None, dump=False, save=False, file=None, sintetic=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/parallel_benchmarks.html#interval_sliding_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.parallel_benchmarks.interval_sliding_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parallel sliding window benchmarks for FTS point_to_interval forecasters
-:param data: 
-:param windowsize: size of sliding window
-:param train: percentual of sliding window data used to train the models
-:param models: FTS point forecasters
-:param partitioners: Universe of Discourse partitioner
-:param partitions: the max number of partitions on the Universe of Discourse 
-:param max_order: the max order of the models (for high order models)
-:param transformation: data transformation
-:param indexer: seasonal indexer
-:param dump: 
-:param save: save results
-:param file: file path to save the results
-:param sintetic: if true only the average and standard deviation of the results
-:return: DataFrame with the results</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.parallel_benchmarks.point_sliding_window">
-<code class="descclassname">pyFTS.benchmarks.parallel_benchmarks.</code><code class="descname">point_sliding_window</code><span class="sig-paren">(</span><em>data, windowsize, train=0.8, models=None, partitioners=[&lt;class 'pyFTS.partitioners.Grid.GridPartitioner'&gt;], partitions=[10], max_order=3, transformation=None, indexer=None, dump=False, save=False, file=None, sintetic=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/parallel_benchmarks.html#point_sliding_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.parallel_benchmarks.point_sliding_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parallel sliding window benchmarks for FTS point forecasters
-:param data: 
-:param windowsize: size of sliding window
-:param train: percentual of sliding window data used to train the models
-:param models: FTS point forecasters
-:param partitioners: Universe of Discourse partitioner
-:param partitions: the max number of partitions on the Universe of Discourse 
-:param max_order: the max order of the models (for high order models)
-:param transformation: data transformation
-:param indexer: seasonal indexer
-:param dump: 
-:param save: save results
-:param file: file path to save the results
-:param sintetic: if true only the average and standard deviation of the results
-:return: DataFrame with the results</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.parallel_benchmarks.run_ahead">
-<code class="descclassname">pyFTS.benchmarks.parallel_benchmarks.</code><code class="descname">run_ahead</code><span class="sig-paren">(</span><em>mfts</em>, <em>partitioner</em>, <em>train_data</em>, <em>test_data</em>, <em>steps</em>, <em>resolution</em>, <em>transformation=None</em>, <em>indexer=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/parallel_benchmarks.html#run_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.parallel_benchmarks.run_ahead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Probabilistic m-step ahead forecast benchmark function to be executed on threads
-:param mfts: FTS model
-:param partitioner: Universe of Discourse partitioner
-:param train_data: data used to train the model
-:param test_data: ata used to test the model 
-:param steps: 
-:param resolution: 
-:param transformation: data transformation
-:param indexer: seasonal indexer
-:return: a dictionary with the benchmark results</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.parallel_benchmarks.run_interval">
-<code class="descclassname">pyFTS.benchmarks.parallel_benchmarks.</code><code class="descname">run_interval</code><span class="sig-paren">(</span><em>mfts</em>, <em>partitioner</em>, <em>train_data</em>, <em>test_data</em>, <em>transformation=None</em>, <em>indexer=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/parallel_benchmarks.html#run_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.parallel_benchmarks.run_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast benchmark function to be executed on threads
-:param mfts: FTS model
-:param partitioner: Universe of Discourse partitioner
-:param train_data: data used to train the model
-:param test_data: ata used to test the model
-:param window_key: id of the sliding window
-:param transformation: data transformation
-:param indexer: seasonal indexer
-:return: a dictionary with the benchmark results</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.benchmarks.parallel_benchmarks.run_point">
-<code class="descclassname">pyFTS.benchmarks.parallel_benchmarks.</code><code class="descname">run_point</code><span class="sig-paren">(</span><em>mfts</em>, <em>partitioner</em>, <em>train_data</em>, <em>test_data</em>, <em>transformation=None</em>, <em>indexer=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/benchmarks/parallel_benchmarks.html#run_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.benchmarks.parallel_benchmarks.run_point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast benchmark function to be executed on threads
-:param mfts: FTS model
-:param partitioner: Universe of Discourse partitioner
-:param train_data: data used to train the model
-:param test_data: ata used to test the model
-:param window_key: id of the sliding window
-:param transformation: data transformation
-:param indexer: seasonal indexer
-:return: a dictionary with the benchmark results</p>
 </dd></dl>
 
 </div>
@@ -1554,80 +1708,37 @@ informing the list of dispy nodes on ‘nodes’ parameter.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pyFTS.benchmarks">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.benchmarks" title="Permalink to this headline">¶</a></h2>
-<p>pyFTS module for benchmarking the FTS models</p>
-</div>
 </div>
 
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">pyFTS.benchmarks package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks.Measures">pyFTS.benchmarks.Measures module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks.ResidualAnalysis">pyFTS.benchmarks.ResidualAnalysis module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks.Util">pyFTS.benchmarks.Util module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks.arima">pyFTS.benchmarks.arima module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks.benchmarks">pyFTS.benchmarks.benchmarks module</a></li>
-<li><a class="reference internal" href="#pyfts-benchmarks-distributed-benchmarks-module">pyFTS.benchmarks.distributed_benchmarks module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks.knn">pyFTS.benchmarks.knn module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks.naive">pyFTS.benchmarks.naive module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks.parallel_benchmarks">pyFTS.benchmarks.parallel_benchmarks module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks.quantreg">pyFTS.benchmarks.quantreg module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.benchmarks">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/pyFTS.benchmarks.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/pyFTS.benchmarks.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyFTS.common.html" title="pyFTS.common package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyFTS.html" title="pyFTS package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+    </div>
   </body>
 </html>

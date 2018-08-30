@@ -1,6 +1,14 @@
 pyFTS.data package
 ==================
 
+Module contents
+---------------
+
+.. automodule:: pyFTS.data
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -125,10 +133,4 @@ pyFTS.data.sunspots module
     :show-inheritance:
 
 
-Module contents
----------------
 
-.. automodule:: pyFTS.data
-    :members:
-    :undoc-members:
-    :show-inheritance:

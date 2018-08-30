@@ -1,20 +1,31 @@
+"""
+O. E. Rössler, Phys. Lett. 57A, 397 (1976).
+
+dx/dt = -z - y
+dy/dt = x + ay
+dz/dt = b + z( x - c )
+
+"""
+
 import numpy as np
 import pandas as pd
 
 
 def get_data(var, a = 0.2, b = 0.2, c = 5.7, dt = 0.01,
                   initial_values = [0.001, 0.001, 0.001], iterations=5000):
+    """
+    Get a simple univariate time series data.
+
+    :param var: the dataset field name to extract
+    :return: numpy array
+    """
     return get_dataframe(a, b, c, dt, initial_values, iterations)[var].values
 
 
 def get_dataframe(a = 0.2, b = 0.2, c = 5.7, dt = 0.01,
                   initial_values = [0.001, 0.001, 0.001], iterations=5000):
     '''
-    O. E. Rössler, Phys. Lett. 57A, 397 (1976).
-
-    dx/dt = -z - y
-    dy/dt = x + ay
-    dz/dt = b + z( x - c )
+    Return a dataframe with the multivariate Rössler Map time series (x, y, z).
 
     :param a: Equation coefficient. Default value: 0.2
     :param b: Equation coefficient. Default value: 0.2

@@ -1,3 +1,9 @@
+"""
+Monthly totals of a airline passengers from USA, from January 1949 through December 1960.
+
+Source: Hyndman, R.J., Time Series Data Library, http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/.
+"""
+
 from pyFTS.data import common
 import pandas as pd
 import numpy as np

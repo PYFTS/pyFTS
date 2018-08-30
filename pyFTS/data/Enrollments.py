@@ -1,3 +1,7 @@
+"""
+Yearly University of Alabama enrollments from 1971 to 1992.
+"""
+
 from pyFTS.data import common
 import pandas as pd
 import numpy as np

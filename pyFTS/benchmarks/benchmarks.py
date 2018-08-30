@@ -319,7 +319,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
 def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
     """
-    Point forecast benchmark function to be executed on cluster nodes
+    Run the point forecasting benchmarks
 
     :param mfts: FTS model
     :param partitioner: Universe of Discourse partitioner
@@ -383,7 +383,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
 
 def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
     """
-    Interval forecast benchmark function to be executed on cluster nodes
+    Run the interval forecasting benchmarks
 
     :param mfts: FTS model
     :param partitioner: Universe of Discourse partitioner
@@ -442,7 +442,7 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
 
 def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
     """
-    Probabilistic forecast benchmark function to be executed on cluster nodes
+    Run the probabilistic forecasting benchmarks
 
     :param mfts: FTS model
     :param partitioner: Universe of Discourse partitioner
@@ -504,6 +504,15 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
 
 
 def process_point_jobs(dataset, tag,  job, conn):
+    """
+    Extract information from a dictionary with point benchmark results and save it on a database
+
+    :param dataset: the benchmark dataset name
+    :param tag: alias for the benchmark group being executed
+    :param job: a dictionary with the benchmark results
+    :param conn: a connection to a Sqlite database
+    :return:
+    """
 
     data = bUtil.process_common_data(dataset, tag, 'point',job)
 
@@ -522,6 +531,15 @@ def process_point_jobs(dataset, tag,  job, conn):
 
 
 def process_interval_jobs(dataset, tag, job, conn):
+    """
+    Extract information from an dictionary with interval benchmark results and save it on a database
+
+    :param dataset: the benchmark dataset name
+    :param tag: alias for the benchmark group being executed
+    :param job: a dictionary with the benchmark results
+    :param conn: a connection to a Sqlite database
+    :return:
+    """
 
     data = bUtil.process_common_data(dataset, tag, 'interval', job)
 
@@ -558,6 +576,15 @@ def process_interval_jobs(dataset, tag, job, conn):
 
 
 def process_probabilistic_jobs(dataset, tag,  job, conn):
+    """
+    Extract information from an dictionary with probabilistic benchmark results and save it on a database
+
+    :param dataset: the benchmark dataset name
+    :param tag: alias for the benchmark group being executed
+    :param job: a dictionary with the benchmark results
+    :param conn: a connection to a Sqlite database
+    :return:
+    """
 
     data = bUtil.process_common_data(dataset, tag,  'density', job)
 
@@ -573,6 +600,16 @@ def process_probabilistic_jobs(dataset, tag,  job, conn):
 
 
 def print_point_statistics(data, models, externalmodels = None, externalforecasts = None, indexers=None):
+    """
+    Run point benchmarks on given models and data and print the results
+
+    :param data: test data
+    :param models: a list of FTS models to benchmark
+    :param externalmodels: a list with benchmark models (façades for other methods)
+    :param externalforecasts:
+    :param indexers:
+    :return:
+    """
     ret = "Model		& Order     & RMSE		& SMAPE      & Theil's U		\\\\ \n"
     for count,model in enumerate(models,start=0):
         _rmse, _smape, _u = Measures.get_point_statistics(data, model, indexers)
@@ -596,6 +633,13 @@ def print_point_statistics(data, models, externalmodels = None, externalforecast
 
 
 def print_interval_statistics(original, models):
+    """
+    Run interval benchmarks on given models and data and print the results
+
+    :param data: test data
+    :param models: a list of FTS models to benchmark
+    :return:
+    """
     ret = "Model	& Order     & Sharpness		& Resolution		& Coverage & .05  & .25 & .75 & .95	\\\\ \n"
     for fts in models:
         _sharp, _res, _cov, _q5, _q25, _q75, _q95  = Measures.get_interval_statistics(original, fts)
@@ -612,6 +656,13 @@ def print_interval_statistics(original, models):
 
 
 def print_distribution_statistics(original, models, steps, resolution):
+    """
+    Run probabilistic benchmarks on given models and data and print the results
+
+    :param data: test data
+    :param models: a list of FTS models to benchmark
+    :return:
+    """
     ret = "Model	& Order     &  Interval & Distribution	\\\\ \n"
     for fts in models:
         _crps1, _crps2, _t1, _t2 = Measures.get_distribution_statistics(original, fts, steps, resolution)
@@ -703,6 +754,9 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
 
 
 def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to):
+    """
+    Auxiliar function to plot_compared_intervals_ahead
+    """
     from matplotlib.patches import Rectangle
     from matplotlib.collections import PatchCollection
     patches = []

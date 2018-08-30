@@ -1,3 +1,9 @@
+"""
+Monthly sunspot numbers from 1749 to May 2016
+
+Source: https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/
+"""
+
 from pyFTS.data import common
 import pandas as pd
 import numpy as np

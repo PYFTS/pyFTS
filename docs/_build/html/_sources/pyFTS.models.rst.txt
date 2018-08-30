@@ -1,6 +1,15 @@
 pyFTS.models package
 ====================
 
+Module contents
+---------------
+
+.. automodule:: pyFTS.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+
 Subpackages
 -----------
 
@@ -14,6 +23,14 @@ Subpackages
 Submodules
 ----------
 
+pyFTS.models.song module
+------------------------
+
+.. automodule:: pyFTS.models.song
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyFTS.models.chen module
 ------------------------
 
@@ -21,6 +38,15 @@ pyFTS.models.chen module
     :members:
     :undoc-members:
     :show-inheritance:
+
+pyFTS.models.yu module
+----------------------
+
+.. automodule:: pyFTS.models.yu
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 pyFTS.models.cheng module
 -------------------------
@@ -78,27 +104,6 @@ pyFTS.models.sadaei module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.models.song module
-------------------------
-
-.. automodule:: pyFTS.models.song
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyFTS.models.yu module
-----------------------
-
-.. automodule:: pyFTS.models.yu
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 
-Module contents
----------------
 
-.. automodule:: pyFTS.models
-    :members:
-    :undoc-members:
-    :show-inheritance:

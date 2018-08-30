@@ -1,6 +1,14 @@
 pyFTS.common package
 ====================
 
+Module contents
+---------------
+
+.. automodule:: pyFTS.common
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -85,10 +93,4 @@ pyFTS.common.tree module
     :show-inheritance:
 
 
-Module contents
----------------
 
-.. automodule:: pyFTS.common
-    :members:
-    :undoc-members:
-    :show-inheritance:

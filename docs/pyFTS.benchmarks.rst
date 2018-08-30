@@ -1,8 +1,25 @@
 pyFTS.benchmarks package
 ========================
 
+Module contents
+---------------
+
+.. automodule:: pyFTS.benchmarks
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+
 Submodules
 ----------
+
+pyFTS.benchmarks.benchmarks module
+----------------------------------
+
+.. automodule:: pyFTS.benchmarks.benchmarks
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 pyFTS.benchmarks.Measures module
 --------------------------------
@@ -36,22 +53,6 @@ pyFTS.benchmarks.arima module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.benchmarks.benchmarks module
-----------------------------------
-
-.. automodule:: pyFTS.benchmarks.benchmarks
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyFTS.benchmarks.distributed\_benchmarks module
------------------------------------------------
-
-.. automodule:: pyFTS.benchmarks.distributed_benchmarks
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pyFTS.benchmarks.knn module
 ---------------------------
 
@@ -68,14 +69,6 @@ pyFTS.benchmarks.naive module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.benchmarks.parallel\_benchmarks module
---------------------------------------------
-
-.. automodule:: pyFTS.benchmarks.parallel_benchmarks
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pyFTS.benchmarks.quantreg module
 --------------------------------
 
@@ -85,10 +78,4 @@ pyFTS.benchmarks.quantreg module
     :show-inheritance:
 
 
-Module contents
----------------
 
-.. automodule:: pyFTS.benchmarks
-    :members:
-    :undoc-members:
-    :show-inheritance:

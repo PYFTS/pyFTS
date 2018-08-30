@@ -17,6 +17,12 @@ from pyFTS.common import Util
 
 
 def open_benchmark_db(name):
+    """
+    Open a connection with a Sqlite database designed to store benchmark results.
+
+    :param name: database filenem
+    :return: a sqlite3 database connection
+    """
     conn = sqlite3.connect(name)
 
     #performance optimizations
@@ -28,6 +34,11 @@ def open_benchmark_db(name):
 
 
 def create_benchmark_tables(conn):
+    """
+    Create a sqlite3 table designed to store benchmark results.
+
+    :param conn: a sqlite3 database connection
+    """
     c = conn.cursor()
 
     c.execute('''CREATE TABLE if not exists benchmarks(
@@ -40,6 +51,29 @@ def create_benchmark_tables(conn):
 
 
 def insert_benchmark(data, conn):
+    """
+    Insert benchmark data on database
+
+    :param data: a tuple with the benchmark data with format:
+
+    ID: integer incremental primary key
+    Date: Date/hour of benchmark execution
+    Dataset: Identify on which dataset the dataset was performed
+    Tag: a user defined word that indentify a benchmark set
+    Type: forecasting type (point, interval, distribution)
+    Model: FTS model
+    Transformation: The name of data transformation, if one was used
+    Order: the order of the FTS method
+    Scheme: UoD partitioning scheme
+    Partitions: Number of partitions
+    Size: Number of rules of the FTS model
+    Steps: prediction horizon, i. e., the number of steps ahead
+    Measure: accuracy measure
+    Value: the measure value
+
+    :param conn: a sqlite3 database connection
+    :return:
+    """
     c = conn.cursor()
 
     c.execute("INSERT INTO benchmarks(Date, Dataset, Tag, Type, Model, "
@@ -50,6 +84,15 @@ def insert_benchmark(data, conn):
 
 
 def process_common_data(dataset, tag, type, job):
+    """
+    Wraps benchmark information on a tuple for sqlite database
+
+    :param dataset: benchmark dataset
+    :param tag: benchmark set alias
+    :param type: forecasting type
+    :param job: a dictionary with benchmark data
+    :return: tuple for sqlite database
+    """
     model = job["obj"]
     if model.benchmark_only:
         data = [dataset, tag, type, model.shortname,
@@ -66,6 +109,13 @@ def process_common_data(dataset, tag, type, job):
 
 
 def get_dataframe_from_bd(file, filter):
+    """
+    Query the sqlite benchmark database and return a pandas dataframe with the results
+
+    :param file: the url of the benchmark database
+    :param filter: sql conditions to filter
+    :return: pandas dataframe with the query results
+    """
     con = sqlite3.connect(file)
     sql = "SELECT * from benchmarks"
     if filter is not None:

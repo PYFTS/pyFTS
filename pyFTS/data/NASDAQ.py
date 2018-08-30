@@ -1,3 +1,11 @@
+"""
+National Association of Securities Dealers Automated Quotations - Composite Index (NASDAQ IXIC)
+
+Daily averaged index by business day, from 2000 to 2016.
+
+Source: http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&selected=IXIC
+"""
+
 from pyFTS.data import common
 import pandas as pd
 import numpy as np

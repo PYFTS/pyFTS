@@ -1,3 +1,11 @@
+"""
+S&P500 - Standard & Poor's 500
+
+Daily averaged index, by business day, from 1950 to 2017.
+
+Source: https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC
+"""
+
 from pyFTS.data import common
 import pandas as pd
 import numpy as np

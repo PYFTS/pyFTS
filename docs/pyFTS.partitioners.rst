@@ -1,33 +1,25 @@
 pyFTS.partitioners package
 ==========================
 
+Module contents
+---------------
+
+.. automodule:: pyFTS.partitioners
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
-pyFTS.partitioners.CMeans module
---------------------------------
+pyFTS.partitioners.partitioner module
+-------------------------------------
 
-.. automodule:: pyFTS.partitioners.CMeans
+.. automodule:: pyFTS.partitioners.partitioner
     :members:
     :undoc-members:
     :show-inheritance:
-
-pyFTS.partitioners.Entropy module
----------------------------------
-
-.. automodule:: pyFTS.partitioners.Entropy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyFTS.partitioners.FCM module
------------------------------
-
-.. automodule:: pyFTS.partitioners.FCM
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+    
 pyFTS.partitioners.Grid module
 ------------------------------
 
@@ -40,6 +32,30 @@ pyFTS.partitioners.Huarng module
 --------------------------------
 
 .. automodule:: pyFTS.partitioners.Huarng
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyFTS.partitioners.Entropy module
+---------------------------------
+
+.. automodule:: pyFTS.partitioners.Entropy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyFTS.partitioners.CMeans module
+--------------------------------
+
+.. automodule:: pyFTS.partitioners.CMeans
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyFTS.partitioners.FCM module
+-----------------------------
+
+.. automodule:: pyFTS.partitioners.FCM
     :members:
     :undoc-members:
     :show-inheritance:
@@ -60,19 +76,7 @@ pyFTS.partitioners.parallel\_util module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.partitioners.partitioner module
--------------------------------------
-
-.. automodule:: pyFTS.partitioners.partitioner
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 
-Module contents
----------------
 
-.. automodule:: pyFTS.partitioners
-    :members:
-    :undoc-members:
-    :show-inheritance:
+

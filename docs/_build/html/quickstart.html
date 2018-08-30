@@ -1,0 +1,208 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyFTS Quick Start &#8212; pyFTS 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyFTS" href="modules.html" />
+    <link rel="prev" title="Welcome to pyFTS’s documentation!" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="pyFTS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pyFTS’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.2.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_heading2.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyFTS Quick Start</a><ul>
+<li><a class="reference internal" href="#how-to-install-pyfts">How to install pyFTS?</a></li>
+<li><a class="reference internal" href="#what-are-fuzzy-time-series-fts">What are Fuzzy Time Series (FTS)?</a></li>
+<li><a class="reference internal" href="#usage-examples">Usage examples</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to pyFTS’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="next chapter">pyFTS</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/quickstart.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyfts-quick-start">
+<h1>pyFTS Quick Start<a class="headerlink" href="#pyfts-quick-start" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="how-to-install-pyfts">
+<h2>How to install pyFTS?<a class="headerlink" href="#how-to-install-pyfts" title="Permalink to this headline">¶</a></h2>
+<img alt="https://img.shields.io/badge/Made%20with-Python-1f425f.svg" src="https://img.shields.io/badge/Made%20with-Python-1f425f.svg" /><p>Before of all, pyFTS was developed and tested with Python 3.6. To install pyFTS using pip tool</p>
+<blockquote>
+<div>pip install -U pyFTS</div></blockquote>
+<p>Ou clone directly from the GitHub repo for the most recent review:</p>
+<blockquote>
+<div>pip install -U git+https://github.com/PYFTS/pyFTS</div></blockquote>
+</div>
+<div class="section" id="what-are-fuzzy-time-series-fts">
+<h2>What are Fuzzy Time Series (FTS)?<a class="headerlink" href="#what-are-fuzzy-time-series-fts" title="Permalink to this headline">¶</a></h2>
+<p>Fuzzy Time Series (FTS) are non parametric methods for time series forecasting based on Fuzzy Theory.  The original method was proposed by [1] and improved later by many researchers. The general approach of the FTS methods, based on [2] is listed below:</p>
+<ol class="arabic simple">
+<li><strong>Data preprocessing</strong>: Data transformation functions contained at <a class="reference external" href="https://github.com/PYFTS/pyFTS/blob/master/pyFTS/common/Transformations.py">pyFTS.common.Transformations</a>, like differentiation, Box-Cox, scaling and normalization.</li>
+<li><strong>Universe of Discourse Partitioning</strong>: This is the most important step. Here, the range of values of the numerical time series <em>Y(t)</em> will be splited in overlapped intervals and for each interval will be created a Fuzzy Set. This step is performed by pyFTS.partition module and its classes (for instance GridPartitioner, EntropyPartitioner, etc). The main parameters are:</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>the number of intervals</li>
+<li>which fuzzy membership function (on <a class="reference external" href="https://github.com/PYFTS/pyFTS/blob/master/pyFTS/common/Membership.py">pyFTS.common.Membership</a>)</li>
+<li>partition scheme (<a class="reference external" href="https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Grid.py">GridPartitioner</a>, <a class="reference external" href="https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Entropy.py">EntropyPartitioner</a>, <a class="reference external" href="https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/FCM.py">FCMPartitioner</a>, <a class="reference external" href="https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/CMeans.py">CMeansPartitioner</a>, <a class="reference external" href="https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Huarng.py">HuarngPartitioner</a>)</li>
+</ul>
+<p>Check out the jupyter notebook on <a class="reference external" href="https://github.com/PYFTS/pyFTS/blob/master/pyFTS/notebooks/Partitioners.ipynb">pyFTS/notebooks/Partitioners.ipynb</a> for sample codes.</p>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><strong>Data Fuzzyfication</strong>: Each data point of the numerical time series <em>Y(t)</em> will be translated to a fuzzy representation (usually one or more fuzzy sets), and then a fuzzy time series <em>F(t)</em> is created.</li>
+</ol>
+<p>4. <strong>Generation of Fuzzy Rules</strong>: In this step the temporal transition rules are created. These rules depends on the method and their characteristics:
+- <em>order</em>: the number of time lags used on forecasting
+- <em>weights</em>: the weighted models introduce weights on fuzzy rules for smoothing
+- <em>seasonality</em>: seasonality models
+- <em>steps ahead</em>: the number of steps ahed to predict. Almost all standard methods are based on one-step-ahead forecasting
+- <em>forecasting type</em>: Almost all standard methods are point-based, but pyFTS also provides intervalar and probabilistic forecasting methods.</p>
+<ol class="arabic simple" start="5">
+<li><strong>Forecasting</strong>: The forecasting step takes a sample (with minimum length equal to the model’s order) and generate a fuzzy outputs (fuzzy set(s)) for the next time ahead.</li>
+<li><strong>Defuzzyfication</strong>: This step transform the fuzzy forecast into a real number.</li>
+<li><strong>Data postprocessing</strong>: The inverse operations of step 1.</li>
+</ol>
+</div>
+<div class="section" id="usage-examples">
+<h2>Usage examples<a class="headerlink" href="#usage-examples" title="Permalink to this headline">¶</a></h2>
+<p>There is nothing better than good code examples to start. <a class="reference external" href="https://github.com/PYFTS/pyFTS/tree/master/pyFTS/notebooks">Then check out the demo Jupyter Notebooks of the implemented method os pyFTS!</a>.</p>
+<p>A Google Colab example can also be found <a class="reference external" href="https://drive.google.com/file/d/1zRBCHXOawwgmzjEoKBgmvBqkIrKxuaz9/view?usp=sharing">here</a>.</p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><ol class="first upperalpha" start="17">
+<li>Song and B. S. Chissom, “Fuzzy time series and its models,” Fuzzy Sets Syst., vol. 54, no. 3, pp. 269–277, 1993.</li>
+</ol>
+</li>
+<li>S.-M. Chen, “Forecasting enrollments based on fuzzy time series,” Fuzzy Sets Syst., vol. 81, no. 3, pp. 311–319, 1996.</li>
+<li><ol class="first upperalpha" start="3">
+<li><ol class="first upperalpha" start="8">
+<li>Cheng, R. J. Chang, and C. A. Yeh, “Entropy-based and trapezoidal fuzzification-based fuzzy time series approach for forecasting IT project cost”. Technol. Forecast. Social Change, vol. 73, no. 5, pp. 524–542, Jun. 2006.</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><ol class="first upperalpha" start="11">
+<li><ol class="first upperalpha" start="8">
+<li>Huarng, “Effective lengths of intervals to improve forecasting in fuzzy time series”. Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>H.-K. Yu, “Weighted fuzzy time series models for TAIEX forecasting”. Phys. A Stat. Mech. its Appl., vol. 349, no. 3, pp. 609–624, 2005.</li>
+<li><ol class="first upperalpha" start="18">
+<li>Efendi, Z. Ismail, and M. M. Deris, “Improved weight Fuzzy Time Series as used in the exchange rates forecasting of US Dollar to Ringgit Malaysia,” Int. J. Comput. Intell. Appl., vol. 12, no. 1, p. 1350005, 2013.</li>
+</ol>
+</li>
+<li><ol class="first upperalpha" start="8">
+<li><ol class="first upperalpha" start="10">
+<li>Sadaei, R. Enayatifar, A. H. Abdullah, and A. Gani, “Short-term load forecasting using a hybrid model with a refined exponentially weighted fuzzy time series and an improved harmony search,” Int. J. Electr. Power Energy Syst., vol. 62, no. from 2005, pp. 118–129, 2014.</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>C.-H. Cheng, Y.-S. Chen, and Y.-L. Wu, “Forecasting innovation diffusion of products using trend-weighted fuzzy time-series model,” Expert Syst. Appl., vol. 36, no. 2, pp. 1826–1832, 2009.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="pyFTS"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pyFTS’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.2.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+    </div>
+  </body>
+</html>
