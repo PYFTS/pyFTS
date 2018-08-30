@@ -14,6 +14,7 @@ from pyFTS.probabilistic import ProbabilityDistribution
 def acf(data, k):
     """
     Autocorrelation function estimative
+
     :param data: 
     :param k: 
     :return: 
@@ -31,6 +32,7 @@ def acf(data, k):
 def rmse(targets, forecasts):
     """
     Root Mean Squared Error
+
     :param targets: 
     :param forecasts: 
     :return: 
@@ -45,6 +47,7 @@ def rmse(targets, forecasts):
 def rmse_interval(targets, forecasts):
     """
     Root Mean Squared Error
+
     :param targets: 
     :param forecasts: 
     :return: 
@@ -56,6 +59,7 @@ def rmse_interval(targets, forecasts):
 def mape(targets, forecasts):
     """
     Mean Average Percentual Error
+
     :param targets: 
     :param forecasts: 
     :return: 
@@ -70,6 +74,7 @@ def mape(targets, forecasts):
 def smape(targets, forecasts, type=2):
     """
     Symmetric Mean Average Percentual Error
+
     :param targets: 
     :param forecasts: 
     :param type: 
@@ -95,6 +100,7 @@ def mape_interval(targets, forecasts):
 def UStatistic(targets, forecasts):
     """
     Theil's U Statistic
+
     :param targets: 
     :param forecasts: 
     :return: 
@@ -116,6 +122,7 @@ def UStatistic(targets, forecasts):
 def TheilsInequality(targets, forecasts):
     """
     Theil’s Inequality Coefficient
+
     :param targets: 
     :param forecasts: 
     :return: 
@@ -132,6 +139,7 @@ def TheilsInequality(targets, forecasts):
 def BoxPierceStatistic(data, h):
     """
     Q Statistic for Box-Pierce test
+
     :param data: 
     :param h: 
     :return: 
@@ -147,6 +155,7 @@ def BoxPierceStatistic(data, h):
 def BoxLjungStatistic(data, h):
     """
     Q Statistic for Ljung–Box test
+
     :param data: 
     :param h: 
     :return: 
@@ -186,7 +195,8 @@ def coverage(targets, forecasts):
 
 def pinball(tau, target, forecast):
     """
-    Pinball loss function. Measure the distance of forecast to the tau-quantile of the target 
+    Pinball loss function. Measure the distance of forecast to the tau-quantile of the target
+
     :param tau: quantile value in the range (0,1)
     :param target: 
     :param forecast: 
@@ -201,6 +211,7 @@ def pinball(tau, target, forecast):
 def pinball_mean(tau, targets, forecasts):
     """
     Mean pinball loss value of the forecast for a given tau-quantile of the targets
+
     :param tau: quantile value in the range (0,1)
     :param targets: list of target values
     :param forecasts: list of prediction intervals
@@ -227,6 +238,7 @@ def winkler_score(tau, target, forecast):
 def winkler_mean(tau, targets, forecasts):
     """
     Mean Winkler score value of the forecast for a given tau-quantile of the targets
+
     :param tau: quantile value in the range (0,1)
     :param targets: list of target values
     :param forecasts: list of prediction intervals
@@ -280,6 +292,7 @@ def heavyside_cdf(bins, targets):
 def crps(targets, densities):
     '''
     Continuous Ranked Probability Score
+
     :param targets: a list with the target values
     :param densities: a list with pyFTS.probabil objectsistic.ProbabilityDistribution
     :return: float
@@ -299,6 +312,7 @@ def crps(targets, densities):
 def get_point_statistics(data, model, **kwargs):
     '''
     Condensate all measures for point forecasters
+
     :param data: test data
     :param model: FTS model with point forecasting capability
     :param kwargs:
@@ -356,6 +370,7 @@ def get_point_statistics(data, model, **kwargs):
 def get_interval_statistics(data, model, **kwargs):
     '''
     Condensate all measures for point interval forecasters
+
     :param data: test data
     :param model: FTS model with interval forecasting capability
     :param kwargs:
@@ -402,6 +417,7 @@ def get_interval_statistics(data, model, **kwargs):
 def get_distribution_statistics(data, model, **kwargs):
     '''
     Get CRPS statistic and time for a forecasting model
+
     :param data: test data
     :param model: FTS model with probabilistic forecasting capability
     :param kwargs:

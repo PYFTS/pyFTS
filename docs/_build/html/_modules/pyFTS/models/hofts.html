@@ -1,0 +1,216 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyFTS.models.hofts &#8212; pyFTS 1.2.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyFTS.models.hofts</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">High Order FTS</span>
+
+<span class="sd">Severiano, S. A. Jr; Silva, P. C. L.; Sadaei, H. J.; Guimarães, F. G. Very Short-term Solar Forecasting</span>
+<span class="sd">using Fuzzy Time Series. 2017 IEEE International Conference on Fuzzy Systems. DOI10.1109/FUZZ-IEEE.2017.8015732</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">FLR</span><span class="p">,</span> <span class="n">fts</span><span class="p">,</span> <span class="n">flrg</span><span class="p">,</span> <span class="n">tree</span>
+
+<div class="viewcode-block" id="HighOrderFLRG"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.hofts.HighOrderFLRG">[docs]</a><span class="k">class</span> <span class="nc">HighOrderFLRG</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">FLRG</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Conventional High Order Fuzzy Logical Relationship Group&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HighOrderFLRG</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LHS</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strlhs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="HighOrderFLRG.append_rhs"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.hofts.HighOrderFLRG.append_rhs">[docs]</a>    <span class="k">def</span> <span class="nf">append_rhs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span></div>
+
+<div class="viewcode-block" id="HighOrderFLRG.append_lhs"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.hofts.HighOrderFLRG.append_lhs">[docs]</a>    <span class="k">def</span> <span class="nf">append_lhs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LHS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">+</span> <span class="n">c</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; -&gt; &quot;</span> <span class="o">+</span> <span class="n">tmp</span>
+
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HighOrderFTS"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.hofts.HighOrderFTS">[docs]</a><span class="k">class</span> <span class="nc">HighOrderFTS</span><span class="p">(</span><span class="n">fts</span><span class="o">.</span><span class="n">FTS</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Conventional High Order Fuzzy Time Series&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HighOrderFTS</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;High Order FTS&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortname</span> <span class="o">=</span> <span class="s2">&quot;HOFTS&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="s2">&quot;Severiano, Silva, Sadaei and Guimarães&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_high_order</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_order</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lags</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lags&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configure_lags</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HighOrderFTS.configure_lags"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.hofts.HighOrderFTS.configure_lags">[docs]</a>    <span class="k">def</span> <span class="nf">configure_lags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;order&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;lags&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lags</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lags&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lags</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lags</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HighOrderFTS.generate_lhs_flrg"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.hofts.HighOrderFTS.generate_lhs_flrg">[docs]</a>    <span class="k">def</span> <span class="nf">generate_lhs_flrg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
+        <span class="n">lags</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">flrgs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">ct</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lags</span><span class="p">):</span>
+            <span class="n">lhs</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">ordered_sets</span>
+                   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="n">o</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_cut</span><span class="p">]</span>
+            <span class="n">lags</span><span class="p">[</span><span class="n">ct</span><span class="p">]</span> <span class="o">=</span> <span class="n">lhs</span>
+
+        <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">FLRGTreeNode</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">tree</span><span class="o">.</span><span class="n">build_tree_without_order</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">lags</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Trace the possible paths</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">paths</span><span class="p">():</span>
+            <span class="n">flrg</span> <span class="o">=</span> <span class="n">HighOrderFLRG</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">,</span> <span class="n">p</span><span class="p">))))</span>
+
+            <span class="k">for</span> <span class="n">lhs</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                <span class="n">flrg</span><span class="o">.</span><span class="n">append_lhs</span><span class="p">(</span><span class="n">lhs</span><span class="p">)</span>
+
+            <span class="n">flrgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flrg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">flrgs</span></div>
+
+<div class="viewcode-block" id="HighOrderFTS.generate_flrg"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.hofts.HighOrderFTS.generate_flrg">[docs]</a>    <span class="k">def</span> <span class="nf">generate_flrg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FLR: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+
+            <span class="n">sample</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span><span class="p">:</span> <span class="n">k</span><span class="p">]</span>
+
+            <span class="n">rhs</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">ordered_sets</span>
+                   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_cut</span><span class="p">]</span>
+
+            <span class="n">flrgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_lhs_flrg</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">flrg</span> <span class="ow">in</span> <span class="n">flrgs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span> <span class="o">=</span> <span class="n">flrg</span><span class="p">;</span>
+
+                <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">rhs</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">st</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HighOrderFTS.train"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.hofts.HighOrderFTS.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configure_lags</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_flrg</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HighOrderFTS.forecast"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.hofts.HighOrderFTS.forecast">[docs]</a>    <span class="k">def</span> <span class="nf">forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ndata</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span><span class="p">,</span> <span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">flrgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_lhs_flrg</span><span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span><span class="p">:</span> <span class="n">k</span><span class="p">])</span>
+
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">flrg</span> <span class="ow">in</span> <span class="n">flrgs</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">centroid</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flrg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span>
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_midpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">))</span>
+
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

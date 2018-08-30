@@ -13,13 +13,20 @@ class ProbabilityDistribution(object):
     """
     def __init__(self, type = "KDE", **kwargs):
         self.uod = kwargs.get("uod", None)
+        """Universe of discourse"""
 
         self.data = []
 
         self.type = type
+        """
+        If type is histogram, the PDF is discrete
+        If type is KDE the PDF is continuous
+        """
 
         self.bins = kwargs.get("bins", None)
+        """Number of bins on a discrete PDF"""
         self.labels = kwargs.get("bins_labels", None)
+        """Bins labels on a discrete PDF"""
 
         data = kwargs.get("data", None)
 

@@ -1,0 +1,429 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyFTS.partitioners package &#8212; pyFTS 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyfts-partitioners-package">
+<h1>pyFTS.partitioners package<a class="headerlink" href="#pyfts-partitioners-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyFTS.partitioners.CMeans">
+<span id="pyfts-partitioners-cmeans-module"></span><h2>pyFTS.partitioners.CMeans module<a class="headerlink" href="#module-pyFTS.partitioners.CMeans" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyFTS.partitioners.CMeans.CMeansPartitioner">
+<em class="property">class </em><code class="descclassname">pyFTS.partitioners.CMeans.</code><code class="descname">CMeansPartitioner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/CMeans.html#CMeansPartitioner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
+<dl class="method">
+<dt id="pyFTS.partitioners.CMeans.CMeansPartitioner.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/CMeans.html#CMeansPartitioner.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – training data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.CMeans.c_means">
+<code class="descclassname">pyFTS.partitioners.CMeans.</code><code class="descname">c_means</code><span class="sig-paren">(</span><em>k</em>, <em>dados</em>, <em>tam</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/CMeans.html#c_means"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.CMeans.c_means" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.CMeans.distance">
+<code class="descclassname">pyFTS.partitioners.CMeans.</code><code class="descname">distance</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/CMeans.html#distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.CMeans.distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.partitioners.Entropy">
+<span id="pyfts-partitioners-entropy-module"></span><h2>pyFTS.partitioners.Entropy module<a class="headerlink" href="#module-pyFTS.partitioners.Entropy" title="Permalink to this headline">¶</a></h2>
+<p>C. H. Cheng, R. J. Chang, and C. A. Yeh, “Entropy-based and trapezoidal fuzzification-based fuzzy time series approach for forecasting IT project cost,”
+Technol. Forecast. Social Change, vol. 73, no. 5, pp. 524–542, Jun. 2006.</p>
+<dl class="class">
+<dt id="pyFTS.partitioners.Entropy.EntropyPartitioner">
+<em class="property">class </em><code class="descclassname">pyFTS.partitioners.Entropy.</code><code class="descname">EntropyPartitioner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Entropy.html#EntropyPartitioner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
+<p>Huarng Entropy Partitioner</p>
+<dl class="method">
+<dt id="pyFTS.partitioners.Entropy.EntropyPartitioner.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Entropy.html#EntropyPartitioner.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – training data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.Entropy.PMF">
+<code class="descclassname">pyFTS.partitioners.Entropy.</code><code class="descname">PMF</code><span class="sig-paren">(</span><em>data</em>, <em>threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Entropy.html#PMF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Entropy.PMF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.Entropy.bestSplit">
+<code class="descclassname">pyFTS.partitioners.Entropy.</code><code class="descname">bestSplit</code><span class="sig-paren">(</span><em>data</em>, <em>npart</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Entropy.html#bestSplit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Entropy.bestSplit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.Entropy.entropy">
+<code class="descclassname">pyFTS.partitioners.Entropy.</code><code class="descname">entropy</code><span class="sig-paren">(</span><em>data</em>, <em>threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Entropy.html#entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Entropy.entropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.Entropy.informationGain">
+<code class="descclassname">pyFTS.partitioners.Entropy.</code><code class="descname">informationGain</code><span class="sig-paren">(</span><em>data</em>, <em>thres1</em>, <em>thres2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Entropy.html#informationGain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Entropy.informationGain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.Entropy.splitAbove">
+<code class="descclassname">pyFTS.partitioners.Entropy.</code><code class="descname">splitAbove</code><span class="sig-paren">(</span><em>data</em>, <em>threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Entropy.html#splitAbove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Entropy.splitAbove" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.Entropy.splitBelow">
+<code class="descclassname">pyFTS.partitioners.Entropy.</code><code class="descname">splitBelow</code><span class="sig-paren">(</span><em>data</em>, <em>threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Entropy.html#splitBelow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Entropy.splitBelow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.partitioners.FCM">
+<span id="pyfts-partitioners-fcm-module"></span><h2>pyFTS.partitioners.FCM module<a class="headerlink" href="#module-pyFTS.partitioners.FCM" title="Permalink to this headline">¶</a></h2>
+<p>S. T. Li, Y. C. Cheng, and S. Y. Lin, “A FCM-based deterministic forecasting model for fuzzy time series,”
+Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j.camwa.2008.07.033.</p>
+<dl class="class">
+<dt id="pyFTS.partitioners.FCM.FCMPartitioner">
+<em class="property">class </em><code class="descclassname">pyFTS.partitioners.FCM.</code><code class="descname">FCMPartitioner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/FCM.html#FCMPartitioner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
+<dl class="method">
+<dt id="pyFTS.partitioners.FCM.FCMPartitioner.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/FCM.html#FCMPartitioner.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – training data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.FCM.fuzzy_cmeans">
+<code class="descclassname">pyFTS.partitioners.FCM.</code><code class="descname">fuzzy_cmeans</code><span class="sig-paren">(</span><em>k</em>, <em>dados</em>, <em>tam</em>, <em>m</em>, <em>deltadist=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/FCM.html#fuzzy_cmeans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.FCM.fuzzy_cmeans" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.FCM.fuzzy_distance">
+<code class="descclassname">pyFTS.partitioners.FCM.</code><code class="descname">fuzzy_distance</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/FCM.html#fuzzy_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.FCM.fuzzy_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.FCM.membership">
+<code class="descclassname">pyFTS.partitioners.FCM.</code><code class="descname">membership</code><span class="sig-paren">(</span><em>val</em>, <em>vals</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/FCM.html#membership"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.FCM.membership" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.partitioners.Grid">
+<span id="pyfts-partitioners-grid-module"></span><h2>pyFTS.partitioners.Grid module<a class="headerlink" href="#module-pyFTS.partitioners.Grid" title="Permalink to this headline">¶</a></h2>
+<p>Even Length Grid Partitioner</p>
+<dl class="class">
+<dt id="pyFTS.partitioners.Grid.GridPartitioner">
+<em class="property">class </em><code class="descclassname">pyFTS.partitioners.Grid.</code><code class="descname">GridPartitioner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Grid.html#GridPartitioner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
+<p>Even Length Grid Partitioner</p>
+<dl class="method">
+<dt id="pyFTS.partitioners.Grid.GridPartitioner.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Grid.html#GridPartitioner.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – training data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.partitioners.Huarng">
+<span id="pyfts-partitioners-huarng-module"></span><h2>pyFTS.partitioners.Huarng module<a class="headerlink" href="#module-pyFTS.partitioners.Huarng" title="Permalink to this headline">¶</a></h2>
+<p>K. H. Huarng, “Effective lengths of intervals to improve forecasting in fuzzy time series,”
+Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
+<dl class="class">
+<dt id="pyFTS.partitioners.Huarng.HuarngPartitioner">
+<em class="property">class </em><code class="descclassname">pyFTS.partitioners.Huarng.</code><code class="descname">HuarngPartitioner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Huarng.html#HuarngPartitioner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
+<p>Huarng Empirical Partitioner</p>
+<dl class="method">
+<dt id="pyFTS.partitioners.Huarng.HuarngPartitioner.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Huarng.html#HuarngPartitioner.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – training data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.partitioners.Util">
+<span id="pyfts-partitioners-util-module"></span><h2>pyFTS.partitioners.Util module<a class="headerlink" href="#module-pyFTS.partitioners.Util" title="Permalink to this headline">¶</a></h2>
+<p>Facility methods for pyFTS partitioners module</p>
+<dl class="function">
+<dt id="pyFTS.partitioners.Util.explore_partitioners">
+<code class="descclassname">pyFTS.partitioners.Util.</code><code class="descname">explore_partitioners</code><span class="sig-paren">(</span><em>data, npart, methods=None, mf=None, transformation=None, size=[12, 10], save=False, file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Util.html#explore_partitioners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Util.explore_partitioners" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create partitioners for the mf membership functions and npart partitions and show the partitioning images.
+:data: Time series data
+:npart: Maximum number of partitions of the universe of discourse
+:methods: A list with the partitioning methods to be used
+:mf: A list with the membership functions to be used
+:transformation: a transformation to be used in partitioner
+:size: list, the size of the output image [width, height]
+:save: boolean, if the image will be saved on disk
+:file: string, the file path to save the image
+:return: the list of the built partitioners</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.Util.plot_partitioners">
+<code class="descclassname">pyFTS.partitioners.Util.</code><code class="descname">plot_partitioners</code><span class="sig-paren">(</span><em>data, objs, tam=[12, 10], save=False, file=None, axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Util.html#plot_partitioners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Util.plot_partitioners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.Util.plot_sets">
+<code class="descclassname">pyFTS.partitioners.Util.</code><code class="descname">plot_sets</code><span class="sig-paren">(</span><em>data, sets, titles, size=[12, 10], save=False, file=None, axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Util.html#plot_sets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Util.plot_sets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.partitioners.parallel_util">
+<span id="pyfts-partitioners-parallel-util-module"></span><h2>pyFTS.partitioners.parallel_util module<a class="headerlink" href="#module-pyFTS.partitioners.parallel_util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyFTS.partitioners.parallel_util.explore_partitioners">
+<code class="descclassname">pyFTS.partitioners.parallel_util.</code><code class="descname">explore_partitioners</code><span class="sig-paren">(</span><em>data, npart, methods=None, mf=None, tam=[12, 10], save=False, file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/parallel_util.html#explore_partitioners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.parallel_util.explore_partitioners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.partitioners.partitioner">
+<span id="pyfts-partitioners-partitioner-module"></span><h2>pyFTS.partitioners.partitioner module<a class="headerlink" href="#module-pyFTS.partitioners.partitioner" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyFTS.partitioners.partitioner.Partitioner">
+<em class="property">class </em><code class="descclassname">pyFTS.partitioners.partitioner.</code><code class="descname">Partitioner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Universe of Discourse partitioner. Split data on several fuzzy sets</p>
+<dl class="method">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – training data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><em>counter</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.lower_set">
+<code class="descname">lower_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.lower_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.lower_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.membership_function">
+<code class="descname">membership_function</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.membership_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuzzy membership function (pyFTS.common.Membership)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.name">
+<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>partitioner name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.partitions">
+<code class="descname">partitions</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.partitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the 
+:param ax: 
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.plot_set">
+<code class="descname">plot_set</code><span class="sig-paren">(</span><em>ax</em>, <em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.plot_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.plot_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.prefix">
+<code class="descname">prefix</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>prefix of auto generated partition names</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.setnames">
+<code class="descname">setnames</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.setnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.transformation">
+<code class="descname">transformation</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>data transformation to be applied on data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.upper_set">
+<code class="descname">upper_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.upper_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.upper_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.partitioners">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.partitioners" title="Permalink to this headline">¶</a></h2>
+<p>Module for pyFTS  Universe of Discourse partitioners.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyFTS.partitioners package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.CMeans">pyFTS.partitioners.CMeans module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.Entropy">pyFTS.partitioners.Entropy module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.FCM">pyFTS.partitioners.FCM module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.Grid">pyFTS.partitioners.Grid module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.Huarng">pyFTS.partitioners.Huarng module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.Util">pyFTS.partitioners.Util module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.parallel_util">pyFTS.partitioners.parallel_util module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.partitioner">pyFTS.partitioners.partitioner module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pyFTS.partitioners.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/pyFTS.partitioners.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,3 +1,11 @@
+"""
+SONDA - Sistema de Organização Nacional de Dados Ambientais, from INPE - Instituto Nacional de Pesquisas Espaciais, Brasil.
+
+Brasilia station
+
+Source: http://sonda.ccst.inpe.br/
+
+"""
 from pyFTS.data import common
 import pandas as pd
 import numpy as np
@@ -6,6 +14,7 @@ import numpy as np
 def get_data(field):
     """
     Get a simple univariate time series data.
+
     :param field: the dataset field name to extract
     :return: numpy array
     """
@@ -17,6 +26,7 @@ def get_data(field):
 def get_dataframe():
     """
     Get the complete multivariate time series data.
+
     :return: Pandas DataFrame
     """
     dat = common.get_dataframe('SONDA_BSB.csv.bz2',

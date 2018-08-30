@@ -1,0 +1,177 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyFTS.models.sadaei &#8212; pyFTS 1.2.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyFTS.models.sadaei</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">First Order Exponentialy Weighted Fuzzy Time Series by Sadaei et al. (2013)</span>
+
+<span class="sd">H. J. Sadaei, R. Enayatifar, A. H. Abdullah, and A. Gani, “Short-term load forecasting using a hybrid model with a </span>
+<span class="sd">refined exponentially weighted fuzzy time series and an improved harmony search,” Int. J. Electr. Power Energy Syst., vol. 62, no. from 2005, pp. 118–129, 2014.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span><span class="n">FLR</span><span class="p">,</span><span class="n">fts</span><span class="p">,</span> <span class="n">flrg</span>
+
+<span class="n">default_c</span> <span class="o">=</span> <span class="mf">1.1</span>
+
+
+<div class="viewcode-block" id="ExponentialyWeightedFLRG"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.sadaei.ExponentialyWeightedFLRG">[docs]</a><span class="k">class</span> <span class="nc">ExponentialyWeightedFLRG</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">FLRG</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;First Order Exponentialy Weighted Fuzzy Logical Relationship Group&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">LHS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ExponentialyWeightedFLRG</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LHS</span> <span class="o">=</span> <span class="n">LHS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span><span class="n">default_c</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ExponentialyWeightedFLRG.append_rhs"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.sadaei.ExponentialyWeightedFLRG.append_rhs">[docs]</a>    <span class="k">def</span> <span class="nf">append_rhs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+</span> <span class="mf">1.0</span></div>
+
+<div class="viewcode-block" id="ExponentialyWeightedFLRG.weights"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.sadaei.ExponentialyWeightedFLRG.weights">[docs]</a>    <span class="k">def</span> <span class="nf">weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">wei</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]</span>
+            <span class="n">tot</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">wei</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">k</span> <span class="o">/</span> <span class="n">tot</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">wei</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LHS</span> <span class="o">+</span> <span class="s2">&quot; -&gt; &quot;</span>
+        <span class="n">tmp2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">cc</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">wei</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]</span>
+        <span class="n">tot</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">wei</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp2</span> <span class="o">=</span> <span class="n">tmp2</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+            <span class="n">tmp2</span> <span class="o">=</span> <span class="n">tmp2</span> <span class="o">+</span> <span class="n">c</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">wei</span><span class="p">[</span><span class="n">cc</span><span class="p">]</span> <span class="o">/</span> <span class="n">tot</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+            <span class="n">cc</span> <span class="o">=</span> <span class="n">cc</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">tmp</span> <span class="o">+</span> <span class="n">tmp2</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ExponentialyWeightedFTS"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.sadaei.ExponentialyWeightedFTS">[docs]</a><span class="k">class</span> <span class="nc">ExponentialyWeightedFTS</span><span class="p">(</span><span class="n">fts</span><span class="o">.</span><span class="n">FTS</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;First Order Exponentialy Weighted Fuzzy Time Series&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ExponentialyWeightedFTS</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;EWFTS&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Exponentialy Weighted FTS&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="s2">&quot;Sadaei&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">default_c</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ExponentialyWeightedFTS.generate_flrg"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.sadaei.ExponentialyWeightedFTS.generate_flrg">[docs]</a>    <span class="k">def</span> <span class="nf">generate_flrg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flrs</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">flr</span> <span class="ow">in</span> <span class="n">flrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flr</span><span class="o">.</span><span class="n">LHS</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">flr</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">]</span> <span class="o">=</span> <span class="n">ExponentialyWeightedFLRG</span><span class="p">(</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">);</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">flr</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExponentialyWeightedFTS.train"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.sadaei.ExponentialyWeightedFTS.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">tmpdata</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="o">.</span><span class="n">fuzzyfy_series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;maximum&#39;</span><span class="p">)</span>
+        <span class="n">flrs</span> <span class="o">=</span> <span class="n">FLR</span><span class="o">.</span><span class="n">generate_recurrent_flrs</span><span class="p">(</span><span class="n">tmpdata</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_flrg</span><span class="p">(</span><span class="n">flrs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExponentialyWeightedFTS.forecast"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.sadaei.ExponentialyWeightedFTS.forecast">[docs]</a>    <span class="k">def</span> <span class="nf">forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ordered_sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">ordered_sets</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="o">.</span><span class="n">set_ordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+
+            <span class="n">actual</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="o">.</span><span class="n">get_maximum_membership_fuzzyset</span><span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">actual</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
+                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actual</span><span class="o">.</span><span class="n">centroid</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flrg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">actual</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">mp</span> <span class="o">=</span> <span class="n">flrg</span><span class="o">.</span><span class="n">get_midpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
+
+                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">weights</span><span class="p">()))</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

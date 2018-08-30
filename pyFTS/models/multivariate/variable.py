@@ -11,15 +11,18 @@ class Variable:
     def __init__(self, name, **kwargs):
         """
 
-        :param name: Name of the variable
+        :param name:
         :param \**kwargs: See below
 
         :Keyword Arguments:
             * *alias* -- Alternative name for the variable
         """
         self.name = name
+        """A string with the name of the variable"""
         self.alias = kwargs.get('alias', self.name)
+        """A string with the alias of the variable"""
         self.data_label = kwargs.get('data_label', self.name)
+        """A string with the column name on DataFrame"""
         self.type = kwargs.get('type', 'common')
         self.transformation = kwargs.get('transformation', None)
         self.transformation_params = kwargs.get('transformation_params', None)
@@ -30,6 +33,11 @@ class Variable:
             self.build(**kwargs)
 
     def build(self, **kwargs):
+        """
+
+        :param kwargs:
+        :return:
+        """
         fs = kwargs.get('partitioner', Grid.GridPartitioner)
         mf = kwargs.get('func', Membership.trimf)
         np = kwargs.get('npart', 10)

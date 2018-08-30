@@ -28,6 +28,7 @@ class FuzzySet(FuzzySet.FuzzySet):
     def membership(self, x):
         """
         Calculate the membership value of a given input
+
         :param x: input value
         :return: membership value of x at this fuzzy set
         """
@@ -39,6 +40,7 @@ class FuzzySet(FuzzySet.FuzzySet):
     def append(self, mf, parameters):
         """
         Adds a new function to composition
+
         :param mf:
         :param parameters:
         :return:
@@ -49,6 +51,7 @@ class FuzzySet(FuzzySet.FuzzySet):
     def append_set(self, set):
         """
         Adds a new function to composition
+
         :param mf:
         :param parameters:
         :return:

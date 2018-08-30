@@ -1,0 +1,380 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyFTS.models.ensemble.ensemble &#8212; pyFTS 1.2.3 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyFTS.models.ensemble.ensemble</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: utf8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">SortedCollection</span><span class="p">,</span> <span class="n">fts</span><span class="p">,</span> <span class="n">tree</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models</span> <span class="k">import</span> <span class="n">chen</span><span class="p">,</span> <span class="n">cheng</span><span class="p">,</span> <span class="n">hofts</span><span class="p">,</span> <span class="n">hwang</span><span class="p">,</span> <span class="n">ismailefendi</span><span class="p">,</span> <span class="n">sadaei</span><span class="p">,</span> <span class="n">song</span><span class="p">,</span> <span class="n">yu</span>
+<span class="kn">from</span> <span class="nn">pyFTS.probabilistic</span> <span class="k">import</span> <span class="n">ProbabilityDistribution</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">st</span>
+
+
+<div class="viewcode-block" id="sampler"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.sampler">[docs]</a><span class="k">def</span> <span class="nf">sampler</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">quantiles</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">qt</span> <span class="ow">in</span> <span class="n">quantiles</span><span class="p">:</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="n">qt</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="EnsembleFTS"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS">[docs]</a><span class="k">class</span> <span class="nc">EnsembleFTS</span><span class="p">(</span><span class="n">fts</span><span class="o">.</span><span class="n">FTS</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ensemble FTS</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EnsembleFTS</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortname</span> <span class="o">=</span> <span class="s2">&quot;Ensemble FTS&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Ensemble FTS&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_point_forecasting</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_interval_forecasting</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_probability_forecasting</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_high_order</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="sd">&quot;&quot;&quot;A list of FTS models, the ensemble components&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="sd">&quot;&quot;&quot;A list with the parameters for each component model&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;point_method&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;interval_method&#39;</span><span class="p">,</span> <span class="s1">&#39;quantile&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="EnsembleFTS.append_model"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.append_model">[docs]</a>    <span class="k">def</span> <span class="nf">append_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append a new model to the ensemble</span>
+
+<span class="sd">        :param model: FTS model</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">order</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">order</span>
+
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_multivariate</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">has_seasonality</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">has_seasonality</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="EnsembleFTS.train"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EnsembleFTS.get_models_forecasts"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_models_forecasts">[docs]</a>    <span class="k">def</span> <span class="nf">get_models_forecasts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span> <span class="ow">or</span> <span class="n">model</span><span class="o">.</span><span class="n">has_seasonality</span><span class="p">:</span>
+                <span class="n">forecast</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexer</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+                <span class="n">sample</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">:]</span>
+                <span class="n">forecast</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">forecast</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">forecast</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">forecast</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">forecast</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">forecast</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">forecast</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">forecast</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">forecast</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">tmp</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">forecast</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">forecast</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tmp</span></div>
+
+<div class="viewcode-block" id="EnsembleFTS.get_point"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_point">[docs]</a>    <span class="k">def</span> <span class="nf">get_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">forecasts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_method</span> <span class="o">==</span> <span class="s1">&#39;mean&#39;</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_method</span> <span class="o">==</span> <span class="s1">&#39;median&#39;</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">forecasts</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_method</span> <span class="o">==</span> <span class="s1">&#39;quantile&#39;</span><span class="p">:</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">forecasts</span><span class="p">,</span> <span class="n">alpha</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="EnsembleFTS.get_interval"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_interval">[docs]</a>    <span class="k">def</span> <span class="nf">get_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forecasts</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval_method</span> <span class="o">==</span> <span class="s1">&#39;extremum&#39;</span><span class="p">:</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">forecasts</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval_method</span> <span class="o">==</span> <span class="s1">&#39;quantile&#39;</span><span class="p">:</span>
+            <span class="n">qt_lo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">forecasts</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="n">qt_up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">forecasts</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">qt_lo</span><span class="p">,</span> <span class="n">qt_up</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval_method</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanvar</span><span class="p">(</span><span class="n">forecasts</span><span class="p">))</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mu</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mu</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="EnsembleFTS.get_distribution_interquantile"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_distribution_interquantile">[docs]</a>    <span class="k">def</span> <span class="nf">get_distribution_interquantile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">forecasts</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span>
+        <span class="n">qt_lower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">size</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">qt_upper</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">size</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span> <span class="n">alpha</span><span class="p">)))</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)[</span><span class="n">qt_lower</span> <span class="p">:</span> <span class="n">qt_upper</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="EnsembleFTS.forecast"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast">[docs]</a>    <span class="k">def</span> <span class="nf">forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="s2">&quot;method&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">point_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">,</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">sample</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="p">:</span> <span class="n">k</span><span class="p">]</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_models_forecasts</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+            <span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_point</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="EnsembleFTS.forecast_interval"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_interval">[docs]</a>    <span class="k">def</span> <span class="nf">forecast_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="s2">&quot;method&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interval_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">,</span><span class="s1">&#39;quantile&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
+
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">sample</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="p">:</span> <span class="n">k</span><span class="p">]</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_models_forecasts</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_interval</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="EnsembleFTS.forecast_ahead_interval"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_interval">[docs]</a>    <span class="k">def</span> <span class="nf">forecast_ahead_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="s1">&#39;method&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interval_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">,</span><span class="s1">&#39;quantile&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">samples</span> <span class="o">=</span> <span class="p">[[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">:]]</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">steps</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">):</span>
+            <span class="n">forecasts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">lags</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">):</span> <span class="n">lags</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span>
+
+            <span class="c1"># Build the tree with all possible paths</span>
+
+            <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">FLRGTreeNode</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+            <span class="n">tree</span><span class="o">.</span><span class="n">build_tree_without_order</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">lags</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">paths</span><span class="p">():</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">,</span> <span class="n">p</span><span class="p">))))</span>
+
+                <span class="n">forecasts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_models_forecasts</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+
+            <span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sampler</span><span class="p">(</span><span class="n">forecasts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)))</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_interval</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="EnsembleFTS.forecast_distribution"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">forecast_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">smooth</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;smooth&quot;</span><span class="p">,</span> <span class="s2">&quot;KDE&quot;</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">uod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_UoD</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+
+            <span class="n">sample</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="p">:</span> <span class="n">k</span><span class="p">]</span>
+
+            <span class="n">forecasts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_models_forecasts</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">forecasts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">forecasts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distribution_interquantile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">alpha</span><span class="p">)</span>
+
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">ProbabilityDistribution</span><span class="o">.</span><span class="n">ProbabilityDistribution</span><span class="p">(</span><span class="n">smooth</span><span class="p">,</span> <span class="n">uod</span><span class="o">=</span><span class="n">uod</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">forecasts</span><span class="p">,</span>
+                                                                   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="EnsembleFTS.forecast_ahead_distribution"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">forecast_ahead_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;method&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">point_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">,</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+
+        <span class="n">smooth</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;smooth&quot;</span><span class="p">,</span> <span class="s2">&quot;KDE&quot;</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+
+        <span class="n">uod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_UoD</span><span class="p">()</span>
+
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">start</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">:</span> <span class="n">start</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">steps</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">):</span>
+            <span class="n">forecasts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">lags</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">):</span> <span class="n">lags</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">]</span>
+
+            <span class="c1"># Build the tree with all possible paths</span>
+
+            <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">FLRGTreeNode</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+            <span class="n">tree</span><span class="o">.</span><span class="n">build_tree_without_order</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">lags</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">paths</span><span class="p">():</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">,</span> <span class="n">p</span><span class="p">))))</span>
+
+                <span class="n">forecasts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_models_forecasts</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+
+            <span class="n">sample</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sampler</span><span class="p">(</span><span class="n">forecasts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)))</span>
+
+            <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">forecasts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">forecasts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distribution_interquantile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">alpha</span><span class="p">)</span>
+
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">ProbabilityDistribution</span><span class="o">.</span><span class="n">ProbabilityDistribution</span><span class="p">(</span><span class="n">smooth</span><span class="p">,</span> <span class="n">uod</span><span class="o">=</span><span class="n">uod</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">forecasts</span><span class="p">,</span>
+                                                                   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div></div>
+
+
+<div class="viewcode-block" id="AllMethodEnsembleFTS"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS">[docs]</a><span class="k">class</span> <span class="nc">AllMethodEnsembleFTS</span><span class="p">(</span><span class="n">EnsembleFTS</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AllMethodEnsembleFTS</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_order</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortname</span> <span class="o">=</span><span class="s2">&quot;Ensemble FTS&quot;</span>
+
+<div class="viewcode-block" id="AllMethodEnsembleFTS.set_transformations"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.set_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">set_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">append_transformation</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AllMethodEnsembleFTS.train"><a class="viewcode-back" href="../../../../pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">fo_methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">song</span><span class="o">.</span><span class="n">ConventionalFTS</span><span class="p">,</span> <span class="n">chen</span><span class="o">.</span><span class="n">ConventionalFTS</span><span class="p">,</span> <span class="n">yu</span><span class="o">.</span><span class="n">WeightedFTS</span><span class="p">,</span> <span class="n">cheng</span><span class="o">.</span><span class="n">TrendWeightedFTS</span><span class="p">,</span>
+                      <span class="n">sadaei</span><span class="o">.</span><span class="n">ExponentialyWeightedFTS</span><span class="p">,</span> <span class="n">ismailefendi</span><span class="o">.</span><span class="n">ImprovedWeightedFTS</span><span class="p">]</span>
+
+        <span class="n">ho_methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">hofts</span><span class="o">.</span><span class="n">HighOrderFTS</span><span class="p">,</span> <span class="n">hwang</span><span class="o">.</span><span class="n">HighOrderFTS</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">fo_methods</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">partitioner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_transformations</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">ho_methods</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">partitioner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">min_order</span> <span class="o">&gt;=</span> <span class="n">o</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">o</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_transformations</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">append_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></div></div>
+
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -12,7 +12,9 @@ class KernelSmoothing(object):
     """Kernel Density Estimation"""
     def __init__(self,h, kernel="epanechnikov"):
         self.h = h
+        """Width parameter"""
         self.kernel = kernel
+        """Kernel function"""
         self.transf = Transformations.Scale(min=0,max=1)
 
     def kernel_function(self, u):
@@ -38,6 +40,13 @@ class KernelSmoothing(object):
             return 0.5 * np.exp(-np.abs(u))
 
     def probability(self, x, data):
+        """
+        Probability of the point x on data
+
+        :param x:
+        :param data:
+        :return:
+        """
         l = len(data)
 
         ndata = self.transf.apply(data)

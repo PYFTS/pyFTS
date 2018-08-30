@@ -1,0 +1,280 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyFTS.models.seasonal.SeasonalIndexer &#8212; pyFTS 1.2.3 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyFTS.models.seasonal.SeasonalIndexer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models.seasonal</span> <span class="k">import</span> <span class="n">common</span>
+
+
+<div class="viewcode-block" id="SeasonalIndexer"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer">[docs]</a><span class="k">class</span> <span class="nc">SeasonalIndexer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Seasonal Indexer. Responsible to find the seasonal index of a data point inside its data set</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num_seasons</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_seasons</span> <span class="o">=</span> <span class="n">num_seasons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SeasonalIndexer.get_season_of_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer.get_season_of_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_season_of_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SeasonalIndexer.get_season_by_index"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer.get_season_by_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_season_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">inde</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SeasonalIndexer.get_data_by_season"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer.get_data_by_season">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_by_season</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SeasonalIndexer.get_index_by_season"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer.get_index_by_season">[docs]</a>    <span class="k">def</span> <span class="nf">get_index_by_season</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SeasonalIndexer.get_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SeasonalIndexer.get_index"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer.get_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="LinearSeasonalIndexer"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.LinearSeasonalIndexer">[docs]</a><span class="k">class</span> <span class="nc">LinearSeasonalIndexer</span><span class="p">(</span><span class="n">SeasonalIndexer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Use the data array/list position to index the seasonality &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seasons</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Indexer for array/list position</span>
+<span class="sd">        :param seasons: A list with the season group (i.e: 7 for week, 30 for month, etc)</span>
+<span class="sd">        :param units: A list with the units used for each season group, the default is 1 for each</span>
+<span class="sd">        :param ignore:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LinearSeasonalIndexer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seasons</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span> <span class="o">=</span> <span class="n">seasons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="n">ignore</span>
+
+<div class="viewcode-block" id="LinearSeasonalIndexer.get_season_of_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.LinearSeasonalIndexer.get_season_of_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_season_of_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_season_by_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="LinearSeasonalIndexer.get_season_by_index"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.LinearSeasonalIndexer.get_season_by_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_season_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_seasons</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">season</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">season</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">ct</span><span class="p">,</span> <span class="n">seasonality</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">ct</span><span class="p">])</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="n">ct</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">[</span><span class="n">ct</span><span class="p">]:</span>
+                        <span class="n">season</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">season</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_seasons</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">season</span> <span class="o">=</span> <span class="p">(</span><span class="n">ix</span>  <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">season</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">ct</span><span class="p">,</span> <span class="n">seasonality</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                        <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="n">ix</span>  <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">ct</span><span class="p">])</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="n">ct</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">[</span><span class="n">ct</span><span class="p">]:</span>
+                            <span class="n">season</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">season</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="LinearSeasonalIndexer.get_index_by_season"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.LinearSeasonalIndexer.get_index_by_season">[docs]</a>    <span class="k">def</span> <span class="nf">get_index_by_season</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">ix</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+        <span class="k">for</span> <span class="n">count</span><span class="p">,</span><span class="n">season</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">):</span>
+            <span class="n">ix</span> <span class="o">+=</span> <span class="n">season</span><span class="o">*</span><span class="p">(</span><span class="n">indexes</span><span class="p">[</span><span class="n">count</span><span class="p">])</span>
+
+        <span class="c1">#ix += indexes[-1]</span>
+
+        <span class="k">return</span> <span class="n">ix</span></div>
+
+<div class="viewcode-block" id="LinearSeasonalIndexer.get_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.LinearSeasonalIndexer.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">data</span></div></div>
+
+
+<div class="viewcode-block" id="DataFrameSeasonalIndexer"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DataFrameSeasonalIndexer">[docs]</a><span class="k">class</span> <span class="nc">DataFrameSeasonalIndexer</span><span class="p">(</span><span class="n">SeasonalIndexer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Use the Pandas.DataFrame index position to index the seasonality &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index_fields</span><span class="p">,</span><span class="n">index_seasons</span><span class="p">,</span> <span class="n">data_field</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param index_fields: DataFrame field to use as index</span>
+<span class="sd">        :param index_seasons: A list with the season group, i. e., multiples of positions that are considered a season (i.e: 7 for week, 30 for month, etc)</span>
+<span class="sd">        :param data_fields: DataFrame field to use as data</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DataFrameSeasonalIndexer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_seasons</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">index_fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span> <span class="o">=</span> <span class="n">index_seasons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_field</span> <span class="o">=</span> <span class="n">data_field</span>
+
+<div class="viewcode-block" id="DataFrameSeasonalIndexer.get_season_of_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DataFrameSeasonalIndexer.get_season_of_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_season_of_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="c1">#data = data.copy()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">season</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">season</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="n">ix</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="n">ix</span><span class="p">]</span>
+                    <span class="n">season</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">season</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="DataFrameSeasonalIndexer.get_season_by_index"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DataFrameSeasonalIndexer.get_season_by_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_season_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Operation not available!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataFrameSeasonalIndexer.get_data_by_season"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DataFrameSeasonalIndexer.get_data_by_season">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_by_season</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">season</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">f</span><span class="p">]</span><span class="o">==</span> <span class="n">season</span><span class="p">[</span><span class="n">c</span><span class="p">]]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="n">c</span><span class="p">])</span> <span class="o">==</span> <span class="n">season</span><span class="p">[</span><span class="n">c</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_field</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DataFrameSeasonalIndexer.get_index_by_season"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DataFrameSeasonalIndexer.get_index_by_season">[docs]</a>    <span class="k">def</span> <span class="nf">get_index_by_season</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Operation not available!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataFrameSeasonalIndexer.get_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DataFrameSeasonalIndexer.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DataFrameSeasonalIndexer.set_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DataFrameSeasonalIndexer.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="bp">self</span><span class="o">.</span><span class="n">data_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">data</span></div></div>
+
+
+<div class="viewcode-block" id="DateTimeSeasonalIndexer"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DateTimeSeasonalIndexer">[docs]</a><span class="k">class</span> <span class="nc">DateTimeSeasonalIndexer</span><span class="p">(</span><span class="n">SeasonalIndexer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Use a Pandas.DataFrame date field to index the seasonality &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">date_field</span><span class="p">,</span> <span class="n">index_fields</span><span class="p">,</span> <span class="n">index_seasons</span><span class="p">,</span> <span class="n">data_field</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param date_field: DataFrame field that contains the datetime field used on index</span>
+<span class="sd">        :param index_fields: List with commom.DataTime fields</span>
+<span class="sd">        :param index_seasons: Multiples of index_fields, the default is 1</span>
+<span class="sd">        :param data_field: DataFrame field with the time series data</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DateTimeSeasonalIndexer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_seasons</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">index_fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span> <span class="o">=</span> <span class="n">index_seasons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_field</span> <span class="o">=</span> <span class="n">data_field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_field</span> <span class="o">=</span> <span class="n">date_field</span>
+
+<div class="viewcode-block" id="DateTimeSeasonalIndexer.get_season_of_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DateTimeSeasonalIndexer.get_season_of_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_season_of_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                <span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date_field</span><span class="p">][</span><span class="n">ix</span><span class="p">]</span>
+                <span class="n">season</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">strip_datepart</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+                    <span class="n">season</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">season</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date_field</span><span class="p">]</span>
+            <span class="n">season</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                <span class="n">season</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">strip_datepart</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">[</span><span class="n">c</span><span class="p">]))</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">season</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="DateTimeSeasonalIndexer.get_season_by_index"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DateTimeSeasonalIndexer.get_season_by_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_season_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Operation not available!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DateTimeSeasonalIndexer.get_data_by_season"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DateTimeSeasonalIndexer.get_data_by_season">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_by_season</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Operation not available!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DateTimeSeasonalIndexer.get_index_by_season"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DateTimeSeasonalIndexer.get_index_by_season">[docs]</a>    <span class="k">def</span> <span class="nf">get_index_by_season</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Operation not available!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DateTimeSeasonalIndexer.get_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DateTimeSeasonalIndexer.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DateTimeSeasonalIndexer.get_index"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DateTimeSeasonalIndexer.get_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date_field</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="k">else</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date_field</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DateTimeSeasonalIndexer.set_data"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DateTimeSeasonalIndexer.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Operation not available!&quot;</span><span class="p">)</span></div></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -15,11 +15,11 @@ class FLR(object):
     def __init__(self, LHS, RHS):
         """
         Creates a Fuzzy Logical Relationship
-        :param LHS: Left Hand Side fuzzy set
-        :param RHS: Right Hand Side fuzzy set
         """
         self.LHS = LHS
+        """Left Hand Side fuzzy set"""
         self.RHS = RHS
+        """Right Hand Side fuzzy set"""
 
     def __str__(self):
         return str(self.LHS) + " -> " + str(self.RHS)
@@ -30,12 +30,10 @@ class IndexedFLR(FLR):
     def __init__(self, index, LHS, RHS):
         """
         Create a Season Indexed Fuzzy Logical Relationship
-        :param index: seasonal index 
-        :param LHS: Left Hand Side fuzzy set
-        :param RHS: Right Hand Side fuzzy set
         """
         super(IndexedFLR, self).__init__(LHS, RHS)
         self.index = index
+        """seasonal index"""
 
     def __str__(self):
         return str(self.index) + ": "+ str(self.LHS) + " -> " + str(self.RHS)
@@ -44,6 +42,7 @@ class IndexedFLR(FLR):
 def generate_high_order_recurrent_flr(fuzzyData):
     """
     Create a ordered FLR set from a list of fuzzy sets with recurrence
+
     :param fuzzyData: ordered list of fuzzy sets
     :return: ordered list of FLR
     """
@@ -65,6 +64,7 @@ def generate_high_order_recurrent_flr(fuzzyData):
 def generate_recurrent_flrs(fuzzyData):
     """
     Create a ordered FLR set from a list of fuzzy sets with recurrence
+
     :param fuzzyData: ordered list of fuzzy sets
     :return: ordered list of FLR
     """
@@ -82,6 +82,7 @@ def generate_recurrent_flrs(fuzzyData):
 def generate_non_recurrent_flrs(fuzzyData):
     """
     Create a ordered FLR set from a list of fuzzy sets without recurrence
+
     :param fuzzyData: ordered list of fuzzy sets
     :return: ordered list of FLR
     """
@@ -95,6 +96,7 @@ def generate_non_recurrent_flrs(fuzzyData):
 def generate_indexed_flrs(sets, indexer, data, transformation=None, alpha_cut=0.0):
     """
     Create a season-indexed ordered FLR set from a list of fuzzy sets with recurrence
+
     :param sets: fuzzy sets
     :param indexer: seasonality indexer 
     :param data: original data

@@ -1,0 +1,476 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyFTS.benchmarks.parallel_benchmarks &#8212; pyFTS 1.2.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyFTS.benchmarks.parallel_benchmarks</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">joblib Parallelized Benchmarks to FTS methods</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="k">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+
+<span class="kn">from</span> <span class="nn">pyFTS.benchmarks</span> <span class="k">import</span> <span class="n">benchmarks</span><span class="p">,</span> <span class="n">Util</span> <span class="k">as</span> <span class="n">bUtil</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">Util</span>
+<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">Grid</span>
+
+
+<div class="viewcode-block" id="run_point"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.parallel_benchmarks.run_point">[docs]</a><span class="k">def</span> <span class="nf">run_point</span><span class="p">(</span><span class="n">mfts</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indexer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Point forecast benchmark function to be executed on threads</span>
+<span class="sd">    :param mfts: FTS model</span>
+<span class="sd">    :param partitioner: Universe of Discourse partitioner</span>
+<span class="sd">    :param train_data: data used to train the model</span>
+<span class="sd">    :param test_data: ata used to test the model</span>
+<span class="sd">    :param window_key: id of the sliding window</span>
+<span class="sd">    :param transformation: data transformation</span>
+<span class="sd">    :param indexer: seasonal indexer</span>
+<span class="sd">    :return: a dictionary with the benchmark results </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pttr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">_key</span> <span class="o">=</span> <span class="n">mfts</span><span class="o">.</span><span class="n">shortname</span> <span class="o">+</span> <span class="s2">&quot; n = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mfts</span><span class="o">.</span><span class="n">order</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">pttr</span> <span class="o">+</span> <span class="s2">&quot; q = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="n">partitions</span><span class="p">)</span>
+    <span class="n">mfts</span><span class="o">.</span><span class="n">partitioner</span> <span class="o">=</span> <span class="n">partitioner</span>
+    <span class="k">if</span> <span class="n">transformation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mfts</span><span class="o">.</span><span class="n">append_transformation</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">mfts</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">mfts</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">_end</span> <span class="o">-</span> <span class="n">_start</span>
+
+        <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">_rmse</span><span class="p">,</span> <span class="n">_smape</span><span class="p">,</span> <span class="n">_u</span> <span class="o">=</span> <span class="n">benchmarks</span><span class="o">.</span><span class="n">get_point_statistics</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">mfts</span><span class="p">,</span> <span class="n">indexer</span><span class="p">)</span>
+        <span class="n">_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">times</span> <span class="o">+=</span> <span class="n">_end</span> <span class="o">-</span> <span class="n">_start</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">_rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">_smape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">_key</span><span class="p">,</span> <span class="s1">&#39;obj&#39;</span><span class="p">:</span> <span class="n">mfts</span><span class="p">,</span> <span class="s1">&#39;rmse&#39;</span><span class="p">:</span> <span class="n">_rmse</span><span class="p">,</span> <span class="s1">&#39;smape&#39;</span><span class="p">:</span> <span class="n">_smape</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="n">_u</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">times</span><span class="p">}</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="point_sliding_window"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.parallel_benchmarks.point_sliding_window">[docs]</a><span class="k">def</span> <span class="nf">point_sliding_window</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">windowsize</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">partitioners</span><span class="o">=</span><span class="p">[</span><span class="n">Grid</span><span class="o">.</span><span class="n">GridPartitioner</span><span class="p">],</span>
+                         <span class="n">partitions</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">max_order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indexer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sintetic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parallel sliding window benchmarks for FTS point forecasters</span>
+<span class="sd">    :param data: </span>
+<span class="sd">    :param windowsize: size of sliding window</span>
+<span class="sd">    :param train: percentual of sliding window data used to train the models</span>
+<span class="sd">    :param models: FTS point forecasters</span>
+<span class="sd">    :param partitioners: Universe of Discourse partitioner</span>
+<span class="sd">    :param partitions: the max number of partitions on the Universe of Discourse </span>
+<span class="sd">    :param max_order: the max order of the models (for high order models)</span>
+<span class="sd">    :param transformation: data transformation</span>
+<span class="sd">    :param indexer: seasonal indexer</span>
+<span class="sd">    :param dump: </span>
+<span class="sd">    :param save: save results</span>
+<span class="sd">    :param file: file path to save the results</span>
+<span class="sd">    :param sintetic: if true only the average and standard deviation of the results</span>
+<span class="sd">    :return: DataFrame with the results</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_process_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process Start: {0: %H:%M:%S}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()))</span>
+
+    <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+
+    <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">objs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">rmse</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">smape</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">benchmarks</span><span class="o">.</span><span class="n">get_point_methods</span><span class="p">():</span>
+        <span class="n">mfts</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mfts</span><span class="o">.</span><span class="n">is_high_order</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;=</span> <span class="n">mfts</span><span class="o">.</span><span class="n">min_order</span><span class="p">:</span>
+                    <span class="n">mfts</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="n">mfts</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+                    <span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mfts</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mfts</span><span class="p">)</span>
+
+    <span class="n">experiments</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ct</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">Util</span><span class="o">.</span><span class="n">sliding_window</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">windowsize</span><span class="p">,</span> <span class="n">train</span><span class="p">):</span>
+        <span class="n">experiments</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">dump</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Window: </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ct</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">partition</span> <span class="ow">in</span> <span class="n">partitions</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">partitioner</span> <span class="ow">in</span> <span class="n">partitioners</span><span class="p">:</span>
+
+                <span class="n">data_train_fs</span> <span class="o">=</span> <span class="n">partitioner</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">partition</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="n">transformation</span><span class="p">)</span>
+
+                <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">num_cores</span><span class="p">)(</span>
+                    <span class="n">delayed</span><span class="p">(</span><span class="n">run_point</span><span class="p">)(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">data_train_fs</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">train</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">test</span><span class="p">),</span>
+                                       <span class="n">transformation</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">:</span>
+                        <span class="n">objs</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;obj&#39;</span><span class="p">]</span>
+                        <span class="n">rmse</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">smape</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">u</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">times</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">rmse</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;rmse&#39;</span><span class="p">])</span>
+                    <span class="n">smape</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;smape&#39;</span><span class="p">])</span>
+                    <span class="n">u</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">])</span>
+                    <span class="n">times</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+
+    <span class="n">_process_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process End: {0: %H:%M:%S}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process Duration: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_process_end</span> <span class="o">-</span> <span class="n">_process_start</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">Util</span><span class="o">.</span><span class="n">save_dataframe_point</span><span class="p">(</span><span class="n">experiments</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">objs</span><span class="p">,</span> <span class="n">rmse</span><span class="p">,</span> <span class="n">save</span><span class="p">,</span> <span class="n">sintetic</span><span class="p">,</span> <span class="n">smape</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="run_interval"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.parallel_benchmarks.run_interval">[docs]</a><span class="k">def</span> <span class="nf">run_interval</span><span class="p">(</span><span class="n">mfts</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indexer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interval forecast benchmark function to be executed on threads</span>
+<span class="sd">    :param mfts: FTS model</span>
+<span class="sd">    :param partitioner: Universe of Discourse partitioner</span>
+<span class="sd">    :param train_data: data used to train the model</span>
+<span class="sd">    :param test_data: ata used to test the model</span>
+<span class="sd">    :param window_key: id of the sliding window</span>
+<span class="sd">    :param transformation: data transformation</span>
+<span class="sd">    :param indexer: seasonal indexer</span>
+<span class="sd">    :return: a dictionary with the benchmark results </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pttr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">_key</span> <span class="o">=</span> <span class="n">mfts</span><span class="o">.</span><span class="n">shortname</span> <span class="o">+</span> <span class="s2">&quot; n = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mfts</span><span class="o">.</span><span class="n">order</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">pttr</span> <span class="o">+</span> <span class="s2">&quot; q = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="n">partitions</span><span class="p">)</span>
+    <span class="n">mfts</span><span class="o">.</span><span class="n">partitioner</span> <span class="o">=</span> <span class="n">partitioner</span>
+    <span class="k">if</span> <span class="n">transformation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mfts</span><span class="o">.</span><span class="n">append_transformation</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">mfts</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">mfts</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">_end</span> <span class="o">-</span> <span class="n">_start</span>
+
+        <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">_sharp</span><span class="p">,</span> <span class="n">_res</span><span class="p">,</span> <span class="n">_cov</span> <span class="o">=</span> <span class="n">benchmarks</span><span class="o">.</span><span class="n">get_interval_statistics</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">mfts</span><span class="p">)</span>
+        <span class="n">_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">times</span> <span class="o">+=</span> <span class="n">_end</span> <span class="o">-</span> <span class="n">_start</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">_sharp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">_res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">_key</span><span class="p">,</span> <span class="s1">&#39;obj&#39;</span><span class="p">:</span> <span class="n">mfts</span><span class="p">,</span> <span class="s1">&#39;sharpness&#39;</span><span class="p">:</span> <span class="n">_sharp</span><span class="p">,</span> <span class="s1">&#39;resolution&#39;</span><span class="p">:</span> <span class="n">_res</span><span class="p">,</span> <span class="s1">&#39;coverage&#39;</span><span class="p">:</span> <span class="n">_cov</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">times</span><span class="p">}</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="interval_sliding_window"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.parallel_benchmarks.interval_sliding_window">[docs]</a><span class="k">def</span> <span class="nf">interval_sliding_window</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">windowsize</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">partitioners</span><span class="o">=</span><span class="p">[</span><span class="n">Grid</span><span class="o">.</span><span class="n">GridPartitioner</span><span class="p">],</span>
+                         <span class="n">partitions</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">max_order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indexer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sintetic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Parallel sliding window benchmarks for FTS point_to_interval forecasters</span>
+<span class="sd">     :param data: </span>
+<span class="sd">     :param windowsize: size of sliding window</span>
+<span class="sd">     :param train: percentual of sliding window data used to train the models</span>
+<span class="sd">     :param models: FTS point forecasters</span>
+<span class="sd">     :param partitioners: Universe of Discourse partitioner</span>
+<span class="sd">     :param partitions: the max number of partitions on the Universe of Discourse </span>
+<span class="sd">     :param max_order: the max order of the models (for high order models)</span>
+<span class="sd">     :param transformation: data transformation</span>
+<span class="sd">     :param indexer: seasonal indexer</span>
+<span class="sd">     :param dump: </span>
+<span class="sd">     :param save: save results</span>
+<span class="sd">     :param file: file path to save the results</span>
+<span class="sd">     :param sintetic: if true only the average and standard deviation of the results</span>
+<span class="sd">     :return: DataFrame with the results</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">_process_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process Start: {0: %H:%M:%S}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()))</span>
+
+    <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+
+    <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">objs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">sharpness</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">resolution</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">coverage</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">benchmarks</span><span class="o">.</span><span class="n">get_interval_methods</span><span class="p">():</span>
+        <span class="n">mfts</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mfts</span><span class="o">.</span><span class="n">is_high_order</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;=</span> <span class="n">mfts</span><span class="o">.</span><span class="n">min_order</span><span class="p">:</span>
+                    <span class="n">mfts</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="n">mfts</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+                    <span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mfts</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mfts</span><span class="p">)</span>
+
+    <span class="n">experiments</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ct</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">Util</span><span class="o">.</span><span class="n">sliding_window</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">windowsize</span><span class="p">,</span> <span class="n">train</span><span class="p">):</span>
+        <span class="n">experiments</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">dump</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Window: </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ct</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">partition</span> <span class="ow">in</span> <span class="n">partitions</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">partitioner</span> <span class="ow">in</span> <span class="n">partitioners</span><span class="p">:</span>
+
+                <span class="n">data_train_fs</span> <span class="o">=</span> <span class="n">partitioner</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">partition</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="n">transformation</span><span class="p">)</span>
+
+                <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">num_cores</span><span class="p">)(</span>
+                    <span class="n">delayed</span><span class="p">(</span><span class="n">run_interval</span><span class="p">)(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">data_train_fs</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">train</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">test</span><span class="p">),</span>
+                                       <span class="n">transformation</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">:</span>
+                        <span class="n">objs</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;obj&#39;</span><span class="p">]</span>
+                        <span class="n">sharpness</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">resolution</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">coverage</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">times</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+                    <span class="n">sharpness</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;sharpness&#39;</span><span class="p">])</span>
+                    <span class="n">resolution</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">])</span>
+                    <span class="n">coverage</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;coverage&#39;</span><span class="p">])</span>
+                    <span class="n">times</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+
+    <span class="n">_process_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process End: {0: %H:%M:%S}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process Duration: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_process_end</span> <span class="o">-</span> <span class="n">_process_start</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">Util</span><span class="o">.</span><span class="n">save_dataframe_interval</span><span class="p">(</span><span class="n">coverage</span><span class="p">,</span> <span class="n">experiments</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">objs</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">save</span><span class="p">,</span> <span class="n">sharpness</span><span class="p">,</span> <span class="n">sintetic</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="run_ahead"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.parallel_benchmarks.run_ahead">[docs]</a><span class="k">def</span> <span class="nf">run_ahead</span><span class="p">(</span><span class="n">mfts</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indexer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Probabilistic m-step ahead forecast benchmark function to be executed on threads</span>
+<span class="sd">    :param mfts: FTS model</span>
+<span class="sd">    :param partitioner: Universe of Discourse partitioner</span>
+<span class="sd">    :param train_data: data used to train the model</span>
+<span class="sd">    :param test_data: ata used to test the model </span>
+<span class="sd">    :param steps: </span>
+<span class="sd">    :param resolution: </span>
+<span class="sd">    :param transformation: data transformation</span>
+<span class="sd">    :param indexer: seasonal indexer</span>
+<span class="sd">    :return: a dictionary with the benchmark results </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pttr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">_key</span> <span class="o">=</span> <span class="n">mfts</span><span class="o">.</span><span class="n">shortname</span> <span class="o">+</span> <span class="s2">&quot; n = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mfts</span><span class="o">.</span><span class="n">order</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">pttr</span> <span class="o">+</span> <span class="s2">&quot; q = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="n">partitions</span><span class="p">)</span>
+    <span class="n">mfts</span><span class="o">.</span><span class="n">partitioner</span> <span class="o">=</span> <span class="n">partitioner</span>
+    <span class="k">if</span> <span class="n">transformation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mfts</span><span class="o">.</span><span class="n">append_transformation</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">mfts</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">mfts</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">_end</span> <span class="o">-</span> <span class="n">_start</span>
+
+        <span class="n">_crps1</span><span class="p">,</span> <span class="n">_crps2</span><span class="p">,</span> <span class="n">_t1</span><span class="p">,</span> <span class="n">_t2</span> <span class="o">=</span> <span class="n">benchmarks</span><span class="o">.</span><span class="n">get_distribution_statistics</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">mfts</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span>
+                                                              <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span>
+        <span class="n">_t1</span> <span class="o">+=</span> <span class="n">times</span>
+        <span class="n">_t2</span> <span class="o">+=</span> <span class="n">times</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">_crps1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">_crps2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">_t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">_t2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">_key</span><span class="p">,</span> <span class="s1">&#39;obj&#39;</span><span class="p">:</span> <span class="n">mfts</span><span class="p">,</span> <span class="s1">&#39;CRPS_Interval&#39;</span><span class="p">:</span> <span class="n">_crps1</span><span class="p">,</span> <span class="s1">&#39;CRPS_Distribution&#39;</span><span class="p">:</span> <span class="n">_crps2</span><span class="p">,</span> <span class="s1">&#39;TIME_Interval&#39;</span><span class="p">:</span> <span class="n">_t1</span><span class="p">,</span> <span class="s1">&#39;TIME_Distribution&#39;</span><span class="p">:</span> <span class="n">_t2</span><span class="p">}</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="ahead_sliding_window"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.parallel_benchmarks.ahead_sliding_window">[docs]</a><span class="k">def</span> <span class="nf">ahead_sliding_window</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">windowsize</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span><span class="n">resolution</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">partitioners</span><span class="o">=</span><span class="p">[</span><span class="n">Grid</span><span class="o">.</span><span class="n">GridPartitioner</span><span class="p">],</span>
+                         <span class="n">partitions</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">max_order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indexer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sintetic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parallel sliding window benchmarks for FTS probabilistic forecasters</span>
+<span class="sd">    :param data: </span>
+<span class="sd">    :param windowsize: size of sliding window</span>
+<span class="sd">    :param train: percentual of sliding window data used to train the models</span>
+<span class="sd">    :param steps: </span>
+<span class="sd">    :param resolution: </span>
+<span class="sd">    :param models: FTS point forecasters</span>
+<span class="sd">    :param partitioners: Universe of Discourse partitioner</span>
+<span class="sd">    :param partitions: the max number of partitions on the Universe of Discourse </span>
+<span class="sd">    :param max_order: the max order of the models (for high order models)</span>
+<span class="sd">    :param transformation: data transformation</span>
+<span class="sd">    :param indexer: seasonal indexer</span>
+<span class="sd">    :param dump: </span>
+<span class="sd">    :param save: save results</span>
+<span class="sd">    :param file: file path to save the results</span>
+<span class="sd">    :param sintetic: if true only the average and standard deviation of the results</span>
+<span class="sd">    :return: DataFrame with the results </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_process_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process Start: {0: %H:%M:%S}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()))</span>
+
+    <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+
+    <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">objs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">crps_interval</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">crps_distr</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">times1</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">times2</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">benchmarks</span><span class="o">.</span><span class="n">get_interval_methods</span><span class="p">():</span>
+        <span class="n">mfts</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mfts</span><span class="o">.</span><span class="n">is_high_order</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;=</span> <span class="n">mfts</span><span class="o">.</span><span class="n">min_order</span><span class="p">:</span>
+                    <span class="n">mfts</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="n">mfts</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+                    <span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mfts</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mfts</span><span class="p">)</span>
+
+    <span class="n">experiments</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ct</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">Util</span><span class="o">.</span><span class="n">sliding_window</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">windowsize</span><span class="p">,</span> <span class="n">train</span><span class="p">):</span>
+        <span class="n">experiments</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">dump</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Window: </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ct</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">partition</span> <span class="ow">in</span> <span class="n">partitions</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">partitioner</span> <span class="ow">in</span> <span class="n">partitioners</span><span class="p">:</span>
+
+                <span class="n">data_train_fs</span> <span class="o">=</span> <span class="n">partitioner</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">partition</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="n">transformation</span><span class="p">)</span>
+
+                <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">num_cores</span><span class="p">)(</span>
+                    <span class="n">delayed</span><span class="p">(</span><span class="n">run_ahead</span><span class="p">)(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">data_train_fs</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">train</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">test</span><span class="p">),</span>
+                                       <span class="n">steps</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">transformation</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">:</span>
+                        <span class="n">objs</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;obj&#39;</span><span class="p">]</span>
+                        <span class="n">crps_interval</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">crps_distr</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">times1</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">times2</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+                    <span class="n">crps_interval</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;CRPS_Interval&#39;</span><span class="p">])</span>
+                    <span class="n">crps_distr</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;CRPS_Distribution&#39;</span><span class="p">])</span>
+                    <span class="n">times1</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;TIME_Interval&#39;</span><span class="p">])</span>
+                    <span class="n">times2</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;TIME_Distribution&#39;</span><span class="p">])</span>
+
+    <span class="n">_process_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process End: {0: %H:%M:%S}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process Duration: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_process_end</span> <span class="o">-</span> <span class="n">_process_start</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">Util</span><span class="o">.</span><span class="n">save_dataframe_ahead</span><span class="p">(</span><span class="n">experiments</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">objs</span><span class="p">,</span> <span class="n">crps_interval</span><span class="p">,</span> <span class="n">crps_distr</span><span class="p">,</span> <span class="n">times1</span><span class="p">,</span> <span class="n">times2</span><span class="p">,</span> <span class="n">save</span><span class="p">,</span> <span class="n">sintetic</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

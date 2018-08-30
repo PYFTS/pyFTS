@@ -6,6 +6,7 @@ import numpy as np
 def get_data():
     """
     Get a simple univariate time series data.
+
     :return: numpy array
     """
     dat = get_dataframe()

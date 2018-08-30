@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
-"""Benchmarks to FTS methods"""
+"""Benchmarks methods for FTS methods"""
 
 
 import datetime
@@ -102,28 +102,27 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     :param train: percentual of sliding window data used to train the models
     :param kwargs: dict, optional arguments
 
-    :keyword
-        benchmark_methods:  a list with Non FTS models to benchmark. The default is None.
-        benchmark_methods_parameters:  a list with Non FTS models parameters. The default is None.
-        benchmark_models: A boolean value indicating if external FTS methods will be used on benchmark. The default is False.
-        build_methods: A boolean value indicating if the default FTS methods will be used on benchmark. The default is True.
-        dataset: the dataset name to identify the current set of benchmarks results on database.
-        distributed: A boolean value indicating if the forecasting procedure will be distributed in a dispy cluster. . The default is False
-        file: file path to save the results. The default is benchmarks.db.
-        inc: a float on interval [0,1] indicating the percentage of the windowsize to move the window
-        methods: a list with FTS class names. The default depends on the forecasting type and contains the list of all FTS methods.
-        models: a list with prebuilt FTS objects. The default is None.
-        nodes: a list with the dispy cluster nodes addresses. The default is [127.0.0.1].
-        orders: a list with orders of the models (for high order models). The default is [1,2,3].
-        partitions: a list with the numbers of partitions on the Universe of Discourse. The default is [10].
-        partitioners_models: a list with prebuilt Universe of Discourse partitioners objects. The default is None.
-        partitioners_methods: a list with Universe of Discourse partitioners class names. The default is [partitioners.Grid.GridPartitioner].
-        progress: If true a progress bar will be displayed during the benchmarks. The default is False.
-        start: in the multi step forecasting, the index of the data where to start forecasting. The default is 0.
-        steps_ahead: a list with  the forecasting horizons, i. e., the number of steps ahead to forecast. The default is 1.
-        tag: a name to identify the current set of benchmarks results on database.
-        type: the forecasting type, one of these values: point(default), interval or distribution. The default is point.
-        transformations: a list with data transformations do apply . The default is [None].
+    :keyword benchmark_methods:  a list with Non FTS models to benchmark. The default is None.
+    :keyword benchmark_methods_parameters:  a list with Non FTS models parameters. The default is None.
+    :keyword benchmark_models: A boolean value indicating if external FTS methods will be used on benchmark. The default is False.
+    :keyword build_methods: A boolean value indicating if the default FTS methods will be used on benchmark. The default is True.
+    :keyword dataset: the dataset name to identify the current set of benchmarks results on database.
+    :keyword distributed: A boolean value indicating if the forecasting procedure will be distributed in a dispy cluster. . The default is False
+    :keyword file: file path to save the results. The default is benchmarks.db.
+    :keyword inc: a float on interval [0,1] indicating the percentage of the windowsize to move the window
+    :keyword methods: a list with FTS class names. The default depends on the forecasting type and contains the list of all FTS methods.
+    :keyword models: a list with prebuilt FTS objects. The default is None.
+    :keyword nodes: a list with the dispy cluster nodes addresses. The default is [127.0.0.1].
+    :keyword orders: a list with orders of the models (for high order models). The default is [1,2,3].
+    :keyword partitions: a list with the numbers of partitions on the Universe of Discourse. The default is [10].
+    :keyword partitioners_models: a list with prebuilt Universe of Discourse partitioners objects. The default is None.
+    :keyword partitioners_methods: a list with Universe of Discourse partitioners class names. The default is [partitioners.Grid.GridPartitioner].
+    :keyword progress: If true a progress bar will be displayed during the benchmarks. The default is False.
+    :keyword start: in the multi step forecasting, the index of the data where to start forecasting. The default is 0.
+    :keyword steps_ahead: a list with  the forecasting horizons, i. e., the number of steps ahead to forecast. The default is 1.
+    :keyword tag: a name to identify the current set of benchmarks results on database.
+    :keyword type: the forecasting type, one of these values: point(default), interval or distribution. The default is point.
+    :keyword transformations: a list with data transformations do apply . The default is [None].
     """
 
     tag = __pop('tag', None, kwargs)
@@ -321,6 +320,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
     """
     Point forecast benchmark function to be executed on cluster nodes
+
     :param mfts: FTS model
     :param partitioner: Universe of Discourse partitioner
     :param train_data: data used to train the model
@@ -384,6 +384,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
 def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
     """
     Interval forecast benchmark function to be executed on cluster nodes
+
     :param mfts: FTS model
     :param partitioner: Universe of Discourse partitioner
     :param train_data: data used to train the model
@@ -442,6 +443,7 @@ def run_interval(mfts, partitioner, train_data, test_data, window_key=None, **kw
 def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
     """
     Probabilistic forecast benchmark function to be executed on cluster nodes
+
     :param mfts: FTS model
     :param partitioner: Universe of Discourse partitioner
     :param train_data: data used to train the model
@@ -625,7 +627,8 @@ def plot_compared_intervals_ahead(original, models, colors, distributions, time_
                                save=False, file=None, tam=[20, 5], resolution=None,
                                cmap='Blues', linewidth=1.5):
     """
-    Plot the forecasts of several one step ahead models, by point or by interval 
+    Plot the forecasts of several one step ahead models, by point or by interval
+
     :param original: Original time series data (list)
     :param models: List of models to compare
     :param colors: List of models colors
@@ -771,6 +774,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
                          points=True, intervals=True, linewidth=1.5):
     """
     Plot the forecasts of several one step ahead models, by point or by interval
+
     :param original: Original time series data (list)
     :param models: List of models to compare
     :param colors: List of models colors

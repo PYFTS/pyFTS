@@ -20,6 +20,7 @@ def residuals(targets, forecasts, order=1):
 def chi_squared(q, h):
     """
     Chi-Squared value
+
     :param q: 
     :param h: 
     :return: 
@@ -31,6 +32,7 @@ def chi_squared(q, h):
 def compare_residuals(data, models):
     """
     Compare residual's statistics of several models
+
     :param data: test data
     :param models: 
     :return: a Pandas dataframe with the Box-Ljung statistic for each model
@@ -53,6 +55,7 @@ def compare_residuals(data, models):
 def plotResiduals(targets, models, tam=[8, 8], save=False, file=None):
     """
     Plot residuals and statistics
+
     :param targets: 
     :param models: 
     :param tam: 

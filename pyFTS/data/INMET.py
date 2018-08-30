@@ -1,17 +1,10 @@
-#--------------------
-#BDMEP - INMET
-#--------------------
-#Estação           : BELO HORIZONTE - MG (OMM: 83587)
-#Latitude  (graus) : -19.93
-#Longitude (graus) : -43.93
-#Altitude  (metros): 915.00
-#Estação Operante
-#Inicio de operação: 03/03/1910
-#Periodo solicitado dos dados: 01/01/2000 a 31/12/2012
-#Os dados listados abaixo são os que encontram-se digitados no BDMEP
-#Hora em UTC
+"""
+INMET - Instituto Nacional Meteorologia / Brasil
 
-# http://www.inmet.gov.br
+Belo Horizonte station, from 2000-01-01 to  31/12/2012
+
+Source: http://www.inmet.gov.br
+"""
 
 from pyFTS.data import common
 import pandas as pd
@@ -20,6 +13,7 @@ import pandas as pd
 def get_dataframe():
     """
     Get the complete multivariate time series data.
+
     :return: Pandas DataFrame
     """
     dat = common.get_dataframe('INMET.csv.bz2',

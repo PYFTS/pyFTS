@@ -10,63 +10,65 @@ class FTS(object):
     def __init__(self, **kwargs):
         """
         Create a Fuzzy Time Series model
-        :param kwargs: model specific parameters
-
-        alpha_cut: Minimal membership to be considered on fuzzyfication process
-        auto_update: Boolean, indicate that model is incremental
-        benchmark_only: Boolean, indicates a façade for external (non-FTS) model used on benchmarks or ensembles.
-        indexer: SeasonalIndexer used for SeasonalModels, default: None
-        is_high_order: Boolean, if the model support orders greater than 1, default: False
-        is_multivariate = False
-        has_seasonality: Boolean, if the model support seasonal indexers, default: False
-        has_point_forecasting: Boolean, if the model support point forecasting, default: True
-        has_interval_forecasting: Boolean, if the model support interval forecasting, default: False
-        has_probability_forecasting: Boolean, if the model support probabilistic forecasting, default: False
-        max_lag: Integer, maximum lag index used by the model, default: 1
-        min_order: Integer, minimal order supported for the model, default: 1
-        name: Model name
-        order: model order (number of past lags are used on forecasting)
-        original_max: Real, the upper limit of the Universe of Discourse, the maximal value found on training data
-        original_min: Real, the lower limit of the Universe of Discourse, the minimal value found on training data
-        partitioner: partitioner object
-        sets: List, fuzzy sets used on this model
-        shortname: Acronymn for the model
-        transformations: List, data transformations (common.Transformations) applied on model pre and post processing, default: []
-        transformations_param:List, specific parameters for each data transformation
-        uod_clip: If the test data will be clipped inside the training Universe of Discourse
         """
 
         self.sets = {}
+        """The list of fuzzy sets used on this model"""
         self.flrgs = {}
+        """The list of Fuzzy Logical Relationship Groups - FLRG"""
         self.order = kwargs.get('order',1)
+        """A integer with the model order (number of past lags are used on forecasting)"""
         self.shortname = kwargs.get('name',"")
+        """A string with a short name or alias for the model"""
         self.name = kwargs.get('name',"")
+        """A string with the model name"""
         self.detail = kwargs.get('name',"")
+        """A string with the model detailed information"""
         self.is_high_order = False
+        """A boolean value indicating if the model support orders greater than 1, default: False"""
         self.min_order = 1
+        """In high order models, this integer value indicates the minimal order supported for the model, default: 1"""
         self.has_seasonality = False
+        """A boolean value indicating if the model supports seasonal indexers, default: False"""
         self.has_point_forecasting = True
+        """A boolean value indicating if the model supports point forecasting, default: True"""
         self.has_interval_forecasting = False
+        """A boolean value indicating if the model supports interval forecasting, default: False"""
         self.has_probability_forecasting = False
+        """A boolean value indicating if the model support probabilistic forecasting, default: False"""
         self.is_multivariate = False
+        """A boolean value indicating if the model support multivariate time series (Pandas DataFrame), default: False"""
         self.dump = False
         self.transformations = []
+        """A list with the data transformations (common.Transformations) applied on model pre and post processing, default: []"""
         self.transformations_param = []
+        """A list with the specific parameters for each data transformation"""
         self.original_max = 0
+        """A float with the upper limit of the Universe of Discourse, the maximal value found on training data"""
         self.original_min = 0
+        """A float with the lower limit of the Universe of Discourse, the minimal value found on training data"""
         self.partitioner = kwargs.get("partitioner", None)
+        """A pyFTS.partitioners.Partitioner object with the Universe of Discourse partitioner used on the model. This is a mandatory dependecy. """
         if self.partitioner != None:
             self.sets = self.partitioner.sets
         self.auto_update = False
+        """A boolean value indicating that model is incremental"""
         self.benchmark_only = False
+        """A boolean value indicating a façade for external (non-FTS) model used on benchmarks or ensembles."""
         self.indexer = kwargs.get("indexer", None)
+        """An pyFTS.models.seasonal.Indexer object for indexing the time series data"""
         self.uod_clip = kwargs.get("uod_clip", True)
+        """Flag indicating if the test data will be clipped inside the training Universe of Discourse"""
         self.alpha_cut = kwargs.get("alpha_cut", 0.0)
+        """A float with the minimal membership to be considered on fuzzyfication process"""
         self.max_lag = self.order
+        """A integer indicating the largest lag used by the model. This value also indicates the minimum number of past lags 
+        needed to forecast a single step ahead"""
 
     def fuzzy(self, data):
         """
         Fuzzify a data point
+
         :param data: data point
         :return: maximum membership fuzzy set
         """
@@ -83,15 +85,15 @@ class FTS(object):
     def predict(self, data, **kwargs):
         """
         Forecast using trained model
-        :param data: time series with minimal length to the order of the model
-        :param kwargs:
 
-        :keyword
-        type: the forecasting type, one of these values: point(default), interval or distribution.
-        steps_ahead: The forecasting horizon, i. e., the number of steps ahead to forecast
-        start: in the multi step forecasting, the index of the data where to start forecasting
-        distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster
-        nodes: a list with the dispy cluster nodes addresses
+        :param data: time series with minimal length to the order of the model
+
+        :keyword type: the forecasting type, one of these values: point(default), interval or distribution.
+        :keyword steps_ahead: The forecasting horizon, i. e., the number of steps ahead to forecast
+        :keyword start: in the multi step forecasting, the index of the data where to start forecasting
+        :keyword distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster
+        :keyword nodes: a list with the dispy cluster nodes addresses
+
         :return: a numpy array with the forecasted data
         """
 
@@ -150,38 +152,42 @@ class FTS(object):
 
     def forecast(self, data, **kwargs):
         """
-        Point forecast one step ahead 
-        :param data: time series with minimal length to the order of the model
-        :param kwargs: 
-        :return: 
+        Point forecast one step ahead
+
+        :param data: time series data with the minimal length equal to the max_lag of the model
+        :param kwargs: model specific parameters
+        :return: a list with the forecasted values
         """
         raise NotImplementedError('This model do not perform one step ahead point forecasts!')
 
     def forecast_interval(self, data, **kwargs):
         """
         Interval forecast one step ahead
-        :param data: 
-        :param kwargs: 
-        :return: 
+
+        :param data: time series data with the minimal length equal to the max_lag of the model
+        :param kwargs: model specific parameters
+        :return: a list with the forecasted intervals
         """
         raise NotImplementedError('This model do not perform one step ahead interval forecasts!')
 
     def forecast_distribution(self, data, **kwargs):
         """
         Probabilistic forecast one step ahead
-        :param data: 
-        :param kwargs: 
-        :return: 
+
+        :param data: time series data with the minimal length equal to the max_lag of the model
+        :param kwargs: model specific parameters
+        :return: a list with the forecasted Probability Distributions
         """
         raise NotImplementedError('This model do not perform one step ahead distribution forecasts!')
 
     def forecast_ahead(self, data, steps, **kwargs):
         """
         Point forecast n steps ahead
-        :param data: 
-        :param steps: 
-        :param kwargs: 
-        :return: 
+
+        :param data: time series data with the minimal length equal to the max_lag of the model
+        :param steps: the number of steps ahead to forecast
+        :param kwargs: model specific parameters
+        :return: a list with the forecasted values
         """
         ret = []
         for k in np.arange(0,steps):
@@ -198,49 +204,49 @@ class FTS(object):
     def forecast_ahead_interval(self, data, steps, **kwargs):
         """
         Interval forecast n steps ahead
-        :param data: 
-        :param steps: 
-        :param kwargs: 
-        :return: 
+
+        :param data: time series data with the minimal length equal to the max_lag of the model
+        :param steps: the number of steps ahead to forecast
+        :param kwargs: model specific parameters
+        :return: a list with the forecasted intervals
         """
         raise NotImplementedError('This model do not perform multi step ahead interval forecasts!')
 
     def forecast_ahead_distribution(self, data, steps, **kwargs):
         """
         Probabilistic forecast n steps ahead
-        :param data: 
-        :param steps: 
-        :param kwargs: 
-        :return: 
+
+        :param data: time series data with the minimal length equal to the max_lag of the model
+        :param steps: the number of steps ahead to forecast
+        :param kwargs: model specific parameters
+        :return: a list with the forecasted Probability Distributions
         """
         raise NotImplementedError('This model do not perform multi step ahead distribution forecasts!')
 
     def train(self, data, **kwargs):
         """
-        
-        :param data: 
-        :param sets: 
-        :param order: 
-        :param parameters: 
-        :return: 
+        Method specific parameter fitting
+
+        :param data: training time series data
+        :param kwargs: Method specific parameters
+
         """
         pass
 
     def fit(self, ndata, **kwargs):
         """
+        Fit the model's parameters based on the training data.
 
-        :param data: the training time series
+        :param ndata: training time series data
         :param kwargs:
 
-        :keyword
-        num_batches: split the training data in num_batches to save memory during the training process
-        save_model: save final model on disk
-        batch_save: save the model between each batch
-        file_path: path to save the model
-        distributed: boolean, indicate if the training procedure will be distributed in a dispy cluster
-        nodes: a list with the dispy cluster nodes addresses
+        :keyword num_batches: split the training data in num_batches to save memory during the training process
+        :keyword save_model: save final model on disk
+        :keyword batch_save: save the model between each batch
+        :keyword file_path: path to save the model
+        :keyword distributed: boolean, indicate if the training procedure will be distributed in a dispy cluster
+        :keyword nodes: a list with the dispy cluster nodes addresses
 
-        :return:
         """
 
         import datetime
@@ -333,6 +339,12 @@ class FTS(object):
             Util.persist_obj(self, file_path)
 
     def clone_parameters(self, model):
+        """
+        Import the parameters values from other model
+
+        :param model:
+        """
+
         self.order = model.order
         self.shortname = model.shortname
         self.name = model.name
@@ -356,6 +368,13 @@ class FTS(object):
         self.indexer = model.indexer
 
     def merge(self, model):
+        """
+        Merge the FLRG rules from other model
+
+        :param model: source model
+        :return:
+        """
+
         for key in model.flrgs.keys():
             flrg = model.flrgs[key]
             if flrg.get_key() not in self.flrgs:
@@ -375,6 +394,16 @@ class FTS(object):
             self.transformations.append(transformation)
 
     def apply_transformations(self, data, params=None, updateUoD=False, **kwargs):
+        """
+        Apply the data transformations for data preprocessing
+
+        :param data: input data
+        :param params: transformation parameters
+        :param updateUoD:
+        :param kwargs:
+        :return: preprocessed data
+        """
+
         ndata = data
         if updateUoD:
             if min(data) < 0:
@@ -397,6 +426,15 @@ class FTS(object):
         return ndata
 
     def apply_inverse_transformations(self, data, params=None, **kwargs):
+        """
+        Apply the data transformations for data postprocessing
+
+        :param data: input data
+        :param params: transformation parameters
+        :param updateUoD:
+        :param kwargs:
+        :return: postprocessed data
+        """
         if len(self.transformations) > 0:
             if params is None:
                 params = [None for k in self.transformations]
@@ -412,13 +450,20 @@ class FTS(object):
         return [self.original_min, self.original_max]
 
     def __str__(self):
+        """String representation of the model"""
+
         tmp = self.name + ":\n"
         for r in sorted(self.flrgs, key=lambda key: self.flrgs[key].get_midpoint(self.sets)):
             tmp = tmp + str(self.flrgs[r]) + "\n"
         return tmp
 
     def __len__(self):
-       return len(self.flrgs)
+        """
+        The length (number of rules) of the model
+
+        :return: number of rules
+        """
+        return len(self.flrgs)
 
     def len_total(self):
         return sum([len(k) for k in self.flrgs])

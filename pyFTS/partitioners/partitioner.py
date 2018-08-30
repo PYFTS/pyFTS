@@ -11,21 +11,20 @@ class Partitioner(object):
     def __init__(self, **kwargs):
         """
         Universe of Discourse partitioner scheme. Split data on several fuzzy sets
-        :param name: partitioner name
-        :param data: Training data of which the universe of discourse will be extracted. The universe of discourse is the open interval between the minimum and maximum values of the training data.
-        :param npart: The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created
-        :param func: Fuzzy membership function (pyFTS.common.Membership)
-        :param names: list of partitions names. If None is given the partitions will be auto named with prefix
-        :param prefix: prefix of auto generated partition names
-        :param transformation: data transformation to be applied on data
         """
         self.name = kwargs.get('name',"")
+        """partitioner name"""
         self.partitions = kwargs.get('npart', 10)
+        """The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created"""
         self.sets = {}
         self.membership_function = kwargs.get('func', Membership.trimf)
+        """Fuzzy membership function (pyFTS.common.Membership)"""
         self.setnames = kwargs.get('names', None)
+        """list of partitions names. If None is given the partitions will be auto named with prefix"""
         self.prefix = kwargs.get('prefix', 'A')
+        """prefix of auto generated partition names"""
         self.transformation = kwargs.get('transformation', None)
+        """data transformation to be applied on data"""
         self.indexer = kwargs.get('indexer', None)
         self.variable = kwargs.get('variable', None)
         self.type = kwargs.get('type', 'common')
@@ -70,7 +69,8 @@ class Partitioner(object):
     def build(self, data):
         """
         Perform the partitioning of the Universe of Discourse
-        :param data: 
+
+        :param data:  training data
         :return: 
         """
         pass

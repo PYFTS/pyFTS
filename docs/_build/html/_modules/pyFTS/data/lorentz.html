@@ -1,0 +1,119 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyFTS.data.lorentz &#8212; pyFTS 1.2.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyFTS.data.lorentz</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+
+<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.lorentz.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mf">28.0</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mf">8.0</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+                  <span class="n">initial_values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">get_dataframe</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">,</span> <span class="n">iterations</span><span class="p">)[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span></div>
+
+
+<div class="viewcode-block" id="get_dataframe"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.lorentz.get_dataframe">[docs]</a><span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mf">28.0</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mf">8.0</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+                  <span class="n">initial_values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Lorenz, Edward Norton (1963). &quot;Deterministic nonperiodic flow&quot;. Journal of the Atmospheric Sciences. 20 (2): 130–141.</span>
+<span class="sd">    https://doi.org/10.1175/1520-0469(1963)020&lt;0130:DNF&gt;2.0.CO;2</span>
+
+<span class="sd">    dx/dt = a(y -x)</span>
+<span class="sd">    dy/dt = x(b - z) - y</span>
+<span class="sd">    dz/dt = xy - cz</span>
+
+<span class="sd">    :param a: Equation coefficient. Default value: 10</span>
+<span class="sd">    :param b: Equation coefficient. Default value: 28</span>
+<span class="sd">    :param c: Equation coefficient. Default value: 8.0/3.0</span>
+<span class="sd">    :param dt: Time differential for continuous time integration. Default value: 0.01</span>
+<span class="sd">    :param initial_values: numpy array with the initial values of x,y and z. Default: [0.1, 0, 0]</span>
+<span class="sd">    :param iterations: number of iterations. Default: 1000</span>
+<span class="sd">    :return: Panda dataframe with the x, y and z values</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">initial_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">initial_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">initial_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">iterations</span><span class="p">):</span>
+        <span class="n">dxdt</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">dydt</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">z</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">dzdt</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">dxdt</span><span class="p">)</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">dydt</span><span class="p">)</span>
+        <span class="n">z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">dzdt</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="n">z</span><span class="p">})</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

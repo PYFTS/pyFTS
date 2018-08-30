@@ -9,7 +9,8 @@ from pyFTS import *
 
 def trimf(x, parameters):
     """
-    Triangular fuzzy membership function  
+    Triangular fuzzy membership function
+
     :param x: data point
     :param parameters: a list with 3 real values
     :return: the membership value of x given the parameters
@@ -27,7 +28,8 @@ def trimf(x, parameters):
 
 def trapmf(x, parameters):
     """
-    Trapezoidal fuzzy membership function  
+    Trapezoidal fuzzy membership function
+
     :param x: data point
     :param parameters: a list with 4 real values
     :return: the membership value of x given the parameters
@@ -46,7 +48,8 @@ def trapmf(x, parameters):
 
 def gaussmf(x, parameters):
     """
-    Gaussian fuzzy membership function  
+    Gaussian fuzzy membership function
+
     :param x: data point
     :param parameters: a list with 2 real values (mean and variance)
     :return: the membership value of x given the parameters
@@ -57,6 +60,7 @@ def gaussmf(x, parameters):
 def bellmf(x, parameters):
     """
     Bell shaped membership function
+
     :param x:
     :param parameters:
     :return:
@@ -67,6 +71,7 @@ def bellmf(x, parameters):
 def sigmf(x, parameters):
     """
     Sigmoid / Logistic membership function
+
     :param x:
     :param parameters: an list with 2 real values (smoothness and midpoint)
     :return:

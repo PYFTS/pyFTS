@@ -17,6 +17,9 @@ def sampler(data, quantiles):
 
 
 class EnsembleFTS(fts.FTS):
+    """
+    Ensemble FTS
+    """
     def __init__(self, **kwargs):
         super(EnsembleFTS, self).__init__(**kwargs)
         self.shortname = "Ensemble FTS"
@@ -27,13 +30,21 @@ class EnsembleFTS(fts.FTS):
         self.has_probability_forecasting = True
         self.is_high_order = True
         self.models = []
+        """A list of FTS models, the ensemble components"""
         self.parameters = []
+        """A list with the parameters for each component model"""
         self.alpha = kwargs.get("alpha", 0.05)
         self.point_method = kwargs.get('point_method', 'mean')
         self.interval_method = kwargs.get('interval_method', 'quantile')
         self.order = 1
 
     def append_model(self, model):
+        """
+        Append a new model to the ensemble
+
+        :param model: FTS model
+
+        """
         self.models.append(model)
         if model.order > self.order:
             self.order = model.order

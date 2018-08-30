@@ -8,6 +8,7 @@ import numpy as np
 def generate_gaussian_linear(mu_ini, sigma_ini, mu_inc, sigma_inc, it=100, num=10, vmin=None, vmax=None):
     """
     Generate data sampled from Gaussian distribution, with constant or linear changing parameters
+
     :param mu_ini: Initial mean
     :param sigma_ini: Initial variance
     :param mu_inc:  Mean increment after 'num' samples
@@ -36,6 +37,7 @@ def generate_gaussian_linear(mu_ini, sigma_ini, mu_inc, sigma_inc, it=100, num=1
 def generate_uniform_linear(min_ini, max_ini, min_inc, max_inc, it=100, num=10, vmin=None, vmax=None):
     """
     Generate data sampled from Uniform distribution, with constant or  linear changing bounds
+
     :param mu_ini: Initial mean
     :param sigma_ini: Initial variance
     :param mu_inc:  Mean increment after 'num' samples

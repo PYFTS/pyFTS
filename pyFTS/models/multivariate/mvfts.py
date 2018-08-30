@@ -20,6 +20,12 @@ class MVFTS(fts.FTS):
         self.name = "Multivariate FTS"
 
     def append_variable(self, var):
+        """
+        Append a new endogenous variable to the model
+
+        :param var: variable object
+        :return:
+        """
         self.explanatory_variables.append(var)
 
     def format_data(self, data):

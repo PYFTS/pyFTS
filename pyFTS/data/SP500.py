@@ -6,6 +6,7 @@ import numpy as np
 def get_data():
     """
     Get the univariate time series data.
+
     :return: numpy array
     """
     dat = get_dataframe()
@@ -15,6 +16,7 @@ def get_data():
 def get_dataframe():
     """
     Get the complete multivariate time series data.
+
     :return: Pandas DataFrame
     """
     dat = common.get_dataframe('SP500.csv.bz2',

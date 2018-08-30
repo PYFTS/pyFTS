@@ -6,6 +6,7 @@ import numpy as np
 def get_data(field="avg"):
     """
     Get a simple univariate time series data.
+
     :param field: the dataset field name to extract
     :return: numpy array
     """
@@ -17,6 +18,7 @@ def get_data(field="avg"):
 def get_dataframe():
     """
     Get the complete multivariate time series data.
+
     :return: Pandas DataFrame
     """
     dat = common.get_dataframe('NASDAQ.csv.bz2',

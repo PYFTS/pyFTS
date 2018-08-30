@@ -1,0 +1,197 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyFTS.models.seasonal.partitioner &#8212; pyFTS 1.2.3 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyFTS.models.seasonal.partitioner</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">Membership</span><span class="p">,</span> <span class="n">FuzzySet</span> <span class="k">as</span> <span class="n">FS</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common.Composite</span> <span class="k">import</span> <span class="n">FuzzySet</span> <span class="k">as</span> <span class="n">Composite</span>
+<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">Grid</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models.seasonal.common</span> <span class="k">import</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">strip_datepart</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+<div class="viewcode-block" id="TimeGridPartitioner"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.partitioner.TimeGridPartitioner">[docs]</a><span class="k">class</span> <span class="nc">TimeGridPartitioner</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="n">Partitioner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Even Length DateTime Grid Partitioner&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Even Length Grid Partitioner</span>
+<span class="sd">        :param seasonality: Time granularity, from pyFTS.models.seasonal.common.DateTime</span>
+<span class="sd">        :param data: Training data of which the universe of discourse will be extracted. The universe of discourse is the open interval between the minimum and maximum values of the training data.</span>
+<span class="sd">        :param npart: The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</span>
+<span class="sd">        :param func: Fuzzy membership function (pyFTS.common.Membership)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TimeGridPartitioner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;TimeGrid&quot;</span><span class="p">,</span> <span class="n">preprocess</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">season</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;seasonality&#39;</span><span class="p">,</span> <span class="n">DateTime</span><span class="o">.</span><span class="n">day_of_year</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">season</span> <span class="o">==</span> <span class="n">DateTime</span><span class="o">.</span><span class="n">year</span><span class="p">:</span>
+            <span class="n">ndata</span> <span class="o">=</span> <span class="p">[</span><span class="n">strip_datepart</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitions</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="n">tmp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="n">tmp</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">setnames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setnames</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">FS</span><span class="o">.</span><span class="n">set_ordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TimeGridPartitioner.build"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.partitioner.TimeGridPartitioner.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">sets</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">season</span> <span class="o">==</span> <span class="n">DateTime</span><span class="o">.</span><span class="n">year</span><span class="p">:</span>
+            <span class="n">dlen</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">)</span>
+            <span class="n">partlen</span> <span class="o">=</span> <span class="n">dlen</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">partlen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitions</span>
+            <span class="n">pl2</span> <span class="o">=</span> <span class="n">partlen</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">partlen</span><span class="p">):</span>
+            <span class="n">set_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">membership_function</span> <span class="o">==</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trimf</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">set_name</span><span class="p">,</span> <span class="n">superset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">append_set</span><span class="p">(</span><span class="n">FuzzySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trimf</span><span class="p">,</span>
+                                            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">pl2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="mf">0.0000001</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span>
+                                            <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">append_set</span><span class="p">(</span><span class="n">FuzzySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trimf</span><span class="p">,</span>
+                                            <span class="p">[</span><span class="n">c</span> <span class="o">-</span> <span class="n">partlen</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span> <span class="o">+</span> <span class="n">partlen</span><span class="p">],</span> <span class="n">c</span><span class="p">,</span>
+                                            <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">centroid</span> <span class="o">=</span> <span class="n">c</span>
+                    <span class="n">sets</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sets</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trimf</span><span class="p">,</span>
+                                         <span class="p">[</span><span class="n">c</span> <span class="o">-</span> <span class="n">partlen</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span> <span class="o">+</span> <span class="n">partlen</span><span class="p">],</span> <span class="n">c</span><span class="p">,</span>
+                                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">membership_function</span> <span class="o">==</span> <span class="n">Membership</span><span class="o">.</span><span class="n">gaussmf</span><span class="p">:</span>
+                <span class="n">sets</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">Membership</span><span class="o">.</span><span class="n">gaussmf</span><span class="p">,</span> <span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">partlen</span> <span class="o">/</span> <span class="mi">3</span><span class="p">],</span> <span class="n">c</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">membership_function</span> <span class="o">==</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trapmf</span><span class="p">:</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">partlen</span> <span class="o">/</span> <span class="mi">4</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">set_name</span><span class="p">,</span> <span class="n">superset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">append_set</span><span class="p">(</span><span class="n">FuzzySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trimf</span><span class="p">,</span>
+                                            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">pl2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="mf">0.0000001</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span>
+                                            <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">append_set</span><span class="p">(</span><span class="n">FuzzySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trapmf</span><span class="p">,</span>
+                                            <span class="p">[</span><span class="n">c</span> <span class="o">-</span> <span class="n">partlen</span><span class="p">,</span> <span class="n">c</span> <span class="o">-</span> <span class="n">q</span><span class="p">,</span> <span class="n">c</span> <span class="o">+</span> <span class="n">q</span><span class="p">,</span> <span class="n">c</span> <span class="o">+</span> <span class="n">partlen</span><span class="p">],</span> <span class="n">c</span><span class="p">,</span>
+                                            <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">centroid</span> <span class="o">=</span> <span class="n">c</span>
+                    <span class="n">sets</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sets</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trapmf</span><span class="p">,</span>
+                                         <span class="p">[</span><span class="n">c</span> <span class="o">-</span> <span class="n">partlen</span><span class="p">,</span> <span class="n">c</span> <span class="o">-</span> <span class="n">q</span><span class="p">,</span> <span class="n">c</span> <span class="o">+</span> <span class="n">q</span><span class="p">,</span> <span class="n">c</span> <span class="o">+</span> <span class="n">partlen</span><span class="p">],</span> <span class="n">c</span><span class="p">,</span>
+                                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="n">sets</span></div>
+
+
+<div class="viewcode-block" id="TimeGridPartitioner.plot"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.partitioner.TimeGridPartitioner.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the</span>
+<span class="sd">        :param ax:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">value</span><span class="p">])</span>
+        <span class="n">ticks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;composite&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">sets</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_set</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ss</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">plot_set</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">centroid</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

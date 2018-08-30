@@ -20,27 +20,23 @@ class FuzzySet(FS.FuzzySet):
     def __init__(self, name, mf, parameters, **kwargs):
         """
         Constructor
-        :param name:
-        :param mf: Fuzzy Membership Function
-        :param parameters:
-        :param kwargs:
-            - location: Pertubation function that affects the location of the membership function
-            - location_params: Parameters for location pertubation function
-            - width: Pertubation function that affects the width of the membership function
-            - width_params: Parameters for width pertubation function
-            - noise: Pertubation function that adds noise on the membership function
-            - noise_params: Parameters for noise pertubation function
         """
         super(FuzzySet, self).__init__(name=name, mf=mf, parameters=parameters, centroid=None, alpha=1.0, **kwargs)
     
         self.location = kwargs.get("location", None)
+        """Pertubation function that affects the location of the membership function"""
         self.location_params = kwargs.get("location_params", None)
+        """Parameters for location pertubation function"""
         self.location_roots = kwargs.get("location_roots", 0)
         self.width = kwargs.get("width", None)
+        """Pertubation function that affects the width of the membership function"""
         self.width_params = kwargs.get("width_params", None)
+        """Parameters for width pertubation function"""
         self.width_roots = kwargs.get("width_roots", 0)
         self.noise = kwargs.get("noise", None)
+        """Pertubation function that adds noise on the membership function"""
         self.noise_params = kwargs.get("noise_params", None)
+        """Parameters for noise pertubation function"""
         self.perturbated_parameters = {}
         self.type = 'nonstationary'
     
@@ -103,7 +99,9 @@ class FuzzySet(FS.FuzzySet):
     def membership(self, x, t):
         """
         Calculate the membership value of a given input
+
         :param x: input value
+        :param t: time displacement or perturbation parameters
         :return: membership value of x at this fuzzy set
         """
     
@@ -192,6 +190,7 @@ class FuzzySet(FS.FuzzySet):
 def fuzzify(inst, t, fuzzySets):
     """
     Calculate the membership values for a data point given nonstationary fuzzy sets
+
     :param inst: data points
     :param t: time displacement of the instance
     :param fuzzySets: list of fuzzy sets

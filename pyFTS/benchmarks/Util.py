@@ -164,6 +164,7 @@ def point_dataframe_analytic_columns(experiments):
 def save_dataframe_point(experiments, file, objs, rmse, save, synthetic, smape, times, u, steps, method):
     """
     Create a dataframe to store the benchmark results
+
     :param experiments: dictionary with the execution results
     :param file: 
     :param objs: 

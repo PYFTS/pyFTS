@@ -19,6 +19,7 @@ class Transformation(object):
     def apply(self, data, param, **kwargs):
         """
         Apply the transformation on input data
+
         :param data: input data
         :param param:
         :param kwargs:
