@@ -54,21 +54,28 @@
 <li><a class="reference internal" href="#">pyFTS.data package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.data">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.AirPassengers">pyFTS.data.AirPassengers module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.Enrollments">pyFTS.data.Enrollments module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.INMET">pyFTS.data.INMET module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.NASDAQ">pyFTS.data.NASDAQ module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.SONDA">pyFTS.data.SONDA module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.SP500">pyFTS.data.SP500 module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.TAIEX">pyFTS.data.TAIEX module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.artificial">pyFTS.data.artificial module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.common">pyFTS.data.common module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.henon">pyFTS.data.henon module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.logistic_map">pyFTS.data.logistic_map module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.lorentz">pyFTS.data.lorentz module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.mackey_glass">pyFTS.data.mackey_glass module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.rossler">pyFTS.data.rossler module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.sunspots">pyFTS.data.sunspots module</a></li>
+<li><a class="reference internal" href="#datasets">Datasets</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.AirPassengers">AirPassengers dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.Bitcoin">Bitcoin dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.DowJones">DowJones dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.Enrollments">Enrollments dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.Ethereum">Ethereum dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.EURGBP">EUR-GBP dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.EURUSD">EUR-USD dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.GBPUSD">GBP-USD dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.INMET">INMET dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.NASDAQ">NASDAQ module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.SONDA">SONDA dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.SP500">S&amp;P 500 dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.TAIEX">TAIEX dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.artificial">pyFTS.data.artificial module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.henon">Henon chaotic time series</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.logistic_map">Logistic_map chaotic time series</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.lorentz">Lorentz chaotic time series</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.mackey_glass">Mackey-Glass chaotic time series</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.rossler">Rossler chaotic time series</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.sunspots">Sunspots dataset</a></li>
 </ul>
 </li>
 </ul>
@@ -108,6 +115,8 @@
             
   <div class="section" id="pyfts-data-package">
 <h1>pyFTS.data package<a class="headerlink" href="#pyfts-data-package" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
 <div class="section" id="module-pyFTS.data">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.data" title="Permalink to this headline">¶</a></h2>
 <p>Module for pyFTS standard datasets facilities</p>
@@ -115,8 +124,38 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-pyFTS.data.common">
+<span id="pyfts-data-common-module"></span><h2>pyFTS.data.common module<a class="headerlink" href="#module-pyFTS.data.common" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyFTS.data.common.get_dataframe">
+<code class="descclassname">pyFTS.data.common.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>filename</em>, <em>url</em>, <em>sep=';'</em>, <em>compression='infer'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/common.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.common.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method check if filename already exists, read the file and return its data.
+If the file don’t already exists, it will be downloaded and decompressed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> – dataset local filename</li>
+<li><strong>url</strong> – dataset internet URL</li>
+<li><strong>sep</strong> – CSV field separator</li>
+<li><strong>compression</strong> – type of compression</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Pandas dataset</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="datasets">
+<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="module-pyFTS.data.AirPassengers">
-<span id="pyfts-data-airpassengers-module"></span><h2>pyFTS.data.AirPassengers module<a class="headerlink" href="#module-pyFTS.data.AirPassengers" title="Permalink to this headline">¶</a></h2>
+<span id="airpassengers-dataset"></span><h2>AirPassengers dataset<a class="headerlink" href="#module-pyFTS.data.AirPassengers" title="Permalink to this headline">¶</a></h2>
 <p>Monthly totals of a airline passengers from USA, from January 1949 through December 1960.</p>
 <p>Source: Hyndman, R.J., Time Series Data Library, <a class="reference external" href="http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/">http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/</a>.</p>
 <dl class="function">
@@ -148,8 +187,76 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-pyFTS.data.Bitcoin">
+<span id="bitcoin-dataset"></span><h2>Bitcoin dataset<a class="headerlink" href="#module-pyFTS.data.Bitcoin" title="Permalink to this headline">¶</a></h2>
+<p>Bitcoin to USD quotations</p>
+<p>Daily averaged index, by business day, from 2010 to 2018.</p>
+<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD">https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD</a></p>
+<dl class="function">
+<dt id="pyFTS.data.Bitcoin.get_data">
+<code class="descclassname">pyFTS.data.Bitcoin.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.Bitcoin.get_dataframe">
+<code class="descclassname">pyFTS.data.Bitcoin.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.DowJones">
+<span id="dowjones-dataset"></span><h2>DowJones dataset<a class="headerlink" href="#module-pyFTS.data.DowJones" title="Permalink to this headline">¶</a></h2>
+<p>DJI - Dow Jones</p>
+<p>Daily averaged index, by business day, from 1985 to 2017.</p>
+<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
+<dl class="function">
+<dt id="pyFTS.data.DowJones.get_data">
+<code class="descclassname">pyFTS.data.DowJones.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.DowJones.get_dataframe">
+<code class="descclassname">pyFTS.data.DowJones.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-pyFTS.data.Enrollments">
-<span id="pyfts-data-enrollments-module"></span><h2>pyFTS.data.Enrollments module<a class="headerlink" href="#module-pyFTS.data.Enrollments" title="Permalink to this headline">¶</a></h2>
+<span id="enrollments-dataset"></span><h2>Enrollments dataset<a class="headerlink" href="#module-pyFTS.data.Enrollments" title="Permalink to this headline">¶</a></h2>
 <p>Yearly University of Alabama enrollments from 1971 to 1992.</p>
 <dl class="function">
 <dt id="pyFTS.data.Enrollments.get_data">
@@ -171,8 +278,141 @@
 <dd></dd></dl>
 
 </div>
+<div class="section" id="module-pyFTS.data.Ethereum">
+<span id="ethereum-dataset"></span><h2>Ethereum dataset<a class="headerlink" href="#module-pyFTS.data.Ethereum" title="Permalink to this headline">¶</a></h2>
+<p>Ethereum to USD quotations</p>
+<p>Daily averaged index, by business day, from 2016 to 2018.</p>
+<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD">https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD</a></p>
+<dl class="function">
+<dt id="pyFTS.data.Ethereum.get_data">
+<code class="descclassname">pyFTS.data.Ethereum.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.Ethereum.get_dataframe">
+<code class="descclassname">pyFTS.data.Ethereum.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.EURGBP">
+<span id="eur-gbp-dataset"></span><h2>EUR-GBP dataset<a class="headerlink" href="#module-pyFTS.data.EURGBP" title="Permalink to this headline">¶</a></h2>
+<p>FOREX market EUR-GBP pair.</p>
+<p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
+<dl class="function">
+<dt id="pyFTS.data.EURGBP.get_data">
+<code class="descclassname">pyFTS.data.EURGBP.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.EURGBP.get_dataframe">
+<code class="descclassname">pyFTS.data.EURGBP.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.EURUSD">
+<span id="eur-usd-dataset"></span><h2>EUR-USD dataset<a class="headerlink" href="#module-pyFTS.data.EURUSD" title="Permalink to this headline">¶</a></h2>
+<p>FOREX market EUR-USD pair.</p>
+<p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
+<dl class="function">
+<dt id="pyFTS.data.EURUSD.get_data">
+<code class="descclassname">pyFTS.data.EURUSD.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.EURUSD.get_dataframe">
+<code class="descclassname">pyFTS.data.EURUSD.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.GBPUSD">
+<span id="gbp-usd-dataset"></span><h2>GBP-USD dataset<a class="headerlink" href="#module-pyFTS.data.GBPUSD" title="Permalink to this headline">¶</a></h2>
+<p>FOREX market GBP-USD pair.</p>
+<p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
+<dl class="function">
+<dt id="pyFTS.data.GBPUSD.get_data">
+<code class="descclassname">pyFTS.data.GBPUSD.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.GBPUSD.get_dataframe">
+<code class="descclassname">pyFTS.data.GBPUSD.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-pyFTS.data.INMET">
-<span id="pyfts-data-inmet-module"></span><h2>pyFTS.data.INMET module<a class="headerlink" href="#module-pyFTS.data.INMET" title="Permalink to this headline">¶</a></h2>
+<span id="inmet-dataset"></span><h2>INMET dataset<a class="headerlink" href="#module-pyFTS.data.INMET" title="Permalink to this headline">¶</a></h2>
 <p>INMET - Instituto Nacional Meteorologia / Brasil</p>
 <p>Belo Horizonte station, from 2000-01-01 to  31/12/2012</p>
 <p>Source: <a class="reference external" href="http://www.inmet.gov.br">http://www.inmet.gov.br</a></p>
@@ -192,7 +432,7 @@
 
 </div>
 <div class="section" id="module-pyFTS.data.NASDAQ">
-<span id="pyfts-data-nasdaq-module"></span><h2>pyFTS.data.NASDAQ module<a class="headerlink" href="#module-pyFTS.data.NASDAQ" title="Permalink to this headline">¶</a></h2>
+<span id="nasdaq-module"></span><h2>NASDAQ module<a class="headerlink" href="#module-pyFTS.data.NASDAQ" title="Permalink to this headline">¶</a></h2>
 <p>National Association of Securities Dealers Automated Quotations - Composite Index (NASDAQ IXIC)</p>
 <p>Daily averaged index by business day, from 2000 to 2016.</p>
 <p>Source: <a class="reference external" href="http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC">http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC</a></p>
@@ -228,7 +468,7 @@
 
 </div>
 <div class="section" id="module-pyFTS.data.SONDA">
-<span id="pyfts-data-sonda-module"></span><h2>pyFTS.data.SONDA module<a class="headerlink" href="#module-pyFTS.data.SONDA" title="Permalink to this headline">¶</a></h2>
+<span id="sonda-dataset"></span><h2>SONDA dataset<a class="headerlink" href="#module-pyFTS.data.SONDA" title="Permalink to this headline">¶</a></h2>
 <p>SONDA - Sistema de Organização Nacional de Dados Ambientais, from INPE - Instituto Nacional de Pesquisas Espaciais, Brasil.</p>
 <p>Brasilia station</p>
 <p>Source: <a class="reference external" href="http://sonda.ccst.inpe.br/">http://sonda.ccst.inpe.br/</a></p>
@@ -264,7 +504,7 @@
 
 </div>
 <div class="section" id="module-pyFTS.data.SP500">
-<span id="pyfts-data-sp500-module"></span><h2>pyFTS.data.SP500 module<a class="headerlink" href="#module-pyFTS.data.SP500" title="Permalink to this headline">¶</a></h2>
+<span id="s-p-500-dataset"></span><h2>S&amp;P 500 dataset<a class="headerlink" href="#module-pyFTS.data.SP500" title="Permalink to this headline">¶</a></h2>
 <p>S&amp;P500 - Standard &amp; Poor’s 500</p>
 <p>Daily averaged index, by business day, from 1950 to 2017.</p>
 <p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
@@ -298,7 +538,7 @@
 
 </div>
 <div class="section" id="module-pyFTS.data.TAIEX">
-<span id="pyfts-data-taiex-module"></span><h2>pyFTS.data.TAIEX module<a class="headerlink" href="#module-pyFTS.data.TAIEX" title="Permalink to this headline">¶</a></h2>
+<span id="taiex-dataset"></span><h2>TAIEX dataset<a class="headerlink" href="#module-pyFTS.data.TAIEX" title="Permalink to this headline">¶</a></h2>
 <p>The Taiwan Stock Exchange Capitalization Weighted Stock Index (TAIEX)</p>
 <p>Daily averaged index by business day, from 1995 to 2014.</p>
 <p>Source: <a class="reference external" href="http://www.twse.com.tw/en/products/indices/Index_Series.php">http://www.twse.com.tw/en/products/indices/Index_Series.php</a></p>
@@ -399,35 +639,8 @@
 <dd></dd></dl>
 
 </div>
-<div class="section" id="module-pyFTS.data.common">
-<span id="pyfts-data-common-module"></span><h2>pyFTS.data.common module<a class="headerlink" href="#module-pyFTS.data.common" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="pyFTS.data.common.get_dataframe">
-<code class="descclassname">pyFTS.data.common.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>filename</em>, <em>url</em>, <em>sep=';'</em>, <em>compression='infer'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/common.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.common.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method check if filename already exists, read the file and return its data.
-If the file don’t already exists, it will be downloaded and decompressed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> – dataset local filename</li>
-<li><strong>url</strong> – dataset internet URL</li>
-<li><strong>sep</strong> – CSV field separator</li>
-<li><strong>compression</strong> – type of compression</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Pandas dataset</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
 <div class="section" id="module-pyFTS.data.henon">
-<span id="pyfts-data-henon-module"></span><h2>pyFTS.data.henon module<a class="headerlink" href="#module-pyFTS.data.henon" title="Permalink to this headline">¶</a></h2>
+<span id="henon-chaotic-time-series"></span><h2>Henon chaotic time series<a class="headerlink" href="#module-pyFTS.data.henon" title="Permalink to this headline">¶</a></h2>
 <ol class="upperalpha simple" start="13">
 <li>Hénon. “A two-dimensional mapping with a strange attractor”. Commun. Math. Phys. 50, 69-77 (1976)</li>
 </ol>
@@ -474,7 +687,7 @@ dy/dt = x</p>
 
 </div>
 <div class="section" id="module-pyFTS.data.logistic_map">
-<span id="pyfts-data-logistic-map-module"></span><h2>pyFTS.data.logistic_map module<a class="headerlink" href="#module-pyFTS.data.logistic_map" title="Permalink to this headline">¶</a></h2>
+<span id="logistic-map-chaotic-time-series"></span><h2>Logistic_map chaotic time series<a class="headerlink" href="#module-pyFTS.data.logistic_map" title="Permalink to this headline">¶</a></h2>
 <p>May, Robert M. (1976). “Simple mathematical models with very complicated dynamics”.
 Nature. 261 (5560): 459–467. doi:10.1038/261459a0.</p>
 <p>x(t) = r * x(t-1) * (1 - x(t -1) )</p>
@@ -502,7 +715,7 @@ Nature. 261 (5560): 459–467. doi:10.1038/261459a0.</p>
 
 </div>
 <div class="section" id="module-pyFTS.data.lorentz">
-<span id="pyfts-data-lorentz-module"></span><h2>pyFTS.data.lorentz module<a class="headerlink" href="#module-pyFTS.data.lorentz" title="Permalink to this headline">¶</a></h2>
+<span id="lorentz-chaotic-time-series"></span><h2>Lorentz chaotic time series<a class="headerlink" href="#module-pyFTS.data.lorentz" title="Permalink to this headline">¶</a></h2>
 <p>Lorenz, Edward Norton (1963). “Deterministic nonperiodic flow”. Journal of the Atmospheric Sciences. 20 (2): 130–141.
 <a class="reference external" href="https://doi.org/10.1175/1520-0469(1963">https://doi.org/10.1175/1520-0469(1963</a>)020&lt;0130:DNF&gt;2.0.CO;2</p>
 <p>dx/dt = a(y -x)
@@ -551,7 +764,7 @@ dz/dt = xy - cz</p>
 
 </div>
 <div class="section" id="module-pyFTS.data.mackey_glass">
-<span id="pyfts-data-mackey-glass-module"></span><h2>pyFTS.data.mackey_glass module<a class="headerlink" href="#module-pyFTS.data.mackey_glass" title="Permalink to this headline">¶</a></h2>
+<span id="mackey-glass-chaotic-time-series"></span><h2>Mackey-Glass chaotic time series<a class="headerlink" href="#module-pyFTS.data.mackey_glass" title="Permalink to this headline">¶</a></h2>
 <p>Mackey, M. C. and Glass, L. (1977). Oscillation and chaos in physiological control systems.
 Science, 197(4300):287-289.</p>
 <p>dy/dt = -by(t)+ cy(t - tau) / 1+y(t-tau)^10</p>
@@ -581,7 +794,7 @@ Science, 197(4300):287-289.</p>
 
 </div>
 <div class="section" id="module-pyFTS.data.rossler">
-<span id="pyfts-data-rossler-module"></span><h2>pyFTS.data.rossler module<a class="headerlink" href="#module-pyFTS.data.rossler" title="Permalink to this headline">¶</a></h2>
+<span id="rossler-chaotic-time-series"></span><h2>Rossler chaotic time series<a class="headerlink" href="#module-pyFTS.data.rossler" title="Permalink to this headline">¶</a></h2>
 <ol class="upperalpha simple" start="15">
 <li><ol class="first upperalpha" start="5">
 <li>Rössler, Phys. Lett. 57A, 397 (1976).</li>
@@ -634,7 +847,7 @@ dz/dt = b + z( x - c )</p>
 
 </div>
 <div class="section" id="module-pyFTS.data.sunspots">
-<span id="pyfts-data-sunspots-module"></span><h2>pyFTS.data.sunspots module<a class="headerlink" href="#module-pyFTS.data.sunspots" title="Permalink to this headline">¶</a></h2>
+<span id="sunspots-dataset"></span><h2>Sunspots dataset<a class="headerlink" href="#module-pyFTS.data.sunspots" title="Permalink to this headline">¶</a></h2>
 <p>Monthly sunspot numbers from 1749 to May 2016</p>
 <p>Source: <a class="reference external" href="https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/">https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/</a></p>
 <dl class="function">

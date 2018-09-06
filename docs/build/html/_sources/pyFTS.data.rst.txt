@@ -1,6 +1,10 @@
 pyFTS.data package
 ==================
 
+.. toctree::
+	:maxdepth: 3
+	:caption: Index:
+
 Module contents
 ---------------
 
@@ -8,11 +12,24 @@ Module contents
     :members:
     :undoc-members:
     :show-inheritance:
+    
+
 
 Submodules
 ----------
 
-pyFTS.data.AirPassengers module
+pyFTS.data.common module
+------------------------
+
+.. automodule:: pyFTS.data.common
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+Datasets
+--------
+
+AirPassengers dataset
 -------------------------------
 
 .. automodule:: pyFTS.data.AirPassengers
@@ -20,15 +37,65 @@ pyFTS.data.AirPassengers module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.Enrollments module
+Bitcoin dataset
+-------------------------------
+
+.. automodule:: pyFTS.data.Bitcoin
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+DowJones dataset
+-----------------------------
+
+.. automodule:: pyFTS.data.DowJones
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Enrollments dataset
 -----------------------------
 
 .. automodule:: pyFTS.data.Enrollments
     :members:
     :undoc-members:
     :show-inheritance:
+    
+Ethereum dataset
+-----------------------------
 
-pyFTS.data.INMET module
+.. automodule:: pyFTS.data.Ethereum
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+    
+EUR-GBP dataset
+-----------------------------
+
+.. automodule:: pyFTS.data.EURGBP
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+EUR-USD dataset
+-----------------------------
+
+.. automodule:: pyFTS.data.EURUSD
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+    
+GBP-USD dataset
+-----------------------------
+
+.. automodule:: pyFTS.data.GBPUSD
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+INMET dataset
 -----------------------
 
 .. automodule:: pyFTS.data.INMET
@@ -36,7 +103,7 @@ pyFTS.data.INMET module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.NASDAQ module
+NASDAQ module
 ------------------------
 
 .. automodule:: pyFTS.data.NASDAQ
@@ -44,7 +111,7 @@ pyFTS.data.NASDAQ module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.SONDA module
+SONDA dataset
 -----------------------
 
 .. automodule:: pyFTS.data.SONDA
@@ -52,7 +119,7 @@ pyFTS.data.SONDA module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.SP500 module
+S&P 500 dataset
 -----------------------
 
 .. automodule:: pyFTS.data.SP500
@@ -60,7 +127,7 @@ pyFTS.data.SP500 module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.TAIEX module
+TAIEX dataset
 -----------------------
 
 .. automodule:: pyFTS.data.TAIEX
@@ -76,56 +143,48 @@ pyFTS.data.artificial module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.common module
-------------------------
-
-.. automodule:: pyFTS.data.common
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyFTS.data.henon module
------------------------
+Henon chaotic time series
+-------------------------
 
 .. automodule:: pyFTS.data.henon
     :members:
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.logistic\_map module
--------------------------------
+Logistic\_map chaotic time series
+----------------------------------
 
 .. automodule:: pyFTS.data.logistic_map
     :members:
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.lorentz module
--------------------------
+Lorentz chaotic time series
+---------------------------
 
 .. automodule:: pyFTS.data.lorentz
     :members:
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.mackey\_glass module
--------------------------------
+Mackey-Glass chaotic time series
+--------------------------------
 
 .. automodule:: pyFTS.data.mackey_glass
     :members:
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.rossler module
--------------------------
+Rossler chaotic time series
+---------------------------
 
 .. automodule:: pyFTS.data.rossler
     :members:
     :undoc-members:
     :show-inheritance:
 
-pyFTS.data.sunspots module
---------------------------
+Sunspots dataset
+----------------
 
 .. automodule:: pyFTS.data.sunspots
     :members:
