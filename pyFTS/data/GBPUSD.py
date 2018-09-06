@@ -10,14 +10,15 @@ import pandas as pd
 import numpy as np
 
 
-def get_data():
+def get_data(field='avg'):
     """
     Get the univariate time series data.
 
+    :param field: dataset field to load
     :return: numpy array
     """
     dat = get_dataframe()
-    return np.array(dat["Avg"])
+    return np.array(dat[field])
 
 
 def get_dataframe():

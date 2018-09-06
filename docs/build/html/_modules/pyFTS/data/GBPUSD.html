@@ -73,14 +73,15 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.GBPUSD.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">():</span>
+<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.GBPUSD.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;avg&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the univariate time series data.</span>
 
+<span class="sd">    :param field: dataset field to load</span>
 <span class="sd">    :return: numpy array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dat</span> <span class="o">=</span> <span class="n">get_dataframe</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="s2">&quot;Avg&quot;</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="n">field</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="get_dataframe"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.GBPUSD.get_dataframe">[docs]</a><span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">():</span>
