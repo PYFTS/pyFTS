@@ -189,15 +189,19 @@ class FTS(object):
         :param kwargs: model specific parameters
         :return: a list with the forecasted values
         """
+
+        if isinstance(data, np.ndarray):
+            data = data.tolist()
+
         ret = []
         for k in np.arange(0,steps):
-            tmp = self.forecast(data[-self.order:], **kwargs)
+            tmp = self.forecast(data[-self.max_lag:], **kwargs)
 
             if isinstance(tmp,(list, np.ndarray)):
-                tmp = tmp[0]
+                tmp = tmp[-1]
 
             ret.append(tmp)
-            data.append_rhs(tmp)
+            data.append(tmp)
 
         return ret
 

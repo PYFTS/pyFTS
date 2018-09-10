@@ -117,7 +117,7 @@ class HighOrderFTS(fts.FTS):
 
         l = len(ndata)
 
-        if l <= self.max_lag:
+        if l < self.max_lag:
             return ndata
 
         for k in np.arange(self.max_lag, l+1):

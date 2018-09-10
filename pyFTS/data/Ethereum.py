@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 
 
-def get_data(field='avg'):
+def get_data(field='AVG'):
     """
     Get the univariate time series data.
 
