@@ -50,11 +50,11 @@ North of Minas Gerais (IFNMG) <http://www.ifnmg.edu.br>`_ and `Federal Institute
 How to reference pyFTS?
 -----------------------
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1405817.svg
-   :target: https://doi.org/10.5281/zenodo.1405817
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.597359.svg
+   :target: https://doi.org/10.5281/zenodo.597359
 
 
-Silva, P. C. L. et al. *pyFTS: Fuzzy Time Series for Python (Version v4.0).* Belo Horizonte. 2018. DOI: 10.5281/zenodo.1405817. Url: <https://doi.org/10.5281/zenodo.1405817>
+Silva, P. C. L. et al. *pyFTS: Fuzzy Time Series for Python.* Belo Horizonte. 2018. DOI: 10.5281/zenodo.597359. Url: <https://doi.org/10.5281/zenodo.597359>
 
 
 Indexes
