@@ -13,9 +13,9 @@ This project is continously under improvement and contributors are well come.
 
 ## How to reference pyFTS?
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1194859.svg)](https://doi.org/10.5281/zenodo.1194859)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.597359.svg)](https://doi.org/10.5281/zenodo.597359)
 
- Silva, P. C. L. et al. *pyFTS: Fuzzy Time Series for Python (Version v4.0).* Belo Horizonte. 2018. DOI: 10.5281/zenodo.1194859. Url: <http://doi.org/10.5281/zenodo.1194859>
+ Silva, P. C. L. et al. *pyFTS: Fuzzy Time Series for Python.* Belo Horizonte. 2018. DOI: 10.5281/zenodo.597359. Url: <http://doi.org/10.5281/zenodo.597359>
 
 ## How to install pyFTS?
 
