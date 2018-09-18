@@ -20,6 +20,30 @@ pyFTS.partitioners.partitioner module
     :undoc-members:
     :show-inheritance:
     
+pyFTS.partitioners.CMeans module
+--------------------------------
+
+.. automodule:: pyFTS.partitioners.CMeans
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyFTS.partitioners.Entropy module
+---------------------------------
+
+.. automodule:: pyFTS.partitioners.Entropy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyFTS.partitioners.FCM module
+-----------------------------
+
+.. automodule:: pyFTS.partitioners.FCM
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyFTS.partitioners.Grid module
 ------------------------------
 
@@ -36,29 +60,14 @@ pyFTS.partitioners.Huarng module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.partitioners.Entropy module
----------------------------------
-
-.. automodule:: pyFTS.partitioners.Entropy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyFTS.partitioners.CMeans module
+pyFTS.partitioners.Singleton module
 --------------------------------
 
-.. automodule:: pyFTS.partitioners.CMeans
+.. automodule:: pyFTS.partitioners.Singleton
     :members:
     :undoc-members:
     :show-inheritance:
 
-pyFTS.partitioners.FCM module
------------------------------
-
-.. automodule:: pyFTS.partitioners.FCM
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 pyFTS.partitioners.Util module
 ------------------------------
