@@ -381,17 +381,40 @@
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.check_bounds">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">check_bounds</code><span class="sig-paren">(</span><em>data</em>, <em>sets</em>, <em>ordered_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#check_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.check_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">check_bounds</code><span class="sig-paren">(</span><em>data</em>, <em>fuzzy_sets</em>, <em>ordered_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#check_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.check_bounds" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.check_bounds_index">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">check_bounds_index</code><span class="sig-paren">(</span><em>data</em>, <em>sets</em>, <em>ordered_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#check_bounds_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.check_bounds_index" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">check_bounds_index</code><span class="sig-paren">(</span><em>data</em>, <em>fuzzy_sets</em>, <em>ordered_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#check_bounds_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.check_bounds_index" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="pyFTS.common.FuzzySet.fuzzyfy">
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">fuzzyfy</code><span class="sig-paren">(</span><em>data</em>, <em>partitioner</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#fuzzyfy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.fuzzyfy" title="Permalink to this definition">¶</a></dt>
+<dd><p>A general method for fuzzyfication.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – input value to be fuzzyfied</li>
+<li><strong>partitioner</strong> – a trained pyFTS.partitioners.Partitioner object</li>
+<li><strong>kwargs</strong> – dict, optional arguments</li>
+<li><strong>alpha_cut</strong> – the minimal membership value to be considered on fuzzyfication (only for mode=’sets’)</li>
+<li><strong>method</strong> – the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)</li>
+<li><strong>mode</strong> – the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership values for all fuzzy sets)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:returns a list with the fuzzyfied values, depending on the mode</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyFTS.common.FuzzySet.fuzzyfy_instance">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">fuzzyfy_instance</code><span class="sig-paren">(</span><em>inst</em>, <em>fuzzySets</em>, <em>ordered_sets=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#fuzzyfy_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.fuzzyfy_instance" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">fuzzyfy_instance</code><span class="sig-paren">(</span><em>inst</em>, <em>fuzzy_sets</em>, <em>ordered_sets=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#fuzzyfy_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.fuzzyfy_instance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the membership values for a data point given fuzzy sets</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -399,7 +422,8 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>inst</strong> – data point</li>
-<li><strong>fuzzySets</strong> – dict of fuzzy sets</li>
+<li><strong>fuzzy_sets</strong> – a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</li>
+<li><strong>ordered_sets</strong> – a list with the fuzzy sets names ordered by their centroids.</li>
 </ul>
 </td>
 </tr>
@@ -412,7 +436,7 @@
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.fuzzyfy_instances">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">fuzzyfy_instances</code><span class="sig-paren">(</span><em>data</em>, <em>fuzzySets</em>, <em>ordered_sets=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#fuzzyfy_instances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.fuzzyfy_instances" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">fuzzyfy_instances</code><span class="sig-paren">(</span><em>data</em>, <em>fuzzy_sets</em>, <em>ordered_sets=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#fuzzyfy_instances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.fuzzyfy_instances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the membership values for a data point given fuzzy sets</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -420,7 +444,8 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>inst</strong> – data point</li>
-<li><strong>fuzzySets</strong> – dict of fuzzy sets</li>
+<li><strong>fuzzy_sets</strong> – a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</li>
+<li><strong>ordered_sets</strong> – a list with the fuzzy sets names ordered by their centroids.</li>
 </ul>
 </td>
 </tr>
@@ -433,17 +458,17 @@
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.fuzzyfy_series">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">fuzzyfy_series</code><span class="sig-paren">(</span><em>data</em>, <em>fuzzySets</em>, <em>method='maximum'</em>, <em>alpha_cut=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#fuzzyfy_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.fuzzyfy_series" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">fuzzyfy_series</code><span class="sig-paren">(</span><em>data</em>, <em>fuzzy_sets</em>, <em>method='maximum'</em>, <em>alpha_cut=0.0</em>, <em>ordered_sets=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#fuzzyfy_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.fuzzyfy_series" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.fuzzyfy_series_old">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">fuzzyfy_series_old</code><span class="sig-paren">(</span><em>data</em>, <em>fuzzySets</em>, <em>method='maximum'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#fuzzyfy_series_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.fuzzyfy_series_old" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">fuzzyfy_series_old</code><span class="sig-paren">(</span><em>data</em>, <em>fuzzy_sets</em>, <em>method='maximum'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#fuzzyfy_series_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.fuzzyfy_series_old" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.get_fuzzysets">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">get_fuzzysets</code><span class="sig-paren">(</span><em>inst</em>, <em>fuzzySets</em>, <em>ordered_sets=None</em>, <em>alpha_cut=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#get_fuzzysets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.get_fuzzysets" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">get_fuzzysets</code><span class="sig-paren">(</span><em>inst</em>, <em>fuzzy_sets</em>, <em>ordered_sets=None</em>, <em>alpha_cut=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#get_fuzzysets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.get_fuzzysets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the fuzzy sets which membership value for a inst is greater than the alpha_cut</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -451,7 +476,8 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>inst</strong> – data point</li>
-<li><strong>fuzzySets</strong> – dict of fuzzy sets</li>
+<li><strong>fuzzy_sets</strong> – a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</li>
+<li><strong>ordered_sets</strong> – a list with the fuzzy sets names ordered by their centroids.</li>
 <li><strong>alpha_cut</strong> – Minimal membership to be considered on fuzzyfication process</li>
 </ul>
 </td>
@@ -465,7 +491,7 @@
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">get_maximum_membership_fuzzyset</code><span class="sig-paren">(</span><em>inst</em>, <em>fuzzySets</em>, <em>ordered_sets=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#get_maximum_membership_fuzzyset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">get_maximum_membership_fuzzyset</code><span class="sig-paren">(</span><em>inst</em>, <em>fuzzy_sets</em>, <em>ordered_sets=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#get_maximum_membership_fuzzyset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fuzzify a data point, returning the fuzzy set with maximum membership value</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -473,7 +499,8 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>inst</strong> – data point</li>
-<li><strong>fuzzySets</strong> – dict of fuzzy sets</li>
+<li><strong>fuzzy_sets</strong> – a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</li>
+<li><strong>ordered_sets</strong> – a list with the fuzzy sets names ordered by their centroids.</li>
 </ul>
 </td>
 </tr>
@@ -486,7 +513,7 @@
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset_index">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">get_maximum_membership_fuzzyset_index</code><span class="sig-paren">(</span><em>inst</em>, <em>fuzzySets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#get_maximum_membership_fuzzyset_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset_index" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">get_maximum_membership_fuzzyset_index</code><span class="sig-paren">(</span><em>inst</em>, <em>fuzzy_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#get_maximum_membership_fuzzyset_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fuzzify a data point, returning the fuzzy set with maximum membership value</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -494,7 +521,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>inst</strong> – data point</li>
-<li><strong>fuzzySets</strong> – dict of fuzzy sets</li>
+<li><strong>fuzzy_sets</strong> – dict of fuzzy sets</li>
 </ul>
 </td>
 </tr>
@@ -507,13 +534,23 @@
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.grant_bounds">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">grant_bounds</code><span class="sig-paren">(</span><em>data</em>, <em>sets</em>, <em>ordered_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#grant_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.grant_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">grant_bounds</code><span class="sig-paren">(</span><em>data</em>, <em>fuzzy_sets</em>, <em>ordered_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#grant_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.grant_bounds" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.common.FuzzySet.set_ordered">
-<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">set_ordered</code><span class="sig-paren">(</span><em>fuzzySets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#set_ordered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.set_ordered" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.common.FuzzySet.</code><code class="descname">set_ordered</code><span class="sig-paren">(</span><em>fuzzy_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/FuzzySet.html#set_ordered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.FuzzySet.set_ordered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Order a fuzzy set list by their centroids</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fuzzy_sets</strong> – a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list with the fuzzy sets names ordered by their centroids.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -581,6 +618,25 @@
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.common.Membership.singleton">
+<code class="descclassname">pyFTS.common.Membership.</code><code class="descname">singleton</code><span class="sig-paren">(</span><em>x</em>, <em>parameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/Membership.html#singleton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.Membership.singleton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singleton membership function, a single value fuzzy function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> – </li>
+<li><strong>parameters</strong> – a list with one real value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:returns</p>
 </dd></dl>
 
 <dl class="function">

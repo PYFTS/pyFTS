@@ -126,137 +126,207 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mf</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span></div>
 
 
-<div class="viewcode-block" id="set_ordered"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.set_ordered">[docs]</a><span class="k">def</span> <span class="nf">set_ordered</span><span class="p">(</span><span class="n">fuzzySets</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Order a fuzzy set list by their centroids&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fuzzySets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">tmp1</span> <span class="o">=</span> <span class="p">[</span><span class="n">fuzzySets</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">fuzzySets</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+<span class="k">def</span> <span class="nf">__binary_search</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Search for elegible fuzzy sets to fuzzyfy x</span>
+
+<span class="sd">    :param x: input value to be fuzzyfied</span>
+<span class="sd">    :param fuzzy_sets:  a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</span>
+<span class="sd">    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.</span>
+<span class="sd">    :return: A list with the best fuzzy sets that may contain x</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">max_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">max_len</span>
+
+    <span class="k">while</span> <span class="n">first</span> <span class="o">&lt;=</span> <span class="n">last</span><span class="p">:</span>
+        <span class="n">midpoint</span> <span class="o">=</span> <span class="p">(</span><span class="n">first</span> <span class="o">+</span> <span class="n">last</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="n">midpoint</span><span class="p">]</span>
+        <span class="n">fs1</span> <span class="o">=</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="n">midpoint</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">midpoint</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">fs2</span> <span class="o">=</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="n">midpoint</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">midpoint</span> <span class="o">&lt;</span> <span class="n">max_len</span> <span class="k">else</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="n">max_len</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">fs1</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">fs2</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">midpoint</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">midpoint</span><span class="p">,</span> <span class="n">midpoint</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">fs</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span><span class="p">:</span>
+                <span class="n">last</span> <span class="o">=</span> <span class="n">midpoint</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="n">midpoint</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="fuzzyfy"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A general method for fuzzyfication.</span>
+
+<span class="sd">    :param data: input value to be fuzzyfied</span>
+<span class="sd">    :param partitioner: a trained pyFTS.partitioners.Partitioner object</span>
+<span class="sd">    :param kwargs: dict, optional arguments</span>
+
+<span class="sd">    :keyword alpha_cut: the minimal membership value to be considered on fuzzyfication (only for mode=&#39;sets&#39;)</span>
+<span class="sd">    :keyword method: the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)</span>
+<span class="sd">    :keyword mode: the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership values for all fuzzy sets)</span>
+<span class="sd">    :returns a list with the fuzzyfied values, depending on the mode</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alpha_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;sets&#39;</span><span class="p">)</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> <span class="s1">&#39;fuzzy&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;vector&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fuzzyfy_instances</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">ordered_sets</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fuzzyfy_series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">ordered_sets</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;vector&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fuzzyfy_instance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">ordered_sets</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">get_fuzzysets</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">ordered_sets</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_ordered"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.set_ordered">[docs]</a><span class="k">def</span> <span class="nf">set_ordered</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Order a fuzzy set list by their centroids</span>
+
+<span class="sd">    :param fuzzy_sets: a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</span>
+<span class="sd">    :return: a list with the fuzzy sets names ordered by their centroids.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">tmp1</span> <span class="o">=</span> <span class="p">[</span><span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">fuzzy_sets</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">tmp1</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">centroid</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="fuzzyfy_instance"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy_instance">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="fuzzyfy_instance"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy_instance">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the membership values for a data point given fuzzy sets</span>
 
 <span class="sd">    :param inst: data point</span>
-<span class="sd">    :param fuzzySets: dict of fuzzy sets</span>
+<span class="sd">    :param fuzzy_sets: a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</span>
+<span class="sd">    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.</span>
 <span class="sd">    :return: array of membership values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">ordered_sets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzySets</span><span class="p">)</span>
+        <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span>
 
-    <span class="n">mv</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ordered_sets</span><span class="p">:</span>
-        <span class="n">mv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">fuzzySets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">inst</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mv</span><span class="p">)</span></div>
+    <span class="n">mv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">__binary_search</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">):</span>
+        <span class="n">mv</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">ix</span><span class="p">]]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mv</span></div>
 
 
-<div class="viewcode-block" id="fuzzyfy_instances"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy_instances">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_instances</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="fuzzyfy_instances"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy_instances">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_instances</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the membership values for a data point given fuzzy sets</span>
 
 <span class="sd">    :param inst: data point</span>
-<span class="sd">    :param fuzzySets: dict of fuzzy sets</span>
+<span class="sd">    :param fuzzy_sets: a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</span>
+<span class="sd">    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.</span>
 <span class="sd">    :return: array of membership values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">ordered_sets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzySets</span><span class="p">)</span>
+        <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-        <span class="n">mv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fuzzySets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ordered_sets</span><span class="p">])</span>
+        <span class="n">mv</span> <span class="o">=</span> <span class="n">fuzzyfy_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">)</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mv</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
 
-<div class="viewcode-block" id="get_fuzzysets"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.get_fuzzysets">[docs]</a><span class="k">def</span> <span class="nf">get_fuzzysets</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="get_fuzzysets"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.get_fuzzysets">[docs]</a><span class="k">def</span> <span class="nf">get_fuzzysets</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the fuzzy sets which membership value for a inst is greater than the alpha_cut</span>
 
 <span class="sd">    :param inst: data point</span>
-<span class="sd">    :param fuzzySets: dict of fuzzy sets</span>
+<span class="sd">    :param fuzzy_sets:  a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</span>
+<span class="sd">    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.</span>
 <span class="sd">    :param alpha_cut: Minimal membership to be considered on fuzzyfication process</span>
 <span class="sd">    :return: array of membership values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">ordered_sets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzySets</span><span class="p">)</span>
+        <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span>
 
-    <span class="n">fs</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ordered_sets</span> <span class="k">if</span> <span class="n">fuzzySets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">alpha_cut</span><span class="p">]</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+          <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">__binary_search</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">ix</span><span class="p">]]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">alpha_cut</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">fs</span></div>
 
-<div class="viewcode-block" id="get_maximum_membership_fuzzyset"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset">[docs]</a><span class="k">def</span> <span class="nf">get_maximum_membership_fuzzyset</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_maximum_membership_fuzzyset"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset">[docs]</a><span class="k">def</span> <span class="nf">get_maximum_membership_fuzzyset</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fuzzify a data point, returning the fuzzy set with maximum membership value</span>
 
 <span class="sd">    :param inst: data point</span>
-<span class="sd">    :param fuzzySets: dict of fuzzy sets</span>
+<span class="sd">    :param fuzzy_sets:  a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.</span>
+<span class="sd">    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.</span>
 <span class="sd">    :return: fuzzy set with maximum membership</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ordered_sets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzySets</span><span class="p">)</span>
-    <span class="n">mv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fuzzySets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ordered_sets</span><span class="p">])</span>
+        <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span>
+    <span class="n">mv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ordered_sets</span><span class="p">])</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">mv</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">mv</span><span class="p">))[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
-    <span class="k">return</span> <span class="n">fuzzySets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="get_maximum_membership_fuzzyset_index"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset_index">[docs]</a><span class="k">def</span> <span class="nf">get_maximum_membership_fuzzyset_index</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">):</span>
+<div class="viewcode-block" id="get_maximum_membership_fuzzyset_index"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset_index">[docs]</a><span class="k">def</span> <span class="nf">get_maximum_membership_fuzzyset_index</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fuzzify a data point, returning the fuzzy set with maximum membership value</span>
 
 <span class="sd">    :param inst: data point</span>
-<span class="sd">    :param fuzzySets: dict of fuzzy sets</span>
+<span class="sd">    :param fuzzy_sets: dict of fuzzy sets</span>
 <span class="sd">    :return: fuzzy set with maximum membership</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">mv</span> <span class="o">=</span> <span class="n">fuzzyfy_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">)</span>
+    <span class="n">mv</span> <span class="o">=</span> <span class="n">fuzzyfy_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">mv</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">mv</span><span class="p">))[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="fuzzyfy_series_old"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy_series_old">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_series_old</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;maximum&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="fuzzyfy_series_old"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy_series_old">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_series_old</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;maximum&#39;</span><span class="p">):</span>
     <span class="n">fts</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-        <span class="n">fts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_maximum_membership_fuzzyset</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">fts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_maximum_membership_fuzzyset</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fts</span></div>
 
 
-<div class="viewcode-block" id="fuzzyfy_series"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy_series">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;maximum&#39;</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="fuzzyfy_series"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy_series">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;maximum&#39;</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">fts</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzySets</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ordered_sets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-        <span class="n">mv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fuzzySets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ordered_sets</span><span class="p">])</span>
+        <span class="n">mv</span> <span class="o">=</span> <span class="n">fuzzyfy_instance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">sets</span> <span class="o">=</span> <span class="n">check_bounds</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">ordered_sets</span><span class="p">)</span>
+            <span class="n">sets</span> <span class="o">=</span> <span class="n">check_bounds</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">ordered_sets</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;fuzzy&#39;</span><span class="p">:</span>
                 <span class="n">ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">mv</span> <span class="o">&gt;</span> <span class="n">alpha_cut</span><span class="p">))</span>
-                <span class="n">sets</span> <span class="o">=</span> <span class="p">[</span><span class="n">fuzzySets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ix</span><span class="p">]</span>
+                <span class="n">sets</span> <span class="o">=</span> <span class="p">[</span><span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ix</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;maximum&#39;</span><span class="p">:</span>
                 <span class="n">mx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mv</span><span class="p">)</span>
                 <span class="n">ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">mv</span> <span class="o">==</span> <span class="n">mx</span><span class="p">))</span>
-                <span class="n">sets</span> <span class="o">=</span> <span class="n">fuzzySets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">ix</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">sets</span> <span class="o">=</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">ix</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span><span class="o">.</span><span class="n">name</span>
         <span class="n">fts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sets</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fts</span></div>
 
 
-<div class="viewcode-block" id="grant_bounds"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.grant_bounds">[docs]</a><span class="k">def</span> <span class="nf">grant_bounds</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">lower</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">lower</span>
-    <span class="k">elif</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">upper</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">upper</span>
+<div class="viewcode-block" id="grant_bounds"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.grant_bounds">[docs]</a><span class="k">def</span> <span class="nf">grant_bounds</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">lower</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">lower</span>
+    <span class="k">elif</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">upper</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">upper</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="check_bounds"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.check_bounds">[docs]</a><span class="k">def</span> <span class="nf">check_bounds</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">lower</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-    <span class="k">elif</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">upper</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span></div>
+<div class="viewcode-block" id="check_bounds"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.check_bounds">[docs]</a><span class="k">def</span> <span class="nf">check_bounds</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">lower</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">elif</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">upper</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span></div>
 
 
-<div class="viewcode-block" id="check_bounds_index"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.check_bounds_index">[docs]</a><span class="k">def</span> <span class="nf">check_bounds_index</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">get_lower</span><span class="p">():</span>
+<div class="viewcode-block" id="check_bounds_index"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.check_bounds_index">[docs]</a><span class="k">def</span> <span class="nf">check_bounds_index</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">get_lower</span><span class="p">():</span>
         <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">elif</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="n">sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get_upper</span><span class="p">():</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">sets</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span></div>
+    <span class="k">elif</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get_upper</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
 </pre></div>
 
           </div>

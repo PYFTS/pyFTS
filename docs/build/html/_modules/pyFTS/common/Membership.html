@@ -140,6 +140,17 @@
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span></div>
+
+
+<div class="viewcode-block" id="singleton"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Membership.singleton">[docs]</a><span class="k">def</span> <span class="nf">singleton</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Singleton membership function, a single value fuzzy function</span>
+
+<span class="sd">    :param x:</span>
+<span class="sd">    :param parameters: a list with one real value</span>
+<span class="sd">    :returns</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">==</span> <span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 </pre></div>
 
           </div>
