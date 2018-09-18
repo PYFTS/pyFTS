@@ -77,3 +77,14 @@ def sigmf(x, parameters):
     :return:
     """
     return 1 / (1 + math.exp(-parameters[0] * (x - parameters[1])))
+
+
+def singleton(x, parameters):
+    """
+    Singleton membership function, a single value fuzzy function
+
+    :param x:
+    :param parameters: a list with one real value
+    :returns
+    """
+    return x == parameters[0]

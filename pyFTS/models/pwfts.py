@@ -128,8 +128,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         flrgs = []
 
         for ct, o in enumerate(self.lags):
-            lhs = [key for key in self.partitioner.ordered_sets
-                   if self.sets[key].membership(sample[o-1]) > self.alpha_cut]
+            lhs = FuzzySet.fuzzyfy(sample[o - 1], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
+
             lags[ct] = lhs
 
         root = tree.FLRGTreeNode(None)

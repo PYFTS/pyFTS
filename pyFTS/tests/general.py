@@ -7,6 +7,8 @@ import matplotlib.pylab as plt
 #from mpl_toolkits.mplot3d import Axes3D
 
 import pandas as pd
+
+from pyFTS.common import Util as cUtil, FuzzySet
 from pyFTS.common import Transformations
 
 tdiff = Transformations.Differential(1)
@@ -21,8 +23,16 @@ dataset = TAIEX.get_data()
 from pyFTS.partitioners import Grid, Util as pUtil
 partitioner = Grid.GridPartitioner(data=dataset[:2000], npart=20) #, transformation=tdiff)
 
+print(partitioner)
 
-from pyFTS.common import Util as cUtil
+#print(FuzzySet.__binary_search(7000, partitioner.sets, partitioner.ordered_sets))
+
+print(FuzzySet.fuzzyfy([5000, 7000, 8000], partitioner, mode='vector', method='fuzzy', alpha_cut=.5))
+print(FuzzySet.fuzzyfy([5000, 7000, 8000], partitioner, mode='sets', method='fuzzy', alpha_cut=.5))
+
+
+"""
+
 from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, quantreg, arima, naive
 
 from pyFTS.models import pwfts, song, chen, ifts, hofts
@@ -250,3 +260,4 @@ f, ax = plt.subplots(1, 1, figsize=[20,15])
 bchmk.plot_distribution(ax, 'blue', tmp, f, 0, reference_data=dataset[train_split:train_split+200])
 
 '''
+"""

@@ -63,134 +63,192 @@ class FuzzySet(object):
         return self.name + ": " + str(self.mf.__name__) + "(" + str(self.parameters) + ")"
 
 
-def set_ordered(fuzzySets):
-    """Order a fuzzy set list by their centroids"""
-    if len(fuzzySets) > 0:
-        tmp1 = [fuzzySets[k] for k in fuzzySets.keys()]
+def __binary_search(x, fuzzy_sets, ordered_sets):
+    """
+    Search for elegible fuzzy sets to fuzzyfy x
+
+    :param x: input value to be fuzzyfied
+    :param fuzzy_sets:  a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.
+    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.
+    :return: A list with the best fuzzy sets that may contain x
+    """
+    max_len = len(fuzzy_sets)
+    first = 0
+    last = max_len
+
+    while first <= last:
+        midpoint = (first + last) // 2
+        fs = ordered_sets[midpoint]
+        fs1 = ordered_sets[midpoint - 1] if midpoint > 0 else ordered_sets[0]
+        fs2 = ordered_sets[midpoint + 1] if midpoint < max_len else ordered_sets[max_len]
+        if fuzzy_sets[fs1].centroid <= x <= fuzzy_sets[fs2].centroid:
+            return (midpoint-1, midpoint, midpoint+1)
+        else:
+            if x < fuzzy_sets[fs].centroid:
+                last = midpoint - 1
+            else:
+                first = midpoint + 1
+
+
+def fuzzyfy(data, partitioner, **kwargs):
+    alpha_cut = kwargs.get('alpha_cut', 0.)
+    mode = kwargs.get('mode', 'sets')
+    method = kwargs.get('method', 'fuzzy')
+    if isinstance(data, (list, np.ndarray)):
+        if mode == 'vector':
+            return fuzzyfy_instances(data, partitioner.sets, partitioner.ordered_sets)
+        else:
+            return fuzzyfy_series(data, partitioner.sets, method, alpha_cut, partitioner.ordered_sets)
+    else:
+        if mode == 'vector':
+            return fuzzyfy_instance(data, partitioner.sets, partitioner.ordered_sets)
+        else:
+            return get_fuzzysets(data, partitioner.sets, partitioner.ordered_sets, alpha_cut)
+
+
+def set_ordered(fuzzy_sets):
+    """
+    Order a fuzzy set list by their centroids
+
+    :param fuzzy_sets: a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.
+    :return: a list with the fuzzy sets names ordered by their centroids.
+    """
+    if len(fuzzy_sets) > 0:
+        tmp1 = [fuzzy_sets[k] for k in fuzzy_sets.keys()]
         return [k.name for k in sorted(tmp1, key=lambda x: x.centroid)]
 
 
-def fuzzyfy_instance(inst, fuzzySets, ordered_sets=None):
+def fuzzyfy_instance(inst, fuzzy_sets, ordered_sets=None):
     """
     Calculate the membership values for a data point given fuzzy sets
 
     :param inst: data point
-    :param fuzzySets: dict of fuzzy sets
+    :param fuzzy_sets: a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.
+    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.
     :return: array of membership values
     """
 
     if ordered_sets is None:
-        ordered_sets = set_ordered(fuzzySets)
+        ordered_sets = set_ordered(fuzzy_sets)
 
-    mv = []
-    for key in ordered_sets:
-        mv.append( fuzzySets[key].membership(inst))
-    return np.array(mv)
+    mv = np.zeros(len(fuzzy_sets))
+
+    for ix in __binary_search(inst, fuzzy_sets, ordered_sets):
+        mv[ix] = fuzzy_sets[ordered_sets[ix]].membership(inst)
+
+    return mv
 
 
-def fuzzyfy_instances(data, fuzzySets, ordered_sets=None):
+def fuzzyfy_instances(data, fuzzy_sets, ordered_sets=None):
     """
     Calculate the membership values for a data point given fuzzy sets
 
     :param inst: data point
-    :param fuzzySets: dict of fuzzy sets
+    :param fuzzy_sets: a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.
+    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.
     :return: array of membership values
     """
     ret = []
     if ordered_sets is None:
-        ordered_sets = set_ordered(fuzzySets)
+        ordered_sets = set_ordered(fuzzy_sets)
     for inst in data:
-        mv = np.array([fuzzySets[key].membership(inst) for key in ordered_sets])
+        mv = fuzzyfy_instance(inst, fuzzy_sets, ordered_sets)
         ret.append(mv)
     return ret
 
 
-def get_fuzzysets(inst, fuzzySets, ordered_sets=None, alpha_cut=0.0):
+def get_fuzzysets(inst, fuzzy_sets, ordered_sets=None, alpha_cut=0.0):
     """
     Return the fuzzy sets which membership value for a inst is greater than the alpha_cut
 
     :param inst: data point
-    :param fuzzySets: dict of fuzzy sets
+    :param fuzzy_sets:  a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.
+    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.
     :param alpha_cut: Minimal membership to be considered on fuzzyfication process
     :return: array of membership values
     """
 
     if ordered_sets is None:
-        ordered_sets = set_ordered(fuzzySets)
+        ordered_sets = set_ordered(fuzzy_sets)
 
-    fs = [key for key in ordered_sets if fuzzySets[key].membership(inst) > alpha_cut]
+    fs = [ordered_sets[ix]
+          for ix in __binary_search(inst, fuzzy_sets, ordered_sets)
+          if fuzzy_sets[ordered_sets[ix]].membership(inst) > alpha_cut]
     return fs
 
-def get_maximum_membership_fuzzyset(inst, fuzzySets, ordered_sets=None):
+
+def get_maximum_membership_fuzzyset(inst, fuzzy_sets, ordered_sets=None):
     """
     Fuzzify a data point, returning the fuzzy set with maximum membership value
 
     :param inst: data point
-    :param fuzzySets: dict of fuzzy sets
+    :param fuzzy_sets:  a dictionary where the key is the fuzzy set name and the value is the fuzzy set object.
+    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.
     :return: fuzzy set with maximum membership
     """
     if ordered_sets is None:
-        ordered_sets = set_ordered(fuzzySets)
-    mv = np.array([fuzzySets[key].membership(inst) for key in ordered_sets])
+        ordered_sets = set_ordered(fuzzy_sets)
+    mv = np.array([fuzzy_sets[key].membership(inst) for key in ordered_sets])
     key = ordered_sets[np.argwhere(mv == max(mv))[0, 0]]
-    return fuzzySets[key]
+    return fuzzy_sets[key]
 
 
-def get_maximum_membership_fuzzyset_index(inst, fuzzySets):
+def get_maximum_membership_fuzzyset_index(inst, fuzzy_sets):
     """
     Fuzzify a data point, returning the fuzzy set with maximum membership value
 
     :param inst: data point
-    :param fuzzySets: dict of fuzzy sets
+    :param fuzzy_sets: dict of fuzzy sets
     :return: fuzzy set with maximum membership
     """
-    mv = fuzzyfy_instance(inst, fuzzySets)
+    mv = fuzzyfy_instance(inst, fuzzy_sets)
     return np.argwhere(mv == max(mv))[0, 0]
 
 
-def fuzzyfy_series_old(data, fuzzySets, method='maximum'):
+def fuzzyfy_series_old(data, fuzzy_sets, method='maximum'):
     fts = []
     for item in data:
-        fts.append(get_maximum_membership_fuzzyset(item, fuzzySets).name)
+        fts.append(get_maximum_membership_fuzzyset(item, fuzzy_sets).name)
     return fts
 
 
-def fuzzyfy_series(data, fuzzySets, method='maximum', alpha_cut=0.0):
+def fuzzyfy_series(data, fuzzy_sets, method='maximum', alpha_cut=0.0, ordered_sets=None):
     fts = []
-    ordered_sets = set_ordered(fuzzySets)
+    if ordered_sets is None:
+        ordered_sets = set_ordered(fuzzy_sets)
     for t, i in enumerate(data):
-        mv = np.array([fuzzySets[key].membership(i) for key in ordered_sets])
+        mv = fuzzyfy_instance(i, fuzzy_sets, ordered_sets)
         if len(mv) == 0:
-            sets = check_bounds(i, fuzzySets.items(), ordered_sets)
+            sets = check_bounds(i, fuzzy_sets.items(), ordered_sets)
         else:
             if method == 'fuzzy':
                 ix = np.ravel(np.argwhere(mv > alpha_cut))
-                sets = [fuzzySets[ordered_sets[i]].name for i in ix]
+                sets = [fuzzy_sets[ordered_sets[i]].name for i in ix]
             elif method == 'maximum':
                 mx = max(mv)
                 ix = np.ravel(np.argwhere(mv == mx))
-                sets = fuzzySets[ordered_sets[ix[0]]].name
+                sets = fuzzy_sets[ordered_sets[ix[0]]].name
         fts.append(sets)
     return fts
 
 
-def grant_bounds(data, sets, ordered_sets):
-    if data < sets[ordered_sets[0]].lower:
-        return sets[ordered_sets[0]].lower
-    elif data > sets[ordered_sets[-1]].upper:
-        return sets[ordered_sets[-1]].upper
+def grant_bounds(data, fuzzy_sets, ordered_sets):
+    if data < fuzzy_sets[ordered_sets[0]].lower:
+        return fuzzy_sets[ordered_sets[0]].lower
+    elif data > fuzzy_sets[ordered_sets[-1]].upper:
+        return fuzzy_sets[ordered_sets[-1]].upper
     else:
         return data
 
-def check_bounds(data, sets, ordered_sets):
-    if data < sets[ordered_sets[0]].lower:
-        return sets[ordered_sets[0]]
-    elif data > sets[ordered_sets[-1]].upper:
-        return sets[ordered_sets[-1]]
+def check_bounds(data, fuzzy_sets, ordered_sets):
+    if data < fuzzy_sets[ordered_sets[0]].lower:
+        return fuzzy_sets[ordered_sets[0]]
+    elif data > fuzzy_sets[ordered_sets[-1]].upper:
+        return fuzzy_sets[ordered_sets[-1]]
 
 
-def check_bounds_index(data, sets, ordered_sets):
-    if data < sets[ordered_sets[0]].get_lower():
+def check_bounds_index(data, fuzzy_sets, ordered_sets):
+    if data < fuzzy_sets[ordered_sets[0]].get_lower():
         return 0
-    elif data > sets[ordered_sets[-1]].get_upper():
-        return len(sets) -1
+    elif data > fuzzy_sets[ordered_sets[-1]].get_upper():
+        return len(fuzzy_sets) - 1

@@ -68,8 +68,7 @@ class HighOrderFTS(fts.FTS):
         flrgs = []
 
         for ct, o in enumerate(self.lags):
-            lhs = [key for key in self.partitioner.ordered_sets
-                   if self.sets[key].membership(sample[o-1]) > self.alpha_cut]
+            lhs = FuzzySet.fuzzyfy(sample[o-1], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
             lags[ct] = lhs
 
         root = tree.FLRGTreeNode(None)
@@ -95,8 +94,7 @@ class HighOrderFTS(fts.FTS):
 
             sample = data[k - self.max_lag: k]
 
-            rhs = [key for key in self.partitioner.ordered_sets
-                   if self.sets[key].membership(data[k]) > self.alpha_cut]
+            rhs = FuzzySet.fuzzyfy(data[k], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
 
             flrgs = self.generate_lhs_flrg(sample)
 
