@@ -46,6 +46,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinxcontrib.googleanalytics'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -169,6 +170,8 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
+
+googleanalytics_id = 'UA-55120145-3'
 
 # -- Options for intersphinx extension ---------------------------------------
 
