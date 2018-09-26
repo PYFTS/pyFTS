@@ -19,20 +19,21 @@ tdiff = Transformations.Differential(1)
 from pyFTS.data import TAIEX, SP500, NASDAQ
 
 dataset = TAIEX.get_data()
-
-partitioner = Grid.GridPartitioner(data=dataset, npart=30)
+'''
+partitioner = Grid.GridPartitioner(data=dataset[:800], npart=3, transformation=tdiff)
 
 model = chen.ConventionalFTS(partitioner=partitioner)
+model.append_transformation(tdiff)
 
-model.fit(dataset)
+model.fit([0, 90.00])
 
 print(model)
-
+'''
 #dataset = SP500.get_data()[11500:16000]
 #dataset = NASDAQ.get_data()
 #print(len(dataset))
 
-'''
+
 bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
                                 methods=[chen.ConventionalFTS], #[pwfts.ProbabilisticWeightedFTS],
                                 benchmark_models=False,
@@ -47,16 +48,16 @@ bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
 
 
 bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
-                                methods=[hofts.HighOrderFTS],  # [pwfts.ProbabilisticWeightedFTS],
+                                methods=[chen.ConventionalFTS],  # [pwfts.ProbabilisticWeightedFTS],
                                 benchmark_models=False,
                                 transformations=[tdiff],
-                                orders=[1, 2, 3],
-                                partitions=np.arange(3, 25, 2),
+                                #orders=[1, 2, 3],
+                                partitions=np.arange(3, 30, 1),
                                 progress=False, type="point",
                                 #steps_ahead=[1,2,4,6,8,10],
-                                distributed=True, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
+                                distributed=False, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
                                 file="benchmarks.db", dataset="NASDAQ", tag="comparisons")
-
+'''
 '''
 '''
 from pyFTS.partitioners import Grid, Util as pUtil

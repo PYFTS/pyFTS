@@ -72,9 +72,9 @@ def __binary_search(x, fuzzy_sets, ordered_sets):
     :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.
     :return: A list with the best fuzzy sets that may contain x
     """
-    max_len = len(fuzzy_sets)
+    max_len = len(fuzzy_sets) - 1
     first = 0
-    last = max_len-1
+    last = max_len
 
     while first <= last:
         midpoint = (first + last) // 2
@@ -85,11 +85,16 @@ def __binary_search(x, fuzzy_sets, ordered_sets):
 
         if fuzzy_sets[fs1].centroid <= x <= fuzzy_sets[fs2].centroid:
             return (midpoint-1, midpoint, midpoint+1)
+        elif midpoint <= 1:
+            return [0]
+        elif midpoint >= max_len:
+            return [max_len]
         else:
             if x < fuzzy_sets[fs].centroid:
                 last = midpoint - 1
             else:
                 first = midpoint + 1
+
 
 
 def fuzzyfy(data, partitioner, **kwargs):
