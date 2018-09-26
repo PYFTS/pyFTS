@@ -66,7 +66,7 @@ class ExponentialyWeightedFTS(fts.FTS):
                 self.flrgs[flr.LHS].append_rhs(flr.RHS)
 
     def train(self, data, **kwargs):
-        tmpdata = FuzzySet.fuzzyfy_series(data, self.sets, method='maximum')
+        tmpdata = FuzzySet.fuzzyfy(data, partitioner=self.partitioner, method='maximum', mode='sets')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs, self.c)
 

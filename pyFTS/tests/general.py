@@ -9,6 +9,9 @@ import matplotlib.pylab as plt
 import pandas as pd
 
 from pyFTS.common import Util as cUtil, FuzzySet
+from pyFTS.partitioners import Grid, Util as pUtil
+from pyFTS.benchmarks import benchmarks as bchmk
+from pyFTS.models import chen
 from pyFTS.common import Transformations
 
 tdiff = Transformations.Differential(1)
@@ -16,72 +19,29 @@ tdiff = Transformations.Differential(1)
 from pyFTS.data import TAIEX, SP500, NASDAQ
 
 dataset = TAIEX.get_data()
+
+partitioner = Grid.GridPartitioner(data=dataset, npart=30)
+
+model = chen.ConventionalFTS(partitioner=partitioner)
+
+model.fit(dataset)
+
+print(model)
+
 #dataset = SP500.get_data()[11500:16000]
 #dataset = NASDAQ.get_data()
 #print(len(dataset))
 
-from pyFTS.partitioners import Grid, Util as pUtil
-partitioner = Grid.GridPartitioner(data=dataset[:2000], npart=20) #, transformation=tdiff)
-
-print(partitioner)
-
-#print(FuzzySet.__binary_search(7000, partitioner.sets, partitioner.ordered_sets))
-
-print(FuzzySet.fuzzyfy([5000, 7000, 8000], partitioner, mode='vector', method='fuzzy', alpha_cut=.5))
-print(FuzzySet.fuzzyfy([5000, 7000, 8000], partitioner, mode='sets', method='fuzzy', alpha_cut=.5))
-
-
-"""
-
-from pyFTS.benchmarks import benchmarks as bchmk, Util as bUtil, Measures, knn, quantreg, arima, naive
-
-from pyFTS.models import pwfts, song, chen, ifts, hofts
-from pyFTS.models.ensemble import ensemble
-
-print(partitioner)
-
-#model = chen.ConventionalFTS(partitioner=partitioner)
-model = hofts.HighOrderFTS(partitioner=partitioner,order=2)
-#model.append_transformation(tdiff)
-model.fit(dataset[:2000])
-
-print(model)
-
-print(model.predict([3500, 7000], steps_ahead=5))
-
-
-
-#cUtil.plot_rules(model, size=[20,20], rules_by_axis=5, columns=1)
-
-#
-
-print("fim")
-
-
-
 '''
-model = knn.KNearestNeighbors(order=3)
-#model = ensemble.AllMethodEnsembleFTS("", partitioner=partitioner)
-#model = arima.ARIMA("", order=(2,0,2))
-#model = quantreg.QuantileRegression("", order=2, dist=True)
-#model.append_transformation(tdiff)
-model.fit(dataset[:800])
-print(Measures.get_distribution_statistics(dataset[800:1000], model))
-#tmp = model.predict(dataset[800:1000], type='distribution')
-#for tmp2 in tmp:
-#    print(tmp2)
-#'''
-'''
-
 bchmk.sliding_window_benchmarks(dataset, 1000, train=0.8, inc=0.2,
-                                methods=[hofts.HighOrderFTS], #[pwfts.ProbabilisticWeightedFTS],
+                                methods=[chen.ConventionalFTS], #[pwfts.ProbabilisticWeightedFTS],
                                 benchmark_models=False,
                                 transformations=[None],
-                                orders=[1, 2, 3],
-                                partitions=np.arange(30, 80, 5),
+                                #orders=[1, 2, 3],
+                                partitions=np.arange(10, 100, 2),
                                 progress=False, type="point",
                                 #steps_ahead=[1,2,4,6,8,10],
-                                distributed=True, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
+                                distributed=False, nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
                                 file="benchmarks.db", dataset="TAIEX", tag="comparisons")
 
 
@@ -260,4 +220,3 @@ f, ax = plt.subplots(1, 1, figsize=[20,15])
 bchmk.plot_distribution(ax, 'blue', tmp, f, 0, reference_data=dataset[train_split:train_split+200])
 
 '''
-"""

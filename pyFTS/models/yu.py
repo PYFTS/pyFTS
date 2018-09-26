@@ -58,7 +58,7 @@ class WeightedFTS(fts.FTS):
                 self.flrgs[flr.LHS].append_rhs(flr.RHS)
 
     def train(self, ndata, **kwargs):
-        tmpdata = FuzzySet.fuzzyfy_series(ndata, self.sets, method='maximum')
+        tmpdata = FuzzySet.fuzzyfy(ndata, partitioner=self.partitioner, method='maximum', mode='sets')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_FLRG(flrs)
 

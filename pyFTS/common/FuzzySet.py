@@ -74,13 +74,15 @@ def __binary_search(x, fuzzy_sets, ordered_sets):
     """
     max_len = len(fuzzy_sets)
     first = 0
-    last = max_len
+    last = max_len-1
 
     while first <= last:
         midpoint = (first + last) // 2
+
         fs = ordered_sets[midpoint]
         fs1 = ordered_sets[midpoint - 1] if midpoint > 0 else ordered_sets[0]
         fs2 = ordered_sets[midpoint + 1] if midpoint < max_len else ordered_sets[max_len]
+
         if fuzzy_sets[fs1].centroid <= x <= fuzzy_sets[fs2].centroid:
             return (midpoint-1, midpoint, midpoint+1)
         else:
