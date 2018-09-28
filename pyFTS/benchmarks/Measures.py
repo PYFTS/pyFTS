@@ -7,7 +7,7 @@ pyFTS module for common benchmark metrics
 import time
 import numpy as np
 import pandas as pd
-from pyFTS.common import FuzzySet,SortedCollection
+from pyFTS.common import FuzzySet, SortedCollection
 from pyFTS.probabilistic import ProbabilityDistribution
 
 
@@ -23,10 +23,10 @@ def acf(data, k):
     sigma = np.var(data)
     n = len(data)
     s = 0
-    for t in np.arange(0,n-k):
-        s += (data[t]-mu) * (data[t+k] - mu)
+    for t in np.arange(0, n - k):
+        s += (data[t] - mu) * (data[t + k] - mu)
 
-    return 1/((n-k)*sigma)*s
+    return 1 / ((n - k) * sigma) * s
 
 
 def rmse(targets, forecasts):
@@ -85,9 +85,9 @@ def smape(targets, forecasts, type=2):
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
     if type == 1:
-        return np.mean(np.abs(forecasts - targets) / ((forecasts + targets)/2))
+        return np.mean(np.abs(forecasts - targets) / ((forecasts + targets) / 2))
     elif type == 2:
-        return np.mean(np.abs(forecasts - targets) / (abs(forecasts) + abs(targets)) )*100
+        return np.mean(np.abs(forecasts - targets) / (abs(forecasts) + abs(targets))) * 100
     else:
         return sum(np.abs(forecasts - targets)) / sum(forecasts + targets)
 
@@ -113,8 +113,8 @@ def UStatistic(targets, forecasts):
 
     naive = []
     y = []
-    for k in np.arange(0,l-1):
-        y.append((forecasts[k ] - targets[k]) ** 2)
+    for k in np.arange(0, l - 1):
+        y.append((forecasts[k] - targets[k]) ** 2)
         naive.append((targets[k + 1] - targets[k]) ** 2)
     return np.sqrt(sum(y) / sum(naive))
 
@@ -129,11 +129,10 @@ def TheilsInequality(targets, forecasts):
     """
     res = targets - forecasts
     t = len(res)
-    us = np.sqrt(sum([u**2 for u in res]))
-    ys = np.sqrt(sum([y**2 for y in targets]))
-    fs = np.sqrt(sum([f**2 for f in forecasts]))
-    return  us / (ys + fs)
-
+    us = np.sqrt(sum([u ** 2 for u in res]))
+    ys = np.sqrt(sum([y ** 2 for y in targets]))
+    fs = np.sqrt(sum([f ** 2 for f in forecasts]))
+    return us / (ys + fs)
 
 
 def BoxPierceStatistic(data, h):
@@ -146,10 +145,10 @@ def BoxPierceStatistic(data, h):
     """
     n = len(data)
     s = 0
-    for k in np.arange(1,h+1):
+    for k in np.arange(1, h + 1):
         r = acf(data, k)
-        s += r**2
-    return n*s
+        s += r ** 2
+    return n * s
 
 
 def BoxLjungStatistic(data, h):
@@ -162,17 +161,16 @@ def BoxLjungStatistic(data, h):
     """
     n = len(data)
     s = 0
-    for k in np.arange(1,h+1):
+    for k in np.arange(1, h + 1):
         r = acf(data, k)
-        s += r**2 / (n -k)
-    return n*(n-2)*s
+        s += r ** 2 / (n - k)
+    return n * (n - 2) * s
 
 
 def sharpness(forecasts):
     """Sharpness - Mean size of the intervals"""
     tmp = [i[1] - i[0] for i in forecasts]
     return np.mean(tmp)
-
 
 
 def resolution(forecasts):
@@ -230,9 +228,9 @@ def winkler_score(tau, target, forecast):
     if forecast[0] < target and target < forecast[1]:
         return delta
     elif forecast[0] > target:
-        return delta + 2*(forecast[0] - target)/tau
+        return delta + 2 * (forecast[0] - target) / tau
     elif forecast[1] < target:
-        return delta + 2*(target - forecast[1])/tau
+        return delta + 2 * (target - forecast[1]) / tau
 
 
 def winkler_mean(tau, targets, forecasts):
@@ -261,7 +259,7 @@ def brier_score(targets, densities):
             ret.append(score)
         except ValueError as ex:
             ret.append(sum([d.distribution[k] ** 2 for k in d.bins]))
-    return sum(ret)/len(ret)
+    return sum(ret) / len(ret)
 
 
 def pmf_to_cdf(density):
@@ -271,7 +269,7 @@ def pmf_to_cdf(density):
         prev = 0
         for col in density.columns:
             prev += density[col][row] if not np.isnan(density[col][row]) else 0
-            tmp.append( prev )
+            tmp.append(prev)
         ret.append(tmp)
     df = pd.DataFrame(ret, columns=density.columns)
     return df
@@ -279,6 +277,7 @@ def pmf_to_cdf(density):
 
 def heavyside(bin, target):
     return 1 if bin >= target else 0
+
 
 def heavyside_cdf(bins, targets):
     ret = []
@@ -304,7 +303,7 @@ def crps(targets, densities):
     l = len(densities[0].bins)
     n = len(densities)
     for ct, df in enumerate(densities):
-        _crps += sum([(df.cummulative(bin) - (1 if bin >= targets[ct] else 0)) ** 2 for bin in df.bins])
+        _crps += sum([(df.cumulative(bin) - (1 if bin >= targets[ct] else 0)) ** 2 for bin in df.bins])
 
     return _crps / float(l * n)
 
@@ -319,7 +318,7 @@ def get_point_statistics(data, model, **kwargs):
     :return: a list with the RMSE, SMAPE and U Statistic
     '''
 
-    steps_ahead = kwargs.get('steps_ahead',1)
+    steps_ahead = kwargs.get('steps_ahead', 1)
     kwargs['type'] = 'point'
 
     indexer = kwargs.get('indexer', None)
@@ -337,7 +336,7 @@ def get_point_statistics(data, model, **kwargs):
 
     if steps_ahead == 1:
         forecasts = model.predict(ndata, **kwargs)
-        
+
         if model.is_multivariate and model.has_seasonality:
             ndata = model.indexer.get_data(ndata)
         elif model.is_multivariate:
@@ -354,12 +353,12 @@ def get_point_statistics(data, model, **kwargs):
     else:
         steps_ahead_sampler = kwargs.get('steps_ahead_sampler', 1)
         nforecasts = []
-        for k in np.arange(model.order, len(ndata)-steps_ahead,steps_ahead_sampler):
+        for k in np.arange(model.order, len(ndata) - steps_ahead, steps_ahead_sampler):
             sample = ndata[k - model.order: k]
             tmp = model.predict(sample, **kwargs)
             nforecasts.append(tmp[-1])
 
-        start = model.max_lag + steps_ahead -1
+        start = model.max_lag + steps_ahead - 1
         ret.append(np.round(rmse(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
         ret.append(np.round(mape(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
         ret.append(np.round(UStatistic(ndata[start:-1:steps_ahead_sampler], nforecasts), 2))
@@ -368,7 +367,7 @@ def get_point_statistics(data, model, **kwargs):
 
 
 def get_interval_statistics(data, model, **kwargs):
-    '''
+    """
     Condensate all measures for point interval forecasters
 
     :param data: test data
@@ -376,7 +375,7 @@ def get_interval_statistics(data, model, **kwargs):
     :param kwargs:
     :return: a list with the sharpness, resolution, coverage, .05 pinball mean,
     .25 pinball mean, .75 pinball mean and .95 pinball mean.
-    '''
+    """
 
     steps_ahead = kwargs.get('steps_ahead', 1)
     kwargs['type'] = 'interval'
@@ -401,7 +400,7 @@ def get_interval_statistics(data, model, **kwargs):
             tmp = model.predict(sample, **kwargs)
             forecasts.append(tmp[-1])
 
-        start = model.max_lag + steps_ahead -1
+        start = model.max_lag + steps_ahead - 1
         ret.append(round(sharpness(forecasts), 2))
         ret.append(round(resolution(forecasts), 2))
         ret.append(round(coverage(data[model.max_lag:], forecasts), 2))
@@ -415,14 +414,14 @@ def get_interval_statistics(data, model, **kwargs):
 
 
 def get_distribution_statistics(data, model, **kwargs):
-    '''
+    """
     Get CRPS statistic and time for a forecasting model
 
     :param data: test data
     :param model: FTS model with probabilistic forecasting capability
     :param kwargs:
     :return: a list with the CRPS and execution time
-    '''
+    """
     steps_ahead = kwargs.get('steps_ahead', 1)
     kwargs['type'] = 'distribution'
 
@@ -450,5 +449,3 @@ def get_distribution_statistics(data, model, **kwargs):
         ret.append(round(_e1 - _s1, 3))
         ret.append(round(brier_score(data[start:-1:skip], forecasts), 3))
     return ret
-
-

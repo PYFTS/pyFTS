@@ -18,6 +18,12 @@ class KernelSmoothing(object):
         self.transf = Transformations.Scale(min=0,max=1)
 
     def kernel_function(self, u):
+        """
+        Apply the kernel
+
+        :param u:
+        :return:
+        """
         if self.kernel == "epanechnikov":
             tmp = (3/4)*(1.0 - u**2)
             return tmp if tmp > 0 else 0

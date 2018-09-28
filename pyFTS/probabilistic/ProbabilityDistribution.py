@@ -61,10 +61,21 @@ class ProbabilityDistribution(object):
         self.name = kwargs.get("name", "")
 
     def set(self, value, density):
+        """
+        Assert a probability 'density' for a certain value 'value', such that P(value) = density
+
+        :param value: A value in the universe of discourse from the distribution
+        :param density: The probability density to assign to the value
+        """
         k = self.bin_index.find_ge(value)
         self.distribution[k] = density
 
     def append(self, values):
+        """
+        Increment the frequency count for the values
+
+        :param values: A list of values to account the frequency
+        """
         if self.type == "histogram":
             for k in values:
                 v = self.bin_index.find_ge(k)
@@ -78,6 +89,11 @@ class ProbabilityDistribution(object):
                 self.distribution[self.bins[v]] = d
 
     def append_interval(self, intervals):
+        """
+        Increment the frequency count for all values inside an interval
+
+        :param intervals: A list of intervals do increment the frequency
+        """
         if self.type == "histogram":
             for interval in intervals:
                 for k in self.bin_index.inside(interval[0], interval[1]):
@@ -85,6 +101,12 @@ class ProbabilityDistribution(object):
                     self.count += 1
 
     def density(self, values):
+        """
+        Return the probability densities for the input values
+
+        :param values: List of values to return the densities
+        :return: List of probability densities for the input values
+        """
         ret = []
         scalar = False
 
@@ -109,6 +131,12 @@ class ProbabilityDistribution(object):
         return ret
 
     def differential_offset(self, value):
+        """
+        Auxiliary function for probability distributions of differentiated data
+
+        :param value:
+        :return:
+        """
         nbins = []
         dist = {}
 
@@ -127,6 +155,11 @@ class ProbabilityDistribution(object):
         self.qtl = None
 
     def expected_value(self):
+        """
+        Return the expected value of the distribution, as E[X] = ∑ x * P(x)
+
+        :return: The expected value of the distribution
+        """
         return np.nansum([v * self.distribution[v] for v in self.bins])
 
     def build_cdf_qtl(self):
@@ -147,7 +180,13 @@ class ProbabilityDistribution(object):
 
         self.quantile_index = SortedCollection.SortedCollection(iterable=_keys)
 
-    def cummulative(self, values):
+    def cumulative(self, values):
+        """
+        Return the cumulative probability densities for the input values
+
+        :param values: A list of input values
+        :return: The cumulative probability densities for the input values
+        """
         if self.cdf is None:
             self.build_cdf_qtl()
 
@@ -161,6 +200,12 @@ class ProbabilityDistribution(object):
             return self.cdf[values]
 
     def quantile(self, values):
+        """
+        Return the quantile values for the input values
+
+        :param values: input values
+        :return: The list of the quantile values for the input values
+        """
         if self.qtl is None:
             self.build_cdf_qtl()
 
@@ -176,21 +221,43 @@ class ProbabilityDistribution(object):
         return ret
 
     def entropy(self):
+        """
+        Return the entropy of the probability distribution, H[X] =
+
+        :return:the entropy of the probability distribution
+        """
         h = -sum([self.distribution[k] * np.log(self.distribution[k]) if self.distribution[k] > 0 else 0
                   for k in self.bins])
         return h
 
     def crossentropy(self,q):
+        """
+        Cross entropy between the actual probability distribution and the informed one.
+
+        :param q: a probabilistic.ProbabilityDistribution object
+        :return: Cross entropy between this probability distribution and the given distribution
+        """
         h = -sum([self.distribution[k] * np.log(q.distribution[k]) if self.distribution[k] > 0 else 0
                   for k in self.bins])
         return h
 
     def kullbackleiblerdivergence(self,q):
+        """
+        Kullback-Leibler divergence between the actual probability distribution and the informed one.
+
+        :param q:  a probabilistic.ProbabilityDistribution object
+        :return: Kullback-Leibler divergence
+        """
         h = sum([self.distribution[k] * np.log(self.distribution[k]/q.distribution[k]) if self.distribution[k] > 0 else 0
                   for k in self.bins])
         return h
 
     def empiricalloglikelihood(self):
+        """
+        Empirical Log Likelihood of the probability distribution
+
+        :return:
+        """
         _s = 0
         for k in self.bins:
             if self.distribution[k] > 0:
@@ -198,6 +265,12 @@ class ProbabilityDistribution(object):
         return _s
 
     def pseudologlikelihood(self, data):
+        """
+        Pseudo log likelihood of the probability distribution with respect to data
+
+        :param data:
+        :return:
+        """
 
         densities = self.density(data)
 
@@ -208,6 +281,12 @@ class ProbabilityDistribution(object):
         return _s
 
     def averageloglikelihood(self, data):
+        """
+        Average log likelihood of the probability distribution with respect to data
+
+        :param data:
+        :return:
+        """
 
         densities = self.density(data)
 

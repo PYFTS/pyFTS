@@ -146,22 +146,29 @@
 <span class="sd">    :param ordered_sets: a list with the fuzzy sets names ordered by their centroids.</span>
 <span class="sd">    :return: A list with the best fuzzy sets that may contain x</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">max_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span>
+    <span class="n">max_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="n">first</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">last</span> <span class="o">=</span> <span class="n">max_len</span>
 
     <span class="k">while</span> <span class="n">first</span> <span class="o">&lt;=</span> <span class="n">last</span><span class="p">:</span>
         <span class="n">midpoint</span> <span class="o">=</span> <span class="p">(</span><span class="n">first</span> <span class="o">+</span> <span class="n">last</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+
         <span class="n">fs</span> <span class="o">=</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="n">midpoint</span><span class="p">]</span>
         <span class="n">fs1</span> <span class="o">=</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="n">midpoint</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">midpoint</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">fs2</span> <span class="o">=</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="n">midpoint</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">midpoint</span> <span class="o">&lt;</span> <span class="n">max_len</span> <span class="k">else</span> <span class="n">ordered_sets</span><span class="p">[</span><span class="n">max_len</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">fs1</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">fs2</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">midpoint</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">midpoint</span><span class="p">,</span> <span class="n">midpoint</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">midpoint</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">midpoint</span> <span class="o">&gt;=</span> <span class="n">max_len</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">max_len</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">fs</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span><span class="p">:</span>
                 <span class="n">last</span> <span class="o">=</span> <span class="n">midpoint</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">first</span> <span class="o">=</span> <span class="n">midpoint</span> <span class="o">+</span> <span class="mi">1</span>
+
 
 
 <div class="viewcode-block" id="fuzzyfy"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.fuzzyfy">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

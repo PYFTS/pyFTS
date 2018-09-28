@@ -135,10 +135,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ProbabilityDistribution.set"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assert a probability &#39;density&#39; for a certain value &#39;value&#39;, such that P(value) = density</span>
+
+<span class="sd">        :param value: A value in the universe of discourse from the distribution</span>
+<span class="sd">        :param density: The probability density to assign to the value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_index</span><span class="o">.</span><span class="n">find_ge</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">density</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.append"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Increment the frequency count for the values</span>
+
+<span class="sd">        :param values: A list of values to account the frequency</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;histogram&quot;</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_index</span><span class="o">.</span><span class="n">find_ge</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
@@ -152,6 +163,11 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">=</span> <span class="n">d</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.append_interval"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append_interval">[docs]</a>    <span class="k">def</span> <span class="nf">append_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intervals</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Increment the frequency count for all values inside an interval</span>
+
+<span class="sd">        :param intervals: A list of intervals do increment the frequency</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;histogram&quot;</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_index</span><span class="o">.</span><span class="n">inside</span><span class="p">(</span><span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">interval</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
@@ -159,6 +175,12 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.density"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.density">[docs]</a>    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the probability densities for the input values</span>
+
+<span class="sd">        :param values: List of values to return the densities</span>
+<span class="sd">        :return: List of probability densities for the input values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">scalar</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -183,6 +205,12 @@
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.differential_offset"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.differential_offset">[docs]</a>    <span class="k">def</span> <span class="nf">differential_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Auxiliary function for probability distributions of differentiated data</span>
+
+<span class="sd">        :param value:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">nbins</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dist</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -201,6 +229,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">qtl</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.expected_value"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.expected_value">[docs]</a>    <span class="k">def</span> <span class="nf">expected_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the expected value of the distribution, as E[X] = ∑ x * P(x)</span>
+
+<span class="sd">        :return: The expected value of the distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">([</span><span class="n">v</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.build_cdf_qtl"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.build_cdf_qtl">[docs]</a>    <span class="k">def</span> <span class="nf">build_cdf_qtl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -221,7 +254,13 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">quantile_index</span> <span class="o">=</span> <span class="n">SortedCollection</span><span class="o">.</span><span class="n">SortedCollection</span><span class="p">(</span><span class="n">iterable</span><span class="o">=</span><span class="n">_keys</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProbabilityDistribution.cummulative"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cummulative">[docs]</a>    <span class="k">def</span> <span class="nf">cummulative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbabilityDistribution.cumulative"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative">[docs]</a>    <span class="k">def</span> <span class="nf">cumulative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the cumulative probability densities for the input values</span>
+
+<span class="sd">        :param values: A list of input values</span>
+<span class="sd">        :return: The cumulative probability densities for the input values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">build_cdf_qtl</span><span class="p">()</span>
 
@@ -235,6 +274,12 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">[</span><span class="n">values</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.quantile"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile">[docs]</a>    <span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the quantile values for the input values</span>
+
+<span class="sd">        :param values: input values</span>
+<span class="sd">        :return: The list of the quantile values for the input values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">qtl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">build_cdf_qtl</span><span class="p">()</span>
 
@@ -250,21 +295,43 @@
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.entropy"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy">[docs]</a>    <span class="k">def</span> <span class="nf">entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the entropy of the probability distribution, H[X] =</span>
+
+<span class="sd">        :return:the entropy of the probability distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">h</span> <span class="o">=</span> <span class="o">-</span><span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
                   <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">h</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.crossentropy"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy">[docs]</a>    <span class="k">def</span> <span class="nf">crossentropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cross entropy between the actual probability distribution and the informed one.</span>
+
+<span class="sd">        :param q: a probabilistic.ProbabilityDistribution object</span>
+<span class="sd">        :return: Cross entropy between this probability distribution and the given distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">h</span> <span class="o">=</span> <span class="o">-</span><span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
                   <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">h</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.kullbackleiblerdivergence"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence">[docs]</a>    <span class="k">def</span> <span class="nf">kullbackleiblerdivergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Kullback-Leibler divergence between the actual probability distribution and the informed one.</span>
+
+<span class="sd">        :param q:  a probabilistic.ProbabilityDistribution object</span>
+<span class="sd">        :return: Kullback-Leibler divergence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">h</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">/</span><span class="n">q</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
                   <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">h</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.empiricalloglikelihood"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">empiricalloglikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Empirical Log Likelihood of the probability distribution</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_s</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -272,6 +339,12 @@
         <span class="k">return</span> <span class="n">_s</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.pseudologlikelihood"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.pseudologlikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">pseudologlikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pseudo log likelihood of the probability distribution with respect to data</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">densities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -282,6 +355,12 @@
         <span class="k">return</span> <span class="n">_s</span></div>
 
 <div class="viewcode-block" id="ProbabilityDistribution.averageloglikelihood"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.averageloglikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">averageloglikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Average log likelihood of the probability distribution with respect to data</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">densities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 

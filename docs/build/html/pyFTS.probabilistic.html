@@ -118,17 +118,46 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append">
 <code class="descname">append</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Increment the frequency count for the values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> – A list of values to account the frequency</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append_interval">
 <code class="descname">append_interval</code><span class="sig-paren">(</span><em>intervals</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.append_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append_interval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Increment the frequency count for all values inside an interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>intervals</strong> – A list of intervals do increment the frequency</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.averageloglikelihood">
 <code class="descname">averageloglikelihood</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.averageloglikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.averageloglikelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Average log likelihood of the probability distribution with respect to data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.bins">
@@ -144,42 +173,117 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy">
 <code class="descname">crossentropy</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.crossentropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Cross entropy between the actual probability distribution and the informed one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>q</strong> – a probabilistic.ProbabilityDistribution object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Cross entropy between this probability distribution and the given distribution</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cummulative">
-<code class="descname">cummulative</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.cummulative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cummulative" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative">
+<code class="descname">cumulative</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.cumulative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the cumulative probability densities for the input values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> – A list of input values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The cumulative probability densities for the input values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.density">
 <code class="descname">density</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.density" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the probability densities for the input values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> – List of values to return the densities</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of probability densities for the input values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.differential_offset">
 <code class="descname">differential_offset</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.differential_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.differential_offset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Auxiliary function for probability distributions of differentiated data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood">
 <code class="descname">empiricalloglikelihood</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.empiricalloglikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Empirical Log Likelihood of the probability distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy">
 <code class="descname">entropy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the entropy of the probability distribution, H[X] =</p>
+<p>:return:the entropy of the probability distribution</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.expected_value">
 <code class="descname">expected_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.expected_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.expected_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the expected value of the distribution, as E[X] = ∑ x * P(x)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The expected value of the distribution</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence">
 <code class="descname">kullbackleiblerdivergence</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.kullbackleiblerdivergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Kullback-Leibler divergence between the actual probability distribution and the informed one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>q</strong> – a probabilistic.ProbabilityDistribution object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Kullback-Leibler divergence</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.labels">
@@ -195,17 +299,52 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.pseudologlikelihood">
 <code class="descname">pseudologlikelihood</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.pseudologlikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.pseudologlikelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Pseudo log likelihood of the probability distribution with respect to data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile">
 <code class="descname">quantile</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.quantile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the quantile values for the input values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> – input values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The list of the quantile values for the input values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.set">
 <code class="descname">set</code><span class="sig-paren">(</span><em>value</em>, <em>density</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.set" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Assert a probability ‘density’ for a certain value ‘value’, such that P(value) = density</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> – A value in the universe of discourse from the distribution</li>
+<li><strong>density</strong> – The probability density to assign to the value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.type">
@@ -246,7 +385,18 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.kde.KernelSmoothing.kernel_function">
 <code class="descname">kernel_function</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/kde.html#KernelSmoothing.kernel_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing.kernel_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Apply the kernel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>u</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.probabilistic.kde.KernelSmoothing.probability">

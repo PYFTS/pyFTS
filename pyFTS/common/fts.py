@@ -166,7 +166,7 @@ class FTS(object):
 
         :param data: time series data with the minimal length equal to the max_lag of the model
         :param kwargs: model specific parameters
-        :return: a list with the forecasted intervals
+        :return: a list with the prediction intervals
         """
         raise NotImplementedError('This model do not perform one step ahead interval forecasts!')
 
@@ -176,7 +176,7 @@ class FTS(object):
 
         :param data: time series data with the minimal length equal to the max_lag of the model
         :param kwargs: model specific parameters
-        :return: a list with the forecasted Probability Distributions
+        :return: a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions
         """
         raise NotImplementedError('This model do not perform one step ahead distribution forecasts!')
 

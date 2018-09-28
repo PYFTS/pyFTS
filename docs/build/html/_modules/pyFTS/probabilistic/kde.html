@@ -92,6 +92,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">transf</span> <span class="o">=</span> <span class="n">Transformations</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <div class="viewcode-block" id="KernelSmoothing.kernel_function"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.kde.KernelSmoothing.kernel_function">[docs]</a>    <span class="k">def</span> <span class="nf">kernel_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply the kernel</span>
+
+<span class="sd">        :param u:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;epanechnikov&quot;</span><span class="p">:</span>
             <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">u</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">tmp</span> <span class="k">if</span> <span class="n">tmp</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>

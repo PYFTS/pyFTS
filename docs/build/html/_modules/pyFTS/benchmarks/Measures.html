@@ -81,7 +81,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span><span class="n">SortedCollection</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">SortedCollection</span>
 <span class="kn">from</span> <span class="nn">pyFTS.probabilistic</span> <span class="k">import</span> <span class="n">ProbabilityDistribution</span>
 
 
@@ -97,10 +97,10 @@
     <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">):</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="n">k</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">)</span><span class="o">*</span><span class="n">sigma</span><span class="p">)</span><span class="o">*</span><span class="n">s</span></div>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">*</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="rmse"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.rmse">[docs]</a><span class="k">def</span> <span class="nf">rmse</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">forecasts</span><span class="p">):</span>
@@ -159,9 +159,9 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">forecasts</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">forecasts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">forecasts</span> <span class="o">-</span> <span class="n">targets</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">forecasts</span> <span class="o">+</span> <span class="n">targets</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">forecasts</span> <span class="o">-</span> <span class="n">targets</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">forecasts</span> <span class="o">+</span> <span class="n">targets</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">forecasts</span> <span class="o">-</span> <span class="n">targets</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">targets</span><span class="p">))</span> <span class="p">)</span><span class="o">*</span><span class="mi">100</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">forecasts</span> <span class="o">-</span> <span class="n">targets</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">forecasts</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">targets</span><span class="p">)))</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">forecasts</span> <span class="o">-</span> <span class="n">targets</span><span class="p">))</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">forecasts</span> <span class="o">+</span> <span class="n">targets</span><span class="p">)</span></div>
 
@@ -187,8 +187,8 @@
 
     <span class="n">naive</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">l</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">forecasts</span><span class="p">[</span><span class="n">k</span> <span class="p">]</span> <span class="o">-</span> <span class="n">targets</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">forecasts</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">targets</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">naive</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">targets</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">targets</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">naive</span><span class="p">))</span></div>
 
@@ -203,11 +203,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">targets</span> <span class="o">-</span> <span class="n">forecasts</span>
     <span class="n">t</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-    <span class="n">us</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">u</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">res</span><span class="p">]))</span>
-    <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">]))</span>
-    <span class="n">fs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">f</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">forecasts</span><span class="p">]))</span>
-    <span class="k">return</span>  <span class="n">us</span> <span class="o">/</span> <span class="p">(</span><span class="n">ys</span> <span class="o">+</span> <span class="n">fs</span><span class="p">)</span></div>
-
+    <span class="n">us</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">u</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">res</span><span class="p">]))</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">y</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">]))</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">f</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">forecasts</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">us</span> <span class="o">/</span> <span class="p">(</span><span class="n">ys</span> <span class="o">+</span> <span class="n">fs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BoxPierceStatistic"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.BoxPierceStatistic">[docs]</a><span class="k">def</span> <span class="nf">BoxPierceStatistic</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
@@ -220,10 +219,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">h</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">acf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span>
-    <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="n">s</span></div>
+        <span class="n">s</span> <span class="o">+=</span> <span class="n">r</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="BoxLjungStatistic"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.BoxLjungStatistic">[docs]</a><span class="k">def</span> <span class="nf">BoxLjungStatistic</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
@@ -236,17 +235,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">h</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">acf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span><span class="n">k</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span></div>
+        <span class="n">s</span> <span class="o">+=</span> <span class="n">r</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="sharpness"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.sharpness">[docs]</a><span class="k">def</span> <span class="nf">sharpness</span><span class="p">(</span><span class="n">forecasts</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Sharpness - Mean size of the intervals&quot;&quot;&quot;</span>
     <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">forecasts</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span></div>
-
 
 
 <div class="viewcode-block" id="resolution"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.resolution">[docs]</a><span class="k">def</span> <span class="nf">resolution</span><span class="p">(</span><span class="n">forecasts</span><span class="p">):</span>
@@ -304,9 +302,9 @@
     <span class="k">if</span> <span class="n">forecast</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">target</span> <span class="ow">and</span> <span class="n">target</span> <span class="o">&lt;</span> <span class="n">forecast</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
         <span class="k">return</span> <span class="n">delta</span>
     <span class="k">elif</span> <span class="n">forecast</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">target</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">delta</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">forecast</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">/</span><span class="n">tau</span>
+        <span class="k">return</span> <span class="n">delta</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">forecast</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">/</span> <span class="n">tau</span>
     <span class="k">elif</span> <span class="n">forecast</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">target</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">delta</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">target</span> <span class="o">-</span> <span class="n">forecast</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">tau</span></div>
+        <span class="k">return</span> <span class="n">delta</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">target</span> <span class="o">-</span> <span class="n">forecast</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">tau</span></div>
 
 
 <div class="viewcode-block" id="winkler_mean"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.winkler_mean">[docs]</a><span class="k">def</span> <span class="nf">winkler_mean</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">forecasts</span><span class="p">):</span>
@@ -335,7 +333,7 @@
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">bins</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="pmf_to_cdf"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.pmf_to_cdf">[docs]</a><span class="k">def</span> <span class="nf">pmf_to_cdf</span><span class="p">(</span><span class="n">density</span><span class="p">):</span>
@@ -345,7 +343,7 @@
         <span class="n">prev</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">density</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="n">prev</span> <span class="o">+=</span> <span class="n">density</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">row</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">density</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">row</span><span class="p">])</span> <span class="k">else</span> <span class="mi">0</span>
-            <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">prev</span> <span class="p">)</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prev</span><span class="p">)</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">density</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">df</span></div>
@@ -353,6 +351,7 @@
 
 <div class="viewcode-block" id="heavyside"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.heavyside">[docs]</a><span class="k">def</span> <span class="nf">heavyside</span><span class="p">(</span><span class="nb">bin</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
     <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="nb">bin</span> <span class="o">&gt;=</span> <span class="n">target</span> <span class="k">else</span> <span class="mi">0</span></div>
+
 
 <div class="viewcode-block" id="heavyside_cdf"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.heavyside_cdf">[docs]</a><span class="k">def</span> <span class="nf">heavyside_cdf</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
@@ -378,7 +377,7 @@
     <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">densities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bins</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">densities</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ct</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">densities</span><span class="p">):</span>
-        <span class="n">_crps</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([(</span><span class="n">df</span><span class="o">.</span><span class="n">cummulative</span><span class="p">(</span><span class="nb">bin</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="nb">bin</span> <span class="o">&gt;=</span> <span class="n">targets</span><span class="p">[</span><span class="n">ct</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">bins</span><span class="p">])</span>
+        <span class="n">_crps</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([(</span><span class="n">df</span><span class="o">.</span><span class="n">cumulative</span><span class="p">(</span><span class="nb">bin</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="nb">bin</span> <span class="o">&gt;=</span> <span class="n">targets</span><span class="p">[</span><span class="n">ct</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">bins</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">_crps</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span></div>
 
@@ -393,7 +392,7 @@
 <span class="sd">    :return: a list with the RMSE, SMAPE and U Statistic</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="n">steps_ahead</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;steps_ahead&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">steps_ahead</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;steps_ahead&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;point&#39;</span>
 
     <span class="n">indexer</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indexer&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -411,7 +410,7 @@
 
     <span class="k">if</span> <span class="n">steps_ahead</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">forecasts</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span> <span class="ow">and</span> <span class="n">model</span><span class="o">.</span><span class="n">has_seasonality</span><span class="p">:</span>
             <span class="n">ndata</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">indexer</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span><span class="p">:</span>
@@ -428,12 +427,12 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">steps_ahead_sampler</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;steps_ahead_sampler&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">nforecasts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span><span class="o">-</span><span class="n">steps_ahead</span><span class="p">,</span><span class="n">steps_ahead_sampler</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span> <span class="o">-</span> <span class="n">steps_ahead</span><span class="p">,</span> <span class="n">steps_ahead_sampler</span><span class="p">):</span>
             <span class="n">sample</span> <span class="o">=</span> <span class="n">ndata</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">:</span> <span class="n">k</span><span class="p">]</span>
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">nforecasts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="n">start</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">+</span> <span class="n">steps_ahead</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">+</span> <span class="n">steps_ahead</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">steps_ahead_sampler</span><span class="p">],</span> <span class="n">nforecasts</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">mape</span><span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">steps_ahead_sampler</span><span class="p">],</span> <span class="n">nforecasts</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">UStatistic</span><span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">steps_ahead_sampler</span><span class="p">],</span> <span class="n">nforecasts</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
@@ -442,7 +441,7 @@
 
 
 <div class="viewcode-block" id="get_interval_statistics"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.get_interval_statistics">[docs]</a><span class="k">def</span> <span class="nf">get_interval_statistics</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Condensate all measures for point interval forecasters</span>
 
 <span class="sd">    :param data: test data</span>
@@ -450,7 +449,7 @@
 <span class="sd">    :param kwargs:</span>
 <span class="sd">    :return: a list with the sharpness, resolution, coverage, .05 pinball mean,</span>
 <span class="sd">    .25 pinball mean, .75 pinball mean and .95 pinball mean.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">steps_ahead</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;steps_ahead&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;interval&#39;</span>
@@ -475,7 +474,7 @@
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">forecasts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="n">start</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">+</span> <span class="n">steps_ahead</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">+</span> <span class="n">steps_ahead</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">sharpness</span><span class="p">(</span><span class="n">forecasts</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">resolution</span><span class="p">(</span><span class="n">forecasts</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">coverage</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">max_lag</span><span class="p">:],</span> <span class="n">forecasts</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
@@ -489,14 +488,14 @@
 
 
 <div class="viewcode-block" id="get_distribution_statistics"><a class="viewcode-back" href="../../../pyFTS.benchmarks.html#pyFTS.benchmarks.Measures.get_distribution_statistics">[docs]</a><span class="k">def</span> <span class="nf">get_distribution_statistics</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get CRPS statistic and time for a forecasting model</span>
 
 <span class="sd">    :param data: test data</span>
 <span class="sd">    :param model: FTS model with probabilistic forecasting capability</span>
 <span class="sd">    :param kwargs:</span>
 <span class="sd">    :return: a list with the CRPS and execution time</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">steps_ahead</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;steps_ahead&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;distribution&#39;</span>
 
@@ -524,8 +523,6 @@
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">_e1</span> <span class="o">-</span> <span class="n">_s1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">brier_score</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">skip</span><span class="p">],</span> <span class="n">forecasts</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">ret</span></div>
-
-
 </pre></div>
 
           </div>

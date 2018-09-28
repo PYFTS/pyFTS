@@ -240,7 +240,7 @@
 
 <span class="sd">        :param data: time series data with the minimal length equal to the max_lag of the model</span>
 <span class="sd">        :param kwargs: model specific parameters</span>
-<span class="sd">        :return: a list with the forecasted intervals</span>
+<span class="sd">        :return: a list with the prediction intervals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This model do not perform one step ahead interval forecasts!&#39;</span><span class="p">)</span></div>
 
@@ -250,7 +250,7 @@
 
 <span class="sd">        :param data: time series data with the minimal length equal to the max_lag of the model</span>
 <span class="sd">        :param kwargs: model specific parameters</span>
-<span class="sd">        :return: a list with the forecasted Probability Distributions</span>
+<span class="sd">        :return: a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This model do not perform one step ahead distribution forecasts!&#39;</span><span class="p">)</span></div>
 
