@@ -182,7 +182,8 @@ class ProbabilityDistribution(object):
 
     def cumulative(self, values):
         """
-        Return the cumulative probability densities for the input values
+        Return the cumulative probability densities for the input values, 
+        such that F(x) = P(X <= x)
 
         :param values: A list of input values
         :return: The cumulative probability densities for the input values
@@ -201,7 +202,8 @@ class ProbabilityDistribution(object):
 
     def quantile(self, values):
         """
-        Return the quantile values for the input values
+        Return the Universe of Discourse values in relation to the quantile input values, 
+        such that Q(tau) = min( {x | F(x) >= tau })
 
         :param values: input values
         :return: The list of the quantile values for the input values
@@ -222,7 +224,7 @@ class ProbabilityDistribution(object):
 
     def entropy(self):
         """
-        Return the entropy of the probability distribution, H[X] =
+        Return the entropy of the probability distribution, H(P) = E[ -ln P(X) ] = - ∑ P(x) log ( P(x) )
 
         :return:the entropy of the probability distribution
         """
@@ -232,7 +234,8 @@ class ProbabilityDistribution(object):
 
     def crossentropy(self,q):
         """
-        Cross entropy between the actual probability distribution and the informed one.
+        Cross entropy between the actual probability distribution and the informed one, 
+        H(P,Q) = - ∑ P(x) log ( Q(x) )
 
         :param q: a probabilistic.ProbabilityDistribution object
         :return: Cross entropy between this probability distribution and the given distribution
@@ -244,6 +247,7 @@ class ProbabilityDistribution(object):
     def kullbackleiblerdivergence(self,q):
         """
         Kullback-Leibler divergence between the actual probability distribution and the informed one.
+        DKL(P || Q) = - ∑ P(x) log( P(X) / Q(x) )
 
         :param q:  a probabilistic.ProbabilityDistribution object
         :return: Kullback-Leibler divergence
@@ -254,7 +258,7 @@ class ProbabilityDistribution(object):
 
     def empiricalloglikelihood(self):
         """
-        Empirical Log Likelihood of the probability distribution
+        Empirical Log Likelihood of the probability distribution, L(P) = ∑ log( P(x) )
 
         :return:
         """
