@@ -150,19 +150,35 @@
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Partitioner.get_name"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.partitioner.Partitioner.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counter</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find the name of the fuzzy set given its counter id.</span>
+
+<span class="sd">        :param counter: The number of the fuzzy set</span>
+<span class="sd">        :return: String</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">setnames</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">setnames</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Partitioner.lower_set"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.partitioner.Partitioner.lower_set">[docs]</a>    <span class="k">def</span> <span class="nf">lower_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the fuzzy set on lower bound of the universe of discourse.</span>
+
+<span class="sd">        :return: Fuzzy Set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span></div>
 
 <div class="viewcode-block" id="Partitioner.upper_set"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.partitioner.Partitioner.upper_set">[docs]</a>    <span class="k">def</span> <span class="nf">upper_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the fuzzy set on upper bound of the universe of discourse.</span>
+
+<span class="sd">        :return: Fuzzy Set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span></div>
 
 <div class="viewcode-block" id="Partitioner.plot"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.partitioner.Partitioner.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plot the </span>
-<span class="sd">        :param ax: </span>
-<span class="sd">        :return: </span>
+<span class="sd">        Plot the partitioning using the Matplotlib axis ax</span>
+
+<span class="sd">        :param ax: Matplotlib axis</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -182,6 +198,12 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Partitioner.plot_set"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.partitioner.Partitioner.plot_set">[docs]</a>    <span class="k">def</span> <span class="nf">plot_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot an isolate fuzzy set on Matplotlib axis</span>
+
+<span class="sd">        :param ax: Matplotlib axis</span>
+<span class="sd">        :param s: Fuzzy Set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">mf</span> <span class="o">==</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trimf</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">mf</span> <span class="o">==</span> <span class="n">Membership</span><span class="o">.</span><span class="n">gaussmf</span><span class="p">:</span>
@@ -191,12 +213,24 @@
         <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">mf</span> <span class="o">==</span> <span class="n">Membership</span><span class="o">.</span><span class="n">trapmf</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span></div>
 
-
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a string representation of the partitioner, the list of fuzzy sets and their parameters</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;:</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">tmp</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">key</span><span class="p">])</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="n">tmp</span></div>
+        <span class="k">return</span> <span class="n">tmp</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of partitions</span>
+
+<span class="sd">        :return: number of partitions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitions</span></div>
 </pre></div>
 
           </div>

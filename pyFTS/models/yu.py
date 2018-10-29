@@ -64,6 +64,8 @@ class WeightedFTS(fts.FTS):
 
     def forecast(self, ndata, **kwargs):
 
+        explain = kwargs.get('explain', False)
+
         if self.partitioner is not None:
             ordered_sets = self.partitioner.ordered_sets
         else:
@@ -71,7 +73,7 @@ class WeightedFTS(fts.FTS):
 
         ndata = np.array(ndata)
 
-        l = len(ndata)
+        l = len(ndata) if not explain else 1
 
         ret = []
 
@@ -79,12 +81,27 @@ class WeightedFTS(fts.FTS):
 
             actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets, ordered_sets)
 
+            if explain:
+                print("Fuzzyfication:\n\n {} -> {} \n\n".format(ndata[k], actual.name))
+
             if actual.name not in self.flrgs:
                 ret.append(actual.centroid)
+
+                if explain:
+                    print("Rules:\n\n {} -> {} (Naïve)\t Midpoint: {}  \n\n".format(actual.name, actual.name,actual.centroid))
+
             else:
                 flrg = self.flrgs[actual.name]
                 mp = flrg.get_midpoints(self.sets)
 
-                ret.append(mp.dot(flrg.weights(self.sets)))
+                final = mp.dot(flrg.weights(self.sets))
+
+                ret.append(final)
+
+                if explain:
+                    print("Rules:\n\n {} \n\n ".format(str(flrg)))
+                    print("Midpoints: \n\n {}\n\n".format(mp))
+
+                    print("Deffuzyfied value: {} \n".format(final))
 
         return ret

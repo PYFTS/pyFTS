@@ -71,7 +71,8 @@ class ExponentialyWeightedFTS(fts.FTS):
         self.generate_flrg(flrs, self.c)
 
     def forecast(self, ndata, **kwargs):
-        l = 1
+
+        explain = kwargs.get('explain', False)
 
         if self.partitioner is not None:
             ordered_sets = self.partitioner.ordered_sets
@@ -88,12 +89,27 @@ class ExponentialyWeightedFTS(fts.FTS):
 
             actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets, ordered_sets)
 
+            if explain:
+                print("Fuzzyfication:\n\n {} -> {} \n".format(ndata[k], actual.name))
+
             if actual.name not in self.flrgs:
                 ret.append(actual.centroid)
+
+                if explain:
+                    print("Rules:\n\n {} -> {} (Naïve)\t Midpoint: {}  \n\n".format(actual.name, actual.name,actual.centroid))
+
             else:
                 flrg = self.flrgs[actual.name]
                 mp = flrg.get_midpoints(self.sets)
 
-                ret.append(mp.dot(flrg.weights()))
+                final = mp.dot(flrg.weights())
+
+                ret.append(final)
+
+                if explain:
+                    print("Rules:\n\n {} \n\n ".format(str(flrg)))
+                    print("Midpoints: \n\n {}\n\n".format(mp))
+
+                    print("Deffuzyfied value: {} \n".format(final))
 
         return ret

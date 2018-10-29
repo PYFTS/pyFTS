@@ -76,19 +76,35 @@ class Partitioner(object):
         pass
 
     def get_name(self, counter):
+        """
+        Find the name of the fuzzy set given its counter id.
+
+        :param counter: The number of the fuzzy set
+        :return: String
+        """
         return self.prefix + str(counter) if self.setnames is None else self.setnames[counter]
 
     def lower_set(self):
+        """
+        Return the fuzzy set on lower bound of the universe of discourse.
+
+        :return: Fuzzy Set
+        """
         return self.sets[self.ordered_sets[0]]
 
     def upper_set(self):
+        """
+        Return the fuzzy set on upper bound of the universe of discourse.
+
+        :return: Fuzzy Set
+        """
         return self.sets[self.ordered_sets[-1]]
 
     def plot(self, ax):
         """
-        Plot the 
-        :param ax: 
-        :return: 
+        Plot the partitioning using the Matplotlib axis ax
+
+        :param ax: Matplotlib axis
         """
         ax.set_title(self.name)
         ax.set_ylim([0, 1])
@@ -108,6 +124,12 @@ class Partitioner(object):
         ax.xaxis.set_ticks(x)
 
     def plot_set(self, ax, s):
+        """
+        Plot an isolate fuzzy set on Matplotlib axis
+
+        :param ax: Matplotlib axis
+        :param s: Fuzzy Set
+        """
         if s.mf == Membership.trimf:
             ax.plot([s.parameters[0], s.parameters[1], s.parameters[2]], [0, s.alpha, 0])
         elif s.mf == Membership.gaussmf:
@@ -117,9 +139,21 @@ class Partitioner(object):
         elif s.mf == Membership.trapmf:
             ax.plot(s.parameters, [0, s.alpha, s.alpha, 0])
 
-
     def __str__(self):
+        """
+        Return a string representation of the partitioner, the list of fuzzy sets and their parameters
+
+        :return:
+        """
         tmp = self.name + ":\n"
         for key in self.sets.keys():
             tmp += str(self.sets[key])+ "\n"
         return tmp
+
+    def __len__(self):
+        """
+        Return the number of partitions
+
+        :return: number of partitions
+        """
+        return self.partitions

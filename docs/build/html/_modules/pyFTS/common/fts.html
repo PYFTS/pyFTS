@@ -167,6 +167,7 @@
 <span class="sd">        :keyword start: in the multi step forecasting, the index of the data where to start forecasting</span>
 <span class="sd">        :keyword distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster</span>
 <span class="sd">        :keyword nodes: a list with the dispy cluster nodes addresses</span>
+<span class="sd">        :keyword explain: try to explain, step by step, the one-step-ahead point forecasting result given the input data.</span>
 
 <span class="sd">        :return: a numpy array with the forecasted data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -415,6 +416,7 @@
 
         <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
             <span class="n">Util</span><span class="o">.</span><span class="n">persist_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="FTS.clone_parameters"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.clone_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">clone_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

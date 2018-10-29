@@ -56,21 +56,35 @@ class ConventionalFTS(fts.FTS):
 
     def forecast(self, ndata, **kwargs):
 
-        l = len(ndata)
+        explain = kwargs.get('explain',False)
+
+        l = len(ndata) if not explain else 1
 
         ret = []
 
         for k in np.arange(0, l):
 
-            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)
+            actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets)
 
-            actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets) #self.sets[np.argwhere(mv == max(mv))[0, 0]]
+            if explain:
+                print("Fuzzyfication:\n\n {} -> {} \n".format(ndata[k], actual.name))
 
             if actual.name not in self.flrgs:
                 ret.append(actual.centroid)
+
+                if explain:
+                    print("Rules:\n\n {} -> {} (Naïve)\t Midpoint: {}  \n\n".format(actual.name, actual.name,actual.centroid))
+
             else:
                 _flrg = self.flrgs[actual.name]
 
-                ret.append(_flrg.get_midpoint(self.sets))
+                mp = _flrg.get_midpoint(self.sets)
+
+                ret.append(mp)
+
+                if explain:
+                    print("Rules:\n\n {} \t Midpoint: {} \n".format(str(_flrg), mp))
+
+                    print("Deffuzyfied value: {} \n".format(mp))
 
         return ret

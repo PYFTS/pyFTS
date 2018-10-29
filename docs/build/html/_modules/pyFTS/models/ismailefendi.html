@@ -131,7 +131,7 @@
             <span class="k">if</span> <span class="n">flr</span><span class="o">.</span><span class="n">LHS</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">flr</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImprovedWeightedFLRG</span><span class="p">(</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">);</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImprovedWeightedFLRG</span><span class="p">(</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">flr</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ImprovedWeightedFTS.train"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.ismailefendi.ImprovedWeightedFTS.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -141,7 +141,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">generate_flrg</span><span class="p">(</span><span class="n">flrs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ImprovedWeightedFTS.forecast"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.ismailefendi.ImprovedWeightedFTS.forecast">[docs]</a>    <span class="k">def</span> <span class="nf">forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">l</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">explain</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;explain&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ordered_sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">ordered_sets</span>
@@ -149,7 +150,8 @@
             <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="o">.</span><span class="n">set_ordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
 
         <span class="n">ndata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
-        <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">explain</span> <span class="k">else</span> <span class="mi">1</span>
 
         <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -157,13 +159,28 @@
 
             <span class="n">actual</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="o">.</span><span class="n">get_maximum_membership_fuzzyset</span><span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fuzzyfication:</span><span class="se">\n\n</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> -&gt; </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">actual</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
             <span class="k">if</span> <span class="n">actual</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
                 <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actual</span><span class="o">.</span><span class="n">centroid</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rules:</span><span class="se">\n\n</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> -&gt; </span><span class="si">{}</span><span class="s2"> (Naïve)</span><span class="se">\t</span><span class="s2"> Midpoint: </span><span class="si">{}</span><span class="s2">  </span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">actual</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">actual</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">actual</span><span class="o">.</span><span class="n">centroid</span><span class="p">))</span>
+
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">flrg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">actual</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
                 <span class="n">mp</span> <span class="o">=</span> <span class="n">flrg</span><span class="o">.</span><span class="n">get_midpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
 
-                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">weights</span><span class="p">()))</span>
+                <span class="n">final</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">weights</span><span class="p">())</span>
+
+                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rules:</span><span class="se">\n\n</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n\n</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">flrg</span><span class="p">)))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Midpoints: </span><span class="se">\n\n</span><span class="s2"> </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mp</span><span class="p">))</span>
+
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deffuzyfied value: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">final</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">ret</span></div></div>
 </pre></div>

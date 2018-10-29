@@ -196,7 +196,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">generate_flrg</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProbabilisticWeightedFTS.generate_lhs_flrg"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.pwfts.ProbabilisticWeightedFTS.generate_lhs_flrg">[docs]</a>    <span class="k">def</span> <span class="nf">generate_lhs_flrg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbabilisticWeightedFTS.generate_lhs_flrg"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.pwfts.ProbabilisticWeightedFTS.generate_lhs_flrg">[docs]</a>    <span class="k">def</span> <span class="nf">generate_lhs_flrg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">explain</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">lags</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="n">flrgs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -205,6 +205,9 @@
             <span class="n">lhs</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="o">.</span><span class="n">fuzzyfy</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="n">o</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">partitioner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;sets&quot;</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_cut</span><span class="p">)</span>
 
             <span class="n">lags</span><span class="p">[</span><span class="n">ct</span><span class="p">]</span> <span class="o">=</span> <span class="n">lhs</span>
+
+            <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> (Lag </span><span class="si">{}</span><span class="s2">) </span><span class="si">{}</span><span class="s2"> -&gt; </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">sample</span><span class="p">[</span><span class="n">o</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">lhs</span><span class="p">))</span>
 
         <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">FLRGTreeNode</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
@@ -300,9 +303,6 @@
                 <span class="n">cond</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cond</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1">##########################################</span>
-            <span class="c1"># this may be the problem! TEST IT!!!</span>
-            <span class="c1">##########################################</span>
             <span class="n">pi</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">)</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">ret</span></div>
@@ -346,27 +346,48 @@
 
 <div class="viewcode-block" id="ProbabilisticWeightedFTS.point_heuristic"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.pwfts.ProbabilisticWeightedFTS.point_heuristic">[docs]</a>    <span class="k">def</span> <span class="nf">point_heuristic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-        <span class="n">flrgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_lhs_flrg</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+        <span class="n">explain</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;explain&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fuzzyfication </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">flrgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_lhs_flrg</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">explain</span><span class="p">)</span>
 
         <span class="n">mp</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">norms</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rules:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">flrg</span> <span class="ow">in</span> <span class="n">flrgs</span><span class="p">:</span>
             <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrg_lhs_conditional_probability</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">flrg</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrg_lhs_unconditional_probability</span><span class="p">(</span><span class="n">flrg</span><span class="p">)</span>
+
+
+            <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> Midpoint: </span><span class="si">{}</span><span class="se">\t</span><span class="s2"> Norm: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]),</span>
+                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">get_midpoint</span><span class="p">(</span><span class="n">flrg</span><span class="p">),</span> <span class="n">norm</span><span class="p">))</span>
+
             <span class="n">mp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">norm</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_midpoint</span><span class="p">(</span><span class="n">flrg</span><span class="p">))</span>
             <span class="n">norms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
 
         <span class="n">norm</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">norms</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mp</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span></div>
 
+        <span class="n">final</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mp</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span> <span class="k">if</span> <span class="n">norm</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deffuzyfied value: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">final</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">final</span></div>
 
 <div class="viewcode-block" id="ProbabilisticWeightedFTS.point_expected_value"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.pwfts.ProbabilisticWeightedFTS.point_expected_value">[docs]</a>    <span class="k">def</span> <span class="nf">point_expected_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_distribution</span><span class="p">(</span><span class="n">sample</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">expected_value</span><span class="p">()</span></div>
+        <span class="n">explain</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;explain&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
+        <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_distribution</span><span class="p">(</span><span class="n">sample</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">final</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">expected_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">final</span></div>
 
 <div class="viewcode-block" id="ProbabilisticWeightedFTS.forecast_interval"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.pwfts.ProbabilisticWeightedFTS.forecast_interval">[docs]</a>    <span class="k">def</span> <span class="nf">forecast_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 

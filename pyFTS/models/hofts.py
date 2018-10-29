@@ -62,7 +62,7 @@ class HighOrderFTS(fts.FTS):
             self.max_lag = self.order
             self.lags = np.arange(1, self.order+1)
 
-    def generate_lhs_flrg(self, sample):
+    def generate_lhs_flrg(self, sample, explain=False):
         lags = {}
 
         flrgs = []
@@ -70,6 +70,9 @@ class HighOrderFTS(fts.FTS):
         for ct, o in enumerate(self.lags):
             lhs = FuzzySet.fuzzyfy(sample[o-1], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
             lags[ct] = lhs
+
+            if explain:
+                print("\t (Lag {}) {} -> {} \n".format(o, sample[o-1], lhs))
 
         root = tree.FLRGTreeNode(None)
 
@@ -111,26 +114,49 @@ class HighOrderFTS(fts.FTS):
 
     def forecast(self, ndata, **kwargs):
 
+        explain = kwargs.get('explain', False)
+
         ret = []
 
-        l = len(ndata)
+        l = len(ndata) if not explain else self.max_lag + 1
 
         if l < self.max_lag:
             return ndata
 
         for k in np.arange(self.max_lag, l+1):
-            flrgs = self.generate_lhs_flrg(ndata[k - self.max_lag: k])
+
+            if explain:
+                print("Fuzzyfication \n")
+
+            flrgs = self.generate_lhs_flrg(ndata[k - self.max_lag: k], explain)
+
+            if explain:
+                print("Rules:\n")
 
             tmp = []
             for flrg in flrgs:
 
                 if flrg.get_key() not in self.flrgs:
                     if len(flrg.LHS) > 0:
-                        tmp.append(self.sets[flrg.LHS[-1]].centroid)
+                        mp = self.sets[flrg.LHS[-1]].centroid
+                        tmp.append(mp)
+
+                        if explain:
+                            print("\t {} -> {} (Naïve)\t Midpoint: {}\n".format(str(flrg.LHS), flrg.LHS[-1],
+                                                                                            mp))
+
                 else:
                     flrg = self.flrgs[flrg.get_key()]
-                    tmp.append(flrg.get_midpoint(self.sets))
+                    mp = flrg.get_midpoint(self.sets)
+                    tmp.append(mp)
 
-            ret.append(np.nanmean(tmp))
+                    if explain:
+                        print("\t {} \t Midpoint: {}\n".format(str(flrg), mp))
+
+            final = np.nanmean(tmp)
+            ret.append(final)
+
+            if explain:
+                print("Deffuzyfied value: {} \n".format(final))
 
         return ret

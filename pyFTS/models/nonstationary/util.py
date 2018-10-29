@@ -55,7 +55,7 @@ def plot_sets(partitioner, start=0, end=10, step=1, tam=[5, 5], colors=None,
 
 
 def plot_sets_conditional(model, data, step=1, size=[5, 5], colors=None,
-                          save=False, file=None, axes=None):
+                          save=False, file=None, axes=None, fig=None):
     range = np.arange(0, len(data), step)
     ticks = []
     if axes is None:
@@ -77,11 +77,11 @@ def plot_sets_conditional(model, data, step=1, size=[5, 5], colors=None,
                 else:
                     axes.plot([t, t + 1, t], param,c=set.metadata['color'])
 
-            ticks.extend(["t+"+str(t),""])
+            #ticks.extend(["t+"+str(t),""])
 
     axes.set_ylabel("Universe of Discourse")
     axes.set_xlabel("Time")
-    plt.xticks([k for k in range], ticks, rotation='vertical')
+    #plt.xticks([k for k in range], ticks, rotation='vertical')
 
     handles0, labels0 = axes.get_legend_handles_labels()
     lgd = axes.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))

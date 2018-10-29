@@ -74,7 +74,7 @@ class IntervalFTS(hofts.HighOrderFTS):
 
             for flrg in flrgs:
                 if len(flrg.LHS) > 0:
-                    # achar o os bounds de cada FLRG, ponderados pela pertinência
+
                     mv = flrg.get_membership(sample, self.sets)
                     up.append(mv * self.get_upper(flrg))
                     lo.append(mv * self.get_lower(flrg))

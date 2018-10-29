@@ -148,7 +148,7 @@
 
             <span class="k">for</span> <span class="n">flrg</span> <span class="ow">in</span> <span class="n">flrgs</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># achar o os bounds de cada FLRG, ponderados pela pertinência</span>
+
                     <span class="n">mv</span> <span class="o">=</span> <span class="n">flrg</span><span class="o">.</span><span class="n">get_membership</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
                     <span class="n">up</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mv</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_upper</span><span class="p">(</span><span class="n">flrg</span><span class="p">))</span>
                     <span class="n">lo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mv</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_lower</span><span class="p">(</span><span class="n">flrg</span><span class="p">))</span>

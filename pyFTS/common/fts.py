@@ -93,6 +93,7 @@ class FTS(object):
         :keyword start: in the multi step forecasting, the index of the data where to start forecasting
         :keyword distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster
         :keyword nodes: a list with the dispy cluster nodes addresses
+        :keyword explain: try to explain, step by step, the one-step-ahead point forecasting result given the input data.
 
         :return: a numpy array with the forecasted data
         """
@@ -341,6 +342,7 @@ class FTS(object):
 
         if save:
             Util.persist_obj(self, file_path)
+
 
     def clone_parameters(self, model):
         """

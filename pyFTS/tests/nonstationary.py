@@ -10,7 +10,7 @@ import pandas as pd
 
 from pyFTS.data import TAIEX, NASDAQ, SP500, artificial, mackey_glass
 
-mackey_glass.get_data()
+#mackey_glass.get_data()
 
 datasets = {
     "TAIEX": TAIEX.get_data()[:4000],
@@ -54,14 +54,31 @@ partitions = {'CMIV': {'BoxCox(0)': 36, 'Differential(1)': 11, 'None': 8},
  'TAIEX': {'BoxCox(0)': 39, 'Differential(1)': 31, 'None': 33}}
 
 from pyFTS.models.nonstationary import partitioners as nspart, cvfts, util as nsUtil
+'''
+#fs = nspart.simplenonstationary_gridpartitioner_builder(data=datasets['SP500'][:300],
+#                                                        npart=partitions['SP500']['None'],
+#                                                        transformation=None)
+fs = Grid.GridPartitioner(data=datasets['SP500'][:300],
+                                                        npart=15,
+                                                        transformation=None)
+fig, axes = plt.subplots(nrows=1, ncols=1, figsize=[15, 5])
+
+fs.plot(axes)
+
+from pyFTS.common import Util
+
+Util.show_and_save_image(fig, "fig2.png", True)
+
+#nsUtil.plot_sets(fs)
 
 
+'''
 def model_details(ds, tf, train_split, test_split):
     data = datasets[ds]
     train = data[:train_split]
     test = data[train_split:test_split]
     transformation = transformations[tf]
-    fs = nspart.simplenonstationary_gridpartitioner_builder(data=train, npart=partitions[ds][tf],
+    fs = nspart.simplenonstationary_gridpartitioner_builder(data=train, npart=15, #partitions[ds][tf],
                                                             transformation=transformation)
     model = nsfts.NonStationaryFTS(partitioner=fs)
     model.fit(train)
@@ -69,21 +86,24 @@ def model_details(ds, tf, train_split, test_split):
     forecasts = model.predict(test)
     residuals = np.array(test[1:]) - np.array(forecasts[:-1])
 
-    fig, axes = plt.subplots(nrows=2, ncols=1, figsize=[15, 10])
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=[15, 10])
 
     axes[0].plot(test[1:], label="Original")
     axes[0].plot(forecasts[:-1], label="Forecasts")
+    axes[0].set_ylabel("Univ. of Discourse")
 
-    axes[1].set_title("Residuals")
+    #axes[1].set_title("Residuals")
     axes[1].plot(residuals)
+    axes[1].set_ylabel("Error")
     handles0, labels0 = axes[0].get_legend_handles_labels()
     lgd = axes[0].legend(handles0, labels0, loc=2)
 
-    nsUtil.plot_sets_conditional(model, test, step=10, size=[12, 5])
+    nsUtil.plot_sets_conditional(model, test, step=10, size=[10, 7],
+                                 save=True,file="fig.png", axes=axes[2], fig=fig)
 
-model_details('NASDAQ','None',200,2000)
-
-
+model_details('SP500','None',200,400)
+#'''
+print("ts")
 '''
 tag = 'benchmarks'
 

@@ -122,7 +122,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         else:
             self.generate_flrg(data)
 
-    def generate_lhs_flrg(self, sample):
+    def generate_lhs_flrg(self, sample, explain=False):
         lags = {}
 
         flrgs = []
@@ -131,6 +131,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             lhs = FuzzySet.fuzzyfy(sample[o - 1], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
 
             lags[ct] = lhs
+
+            if explain:
+                print("\t (Lag {}) {} -> {} \n".format(o, sample[o-1], lhs))
 
         root = tree.FLRGTreeNode(None)
 
@@ -226,9 +229,6 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 cond.append(tmp)
             ret = sum(np.array(cond))
         else:
-            ##########################################
-            # this may be the problem! TEST IT!!!
-            ##########################################
             pi = 1 / len(flrg.LHS)
             ret = sum(np.array([pi * self.sets[s].membership(x) for s in flrg.LHS]))
         return ret
@@ -272,27 +272,48 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def point_heuristic(self, sample, **kwargs):
 
-        flrgs = self.generate_lhs_flrg(sample)
+        explain = kwargs.get('explain', False)
+
+        if explain:
+            print("Fuzzyfication \n")
+
+        flrgs = self.generate_lhs_flrg(sample, explain)
 
         mp = []
         norms = []
+
+        if explain:
+            print("Rules:\n")
+
         for flrg in flrgs:
             norm = self.flrg_lhs_conditional_probability(sample, flrg)
+
             if norm == 0:
                 norm = self.flrg_lhs_unconditional_probability(flrg)
+
+
+            if explain:
+                print("\t {} \t Midpoint: {}\t Norm: {}\n".format(str(self.flrgs[flrg.get_key()]),
+                                                                  self.get_midpoint(flrg), norm))
+
             mp.append(norm * self.get_midpoint(flrg))
             norms.append(norm)
 
         norm = sum(norms)
-        if norm == 0:
-            return 0
-        else:
-            return sum(mp) / norm
 
+        final = sum(mp) / norm if norm != 0 else 0
+
+        if explain:
+            print("Deffuzyfied value: {} \n".format(final))
+        return final
 
     def point_expected_value(self, sample, **kwargs):
-       return self.forecast_distribution(sample)[0].expected_value()
+        explain = kwargs.get('explain', False)
 
+        dist = self.forecast_distribution(sample)[0]
+
+        final = dist.expected_value()
+        return final
 
     def forecast_interval(self, ndata, **kwargs):
 
