@@ -9,13 +9,30 @@ import matplotlib.pylab as plt
 import pandas as pd
 
 from pyFTS.common import Util as cUtil, FuzzySet
-from pyFTS.partitioners import Grid, Util as pUtil
+from pyFTS.partitioners import Grid, Entropy, Util as pUtil
 from pyFTS.benchmarks import benchmarks as bchmk
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts
 from pyFTS.common import Transformations
 
 tdiff = Transformations.Differential(1)
 
+data =  pd.read_csv('/home/petronio/Downloads/priceHong').values
+
+split = 24 * 800
+train = data[:split].flatten()
+test = data[split:].flatten()
+
+print(train)
+
+fs_grid = Grid.GridPartitioner(data=train,npart=25)
+#fs_entr.plot(ax[1])
+
+for method in [hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]:
+  for order in [2,3]:
+    model = method(partitioner=fs_grid, order=order)
+    model.fit(train)
+
+'''
 from pyFTS.data import TAIEX, SP500, NASDAQ
 
 dataset = TAIEX.get_data()
@@ -30,7 +47,7 @@ model.fit(dataset[:800])
 print(model)
 
 ret = model.predict([5000.00, 5200.00, 5400.00], explain=True)
-
+'''
 '''
 #dataset = SP500.get_data()[11500:16000]
 #dataset = NASDAQ.get_data()

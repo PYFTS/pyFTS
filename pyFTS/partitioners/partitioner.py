@@ -54,7 +54,7 @@ class Partitioner(object):
 
             self.min = float(_min * 1.1 if _min < 0 else _min * 0.9)
 
-            _max = max(ndata)
+            _max = np.nanmax(ndata)
             self.max = float(_max * 1.1 if _max > 0 else _max * 0.9)
 
             self.sets = self.build(ndata)

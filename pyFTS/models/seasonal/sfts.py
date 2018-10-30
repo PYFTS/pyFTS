@@ -91,3 +91,11 @@ class SeasonalFTS(fts.FTS):
             ret.append(np.percentile(mp, 50))
 
         return ret
+
+    def __str__(self):
+        """String representation of the model"""
+
+        tmp = self.name + ":\n"
+        for r in self.flrgs:
+            tmp = tmp + str(self.flrgs[r]) + "\n"
+        return tmp

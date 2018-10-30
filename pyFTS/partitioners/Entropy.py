@@ -42,7 +42,7 @@ def bestSplit(data, npart):
     if len(data) < 2:
         return None
     count = 1
-    ndata = list(set(data))
+    ndata = list(set(np.array(data).flatten()))
     ndata.sort()
     l = len(ndata)
     threshold = 0
