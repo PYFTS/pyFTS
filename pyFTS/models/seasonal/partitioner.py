@@ -64,6 +64,17 @@ class TimeGridPartitioner(partitioner.Partitioner):
                                             **kwargs))
                     tmp.centroid = c
                     sets[set_name] = tmp
+                elif c == self.max - partlen:
+                    tmp = Composite(set_name, superset=True)
+                    tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
+                                            [0.0000001, 0.0,
+                                             pl2], 0.0, alpha=.5,
+                                            **kwargs))
+                    tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
+                                            [c - partlen, c, c + partlen], c,
+                                            **kwargs))
+                    tmp.centroid = c
+                    sets[set_name] = tmp
                 else:
                     sets[set_name] = FuzzySet(self.season, set_name, Membership.trimf,
                                          [c - partlen, c, c + partlen], c,

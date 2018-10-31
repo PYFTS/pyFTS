@@ -16,21 +16,38 @@ from pyFTS.common import Transformations
 
 tdiff = Transformations.Differential(1)
 
-data =  pd.read_csv('/home/petronio/Downloads/priceHong').values
+dataset =  pd.read_csv('/home/petronio/Downloads/priceHong')
+dataset['hour'] = dataset.index.values % 24
 
 split = 24 * 800
-train = data[:split].flatten()
-test = data[split:].flatten()
+#train = data[:split].flatten()
+#test = data[split:].flatten()
 
-print(train)
+#print(train)
 
-fs_grid = Grid.GridPartitioner(data=train,npart=25)
-#fs_entr.plot(ax[1])
+from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.partitioners import Grid
+from pyFTS.models.seasonal.common import DateTime
+from pyFTS.models.seasonal import partitioner as seasonal
 
-for method in [hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]:
-  for order in [2,3]:
-    model = method(partitioner=fs_grid, order=order)
-    model.fit(train)
+vhour = variable.Variable("Hour", data_label="hour", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                            data=dataset,  partitioner_specific={'seasonality': DateTime.hour_of_day, 'type': 'common'})
+vprice = variable.Variable("Price", data_label="price", partitioner=Grid.GridPartitioner, npart=25,
+                            data=dataset)
+
+
+fig, ax = plt.subplots(nrows=2, ncols=1,figsize=[15,5])
+
+vhour.partitioner.plot(ax[0])
+vprice.partitioner.plot(ax[1])
+
+model = mvfts.MVFTS()
+#model.shortname += ' ' + key
+model.append_variable(vhour)
+model.append_variable(vprice)
+#  model.shortname +=  ' ' + w
+model.target_variable = vprice
+model.fit(dataset.iloc[:split])
 
 '''
 from pyFTS.data import TAIEX, SP500, NASDAQ

@@ -88,10 +88,15 @@ class FuzzySet(FuzzySet.FuzzySet):
     """
 
     def __init__(self, datepart, name, mf, parameters, centroid, alpha=1.0, **kwargs):
-        super(FuzzySet, self).__init__(name, mf, parameters, centroid, alpha, type = 'datetime', **kwargs)
+        super(FuzzySet, self).__init__(name, mf, parameters, centroid, alpha,
+                                       type=kwargs.get('type', 'datetime'),
+                                       **kwargs)
         self.datepart = datepart
         self.type = 'seasonal'
 
     def membership(self, x):
-        dp = strip_datepart(x, self.datepart)
+        if self.type == 'datetime':
+            dp = strip_datepart(x, self.datepart)
+        else:
+            dp = x
         return self.mf(dp, self.parameters) * self.alpha
