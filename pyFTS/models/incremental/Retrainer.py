@@ -32,7 +32,10 @@ class Retrainer(fts.FTS):
         """The memory window length"""
         self.auto_update = False
         """If true the model is updated at each time and not recreated"""
+        self.batch_size = kwargs.get('batch_size', 10)
+        """The batch interval between each retraining"""
         self.is_high_order = True
+        self.uod_clip = False
 
     def train(self, data, **kwargs):
         self.partitioner = self.partitioner_method(data=data, **self.partitioner_params)
@@ -50,10 +53,12 @@ class Retrainer(fts.FTS):
             _train = data[k - horizon: k - self.order]
             _test = data[k - self.order: k]
 
-            if self.auto_update:
-                self.model.train(_train)
-            else:
-                self.train(_train, **kwargs)
+            if k % self.batch_size == 0 or self.model is None:
+                print("Treinando {}".format(k))
+                if self.auto_update:
+                    self.model.train(_train)
+                else:
+                    self.train(_train, **kwargs)
 
             ret.extend(self.model.predict(_test, **kwargs))
 
