@@ -36,18 +36,12 @@ class Retrainer(fts.FTS):
         """The batch interval between each retraining"""
         self.is_high_order = True
         self.uod_clip = False
-        
-    @property
-    def shortname(self):
-        if self.model is None:
-            self.model = self.fts_method()
-            
-        return self.model.shortname
 
     def train(self, data, **kwargs):
         self.partitioner = self.partitioner_method(data=data, **self.partitioner_params)
         self.model = self.fts_method(partitioner=self.partitioner, order=self.order, **self.fts_params)
         self.model.fit(data, **kwargs)
+        self.shortname = self.model.shortname
 
     def forecast(self, data, **kwargs):
         l = len(data)
