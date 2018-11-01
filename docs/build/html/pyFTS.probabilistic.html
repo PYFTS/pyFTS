@@ -173,7 +173,8 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy">
 <code class="descname">crossentropy</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.crossentropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cross entropy between the actual probability distribution and the informed one.</p>
+<dd><p>Cross entropy between the actual probability distribution and the informed one, 
+H(P,Q) = - ∑ P(x) log ( Q(x) )</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -189,7 +190,8 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative">
 <code class="descname">cumulative</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.cumulative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the cumulative probability densities for the input values</p>
+<dd><p>Return the cumulative probability densities for the input values, 
+such that F(x) = P(X &lt;= x)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -237,7 +239,7 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood">
 <code class="descname">empiricalloglikelihood</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.empiricalloglikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Empirical Log Likelihood of the probability distribution</p>
+<dd><p>Empirical Log Likelihood of the probability distribution, L(P) = ∑ log( P(x) )</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -251,7 +253,7 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy">
 <code class="descname">entropy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the entropy of the probability distribution, H[X] =</p>
+<dd><p>Return the entropy of the probability distribution, H(P) = E[ -ln P(X) ] = - ∑ P(x) log ( P(x) )</p>
 <p>:return:the entropy of the probability distribution</p>
 </dd></dl>
 
@@ -272,7 +274,8 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence">
 <code class="descname">kullbackleiblerdivergence</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.kullbackleiblerdivergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence" title="Permalink to this definition">¶</a></dt>
-<dd><p>Kullback-Leibler divergence between the actual probability distribution and the informed one.</p>
+<dd><p>Kullback-Leibler divergence between the actual probability distribution and the informed one.
+DKL(P || Q) = - ∑ P(x) log( P(X) / Q(x) )</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -315,7 +318,8 @@ If type is KDE the PDF is continuous</p>
 <dl class="method">
 <dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile">
 <code class="descname">quantile</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.quantile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the quantile values for the input values</p>
+<dd><p>Return the Universe of Discourse values in relation to the quantile input values, 
+such that Q(tau) = min( {x | F(x) &gt;= tau })</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

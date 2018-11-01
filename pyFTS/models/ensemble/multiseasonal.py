@@ -1,5 +1,7 @@
-#!/usr/bin/python
-# -*- coding: utf8 -*-
+"""
+Silva, P. C. L et al. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series
+XIII Brazilian Congress on Computational Intelligence, 2017. Rio de Janeiro, Brazil.
+"""
 
 import numpy as np
 from pyFTS.common import Util as cUtil

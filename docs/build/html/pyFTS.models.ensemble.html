@@ -28,7 +28,7 @@
     <script type="text/javascript" src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pyFTS.models.multivariate package" href="pyFTS.models.multivariate.html" />
+    <link rel="next" title="pyFTS.models.incremental package" href="pyFTS.models.incremental.html" />
     <link rel="prev" title="pyFTS.models package" href="pyFTS.models.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -45,7 +45,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyFTS.models.multivariate.html" title="pyFTS.models.multivariate package"
+          <a href="pyFTS.models.incremental.html" title="pyFTS.models.incremental package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="pyFTS.models.html" title="pyFTS.models package"
@@ -76,8 +76,8 @@
   <p class="topless"><a href="pyFTS.models.html"
                         title="previous chapter">pyFTS.models package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pyFTS.models.multivariate.html"
-                        title="next chapter">pyFTS.models.multivariate package</a></p>
+  <p class="topless"><a href="pyFTS.models.incremental.html"
+                        title="next chapter">pyFTS.models.incremental package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -112,10 +112,15 @@
 </div>
 <div class="section" id="module-pyFTS.models.ensemble.ensemble">
 <span id="pyfts-models-ensemble-ensemble-module"></span><h2>pyFTS.models.ensemble.ensemble module<a class="headerlink" href="#module-pyFTS.models.ensemble.ensemble" title="Permalink to this headline">¶</a></h2>
+<p>EnsembleFTS wraps several FTS methods to ensemble their forecasts, providing point,
+interval and probabilistic forecasting.</p>
+<p>Silva, P. C. L et al. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series
+XIII Brazilian Congress on Computational Intelligence, 2017. Rio de Janeiro, Brazil.</p>
 <dl class="class">
 <dt id="pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS">
 <em class="property">class </em><code class="descclassname">pyFTS.models.ensemble.ensemble.</code><code class="descname">AllMethodEnsembleFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#AllMethodEnsembleFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="pyFTS.models.ensemble.ensemble.EnsembleFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.ensemble.ensemble.EnsembleFTS</span></code></a></p>
+<p>Creates an EnsembleFTS with all point forecast methods, sharing the same partitioner</p>
 <dl class="method">
 <dt id="pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.set_transformations">
 <code class="descname">set_transformations</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#AllMethodEnsembleFTS.set_transformations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.set_transformations" title="Permalink to this definition">¶</a></dt>
@@ -146,10 +151,16 @@
 <em class="property">class </em><code class="descclassname">pyFTS.models.ensemble.ensemble.</code><code class="descname">EnsembleFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
 <p>Ensemble FTS</p>
+<dl class="attribute">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.alpha">
+<code class="descname">alpha</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>The quantiles</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.append_model">
 <code class="descname">append_model</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.append_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.append_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append a new model to the ensemble</p>
+<dd><p>Append a new trained model to the ensemble</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -288,6 +299,12 @@
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.interval_method">
+<code class="descname">interval_method</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.interval_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The method used to mix the several model’s forecasts into a interval forecast. Options: quantile, extremum, normal</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.models">
 <code class="descname">models</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.models" title="Permalink to this definition">¶</a></dt>
 <dd><p>A list of FTS models, the ensemble components</p>
@@ -297,6 +314,12 @@
 <dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.parameters">
 <code class="descname">parameters</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>A list with the parameters for each component model</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.point_method">
+<code class="descname">point_method</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.point_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The method used to mix the several model’s forecasts into a unique point forecast. Options: mean, median, quantile</p>
 </dd></dl>
 
 <dl class="method">
@@ -327,6 +350,8 @@
 </div>
 <div class="section" id="module-pyFTS.models.ensemble.multiseasonal">
 <span id="pyfts-models-ensemble-multiseasonal-module"></span><h2>pyFTS.models.ensemble.multiseasonal module<a class="headerlink" href="#module-pyFTS.models.ensemble.multiseasonal" title="Permalink to this headline">¶</a></h2>
+<p>Silva, P. C. L et al. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series
+XIII Brazilian Congress on Computational Intelligence, 2017. Rio de Janeiro, Brazil.</p>
 <dl class="class">
 <dt id="pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS">
 <em class="property">class </em><code class="descclassname">pyFTS.models.ensemble.multiseasonal.</code><code class="descname">SeasonalEnsembleFTS</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/multiseasonal.html#SeasonalEnsembleFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS" title="Permalink to this definition">¶</a></dt>
@@ -405,7 +430,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyFTS.models.multivariate.html" title="pyFTS.models.multivariate package"
+          <a href="pyFTS.models.incremental.html" title="pyFTS.models.incremental package"
              >next</a> |</li>
         <li class="right" >
           <a href="pyFTS.models.html" title="pyFTS.models package"

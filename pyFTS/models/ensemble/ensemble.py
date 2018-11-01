@@ -1,5 +1,11 @@
-#!/usr/bin/python
-# -*- coding: utf8 -*-
+"""
+EnsembleFTS wraps several FTS methods to ensemble their forecasts, providing point,
+interval and probabilistic forecasting.
+
+Silva, P. C. L et al. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series
+XIII Brazilian Congress on Computational Intelligence, 2017. Rio de Janeiro, Brazil.
+"""
+
 
 import numpy as np
 import pandas as pd
@@ -22,7 +28,7 @@ class EnsembleFTS(fts.FTS):
     """
     def __init__(self, **kwargs):
         super(EnsembleFTS, self).__init__(**kwargs)
-        self.shortname = "Ensemble FTS"
+        self.shortname = "EnsembleFTS"
         self.name = "Ensemble FTS"
         self.flrgs = {}
         self.has_point_forecasting = True
@@ -34,13 +40,16 @@ class EnsembleFTS(fts.FTS):
         self.parameters = []
         """A list with the parameters for each component model"""
         self.alpha = kwargs.get("alpha", 0.05)
+        """The quantiles """
         self.point_method = kwargs.get('point_method', 'mean')
+        """The method used to mix the several model's forecasts into a unique point forecast. Options: mean, median, quantile"""
         self.interval_method = kwargs.get('interval_method', 'quantile')
+        """The method used to mix the several model's forecasts into a interval forecast. Options: quantile, extremum, normal"""
         self.order = 1
 
     def append_model(self, model):
         """
-        Append a new model to the ensemble
+        Append a new trained model to the ensemble
 
         :param model: FTS model
 
@@ -267,6 +276,9 @@ class EnsembleFTS(fts.FTS):
 
 
 class AllMethodEnsembleFTS(EnsembleFTS):
+    """
+    Creates an EnsembleFTS with all point forecast methods, sharing the same partitioner
+    """
     def __init__(self, **kwargs):
         super(AllMethodEnsembleFTS, self).__init__(**kwargs)
         self.min_order = 3

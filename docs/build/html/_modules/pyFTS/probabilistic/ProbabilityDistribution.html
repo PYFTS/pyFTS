@@ -256,7 +256,8 @@
 
 <div class="viewcode-block" id="ProbabilityDistribution.cumulative"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative">[docs]</a>    <span class="k">def</span> <span class="nf">cumulative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the cumulative probability densities for the input values</span>
+<span class="sd">        Return the cumulative probability densities for the input values, </span>
+<span class="sd">        such that F(x) = P(X &lt;= x)</span>
 
 <span class="sd">        :param values: A list of input values</span>
 <span class="sd">        :return: The cumulative probability densities for the input values</span>
@@ -275,7 +276,8 @@
 
 <div class="viewcode-block" id="ProbabilityDistribution.quantile"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile">[docs]</a>    <span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the quantile values for the input values</span>
+<span class="sd">        Return the Universe of Discourse values in relation to the quantile input values, </span>
+<span class="sd">        such that Q(tau) = min( {x | F(x) &gt;= tau })</span>
 
 <span class="sd">        :param values: input values</span>
 <span class="sd">        :return: The list of the quantile values for the input values</span>
@@ -296,7 +298,7 @@
 
 <div class="viewcode-block" id="ProbabilityDistribution.entropy"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy">[docs]</a>    <span class="k">def</span> <span class="nf">entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the entropy of the probability distribution, H[X] =</span>
+<span class="sd">        Return the entropy of the probability distribution, H(P) = E[ -ln P(X) ] = - ∑ P(x) log ( P(x) )</span>
 
 <span class="sd">        :return:the entropy of the probability distribution</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -306,7 +308,8 @@
 
 <div class="viewcode-block" id="ProbabilityDistribution.crossentropy"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy">[docs]</a>    <span class="k">def</span> <span class="nf">crossentropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">q</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Cross entropy between the actual probability distribution and the informed one.</span>
+<span class="sd">        Cross entropy between the actual probability distribution and the informed one, </span>
+<span class="sd">        H(P,Q) = - ∑ P(x) log ( Q(x) )</span>
 
 <span class="sd">        :param q: a probabilistic.ProbabilityDistribution object</span>
 <span class="sd">        :return: Cross entropy between this probability distribution and the given distribution</span>
@@ -318,6 +321,7 @@
 <div class="viewcode-block" id="ProbabilityDistribution.kullbackleiblerdivergence"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence">[docs]</a>    <span class="k">def</span> <span class="nf">kullbackleiblerdivergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">q</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Kullback-Leibler divergence between the actual probability distribution and the informed one.</span>
+<span class="sd">        DKL(P || Q) = - ∑ P(x) log( P(X) / Q(x) )</span>
 
 <span class="sd">        :param q:  a probabilistic.ProbabilityDistribution object</span>
 <span class="sd">        :return: Kullback-Leibler divergence</span>
@@ -328,7 +332,7 @@
 
 <div class="viewcode-block" id="ProbabilityDistribution.empiricalloglikelihood"><a class="viewcode-back" href="../../../pyFTS.probabilistic.html#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">empiricalloglikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Empirical Log Likelihood of the probability distribution</span>
+<span class="sd">        Empirical Log Likelihood of the probability distribution, L(P) = ∑ log( P(x) )</span>
 
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>

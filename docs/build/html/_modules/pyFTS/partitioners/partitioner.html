@@ -128,7 +128,7 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_min</span> <span class="o">*</span> <span class="mf">1.1</span> <span class="k">if</span> <span class="n">_min</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">_min</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">)</span>
 
-            <span class="n">_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+            <span class="n">_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_max</span> <span class="o">*</span> <span class="mf">1.1</span> <span class="k">if</span> <span class="n">_max</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">_max</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>

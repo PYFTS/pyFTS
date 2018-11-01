@@ -16,6 +16,7 @@ Subpackages
 .. toctree::
 
     pyFTS.models.ensemble
+    pyFTS.models.incremental
     pyFTS.models.multivariate
     pyFTS.models.nonstationary
     pyFTS.models.seasonal
