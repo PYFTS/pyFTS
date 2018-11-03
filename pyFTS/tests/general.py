@@ -10,7 +10,7 @@ import pandas as pd
 
 from pyFTS.common import Util as cUtil, FuzzySet
 from pyFTS.partitioners import Grid, Entropy, Util as pUtil
-from pyFTS.benchmarks import benchmarks as bchmk
+from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts
 from pyFTS.common import Transformations
 
@@ -27,7 +27,9 @@ model = Retrainer.Retrainer(partitioner_params = {'npart': 30},
                             fts_method=hofts.HighOrderFTS, order = 2,
                   window_length = 500, batch_size = 100)
 
-model.predict(dataset)
+#model.predict(dataset)
+
+Measures.get_point_statistics(dataset, model)
 
 '''
 #dataset = SP500.get_data()[11500:16000]

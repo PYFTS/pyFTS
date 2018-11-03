@@ -36,6 +36,7 @@ class Retrainer(fts.FTS):
         """The batch interval between each retraining"""
         self.is_high_order = True
         self.uod_clip = False
+        self.max_lag = self.window_length + self.order
 
     def train(self, data, **kwargs):
         self.partitioner = self.partitioner_method(data=data, **self.partitioner_params)
@@ -49,12 +50,11 @@ class Retrainer(fts.FTS):
 
         ret = []
 
-        for k in np.arange(horizon, l):
+        for k in np.arange(horizon, l+1):
             _train = data[k - horizon: k - self.order]
             _test = data[k - self.order: k]
 
             if k % self.batch_size == 0 or self.model is None:
-                print("Treinando {}".format(k))
                 if self.auto_update:
                     self.model.train(_train)
                 else:
