@@ -23,13 +23,30 @@ dataset = TAIEX.get_data()
 
 from pyFTS.models.incremental import Retrainer
 
-model = Retrainer.Retrainer(partitioner_params = {'npart': 30},
-                            fts_method=hofts.HighOrderFTS, order = 2,
-                  window_length = 500, batch_size = 100)
+from pyFTS.models.incremental import Retrainer
+from pyFTS.benchmarks import benchmarks as bchmk
+
+models = []
+for method in bchmk.get_point_methods():
+  model = Retrainer.Retrainer(partitioner_params = {'npart': 30},
+                    fts_method=method,
+                    window_length = 500, batch_size = 100)
+  models.append(model)
 
 #model.predict(dataset)
 
-Measures.get_point_statistics(dataset, model)
+from pyFTS.partitioners import Grid, Util as pUtil
+from pyFTS.benchmarks import benchmarks as bchmk, naive
+
+tag = 'benchmarks_retrainer'
+
+bchmk.sliding_window_benchmarks(dataset, 2000, train=.1, inc=0.1,
+                              models=[model],
+                              build_methods = False,
+                              benchmark_models=False,
+                              partitions=[35],
+                              progress=False, type='point',
+                              file="nsfts_benchmarks.db", dataset='teste', tag=tag)
 
 '''
 #dataset = SP500.get_data()[11500:16000]

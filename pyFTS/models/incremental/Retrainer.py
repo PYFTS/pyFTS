@@ -40,7 +40,10 @@ class Retrainer(fts.FTS):
 
     def train(self, data, **kwargs):
         self.partitioner = self.partitioner_method(data=data, **self.partitioner_params)
-        self.model = self.fts_method(partitioner=self.partitioner, order=self.order, **self.fts_params)
+        self.model = self.fts_method(partitioner=self.partitioner, **self.fts_params)
+        if self.model.is_high_order:
+            self.model.order = self.model = self.fts_method(partitioner=self.partitioner,
+                                                            order=self.order, **self.fts_params)
         self.model.fit(data, **kwargs)
         self.shortname = self.model.shortname
 
