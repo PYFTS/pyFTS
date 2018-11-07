@@ -35,6 +35,16 @@ class FuzzySet(object):
             self.upper = parameters[0] + parameters[1]*3
         self.metadata = {}
 
+    def transform(self, x):
+        """
+        Preprocess the data point for non native types
+
+        :param x:
+        :return: return a native type value for the structured type
+        """
+
+        return x
+
     def membership(self, x):
         """
         Calculate the membership value of a given input
@@ -42,7 +52,7 @@ class FuzzySet(object):
         :param x: input value 
         :return: membership value of x at this fuzzy set
         """
-        return self.mf(x, self.parameters) * self.alpha
+        return self.mf(self.transform(x), self.parameters) * self.alpha
 
     def partition_function(self,uod=None, nbins=100):
         """
@@ -83,14 +93,14 @@ def __binary_search(x, fuzzy_sets, ordered_sets):
         fs1 = ordered_sets[midpoint - 1] if midpoint > 0 else ordered_sets[0]
         fs2 = ordered_sets[midpoint + 1] if midpoint < max_len else ordered_sets[max_len]
 
-        if fuzzy_sets[fs1].centroid <= x <= fuzzy_sets[fs2].centroid:
+        if fuzzy_sets[fs1].centroid <= fuzzy_sets[fs].transform(x) <= fuzzy_sets[fs2].centroid:
             return (midpoint-1, midpoint, midpoint+1)
         elif midpoint <= 1:
             return [0]
         elif midpoint >= max_len:
             return [max_len]
         else:
-            if x < fuzzy_sets[fs].centroid:
+            if fuzzy_sets[fs].transform(x) < fuzzy_sets[fs].centroid:
                 last = midpoint - 1
             else:
                 first = midpoint + 1

@@ -35,7 +35,10 @@ class FuzzySet(FuzzySet.FuzzySet):
         if self.superset:
             return max([s.membership(x) for s in self.sets])
         else:
-            return min([self.mf[ct](x, self.parameters[ct]) for ct in np.arange(0, len(self.mf))])
+            return min([self.mf[ct](self.transform(x), self.parameters[ct]) for ct in np.arange(0, len(self.mf))])
+
+    def transform(self, x):
+        return self.sets[0].transform(x)
 
     def append(self, mf, parameters):
         """

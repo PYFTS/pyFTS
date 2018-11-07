@@ -8,8 +8,6 @@ from pyFTS.data import Malaysia
 
 dataset = Malaysia.get_dataframe()
 
-print(dataset.head())
-
 dataset["date"] = pd.to_datetime(dataset["time"], format='%m/%d/%y %I:%M %p')
 
 from pyFTS.partitioners import Grid, Util as pUtil
@@ -48,3 +46,28 @@ vload = variable.Variable("load", data_label="load", partitioner=Grid.GridPartit
 vtemperature = variable.Variable("temperature", data_label="temperature", partitioner=Grid.GridPartitioner, npart=10, 
                        data=mv_train)
 
+
+variables = {
+    'month': vmonth,
+    'day': vday,
+    'hour': vhour,
+    'temperature': vtemperature,
+    'load': vload
+}
+
+var_list = [k for k in variables.keys()]
+
+models = []
+
+import itertools
+
+for k in [itertools.combinations(var_list, r) for r in range(2,len(var_list))]:
+    for x in k:
+      model = mvfts.MVFTS()
+      print(x)
+      for w in x:
+        model.append_variable(variables[w])
+        model.shortname += ' ' + w
+      model.target_variable = vload
+      model.fit(mv_train)
+      models.append(model)
