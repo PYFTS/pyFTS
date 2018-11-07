@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>pyFTS.data.Ethereum &#8212; pyFTS 1.2.3 documentation</title>
+    <title>pyFTS.data.Malaysia &#8212; pyFTS 1.2.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
@@ -71,13 +71,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for pyFTS.data.Ethereum</h1><div class="highlight"><pre>
+  <h1>Source code for pyFTS.data.Malaysia</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Ethereum to USD quotations</span>
-
-<span class="sd">Daily averaged index, by business day, from 2016 to 2018.</span>
-
-<span class="sd">Source: https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD</span>
+<span class="sd">Hourly Malaysia eletric load and tempeature</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 
@@ -86,7 +82,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.Ethereum.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;AVG&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.Malaysia.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;load&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the univariate time series data.</span>
 
@@ -97,14 +93,16 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="n">field</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="get_dataframe"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.Ethereum.get_dataframe">[docs]</a><span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">():</span>
+<div class="viewcode-block" id="get_dataframe"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.Malaysia.get_dataframe">[docs]</a><span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the complete multivariate time series data.</span>
 
 <span class="sd">    :return: Pandas DataFrame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">(</span><span class="s2">&quot;ETHUSD.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;https://query.data.world/s/qj4ly7o4rl7oq527xzy4v76wkr3hws&quot;</span><span class="p">,</span>
-                              <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">(</span><span class="s2">&quot;malaysia.csv&quot;</span><span class="p">,</span><span class="s2">&quot;https://query.data.world/s/e5arbthdytod3m7wfcg7gmtluh3wa5&quot;</span><span class="p">,</span>
+                               <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span>
 
     <span class="k">return</span> <span class="n">df</span></div>
 

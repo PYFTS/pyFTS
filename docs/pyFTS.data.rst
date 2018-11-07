@@ -102,6 +102,14 @@ INMET dataset
     :members:
     :undoc-members:
     :show-inheritance:
+    
+Malaysia dataset
+-----------------------
+
+.. automodule:: pyFTS.data.Malaysia
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 NASDAQ module
 ------------------------

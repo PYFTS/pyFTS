@@ -102,7 +102,8 @@
 
 <span class="sd">    :return: Pandas DataFrame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://query.data.world/s/72gews5w3c7oaf7by5vp7evsasluia&#39;</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">(</span><span class="s2">&quot;BTCUSD.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;https://query.data.world/s/72gews5w3c7oaf7by5vp7evsasluia&quot;</span><span class="p">,</span>
+                              <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df</span></div>
 

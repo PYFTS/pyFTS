@@ -76,6 +76,7 @@
 <li><a class="reference internal" href="#module-pyFTS.data.EURUSD">EUR-USD dataset</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.GBPUSD">GBP-USD dataset</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.INMET">INMET dataset</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.Malaysia">Malaysia dataset</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.NASDAQ">NASDAQ module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.SONDA">SONDA dataset</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.SP500">S&amp;P 500 dataset</a></li>
@@ -442,6 +443,40 @@ If the file don’t already exists, it will be downloaded and decompressed.</p>
 <dl class="function">
 <dt id="pyFTS.data.INMET.get_dataframe">
 <code class="descclassname">pyFTS.data.INMET.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/INMET.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.INMET.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.Malaysia">
+<span id="malaysia-dataset"></span><h2>Malaysia dataset<a class="headerlink" href="#module-pyFTS.data.Malaysia" title="Permalink to this headline">¶</a></h2>
+<p>Hourly Malaysia eletric load and tempeature</p>
+<dl class="function">
+<dt id="pyFTS.data.Malaysia.get_data">
+<code class="descclassname">pyFTS.data.Malaysia.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='load'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – dataset field to load</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.Malaysia.get_dataframe">
+<code class="descclassname">pyFTS.data.Malaysia.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
