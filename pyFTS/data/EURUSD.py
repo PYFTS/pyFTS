@@ -27,7 +27,8 @@ def get_dataframe():
 
     :return: Pandas DataFrame
     """
-    df = pd.read_csv('https://query.data.world/s/od4eojioz4w6o5bbwxjfn6j5zoqtos')
+    df = common.get_dataframe("EURUSD.csv", "https://query.data.world/s/od4eojioz4w6o5bbwxjfn6j5zoqtos",
+                              sep=",")
 
     return df
 

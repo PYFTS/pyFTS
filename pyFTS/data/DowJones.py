@@ -29,7 +29,8 @@ def get_dataframe():
 
     :return: Pandas DataFrame
     """
-    df = pd.read_csv('https://query.data.world/s/d4hfir3xrelkx33o3bfs5dbhyiztml')
+    df = common.get_dataframe("DowJones.csv", "https://query.data.world/s/d4hfir3xrelkx33o3bfs5dbhyiztml",
+                              sep=",")
 
     return df
 

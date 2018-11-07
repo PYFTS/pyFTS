@@ -1,7 +1,5 @@
 """
-FOREX market EUR-GBP pair.
-
-Daily averaged quotations, by business day, from 2016 to 2018.
+Hourly Malaysia eletric load and tempeature
 """
 
 
@@ -10,7 +8,7 @@ import pandas as pd
 import numpy as np
 
 
-def get_data(field='avg'):
+def get_data(field='load'):
     """
     Get the univariate time series data.
 
@@ -27,8 +25,10 @@ def get_dataframe():
 
     :return: Pandas DataFrame
     """
-    df = common.get_dataframe("EURGBP.csv", "https://query.data.world/s/gvsaeruthnxjkwzl7z4ki7u5rduah3",
-                              sep=",")
+    df = common.get_dataframe("malaysia.csv","https://query.data.world/s/e5arbthdytod3m7wfcg7gmtluh3wa5",
+                               sep=";")
+
+    return df
 
     return df
 

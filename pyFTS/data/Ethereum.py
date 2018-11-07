@@ -29,7 +29,8 @@ def get_dataframe():
 
     :return: Pandas DataFrame
     """
-    df = pd.read_csv('https://query.data.world/s/qj4ly7o4rl7oq527xzy4v76wkr3hws')
+    df = common.get_dataframe("ETHUSD.csv", "https://query.data.world/s/qj4ly7o4rl7oq527xzy4v76wkr3hws",
+                              sep=",")
 
     return df
 

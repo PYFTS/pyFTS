@@ -4,11 +4,13 @@ from pyFTS.data import TAIEX as tx
 from pyFTS.common import Transformations
 
 
-from pyFTS.data import SONDA
-df = SONDA.get_dataframe()
-train = df.iloc[0:578241] #three years
-test = df.iloc[1572480:2096640] #one year
-del df
+from pyFTS.data import Malaysia
+
+dataset = Malaysia.get_dataframe()
+
+print(dataset.head())
+
+dataset["date"] = pd.to_datetime(dataset["time"], format='%m/%d/%y %I:%M %p')
 
 from pyFTS.partitioners import Grid, Util as pUtil
 from pyFTS.common import Transformations, Util
@@ -19,49 +21,30 @@ from pyFTS.models.seasonal.common import DateTime
 bc = Transformations.BoxCox(0)
 tdiff = Transformations.Differential(1)
 
-np = 10
+from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.models.seasonal import partitioner as seasonal
+from pyFTS.models.seasonal.common import DateTime
 
+mv_train = dataset.iloc[:100000]
 
-model = mvfts.MVFTS("")
+sp = {'seasonality': DateTime.month , 'names': ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec']}
 
-fig, axes = plt.subplots(nrows=5, ncols=1,figsize=[15,10])
+vmonth = variable.Variable("Month", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=12, 
+                         data=mv_train, partitioner_specific=sp)
 
+sp = {'seasonality': DateTime.day_of_week, 'names': ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']}
 
-sp = {'seasonality': DateTime.day_of_year , 'names': ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec']}
+vday = variable.Variable("Weekday", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=7, 
+                        data=mv_train, partitioner_specific=sp)
 
-vmonth = variable.Variable("Month", data_label="datahora", partitioner=seasonal.TimeGridPartitioner, npart=12,
-                           data=train, partitioner_specific=sp)
-vmonth.partitioner.plot(axes[0])
+sp = {'seasonality': DateTime.hour_of_day}
 
-sp = {'seasonality': DateTime.minute_of_day}
+vhour = variable.Variable("Hour", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=24, 
+                        data=mv_train, partitioner_specific=sp)
 
-vhour = variable.Variable("Hour", data_label="datahora", partitioner=seasonal.TimeGridPartitioner, npart=24,
-                          data=train, partitioner_specific=sp)
+vload = variable.Variable("load", data_label="load", partitioner=Grid.GridPartitioner, npart=10, 
+                       data=mv_train)
 
-vhour.partitioner.plot(axes[1])
+vtemperature = variable.Variable("temperature", data_label="temperature", partitioner=Grid.GridPartitioner, npart=10, 
+                       data=mv_train)
 
-vavg = variable.Variable("Radiance", data_label="glo_avg", partitioner=Grid.GridPartitioner, npart=30,
-                         data=train)
-
-model1 = mvfts.MVFTS("")
-
-model1.append_variable(vmonth)
-
-model1.append_variable(vhour)
-
-model1.append_variable(vavg)
-
-model1.target_variable = vavg
-
-#model1.fit(train, num_batches=60, save=True, batch_save=True, file_path='mvfts_sonda')
-
-
-#model.fit(train, num_batches=60, save=True, batch_save=True, file_path='mvfts_sonda')
-
-#model1.fit(train, num_batches=200, save=True, batch_save=True, file_path='mvfts_sonda', distributed=False,
-#          nodes=['192.168.0.110'], batch_save_interval=10)
-
-
-model = Util.load_obj('mvfts_sonda')
-
-forecasts = model.predict(test)

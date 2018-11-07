@@ -27,7 +27,8 @@ def get_dataframe():
 
     :return: Pandas DataFrame
     """
-    df = pd.read_csv('https://query.data.world/s/sw4mijpowb3mqv6bsat7cdj54hyxix')
+    df = common.get_dataframe("GBPUSD.csv", "https://query.data.world/s/sw4mijpowb3mqv6bsat7cdj54hyxix",
+                              sep=",")
 
     return df
 

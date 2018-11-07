@@ -28,7 +28,8 @@ def get_dataframe():
 
     :return: Pandas DataFrame
     """
-    df = pd.read_csv('https://query.data.world/s/72gews5w3c7oaf7by5vp7evsasluia')
+    df = common.get_dataframe("BTCUSD.csv", "https://query.data.world/s/72gews5w3c7oaf7by5vp7evsasluia",
+                              sep=",")
 
     return df
 
