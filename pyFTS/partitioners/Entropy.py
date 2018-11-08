@@ -40,7 +40,7 @@ def informationGain(data, thres1, thres2):
 
 def bestSplit(data, npart):
     if len(data) < 2:
-        return None
+        return []
     count = 1
     ndata = list(set(np.array(data).flatten()))
     ndata.sort()
