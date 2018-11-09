@@ -64,13 +64,14 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyFTS.models.multivariate package</a><ul>
+<li><a class="reference internal" href="#module-pyFTS.models.multivariate">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-pyFTS.models.multivariate.FLR">pyFTS.models.multivariate.FLR module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.models.multivariate.common">pyFTS.models.multivariate.common module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.models.multivariate.flrg">pyFTS.models.multivariate.flrg module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.models.multivariate.mvfts">pyFTS.models.multivariate.mvfts module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.models.multivariate.variable">pyFTS.models.multivariate.variable module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.models.multivariate">Module contents</a></li>
+<li><a class="reference internal" href="#pyfts-models-multivariate-wmvfts-module">pyFTS.models.multivariate.wmvfts module</a></li>
 </ul>
 </li>
 </ul>
@@ -110,6 +111,10 @@
             
   <div class="section" id="pyfts-models-multivariate-package">
 <h1>pyFTS.models.multivariate package<a class="headerlink" href="#pyfts-models-multivariate-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pyFTS.models.multivariate">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.models.multivariate" title="Permalink to this headline">¶</a></h2>
+<p>Multivariate Fuzzy Time Series methods</p>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -358,9 +363,127 @@ transformations and partitioners.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pyFTS.models.multivariate">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.models.multivariate" title="Permalink to this headline">¶</a></h2>
-<p>Multivariate Fuzzy Time Series methods</p>
+<div class="section" id="pyfts-models-multivariate-wmvfts-module">
+<h2>pyFTS.models.multivariate.wmvfts module<a class="headerlink" href="#pyfts-models-multivariate-wmvfts-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-pyFTS.models.multivariate.mvfts"></span><dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.mvfts.</code><code class="descname">MVFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
+<p>Multivariate extension of Chen’s ConventionalFTS method</p>
+<dl class="method">
+<dt>
+<code class="descname">append_variable</code><span class="sig-paren">(</span><em>var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.append_variable"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Append a new endogenous variable to the model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> – variable object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">apply_transformations</code><span class="sig-paren">(</span><em>data</em>, <em>params=None</em>, <em>updateUoD=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.apply_transformations"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Apply the data transformations for data preprocessing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – input data</li>
+<li><strong>params</strong> – transformation parameters</li>
+<li><strong>updateUoD</strong> – </li>
+<li><strong>kwargs</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">preprocessed data</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">clone_parameters</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.clone_parameters"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Import the parameters values from other model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">forecast</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.forecast"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Point forecast one step ahead</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
+<li><strong>kwargs</strong> – model specific parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">format_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.format_data"><span class="viewcode-link">[source]</span></a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">generate_flrg</code><span class="sig-paren">(</span><em>flrs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.generate_flrg"><span class="viewcode-link">[source]</span></a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">generate_flrs</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.generate_flrs"><span class="viewcode-link">[source]</span></a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">generate_lhs_flrs</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.generate_lhs_flrs"><span class="viewcode-link">[source]</span></a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.train"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Method specific parameter fitting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – training time series data</li>
+<li><strong>kwargs</strong> – Method specific parameters</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 

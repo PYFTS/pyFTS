@@ -11,7 +11,7 @@ class MVFTS(fts.FTS):
     Multivariate extension of Chen's ConventionalFTS method
     """
     def __init__(self, **kwargs):
-        super(MVFTS, self).__init__(order=1, **kwargs)
+        super(MVFTS, self).__init__(**kwargs)
         self.explanatory_variables = []
         self.target_variable = None
         self.flrgs = {}

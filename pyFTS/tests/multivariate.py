@@ -5,7 +5,7 @@ from pyFTS.common import Transformations
 
 from pyFTS.partitioners import Grid, Util as pUtil
 from pyFTS.common import Transformations, Util
-from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.models.multivariate import common, variable, mvfts, wmvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
@@ -16,7 +16,7 @@ from pyFTS.models.multivariate import common, variable, mvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
-#"""
+"""
 from pyFTS.data import Malaysia
 
 dataset = Malaysia.get_dataframe()
@@ -71,9 +71,9 @@ for k in [itertools.combinations(var_list, r) for r in range(2,len(var_list))]:
       model.target_variable = vload
       model.fit(mv_train)
       models.append(model)
-#"""
-
 """
+
+#"""
 dataset =  pd.read_csv('/home/petronio/Downloads/priceHong')
 dataset['hour'] = dataset.index.values % 24
 
@@ -92,16 +92,12 @@ vhour = variable.Variable("Hour", data_label="hour", partitioner=seasonal.TimeGr
 vprice = variable.Variable("Price", data_label="price", partitioner=Grid.GridPartitioner, npart=25,
                             data=train_mv)
 
-model1 = mvfts.MVFTS()
+model1 = wmvfts.WeightedMVFTS()
 model1.shortname += "1"
 model1.append_variable(vhour)
 model1.append_variable(vprice)
 model1.target_variable = vprice
 model1.fit(train_mv)
 
-model2 = mvfts.MVFTS()
-model2.shortname += "2"
-model2.append_variable(vhour)
-model2.target_variable = vprice
-model2.fit(train_mv)
-"""
+print(model1)
+#"""

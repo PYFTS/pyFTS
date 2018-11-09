@@ -1,6 +1,15 @@
 pyFTS.models.multivariate package
 =================================
 
+Module contents
+---------------
+
+.. automodule:: pyFTS.models.multivariate
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Submodules
 ----------
 
@@ -43,12 +52,12 @@ pyFTS.models.multivariate.variable module
     :members:
     :undoc-members:
     :show-inheritance:
+    
+pyFTS.models.multivariate.wmvfts module
+--------------------------------------
 
-
-Module contents
----------------
-
-.. automodule:: pyFTS.models.multivariate
+.. automodule:: pyFTS.models.multivariate.mvfts
     :members:
     :undoc-members:
     :show-inheritance:
+
