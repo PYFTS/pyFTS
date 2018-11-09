@@ -30,6 +30,8 @@ class TimeGridPartitioner(partitioner.Partitioner):
             self.min = tmp
             self.max = self.season.value + tmp
 
+        self.type = kwargs.get('type','seasonal')
+
         self.sets = self.build(None)
 
         if self.ordered_sets is None and self.setnames is not None:
@@ -40,7 +42,7 @@ class TimeGridPartitioner(partitioner.Partitioner):
     def build(self, data):
         sets = {}
 
-        kwargs = {'variable': self.variable}
+        kwargs = {'variable': self.variable, 'type': self.type }
 
         if self.season == DateTime.year:
             dlen = (self.max - self.min)

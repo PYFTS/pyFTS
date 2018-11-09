@@ -200,10 +200,13 @@ def get_fuzzysets(inst, fuzzy_sets, ordered_sets=None, alpha_cut=0.0):
     if ordered_sets is None:
         ordered_sets = set_ordered(fuzzy_sets)
 
-    fs = [ordered_sets[ix]
-          for ix in __binary_search(inst, fuzzy_sets, ordered_sets)
-          if fuzzy_sets[ordered_sets[ix]].membership(inst) > alpha_cut]
-    return fs
+    try:
+        fs = [ordered_sets[ix]
+              for ix in __binary_search(inst, fuzzy_sets, ordered_sets)
+              if fuzzy_sets[ordered_sets[ix]].membership(inst) > alpha_cut]
+        return fs
+    except Exception as ex:
+        raise ex
 
 
 def get_maximum_membership_fuzzyset(inst, fuzzy_sets, ordered_sets=None):

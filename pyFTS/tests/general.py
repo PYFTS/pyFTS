@@ -21,9 +21,13 @@ from pyFTS.data import TAIEX, SP500, NASDAQ, Malaysia
 
 dataset = Malaysia.get_data('temperature')[:1000]
 
-p = Entropy.EntropyPartitioner(data=dataset, npart=19)
+p = Entropy.EntropyPartitioner(data=dataset, npart=3)
 
 print(p)
+
+model = hofts.HighOrderFTS(partitioner=p, order=2, lags=[34, 47], alpha_cut=0.31390672707694006)
+
+model.fit(dataset)
 
 '''
 #dataset = SP500.get_data()[11500:16000]

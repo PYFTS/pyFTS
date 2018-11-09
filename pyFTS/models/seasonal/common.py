@@ -89,10 +89,9 @@ class FuzzySet(FuzzySet.FuzzySet):
 
     def __init__(self, datepart, name, mf, parameters, centroid, alpha=1.0, **kwargs):
         super(FuzzySet, self).__init__(name, mf, parameters, centroid, alpha,
-                                       type=kwargs.get('type', 'seasonal'),
                                        **kwargs)
         self.datepart = datepart
-        self.type = 'seasonal'
+        self.type = kwargs.get('type', 'seasonal')
 
     def transform(self, x):
         if self.type == 'seasonal':
