@@ -19,6 +19,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from pyFTS.probabilistic import ProbabilityDistribution
 from pyFTS.common import Transformations
 from pyFTS.models import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, hwang
+from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts
 from pyFTS.models.ensemble import ensemble
 from pyFTS.benchmarks import Measures, naive, arima, ResidualAnalysis, quantreg, knn
 from pyFTS.benchmarks import Util as bUtil
@@ -57,8 +58,14 @@ def get_benchmark_point_methods():
 def get_point_methods():
     """Return all FTS methods for point forecasting"""
     return [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
-            cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
+            cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS,
+            hofts.HighOrderFTS, hofts.WeightedHighOrderFTS, hwang.HighOrderFTS,
             pwfts.ProbabilisticWeightedFTS]
+
+
+def get_point_multivariate_methods():
+    """Return all multivariate FTS methods por point forecasting"""
+    return [mvfts.MVFTS, wmvfts.WeightedMVFTS, cmvfts.ClusteredMVFTS]
 
 
 def get_benchmark_interval_methods():

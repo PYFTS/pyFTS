@@ -25,7 +25,7 @@ p = Grid.GridPartitioner(data=dataset, npart=20)
 
 print(p)
 
-model = hofts.HighOrderFTS(partitioner=p, order=2)
+model = hofts.WeightedHighOrderFTS(partitioner=p, order=2)
 
 model.fit(dataset) #[22, 22, 23, 23, 24])
 

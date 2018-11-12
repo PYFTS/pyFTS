@@ -36,6 +36,48 @@ class HighOrderFLRG(flrg.FLRG):
         return len(self.RHS)
 
 
+class WeightedHighOrderFLRG(flrg.FLRG):
+    """Weighted High Order Fuzzy Logical Relationship Group"""
+
+    def __init__(self, order, **kwargs):
+        super(WeightedHighOrderFLRG, self).__init__(order, **kwargs)
+        self.LHS = []
+        self.RHS = {}
+        self.count = 0.0
+        self.strlhs = ""
+        self.w = None
+
+    def append_rhs(self, fset, **kwargs):
+        if fset not in self.RHS:
+            self.RHS[fset] = 1.0
+        else:
+            self.RHS[fset] += 1.0
+        self.count += 1.0
+
+    def append_lhs(self, c):
+        self.LHS.append(c)
+
+    def weights(self):
+        if self.w is None:
+            self.w = np.array([self.RHS[c] / self.count for c in self.RHS.keys()])
+        return self.w
+
+    def get_midpoint(self, sets):
+        mp = np.array([sets[c].centroid for c in self.RHS.keys()])
+        return mp.dot(self.weights())
+
+    def __str__(self):
+        _str = ""
+        for k in self.RHS.keys():
+            _str += ", " if len(_str) > 0 else ""
+            _str += k + " (" + str(round(self.RHS[k] / self.count, 3)) + ")"
+
+        return self.get_key() + " -> " + _str
+
+    def __len__(self):
+        return len(self.RHS)
+
+
 class HighOrderFTS(fts.FTS):
     """Conventional High Order Fuzzy Time Series"""
     def __init__(self, **kwargs):
@@ -145,7 +187,6 @@ class HighOrderFTS(fts.FTS):
         else:
             self.generate_flrg_fuzzyfied(data)
 
-
     def forecast(self, ndata, **kwargs):
 
         explain = kwargs.get('explain', False)
@@ -181,7 +222,6 @@ class HighOrderFTS(fts.FTS):
                         if explain:
                             print("\t {} -> {} (Naïve)\t Midpoint: {}\n".format(str(flrg.LHS), flrg.LHS[-1],
                                                                                             mp))
-
                 else:
                     flrg = self.flrgs[flrg.get_key()]
                     mp = flrg.get_midpoint(self.partitioner.sets)
@@ -197,3 +237,38 @@ class HighOrderFTS(fts.FTS):
                 print("Deffuzyfied value: {} \n".format(final))
 
         return ret
+
+
+class WeightedHighOrderFTS(HighOrderFTS):
+    """Weighted High Order Fuzzy Time Series"""
+    def __init__(self, **kwargs):
+        super(WeightedHighOrderFTS, self).__init__(**kwargs)
+        self.name = "Weighted High Order FTS"
+        self.shortname = "WHOFTS"
+
+    def generate_lhs_flrg_fuzzyfied(self, sample, explain=False):
+        lags = {}
+
+        flrgs = []
+
+        for ct, o in enumerate(self.lags):
+            lags[ct] = sample[o-1]
+
+            if explain:
+                print("\t (Lag {}) {} -> {} \n".format(o, sample[o-1], lhs))
+
+        root = tree.FLRGTreeNode(None)
+
+        tree.build_tree_without_order(root, lags, 0)
+
+        # Trace the possible paths
+        for p in root.paths():
+            flrg = WeightedHighOrderFLRG(self.order)
+            path = list(reversed(list(filter(None.__ne__, p))))
+
+            for lhs in path:
+                flrg.append_lhs(lhs)
+
+            flrgs.append(flrg)
+
+        return flrgs
