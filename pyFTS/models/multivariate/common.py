@@ -2,17 +2,19 @@ import numpy as np
 import pandas as pd
 from pyFTS.common import FuzzySet, Composite
 
+
 class MultivariateFuzzySet(Composite.FuzzySet):
     """
     Multivariate Composite Fuzzy Set
     """
-    def __init__(self, name):
+    def __init__(self, name, **kwargs):
         """
         Create an empty composite fuzzy set
         :param name: fuzzy set name
         """
         super(MultivariateFuzzySet, self).__init__(name)
         self.sets = {}
+        self.target_variable = kwargs.get('target_variable',None)
 
     def append_set(self, variable, set):
         """
@@ -22,6 +24,9 @@ class MultivariateFuzzySet(Composite.FuzzySet):
         :param set: an common.FuzzySet instance
         """
         self.sets[variable] = set
+
+        if variable == self.target_variable.name:
+            self.centroid = set.centroid
 
     def membership(self, x):
         mv = []
@@ -36,9 +41,10 @@ def fuzzyfy_instance(data_point, var):
     fsets = FuzzySet.fuzzyfy(data_point, var.partitioner, mode='sets', method='fuzzy', alpha_cut=var.alpha_cut)
     return [(var.name, fs) for fs in fsets]
 
+
 def fuzzyfy_instance_clustered(data_point, cluster, alpha_cut=0.0):
     fsets = []
-    for fset in cluster.sets:
+    for fset in cluster.knn(data_point):
         if cluster.sets[fset].membership(data_point) > alpha_cut:
             fsets.append(fset)
     return fsets

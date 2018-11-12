@@ -3,6 +3,7 @@ import matplotlib.pylab as plt
 from pyFTS.data import TAIEX as tx
 from pyFTS.common import Transformations
 
+from pyFTS.benchmarks import Measures
 from pyFTS.partitioners import Grid, Util as pUtil
 from pyFTS.common import Transformations, Util
 from pyFTS.models.multivariate import common, variable, mvfts, wmvfts
@@ -99,5 +100,7 @@ model1.append_variable(vprice)
 model1.target_variable = vprice
 model1.fit(train_mv)
 
-print(model1)
+#print(model1)
+
+print(Measures.get_point_statistics(test_mv, model1))
 #"""

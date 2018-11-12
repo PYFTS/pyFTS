@@ -162,7 +162,10 @@ class HighOrderFTS(fts.FTS):
             if explain:
                 print("Fuzzyfication \n")
 
-            flrgs = self.generate_lhs_flrg(ndata[k - self.max_lag: k], explain)
+            if not kwargs.get('fuzzyfied', False):
+                flrgs = self.generate_lhs_flrg(ndata[k - self.max_lag: k], explain)
+            else:
+                flrgs = self.generate_lhs_flrg_fuzzyfied(ndata[k - self.max_lag: k], explain)
 
             if explain:
                 print("Rules:\n")
@@ -172,7 +175,7 @@ class HighOrderFTS(fts.FTS):
 
                 if flrg.get_key() not in self.flrgs:
                     if len(flrg.LHS) > 0:
-                        mp = self.sets[flrg.LHS[-1]].centroid
+                        mp = self.partitioner.sets[flrg.LHS[-1]].centroid
                         tmp.append(mp)
 
                         if explain:
@@ -181,7 +184,7 @@ class HighOrderFTS(fts.FTS):
 
                 else:
                     flrg = self.flrgs[flrg.get_key()]
-                    mp = flrg.get_midpoint(self.sets)
+                    mp = flrg.get_midpoint(self.partitioner.sets)
                     tmp.append(mp)
 
                     if explain:
