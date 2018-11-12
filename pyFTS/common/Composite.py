@@ -11,12 +11,14 @@ class FuzzySet(FuzzySet.FuzzySet):
     """
     Composite Fuzzy Set
     """
-    def __init__(self, name, superset=False):
+    def __init__(self, name, superset=False, **kwargs):
         """
         Create an empty composite fuzzy set
         :param name: fuzzy set name
         """
-        super(FuzzySet, self).__init__(name, None, None, None, type='composite')
+        if 'type' in kwargs:
+            kwargs.pop('type')
+        super(FuzzySet, self).__init__(name, None, None, None, type='composite', **kwargs)
         self.superset = superset
         if self.superset:
             self.sets = []

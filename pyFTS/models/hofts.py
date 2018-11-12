@@ -63,13 +63,19 @@ class HighOrderFTS(fts.FTS):
             self.lags = np.arange(1, self.order+1)
 
     def generate_lhs_flrg(self, sample, explain=False):
+
+        nsample = [FuzzySet.fuzzyfy(k, partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
+                   for k in sample]
+
+        return self.generate_lhs_flrg_fuzzyfied(nsample, explain)
+
+    def generate_lhs_flrg_fuzzyfied(self, sample, explain=False):
         lags = {}
 
         flrgs = []
 
         for ct, o in enumerate(self.lags):
-            lhs = FuzzySet.fuzzyfy(sample[o-1], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
-            lags[ct] = lhs
+            lags[ct] = sample[o-1]
 
             if explain:
                 print("\t (Lag {}) {} -> {} \n".format(o, sample[o-1], lhs))
@@ -93,15 +99,39 @@ class HighOrderFTS(fts.FTS):
     def generate_flrg(self, data):
         l = len(data)
         for k in np.arange(self.max_lag, l):
+            lags = {}
+
             if self.dump: print("FLR: " + str(k))
 
             sample = data[k - self.max_lag: k]
+            print(sample)
 
             rhs = FuzzySet.fuzzyfy(data[k], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
 
             flrgs = self.generate_lhs_flrg(sample)
 
             for flrg in flrgs:
+                print('key', flrg.get_key())
+                if flrg.get_key() not in self.flrgs:
+                    self.flrgs[flrg.get_key()] = flrg;
+
+                for st in rhs:
+                    self.flrgs[flrg.get_key()].append_rhs(st)
+
+    def generate_flrg_fuzzyfied(self, data):
+        l = len(data)
+        for k in np.arange(self.max_lag, l):
+            if self.dump: print("FLR: " + str(k))
+
+            sample = data[k - self.max_lag: k]
+
+
+            rhs = data[k]
+
+            flrgs = self.generate_lhs_flrg_fuzzyfied(sample)
+
+            for flrg in flrgs:
+
                 if flrg.get_key() not in self.flrgs:
                     self.flrgs[flrg.get_key()] = flrg;
 
@@ -110,7 +140,11 @@ class HighOrderFTS(fts.FTS):
 
     def train(self, data, **kwargs):
         self.configure_lags(**kwargs)
-        self.generate_flrg(data)
+        if not kwargs.get('fuzzyfied',False):
+            self.generate_flrg(data)
+        else:
+            self.generate_flrg_fuzzyfied(data)
+
 
     def forecast(self, ndata, **kwargs):
 

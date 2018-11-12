@@ -12,7 +12,7 @@ from pyFTS.models.seasonal.common import DateTime
 bc = Transformations.BoxCox(0)
 tdiff = Transformations.Differential(1)
 
-from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.models.multivariate import common, variable, mvfts, cmvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
@@ -89,10 +89,10 @@ test_mv = dataset.iloc[train_split:]
 vhour = variable.Variable("Hour", data_label="hour", partitioner=seasonal.TimeGridPartitioner, npart=24,
                           data=dataset,
                           partitioner_specific={'seasonality': DateTime.hour_of_day, 'type': 'common'})
-vprice = variable.Variable("Price", data_label="price", partitioner=Grid.GridPartitioner, npart=25,
+vprice = variable.Variable("Price", data_label="price", partitioner=Grid.GridPartitioner, npart=10,
                             data=train_mv)
 
-model1 = wmvfts.WeightedMVFTS()
+model1 = cmvfts.ClusteredMVFTS(order=2)
 model1.shortname += "1"
 model1.append_variable(vhour)
 model1.append_variable(vprice)

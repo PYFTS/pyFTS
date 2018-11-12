@@ -233,7 +233,6 @@ def simple_model_train(model, data, parameters):
     return model
 
 
-
 def distributed_train(model, train_method, nodes, fts_method, data, num_batches=10,
                       train_parameters={}, **kwargs):
     import dispy, dispy.httpd, datetime
