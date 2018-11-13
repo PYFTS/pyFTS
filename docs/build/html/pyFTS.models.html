@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyFTS.models.ensemble package" href="pyFTS.models.ensemble.html" />
-    <link rel="prev" title="pyFTS.data package" href="pyFTS.data.html" />
+    <link rel="prev" title="pyFTS.hyperparam package" href="pyFTS.hyperparam.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -48,7 +48,7 @@
           <a href="pyFTS.models.ensemble.html" title="pyFTS.models.ensemble package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="pyFTS.data.html" title="pyFTS.data package"
+          <a href="pyFTS.hyperparam.html" title="pyFTS.hyperparam package"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
@@ -81,8 +81,8 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="pyFTS.data.html"
-                        title="previous chapter">pyFTS.data package</a></p>
+  <p class="topless"><a href="pyFTS.hyperparam.html"
+                        title="previous chapter">pyFTS.hyperparam package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="pyFTS.models.ensemble.html"
                         title="next chapter">pyFTS.models.ensemble package</a></p>
@@ -141,10 +141,11 @@
 <li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#module-pyFTS.models.multivariate.FLR">pyFTS.models.multivariate.FLR module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#module-pyFTS.models.multivariate.common">pyFTS.models.multivariate.common module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#module-pyFTS.models.multivariate.variable">pyFTS.models.multivariate.variable module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#module-pyFTS.models.multivariate.flrg">pyFTS.models.multivariate.flrg module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#module-pyFTS.models.multivariate.mvfts">pyFTS.models.multivariate.mvfts module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#module-pyFTS.models.multivariate.variable">pyFTS.models.multivariate.variable module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#pyfts-models-multivariate-wmvfts-module">pyFTS.models.multivariate.wmvfts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#module-pyFTS.models.multivariate.wmvfts">pyFTS.models.multivariate.wmvfts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyFTS.models.multivariate.html#module-pyFTS.models.multivariate.cmvfts">pyFTS.models.multivariate.cmvfts module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pyFTS.models.nonstationary.html">pyFTS.models.nonstationary package</a><ul>
@@ -477,8 +478,18 @@ using Fuzzy Time Series. 2017 IEEE International Conference on Fuzzy Systems. DO
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyFTS.models.hofts.HighOrderFTS.generate_flrg_fuzzyfied">
+<code class="descname">generate_flrg_fuzzyfied</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#HighOrderFTS.generate_flrg_fuzzyfied"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.HighOrderFTS.generate_flrg_fuzzyfied" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyFTS.models.hofts.HighOrderFTS.generate_lhs_flrg">
 <code class="descname">generate_lhs_flrg</code><span class="sig-paren">(</span><em>sample</em>, <em>explain=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#HighOrderFTS.generate_lhs_flrg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.HighOrderFTS.generate_lhs_flrg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.hofts.HighOrderFTS.generate_lhs_flrg_fuzzyfied">
+<code class="descname">generate_lhs_flrg_fuzzyfied</code><span class="sig-paren">(</span><em>sample</em>, <em>explain=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#HighOrderFTS.generate_lhs_flrg_fuzzyfied"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.HighOrderFTS.generate_lhs_flrg_fuzzyfied" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -498,6 +509,56 @@ using Fuzzy Time Series. 2017 IEEE International Conference on Fuzzy Systems. DO
 </tbody>
 </table>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyFTS.models.hofts.WeightedHighOrderFLRG">
+<em class="property">class </em><code class="descclassname">pyFTS.models.hofts.</code><code class="descname">WeightedHighOrderFLRG</code><span class="sig-paren">(</span><em>order</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#WeightedHighOrderFLRG"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.WeightedHighOrderFLRG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.flrg.FLRG" title="pyFTS.common.flrg.FLRG"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.flrg.FLRG</span></code></a></p>
+<p>Weighted High Order Fuzzy Logical Relationship Group</p>
+<dl class="method">
+<dt id="pyFTS.models.hofts.WeightedHighOrderFLRG.append_lhs">
+<code class="descname">append_lhs</code><span class="sig-paren">(</span><em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#WeightedHighOrderFLRG.append_lhs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.WeightedHighOrderFLRG.append_lhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.hofts.WeightedHighOrderFLRG.append_rhs">
+<code class="descname">append_rhs</code><span class="sig-paren">(</span><em>fset</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#WeightedHighOrderFLRG.append_rhs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.WeightedHighOrderFLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.hofts.WeightedHighOrderFLRG.get_midpoint">
+<code class="descname">get_midpoint</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#WeightedHighOrderFLRG.get_midpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.WeightedHighOrderFLRG.get_midpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the midpoint value for the RHS fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the midpoint value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.hofts.WeightedHighOrderFLRG.weights">
+<code class="descname">weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#WeightedHighOrderFLRG.weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.WeightedHighOrderFLRG.weights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyFTS.models.hofts.WeightedHighOrderFTS">
+<em class="property">class </em><code class="descclassname">pyFTS.models.hofts.</code><code class="descname">WeightedHighOrderFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#WeightedHighOrderFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.WeightedHighOrderFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.hofts.HighOrderFTS" title="pyFTS.models.hofts.HighOrderFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.hofts.HighOrderFTS</span></code></a></p>
+<p>Weighted High Order Fuzzy Time Series</p>
+<dl class="method">
+<dt id="pyFTS.models.hofts.WeightedHighOrderFTS.generate_lhs_flrg_fuzzyfied">
+<code class="descname">generate_lhs_flrg_fuzzyfied</code><span class="sig-paren">(</span><em>sample</em>, <em>explain=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/hofts.html#WeightedHighOrderFTS.generate_lhs_flrg_fuzzyfied"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.hofts.WeightedHighOrderFTS.generate_lhs_flrg_fuzzyfied" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -831,7 +892,7 @@ US Dollar to Ringgit Malaysia,” Int. J. Comput. Intell. Appl., vol. 12, no. 1,
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
 <li><strong>steps</strong> – the number of steps ahead to forecast</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
+<li><strong>start</strong> – in the multi step forecasting, the index of the data where to start forecasting</li>
 </ul>
 </td>
 </tr>
@@ -1099,7 +1160,7 @@ refined exponentially weighted fuzzy time series and an improved harmony search,
           <a href="pyFTS.models.ensemble.html" title="pyFTS.models.ensemble package"
              >next</a> |</li>
         <li class="right" >
-          <a href="pyFTS.data.html" title="pyFTS.data package"
+          <a href="pyFTS.hyperparam.html" title="pyFTS.hyperparam package"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>

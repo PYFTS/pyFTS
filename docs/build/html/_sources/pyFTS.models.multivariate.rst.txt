@@ -29,6 +29,14 @@ pyFTS.models.multivariate.common module
     :undoc-members:
     :show-inheritance:
 
+pyFTS.models.multivariate.variable module
+-----------------------------------------
+
+.. automodule:: pyFTS.models.multivariate.variable
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyFTS.models.multivariate.flrg module
 -------------------------------------
 
@@ -44,19 +52,19 @@ pyFTS.models.multivariate.mvfts module
     :members:
     :undoc-members:
     :show-inheritance:
+    
+pyFTS.models.multivariate.wmvfts module
+---------------------------------------
 
-pyFTS.models.multivariate.variable module
------------------------------------------
-
-.. automodule:: pyFTS.models.multivariate.variable
+.. automodule:: pyFTS.models.multivariate.wmvfts
     :members:
     :undoc-members:
     :show-inheritance:
     
-pyFTS.models.multivariate.wmvfts module
---------------------------------------
+pyFTS.models.multivariate.cmvfts module
+---------------------------------------
 
-.. automodule:: pyFTS.models.multivariate.mvfts
+.. automodule:: pyFTS.models.multivariate.cmvfts
     :members:
     :undoc-members:
     :show-inheritance:

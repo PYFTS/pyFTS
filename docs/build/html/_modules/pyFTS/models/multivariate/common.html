@@ -74,11 +74,54 @@
   <h1>Source code for pyFTS.models.multivariate.common</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">Composite</span>
+
+
+<div class="viewcode-block" id="MultivariateFuzzySet"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.MultivariateFuzzySet">[docs]</a><span class="k">class</span> <span class="nc">MultivariateFuzzySet</span><span class="p">(</span><span class="n">Composite</span><span class="o">.</span><span class="n">FuzzySet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Multivariate Composite Fuzzy Set</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an empty composite fuzzy set</span>
+<span class="sd">        :param name: fuzzy set name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MultivariateFuzzySet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sets</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MultivariateFuzzySet.append_set"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.MultivariateFuzzySet.append_set">[docs]</a>    <span class="k">def</span> <span class="nf">append_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Appends a new fuzzy set from a new variable</span>
+
+<span class="sd">        :param variable: an multivariate.variable instance</span>
+<span class="sd">        :param set: an common.FuzzySet instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span>
+
+        <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">centroid</span></div>
+
+<div class="viewcode-block" id="MultivariateFuzzySet.membership"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.MultivariateFuzzySet.membership">[docs]</a>    <span class="k">def</span> <span class="nf">membership</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">mv</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span>
+            <span class="n">mv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">mv</span><span class="p">)</span></div></div>
+
+
 
 <div class="viewcode-block" id="fuzzyfy_instance"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.fuzzyfy_instance">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_instance</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
     <span class="n">fsets</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="o">.</span><span class="n">fuzzyfy</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sets&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;fuzzy&#39;</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="n">var</span><span class="o">.</span><span class="n">alpha_cut</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fs</span><span class="p">)</span> <span class="k">for</span> <span class="n">fs</span> <span class="ow">in</span> <span class="n">fsets</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="fuzzyfy_instance_clustered"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.fuzzyfy_instance_clustered">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_instance_clustered</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="n">cluster</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="n">fsets</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fset</span> <span class="ow">in</span> <span class="n">cluster</span><span class="o">.</span><span class="n">knn</span><span class="p">(</span><span class="n">data_point</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cluster</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">fset</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">data_point</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">alpha_cut</span><span class="p">:</span>
+            <span class="n">fsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fset</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fsets</span></div>
 
 
 

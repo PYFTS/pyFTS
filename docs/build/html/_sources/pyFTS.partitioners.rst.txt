@@ -61,7 +61,7 @@ pyFTS.partitioners.Huarng module
     :show-inheritance:
 
 pyFTS.partitioners.Singleton module
---------------------------------
+-----------------------------------
 
 .. automodule:: pyFTS.partitioners.Singleton
     :members:

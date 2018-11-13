@@ -125,7 +125,7 @@
 <p>Composite Fuzzy Sets</p>
 <dl class="class">
 <dt id="pyFTS.common.Composite.FuzzySet">
-<em class="property">class </em><code class="descclassname">pyFTS.common.Composite.</code><code class="descname">FuzzySet</code><span class="sig-paren">(</span><em>name</em>, <em>superset=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/Composite.html#FuzzySet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.Composite.FuzzySet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyFTS.common.Composite.</code><code class="descname">FuzzySet</code><span class="sig-paren">(</span><em>name</em>, <em>superset=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/Composite.html#FuzzySet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.Composite.FuzzySet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.FuzzySet.FuzzySet" title="pyFTS.common.FuzzySet.FuzzySet"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.FuzzySet.FuzzySet</span></code></a></p>
 <p>Composite Fuzzy Set</p>
 <dl class="method">
@@ -1611,7 +1611,7 @@ when the LHS pattern is identified on time t.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
 <li><strong>steps</strong> – the number of steps ahead to forecast</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
+<li><strong>start</strong> – in the multi step forecasting, the index of the data where to start forecasting</li>
 </ul>
 </td>
 </tr>
@@ -1851,6 +1851,9 @@ needed to forecast a single step ahead</p>
 <li><strong>distributed</strong> – boolean, indicate if the forecasting procedure will be distributed in a dispy cluster</li>
 <li><strong>nodes</strong> – a list with the dispy cluster nodes addresses</li>
 <li><strong>explain</strong> – try to explain, step by step, the one-step-ahead point forecasting result given the input data.</li>
+<li><strong>generators</strong> – for multivariate methods on multi step ahead forecasting, generators is a dict where the keys
+are the variables names (except the target_variable) and the values are lambda functions that
+accept one value (the actual value of the variable) and return the next value.</li>
 </ul>
 </td>
 </tr>

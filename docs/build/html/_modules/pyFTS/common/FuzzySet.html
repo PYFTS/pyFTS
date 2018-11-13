@@ -274,10 +274,13 @@
     <span class="k">if</span> <span class="n">ordered_sets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">set_ordered</span><span class="p">(</span><span class="n">fuzzy_sets</span><span class="p">)</span>
 
-    <span class="n">fs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
-          <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">__binary_search</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">)</span>
-          <span class="k">if</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">ix</span><span class="p">]]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">alpha_cut</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">fs</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+              <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">__binary_search</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="p">)</span>
+              <span class="k">if</span> <span class="n">fuzzy_sets</span><span class="p">[</span><span class="n">ordered_sets</span><span class="p">[</span><span class="n">ix</span><span class="p">]]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">alpha_cut</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">fs</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ex</span></div>
 
 
 <div class="viewcode-block" id="get_maximum_membership_fuzzyset"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FuzzySet.get_maximum_membership_fuzzyset">[docs]</a><span class="k">def</span> <span class="nf">get_maximum_membership_fuzzyset</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">fuzzy_sets</span><span class="p">,</span> <span class="n">ordered_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

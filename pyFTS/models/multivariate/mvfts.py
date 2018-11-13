@@ -130,6 +130,7 @@ class MVFTS(fts.FTS):
 
     def forecast_ahead(self, data, steps, **kwargs):
         generators = kwargs.get('generators',None)
+        start = kwargs.get('start', 0)
 
         if generators is None:
             raise Exception('You must provide parameter \'generators\'! generators is a dict where the keys' +
