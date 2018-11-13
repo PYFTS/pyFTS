@@ -100,7 +100,7 @@ model1.append_variable(vprice)
 model1.target_variable = vprice
 model1.fit(train_mv)
 
-#print(model1)
+print(model1)
 
 print(Measures.get_point_statistics(test_mv, model1))
 #"""

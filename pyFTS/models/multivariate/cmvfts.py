@@ -19,7 +19,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
         self.cluster = None
         """The most recent trained clusterer"""
 
-        self.fts_method = kwargs.get('fts_method', hofts.HighOrderFTS)
+        self.fts_method = kwargs.get('fts_method', hofts.WeightedHighOrderFTS)
         """The FTS method to be called when a new model is build"""
         self.fts_params = kwargs.get('fts_params', {})
         """The FTS method specific parameters"""

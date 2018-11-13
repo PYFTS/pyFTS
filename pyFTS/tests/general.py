@@ -31,6 +31,8 @@ model.fit(dataset) #[22, 22, 23, 23, 24])
 
 print(model)
 
+Measures.get_point_statistics(dataset, model)
+
 '''
 #dataset = SP500.get_data()[11500:16000]
 #dataset = NASDAQ.get_data()

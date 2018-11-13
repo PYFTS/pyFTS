@@ -175,7 +175,7 @@ class HighOrderFTS(fts.FTS):
             for flrg in flrgs:
 
                 if flrg.get_key() not in self.flrgs:
-                    self.flrgs[flrg.get_key()] = flrg;
+                    self.flrgs[flrg.get_key()] = flrg
 
                 for st in rhs:
                     self.flrgs[flrg.get_key()].append_rhs(st)

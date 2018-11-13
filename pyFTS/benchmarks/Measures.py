@@ -345,7 +345,10 @@ def get_point_statistics(data, model, **kwargs):
         if not isinstance(forecasts, (list, np.ndarray)):
             forecasts = [forecasts]
 
-        forecasts = np.array(forecasts[:-1])
+        if len(forecasts) != len(ndata) - model.max_lag:
+            forecasts = np.array(forecasts[:-1])
+        else:
+            forecasts = np.array(forecasts)
 
         ret.append(np.round(rmse(ndata[model.max_lag:], forecasts), 2))
         ret.append(np.round(mape(ndata[model.max_lag:], forecasts), 2))
