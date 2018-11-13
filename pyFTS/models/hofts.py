@@ -146,14 +146,12 @@ class HighOrderFTS(fts.FTS):
             if self.dump: print("FLR: " + str(k))
 
             sample = data[k - self.max_lag: k]
-            print(sample)
 
             rhs = FuzzySet.fuzzyfy(data[k], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
 
             flrgs = self.generate_lhs_flrg(sample)
 
             for flrg in flrgs:
-                print('key', flrg.get_key())
                 if flrg.get_key() not in self.flrgs:
                     self.flrgs[flrg.get_key()] = flrg;
 
