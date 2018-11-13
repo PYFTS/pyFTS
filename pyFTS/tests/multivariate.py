@@ -87,13 +87,29 @@ train_split = 24 * 800
 train_mv = dataset.iloc[:train_split]
 test_mv = dataset.iloc[train_split:]
 
+#model = Util.load_obj('/home/petronio/Downloads/ClusteredMVFTS4')
+
+
+
 vhour = variable.Variable("Hour", data_label="hour", partitioner=seasonal.TimeGridPartitioner, npart=24,
                           data=dataset,
                           partitioner_specific={'seasonality': DateTime.hour_of_day, 'type': 'common'})
-vprice = variable.Variable("Price", data_label="price", partitioner=Grid.GridPartitioner, npart=10,
+vprice = variable.Variable("Price", data_label="price", partitioner=Grid.GridPartitioner, npart=55,
                             data=train_mv)
+model = cmvfts.ClusteredMVFTS(order=2, knn=3)
+model.append_variable(vhour)
+model.append_variable(vprice)
+model.target_variable = vprice
+model.fit(train_mv)
+
+data = [[1, 1.0], [2, 2.0]]
+
+df = pd.DataFrame(data, columns=['hour','price'])
+
+forecasts = model.predict(df, steps_ahead=24, generators={'Hour': lambda x : (x+1)%24 })
 
 
+'''
 params = [
     {},
     {},
@@ -114,4 +130,4 @@ for ct, method in enumerate([mvfts.MVFTS, wmvfts.WeightedMVFTS, cmvfts.Clustered
 
 #print(model1.predict(test_mv, steps_ahead=24, generators={'Hour': lambda x : (x+1)%24 }))
 
-#"""
+'''

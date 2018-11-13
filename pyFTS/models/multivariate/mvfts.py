@@ -38,7 +38,11 @@ class MVFTS(fts.FTS):
     def apply_transformations(self, data, params=None, updateUoD=False, **kwargs):
         ndata = data.copy(deep=True)
         for var in self.explanatory_variables:
-            ndata[var.data_label] = var.apply_transformations(data[var.data_label].values)
+            if self.uod_clip:
+                ndata[var.data_label] = np.clip(ndata[var.data_label].values,
+                                                var.partitioner.min, var.partitioner.max)
+
+            ndata[var.data_label] = var.apply_transformations(ndata[var.data_label].values)
 
         return ndata
 
@@ -130,7 +134,6 @@ class MVFTS(fts.FTS):
 
     def forecast_ahead(self, data, steps, **kwargs):
         generators = kwargs.get('generators',None)
-        start = kwargs.get('start', 0)
 
         if generators is None:
             raise Exception('You must provide parameter \'generators\'! generators is a dict where the keys' +
