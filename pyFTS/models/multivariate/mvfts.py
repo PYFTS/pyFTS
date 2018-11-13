@@ -113,15 +113,12 @@ class MVFTS(fts.FTS):
             for flr in flrs:
                 flrg = mvflrg.FLRG(lhs=flr.LHS)
                 if flrg.get_key() not in self.flrgs:
-                    #print('hit')
                     mvs.append(0.)
                     mps.append(0.)
                 else:
                     mvs.append(self.flrgs[flrg.get_key()].get_membership(self.format_data(data_point), self.explanatory_variables))
                     mps.append(self.flrgs[flrg.get_key()].get_midpoint(self.target_variable.partitioner.sets))
 
-            #print('mv', mvs)
-            #print('mp', mps)
             mv = np.array(mvs)
             mp = np.array(mps)
 
@@ -130,6 +127,43 @@ class MVFTS(fts.FTS):
         ret = self.target_variable.apply_inverse_transformations(ret,
                                                            params=data[self.target_variable.data_label].values)
         return ret
+
+    def forecast_ahead(self, data, steps, **kwargs):
+        generators = kwargs.get('generators',None)
+
+        if generators is None:
+            raise Exception('You must provide parameter \'generators\'! generators is a dict where the keys' +
+                            ' are the variables names (except the target_variable) and the values are ' +
+                            'lambda functions that accept one value (the actual value of the variable) '
+                            ' and return the next value.')
+
+        ndata = self.apply_transformations(data)
+
+        ret = []
+        for k in np.arange(0, steps):
+            ix = ndata.index[-self.max_lag:]
+            sample = ndata.loc[ix]
+            tmp = self.forecast(sample, **kwargs)
+
+            if isinstance(tmp, (list, np.ndarray)):
+                tmp = tmp[-1]
+
+            ret.append(tmp)
+
+            last_data_point = sample.loc[sample.index[-1]]
+
+            new_data_point = {}
+
+            for var in self.explanatory_variables:
+                if var.name != self.target_variable.name:
+                    new_data_point[var.data_label] = generators[var.name](last_data_point[var.data_label])
+
+            new_data_point[self.target_variable.data_label] = tmp
+
+            ndata = ndata.append(new_data_point, ignore_index=True)
+
+        return ret
+
 
     def clone_parameters(self, model):
         super(MVFTS, self).clone_parameters(model)

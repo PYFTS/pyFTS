@@ -25,6 +25,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
         """The FTS method specific parameters"""
         self.model = None
         """The most recent trained model"""
+        self.knn = kwargs.get('knn', 2)
 
         self.is_high_order = True
 
@@ -32,9 +33,12 @@ class ClusteredMVFTS(mvfts.MVFTS):
         self.lags = kwargs.get("lags", None)
         self.alpha_cut = kwargs.get('alpha_cut', 0.25)
 
+        self.shortname = "ClusteredMVFTS"
+        self.name = "Clustered Multivariate FTS"
+
     def fuzzyfy(self,data):
         ndata = []
-        for ct in range(1, len(data.index)):
+        for ct in range(1, len(data.index)+1):
             ix = data.index[ct - 1]
             data_point = self.format_data(data.loc[ix])
             ndata.append(common.fuzzyfy_instance_clustered(data_point, self.cluster, self.alpha_cut))
@@ -44,7 +48,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
     def train(self, data, **kwargs):
 
-        self.cluster = self.cluster_method(data=data, mvfts=self)
+        self.cluster = self.cluster_method(data=data, mvfts=self, neighbors=self.knn)
 
         self.model = self.fts_method(partitioner=self.cluster, **self.fts_params)
         if self.model.is_high_order:
@@ -54,16 +58,12 @@ class ClusteredMVFTS(mvfts.MVFTS):
         ndata = self.fuzzyfy(data)
 
         self.model.train(ndata, fuzzyfied=True)
-        self.shortname = self.model.shortname
-
 
     def forecast(self, ndata, **kwargs):
 
         ndata = self.fuzzyfy(ndata)
 
         return self.model.forecast(ndata, fuzzyfied=True, **kwargs)
-
-
 
     def __str__(self):
         """String representation of the model"""

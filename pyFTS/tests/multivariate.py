@@ -93,14 +93,25 @@ vhour = variable.Variable("Hour", data_label="hour", partitioner=seasonal.TimeGr
 vprice = variable.Variable("Price", data_label="price", partitioner=Grid.GridPartitioner, npart=10,
                             data=train_mv)
 
-model1 = cmvfts.ClusteredMVFTS(order=2)
-model1.shortname += "1"
-model1.append_variable(vhour)
-model1.append_variable(vprice)
-model1.target_variable = vprice
-model1.fit(train_mv)
 
-print(model1)
+params = [
+    {},
+    {},
+    {'order': 2, 'knn': 1},
+    {'order': 2, 'knn': 2},
+    {'order': 2, 'knn': 3}
+]
 
-print(Measures.get_point_statistics(test_mv, model1))
+for ct, method in enumerate([mvfts.MVFTS, wmvfts.WeightedMVFTS, cmvfts.ClusteredMVFTS, cmvfts.ClusteredMVFTS, cmvfts.ClusteredMVFTS]):
+    model = method(**params[ct])
+    model.append_variable(vhour)
+    model.append_variable(vprice)
+    model.target_variable = vprice
+    model.fit(train_mv)
+    print(model.shortname, params[ct], Measures.get_point_statistics(test_mv, model))
+
+#print(model1)
+
+#print(model1.predict(test_mv, steps_ahead=24, generators={'Hour': lambda x : (x+1)%24 }))
+
 #"""

@@ -18,6 +18,7 @@ class GridCluster(partitioner.Partitioner):
         self.kdtree = None
         self.index = {}
         self.build(None)
+        self.neighbors = kwargs.get('neighbors', 2)
 
     def build(self, data):
 
@@ -47,7 +48,7 @@ class GridCluster(partitioner.Partitioner):
 
     def knn(self, data):
         tmp = [data[k.name] for k in self.mvfts.explanatory_variables]
-        tmp, ix = self.kdtree.query(tmp,2)
+        tmp, ix = self.kdtree.query(tmp, self.neighbors )
 
         if not isinstance(ix, (list, np.ndarray)):
             ix = [ix]
