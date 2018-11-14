@@ -1,4 +1,4 @@
-
+import numpy as np
 from pyFTS.hyperparam import GridSearch
 
 def get_train_test():
@@ -12,15 +12,15 @@ def get_train_test():
     return 'Malaysia.temperature', train, test
 
 hyperparams = {
-    'order':[1],
-    'partitions':[10, 15],
-    'partitioner': [1],
-    'mf': [1],
-    'lags': [1, 2, 3],
-    'alpha': [.1, .2, .5]
+    'order':[1, 2, 3],
+    'partitions': np.arange(10,100,3),
+    'partitioner': [1,2],
+    'mf': [1, 2, 3, 4],
+    'lags': np.arange(1,35,2),
+    'alpha': np.arange(0,.5, .05)
 }
 
-nodes = ['192.168.0.110','192.168.0.106']
+nodes = ['192.168.0.110','192.168.0.106', '192.168.0.107']
 
 ds, train, test = get_train_test()
 
