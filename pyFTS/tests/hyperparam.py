@@ -17,10 +17,10 @@ hyperparams = {
     'partitioner': [1,2],
     'mf': [1, 2, 3, 4],
     'lags': np.arange(1,35,2),
-    'alpha': np.arange(0,.5, .05)
+    'alpha': np.arange(.0, .5, .05)
 }
 
-nodes = ['192.168.0.110','192.168.0.106', '192.168.0.107']
+nodes = ['192.168.0.106', '192.168.0.110'] #, '192.168.0.107']
 
 ds, train, test = get_train_test()
 

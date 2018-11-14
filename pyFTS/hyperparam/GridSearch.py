@@ -20,7 +20,7 @@ def dict_individual(mf, partitioner, partitions, order, lags, alpha_cut):
     }
 
 
-def metodo_cluster(individual, train, test):
+def cluster_method(individual, train, test):
     from pyFTS.common import Util, Membership
     from pyFTS.models import hofts
     from pyFTS.partitioners import Grid, Entropy
@@ -53,25 +53,23 @@ def metodo_cluster(individual, train, test):
 
     size = len(model)
 
-    return individual, rmse, size
+    return individual, rmse, size, mape, u
     
 def process_jobs(jobs, datasetname, conn):
     for job in jobs:
-        result, rmse, size = job()
+        result, rmse, size, mape, u = job()
         if job.status == dispy.DispyJob.Finished and result is not None:
-            print(result)
+            print("Processing result of {}".format(result))
+            
+            metrics = {'rmse': rmse, 'size': size, 'mape': mape, 'u': u }
+            
+            for metric in metrics.keys():
 
-            record = (datasetname, 'GridSearch', 'WHOFTS', None, result['mf'],
-                      result['order'], result['partitioner'], result['npart'],
-                      result['alpha'], str(result['lags']), 'rmse', rmse)
+                record = (datasetname, 'GridSearch', 'WHOFTS', None, result['mf'],
+                          result['order'], result['partitioner'], result['npart'],
+                          result['alpha'], str(result['lags']), metric, metrics[metric])
 
-            hUtil.insert_hyperparam(record, conn)
-
-            record = (datasetname, 'GridSearch', 'WHOFTS', None, result['mf'],
-                      result['order'], result['partitioner'], result['npart'],
-                      result['alpha'], str(result['lags']), 'size', size)
-
-            hUtil.insert_hyperparam(record, conn)
+                hUtil.insert_hyperparam(record, conn)
 
         else:
             print(job.exception)
@@ -94,16 +92,20 @@ def execute(hyperparams, datasetname, train, test, **kwargs):
     index = {}
     for k in np.arange(len(keys_sorted)):
         index[keys_sorted[k]] = k
+        
+    print("Evaluation order: \n {}".format(index))
 
     hp_values = [
         [v for v in hyperparams[hp]]
         for hp in keys_sorted
     ]
     
-    cluster, http_server = Util.start_dispy_cluster(metodo_cluster, nodes=nodes)
+    print("Evaluation values: \n {}".format(hp_values))
+    
+    cluster, http_server = Util.start_dispy_cluster(cluster_method, nodes=nodes)
     conn = hUtil.open_hyperparam_db('hyperparam.db')
 
-    for ct, instance in enumerate(product(*hp_values)):
+    for instance in product(*hp_values):
         partitions = instance[index['partitions']]
         partitioner = instance[index['partitioner']]
         mf = instance[index['mf']]
@@ -132,6 +134,7 @@ def execute(hyperparams, datasetname, train, test, **kwargs):
                 jobs = []
 
                 for ind in individuals:
+                    print("Testing individual {}".format(ind))
                     job = cluster.submit(ind, train, test)
                     jobs.append(job)
                     
