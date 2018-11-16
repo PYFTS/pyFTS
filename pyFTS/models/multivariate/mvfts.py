@@ -38,7 +38,7 @@ class MVFTS(fts.FTS):
     def apply_transformations(self, data, params=None, updateUoD=False, **kwargs):
         ndata = data.copy(deep=True)
         for var in self.explanatory_variables:
-            if self.uod_clip:
+            if self.uod_clip and var.partitioner.type == 'common':
                 ndata[var.data_label] = np.clip(ndata[var.data_label].values,
                                                 var.partitioner.min, var.partitioner.max)
 

@@ -68,6 +68,8 @@ def process_jobs(jobs, datasetname, conn):
                 record = (datasetname, 'GridSearch', 'WHOFTS', None, result['mf'],
                           result['order'], result['partitioner'], result['npart'],
                           result['alpha'], str(result['lags']), metric, metrics[metric])
+                          
+                print(record)
 
                 hUtil.insert_hyperparam(record, conn)
 
