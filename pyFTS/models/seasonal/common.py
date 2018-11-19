@@ -3,6 +3,8 @@ import pandas as pd
 from enum import Enum
 from pyFTS.common import FuzzySet, Membership
 from pyFTS.partitioners import partitioner, Grid
+from datetime import date as dt
+
 
 
 class DateTime(Enum):
@@ -94,7 +96,7 @@ class FuzzySet(FuzzySet.FuzzySet):
         self.type = kwargs.get('type', 'seasonal')
 
     def transform(self, x):
-        if self.type == 'seasonal':
+        if self.type == 'seasonal' and isinstance(x, (dt, pd.Timestamp)):
             dp = strip_datepart(x, self.datepart)
         else:
             dp = x

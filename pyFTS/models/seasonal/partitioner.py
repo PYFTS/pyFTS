@@ -39,6 +39,8 @@ class TimeGridPartitioner(partitioner.Partitioner):
         else:
             self.ordered_sets = FS.set_ordered(self.sets)
 
+        self.extractor = lambda x: strip_datepart(x, self.season)
+
     def build(self, data):
         sets = {}
 

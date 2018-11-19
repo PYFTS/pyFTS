@@ -31,7 +31,8 @@ class MVFTS(fts.FTS):
     def format_data(self, data):
         ndata = {}
         for var in self.explanatory_variables:
-            ndata[var.name] = data[var.data_label]
+            #ndata[var.name] = data[var.data_label]
+            ndata[var.name] = var.partitioner.extractor(data[var.data_label])
 
         return ndata
 
@@ -109,9 +110,8 @@ class MVFTS(fts.FTS):
     def forecast(self, data, **kwargs):
         ret = []
         ndata = self.apply_transformations(data)
-        for ix in ndata.index:
-            data_point = ndata.loc[ix]
-            flrs = self.generate_lhs_flrs(data_point)
+        for index, row in ndata.iterrows():
+            flrs = self.generate_lhs_flrs(row)
             mvs = []
             mps = []
             for flr in flrs:
@@ -120,7 +120,7 @@ class MVFTS(fts.FTS):
                     mvs.append(0.)
                     mps.append(0.)
                 else:
-                    mvs.append(self.flrgs[flrg.get_key()].get_membership(self.format_data(data_point), self.explanatory_variables))
+                    mvs.append(self.flrgs[flrg.get_key()].get_membership(self.format_data(row), self.explanatory_variables))
                     mps.append(self.flrgs[flrg.get_key()].get_midpoint(self.target_variable.partitioner.sets))
 
             mv = np.array(mvs)

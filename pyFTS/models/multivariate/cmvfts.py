@@ -16,8 +16,8 @@ class ClusteredMVFTS(mvfts.MVFTS):
         """The cluster method to be called when a new model is build"""
         self.cluster_params = kwargs.get('cluster_params', {})
         """The cluster method parameters"""
-        self.cluster = None
-        """The most recent trained clusterer"""
+        self.cluster = kwargs.get('cluster', None)
+        """The trained clusterer"""
 
         self.fts_method = kwargs.get('fts_method', hofts.WeightedHighOrderFTS)
         """The FTS method to be called when a new model is build"""
@@ -38,17 +38,16 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
     def fuzzyfy(self,data):
         ndata = []
-        for ct in range(1, len(data.index)+1):
-            ix = data.index[ct - 1]
-            data_point = self.format_data(data.loc[ix])
+        for index, row in data.iterrows():
+            data_point = self.format_data(row)
             ndata.append(common.fuzzyfy_instance_clustered(data_point, self.cluster, self.alpha_cut))
 
         return ndata
 
-
     def train(self, data, **kwargs):
 
-        self.cluster = self.cluster_method(data=data, mvfts=self, neighbors=self.knn)
+        if self.cluster is None:
+            self.cluster = self.cluster_method(data=data, mvfts=self, neighbors=self.knn, **self.cluster_params)
 
         self.model = self.fts_method(partitioner=self.cluster, **self.fts_params)
         if self.model.is_high_order:
@@ -58,6 +57,8 @@ class ClusteredMVFTS(mvfts.MVFTS):
         ndata = self.fuzzyfy(data)
 
         self.model.train(ndata, fuzzyfied=True)
+
+        self.cluster.prune()
 
     def forecast(self, ndata, **kwargs):
 
