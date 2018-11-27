@@ -104,7 +104,7 @@ class Partitioner(object):
         """
         return self.sets[self.ordered_sets[-1]]
 
-    def plot(self, ax):
+    def plot(self, ax, rounding=0):
         """
         Plot the partitioning using the Matplotlib axis ax
 
@@ -122,7 +122,7 @@ class Partitioner(object):
             elif s.type == 'composite':
                 for ss in s.sets:
                     self.plot_set(ax, ss)
-            ticks.append(str(round(s.centroid,0))+'\n'+s.name)
+            ticks.append(str(round(s.centroid,rounding))+'\n'+s.name)
             x.append(s.centroid)
         ax.xaxis.set_ticklabels(ticks)
         ax.xaxis.set_ticks(x)
