@@ -17,8 +17,30 @@ from pyFTS.models.multivariate import common, variable, mvfts, cmvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
+
+model = Util.load_obj('/home/petronio/Downloads/ClusteredMVFTS1solarorder2knn3')
+
+data = [[12, 100], [13, 200]]
+
+for k in data:
+    k[0] = pd.to_datetime('2018-01-01 {}:00:00'.format(k[0]), format='%Y-%m-%d %H:%M:%S')
+
+df = pd.DataFrame(data, columns=['data', 'glo_avg'])
+
+#forecasts = model.predict(df, steps_ahead=24, generators={'Hour': lambda x: x + pd.to_timedelta(1, unit='h')})
+
+#print(forecasts)
+
+f = lambda x: x + pd.to_timedelta(1, unit='h')
+
+for ix, row in df.iterrows():
+    print(row['data'])
+    print(f(row['data']))
+
+
 # Multivariate time series
 
+'''
 train_mv = {}
 test_mv = {}
 
@@ -131,3 +153,4 @@ for ct, key in enumerate(models.keys()):
       Util.persist_obj(model, model.shortname)
 
       del(model)
+'''

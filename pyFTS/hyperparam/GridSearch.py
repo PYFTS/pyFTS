@@ -54,7 +54,8 @@ def cluster_method(individual, train, test):
     size = len(model)
 
     return individual, rmse, size, mape, u
-    
+
+
 def process_jobs(jobs, datasetname, conn):
     for job in jobs:
         result, rmse, size, mape, u = job()
