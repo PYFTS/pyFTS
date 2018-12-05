@@ -104,6 +104,9 @@ class Partitioner(object):
         """
         return self.sets[self.ordered_sets[-1]]
 
+    def fuzzyfy(self, data, **kwargs):
+        return FuzzySet.fuzzyfy(data, self, **kwargs)
+
     def plot(self, ax, rounding=0):
         """
         Plot the partitioning using the Matplotlib axis ax

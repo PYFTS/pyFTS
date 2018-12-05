@@ -1,11 +1,12 @@
 import pandas as pd
 import matplotlib.pylab as plt
-from pyFTS.data import TAIEX as tx
+from pyFTS.data import TAIEX, Malaysia
 from pyFTS.common import Transformations
 
 from pyFTS.benchmarks import Measures
 from pyFTS.partitioners import Grid, Util as pUtil
 from pyFTS.common import Transformations, Util
+from pyFTS.models import pwfts
 from pyFTS.models.multivariate import common, variable, mvfts, wmvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
@@ -17,7 +18,7 @@ from pyFTS.models.multivariate import common, variable, mvfts, cmvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
-
+'''
 model = Util.load_obj('/home/petronio/Downloads/ClusteredMVFTS1solarorder2knn3')
 
 data = [[12, 100], [13, 200]]
@@ -36,9 +37,33 @@ f = lambda x: x + pd.to_timedelta(1, unit='h')
 for ix, row in df.iterrows():
     print(row['data'])
     print(f(row['data']))
-
+'''
 
 # Multivariate time series
+
+dataset = pd.read_csv('https://query.data.world/s/2bgegjggydd3venttp3zlosh3wpjqj', sep=';')
+
+dataset['data'] = pd.to_datetime(dataset["data"], format='%Y-%m-%d %H:%M:%S')
+
+train_mv = dataset.iloc[:24505]
+test_mv = dataset.iloc[24505:]
+
+sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k) for k in range(0,24)]}
+
+vhour = variable.Variable("Hour", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                          data=train_mv, partitioner_specific=sp)
+
+vavg = variable.Variable("Radiation", data_label="glo_avg", alias='rad',
+                         partitioner=Grid.GridPartitioner, npart=30, alpha_cut=.3,
+                         data=train_mv)
+
+model = cmvfts.ClusteredMVFTS(pre_fuzzyfy=False, knn=3, fts_method=pwfts.ProbabilisticWeightedFTS)
+model.append_variable(vhour)
+model.append_variable(vavg)
+model.target_variable = vavg
+model.fit(train_mv)
+
+print(model)
 
 '''
 train_mv = {}

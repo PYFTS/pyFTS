@@ -6,7 +6,8 @@ using Fuzzy Time Series. 2017 IEEE International Conference on Fuzzy Systems. DO
 """
 
 import numpy as np
-from pyFTS.common import FuzzySet, FLR, fts, flrg, tree
+from pyFTS.common import FuzzySet, FLR, fts, flrg
+from itertools import product
 
 class HighOrderFLRG(flrg.FLRG):
     """Conventional High Order Fuzzy Logical Relationship Group"""
@@ -106,30 +107,25 @@ class HighOrderFTS(fts.FTS):
 
     def generate_lhs_flrg(self, sample, explain=False):
 
-        nsample = [FuzzySet.fuzzyfy(k, partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
+        nsample = [self.partitioner.fuzzyfy(k, mode="sets", alpha_cut=self.alpha_cut)
                    for k in sample]
 
         return self.generate_lhs_flrg_fuzzyfied(nsample, explain)
 
     def generate_lhs_flrg_fuzzyfied(self, sample, explain=False):
-        lags = {}
-
+        lags = []
         flrgs = []
 
         for ct, o in enumerate(self.lags):
-            lags[ct] = sample[o-1]
+            lhs = sample[o - 1]
+            lags.append(lhs)
 
             if explain:
                 print("\t (Lag {}) {} -> {} \n".format(o, sample[o-1], lhs))
 
-        root = tree.FLRGTreeNode(None)
-
-        tree.build_tree_without_order(root, lags, 0)
-
         # Trace the possible paths
-        for p in root.paths():
+        for path in product(*lags):
             flrg = HighOrderFLRG(self.order)
-            path = list(reversed(list(filter(None.__ne__, p))))
 
             for lhs in path:
                 flrg.append_lhs(lhs)
@@ -141,13 +137,12 @@ class HighOrderFTS(fts.FTS):
     def generate_flrg(self, data):
         l = len(data)
         for k in np.arange(self.max_lag, l):
-            lags = {}
 
             if self.dump: print("FLR: " + str(k))
 
             sample = data[k - self.max_lag: k]
 
-            rhs = FuzzySet.fuzzyfy(data[k], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
+            rhs = self.partitioner.fuzzyfy(data[k], mode="sets", alpha_cut=self.alpha_cut)
 
             flrgs = self.generate_lhs_flrg(sample)
 
@@ -158,13 +153,13 @@ class HighOrderFTS(fts.FTS):
                 for st in rhs:
                     self.flrgs[flrg.get_key()].append_rhs(st)
 
+
     def generate_flrg_fuzzyfied(self, data):
         l = len(data)
         for k in np.arange(self.max_lag, l):
             if self.dump: print("FLR: " + str(k))
 
             sample = data[k - self.max_lag: k]
-
 
             rhs = data[k]
 
@@ -245,24 +240,18 @@ class WeightedHighOrderFTS(HighOrderFTS):
         self.shortname = "WHOFTS"
 
     def generate_lhs_flrg_fuzzyfied(self, sample, explain=False):
-        lags = {}
-
+        lags = []
         flrgs = []
 
         for ct, o in enumerate(self.lags):
-            lags[ct] = sample[o-1]
+            lags.append(sample[o-1])
 
             if explain:
-                print("\t (Lag {}) {} -> {} \n".format(o, sample[o-1], lhs))
-
-        root = tree.FLRGTreeNode(None)
-
-        tree.build_tree_without_order(root, lags, 0)
+                print("\t (Lag {}) {} \n".format(o, sample[o-1]))
 
         # Trace the possible paths
-        for p in root.paths():
+        for path in product(*lags):
             flrg = WeightedHighOrderFLRG(self.order)
-            path = list(reversed(list(filter(None.__ne__, p))))
 
             for lhs in path:
                 flrg.append_lhs(lhs)

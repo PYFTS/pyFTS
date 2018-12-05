@@ -36,6 +36,8 @@ class ClusteredMVFTS(mvfts.MVFTS):
         self.shortname = "ClusteredMVFTS"
         self.name = "Clustered Multivariate FTS"
 
+        self.pre_fuzzyfy = kwargs.get('pre_fuzzyfy', True)
+
     def fuzzyfy(self,data):
         ndata = []
         for index, row in data.iterrows():
@@ -51,28 +53,29 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         self.model = self.fts_method(partitioner=self.cluster, **self.fts_params)
         if self.model.is_high_order:
-            self.model.order = self.model = self.fts_method(partitioner=self.cluster,
-                                                            order=self.order, **self.fts_params)
+            self.model.order = self.order
 
-        ndata = self.fuzzyfy(data)
+        if self.pre_fuzzyfy:
+            ndata = self.fuzzyfy(data)
+        else:
+            ndata = [self.format_data(k) for k in data.to_dict('records')]
 
-        self.model.train(ndata, fuzzyfied=True)
+        self.model.train(ndata, fuzzyfied=self.pre_fuzzyfy)
 
         self.cluster.prune()
 
     def forecast(self, ndata, **kwargs):
 
-        ndata = self.fuzzyfy(ndata)
+        if self.pre_fuzzyfy:
+            ndata = self.fuzzyfy(ndata)
+        else:
+            ndata = [self.format(k) for k in ndata.to_dict('records')]
 
-        return self.model.forecast(ndata, fuzzyfied=True, **kwargs)
+        return self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
 
     def __str__(self):
         """String representation of the model"""
-
-        tmp = self.model.shortname + ":\n"
-        for r in self.model.flrgs:
-            tmp = tmp + str(self.model.flrgs[r]) + "\n"
-        return tmp
+        return str(self.model)
 
     def __len__(self):
         """

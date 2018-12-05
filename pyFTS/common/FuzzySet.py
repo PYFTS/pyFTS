@@ -106,7 +106,6 @@ def __binary_search(x, fuzzy_sets, ordered_sets):
                 first = midpoint + 1
 
 
-
 def fuzzyfy(data, partitioner, **kwargs):
     """
     A general method for fuzzyfication.
@@ -117,7 +116,8 @@ def fuzzyfy(data, partitioner, **kwargs):
 
     :keyword alpha_cut: the minimal membership value to be considered on fuzzyfication (only for mode='sets')
     :keyword method: the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)
-    :keyword mode: the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership values for all fuzzy sets)
+    :keyword mode: the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership
+    values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )
     :returns a list with the fuzzyfied values, depending on the mode
     """
     alpha_cut = kwargs.get('alpha_cut', 0.)
@@ -126,11 +126,26 @@ def fuzzyfy(data, partitioner, **kwargs):
     if isinstance(data, (list, np.ndarray)):
         if mode == 'vector':
             return fuzzyfy_instances(data, partitioner.sets, partitioner.ordered_sets)
+        elif mode == 'both':
+            mvs = fuzzyfy_instances(data, partitioner.sets, partitioner.ordered_sets)
+            fs = []
+            for mv in mvs:
+                fsets = [(partitioner.ordered_sets[ix], mv[ix])
+                         for ix in np.arange(len(mv))
+                         if mv[ix] >= alpha_cut]
+                fs.append(fsets)
+            return fs
         else:
             return fuzzyfy_series(data, partitioner.sets, method, alpha_cut, partitioner.ordered_sets)
     else:
         if mode == 'vector':
             return fuzzyfy_instance(data, partitioner.sets, partitioner.ordered_sets)
+        elif mode == 'both':
+            mv = fuzzyfy_instances(data, partitioner.sets, partitioner.ordered_sets)
+            fsets = [(partitioner.ordered_sets[ix], mv[ix])
+                     for ix in np.arange(len(mv))
+                     if mv[ix] >= alpha_cut]
+            return fsets
         else:
             return get_fuzzysets(data, partitioner.sets, partitioner.ordered_sets, alpha_cut)
 

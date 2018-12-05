@@ -5,9 +5,10 @@ import numpy as np
 import pandas as pd
 import math
 from operator import itemgetter
-from pyFTS.common import FLR, FuzzySet, tree
+from pyFTS.common import FLR, FuzzySet
 from pyFTS.models import hofts, ifts
 from pyFTS.probabilistic import ProbabilityDistribution
+from itertools import product
 
 
 class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
@@ -116,33 +117,33 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         parameters = kwargs.get('parameters','fuzzy')
 
         if parameters == 'monotonic':
-            tmpdata = FuzzySet.fuzzyfy_series_old(data, self.sets)
+            tmpdata = self.partitioner.fuzzyfy(data, mode='sets', method='maximum')
             flrs = FLR.generate_recurrent_flrs(tmpdata)
-            self.generateFLRG(flrs)
+            self.generate_flrg(flrs)
         else:
             self.generate_flrg(data)
 
     def generate_lhs_flrg(self, sample, explain=False):
-        lags = {}
+        nsample = [self.partitioner.fuzzyfy(k, mode="sets", alpha_cut=self.alpha_cut)
+                   for k in sample]
+
+        return self.generate_lhs_flrg_fuzzyfied(nsample, explain)
+
+    def generate_lhs_flrg_fuzzyfied(self, sample, explain=False):
+        lags = []
 
         flrgs = []
 
         for ct, o in enumerate(self.lags):
-            lhs = FuzzySet.fuzzyfy(sample[o - 1], partitioner=self.partitioner, mode="sets", alpha_cut=self.alpha_cut)
-
-            lags[ct] = lhs
+            lhs = sample[o - 1]
+            lags.append( lhs )
 
             if explain:
                 print("\t (Lag {}) {} -> {} \n".format(o, sample[o-1], lhs))
 
-        root = tree.FLRGTreeNode(None)
-
-        tree.build_tree_without_order(root, lags, 0)
-
         # Trace the possible paths
-        for p in root.paths():
+        for path in product(*lags):
             flrg = ProbabilisticWeightedFLRG(self.order)
-            path = list(reversed(list(filter(None.__ne__, p))))
 
             for lhs in path:
                 flrg.append_lhs(lhs)
@@ -162,14 +163,13 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             for flrg in flrgs:
 
-                lhs_mv = flrg.get_membership(sample, self.sets)
+                lhs_mv = flrg.get_membership(sample, self.partitioner.sets)
 
                 if flrg.get_key() not in self.flrgs:
                     self.flrgs[flrg.get_key()] = flrg;
 
-                fuzzyfied = [(s, self.sets[s].membership(data[k]))
-                             for s in self.sets.keys()
-                             if self.sets[s].membership(data[k]) >  self.alpha_cut]
+                fuzzyfied = self.partitioner.fuzzyfy(data[k], mode='both', method='fuzzy',
+                                                     alpha_cut=self.alpha_cut)
 
                 mvs = []
                 for set, mv in fuzzyfied:
@@ -501,23 +501,19 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         for k in np.arange(self.max_lag+1, steps+self.max_lag+1):
             dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
 
-            lags = {}
+            lags = []
 
             # Find all bins of past distributions with probability greater than zero
 
             for ct, d in enumerate(self.lags):
                 dd = ret[k - d]
                 vals = [float(v) for v in dd.bins if round(dd.density(v), 4) > 0]
-                lags[ct] = sorted(vals)
+                lags.append( sorted(vals) )
 
-            root = tree.FLRGTreeNode(None)
-
-            tree.build_tree_without_order(root, lags, 0)
 
             # Trace all possible combinations between the bins of past distributions
 
-            for p in root.paths():
-                path = list(reversed(list(filter(None.__ne__, p))))
+            for path in product(*lags):
 
                 # get the combined probabilities for this path
 

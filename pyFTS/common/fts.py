@@ -464,8 +464,12 @@ class FTS(object):
         """String representation of the model"""
 
         tmp = self.name + ":\n"
-        for r in sorted(self.flrgs, key=lambda key: self.flrgs[key].get_midpoint(self.sets)):
-            tmp = tmp + str(self.flrgs[r]) + "\n"
+        if self.partitioner.type == 'common':
+            for r in sorted(self.flrgs, key=lambda key: self.flrgs[key].get_midpoint(self.partitioner.sets)):
+                tmp = "{0}{1}\n".format(tmp, str(self.flrgs[r]))
+        else:
+            for r in self.model.flrgs:
+                tmp = "{0}{1}\n".format(tmp, str(self.flrgs[r]))
         return tmp
 
     def __len__(self):

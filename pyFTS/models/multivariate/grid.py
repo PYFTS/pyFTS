@@ -1,5 +1,5 @@
 from pyFTS.partitioners import partitioner
-from pyFTS.models.multivariate.common import MultivariateFuzzySet
+from pyFTS.models.multivariate.common import MultivariateFuzzySet, fuzzyfy_instance_clustered
 from itertools import product
 from scipy.spatial import KDTree
 import numpy as np
@@ -104,3 +104,5 @@ class GridCluster(partitioner.Partitioner):
         else:
             return [self.index[k] for k in ix]
 
+    def fuzzyfy(self, data, **kwargs):
+        return fuzzyfy_instance_clustered(data, self, **kwargs)

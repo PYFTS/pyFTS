@@ -42,11 +42,16 @@ def fuzzyfy_instance(data_point, var):
     return [(var.name, fs) for fs in fsets]
 
 
-def fuzzyfy_instance_clustered(data_point, cluster, alpha_cut=0.0):
+def fuzzyfy_instance_clustered(data_point, cluster, **kwargs):
+    alpha_cut = kwargs.get('alpha_cut', 0.0)
+    mode = kwargs.get('mode', 'sets')
     fsets = []
     for fset in cluster.knn(data_point):
         if cluster.sets[fset].membership(data_point) > alpha_cut:
-            fsets.append(fset)
+            if mode == 'sets':
+                fsets.append(fset)
+            elif mode =='both':
+                fsets.append( (fset, cluster.sets[fset].membership(data_point)) )
     return fsets
 
 
