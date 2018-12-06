@@ -42,7 +42,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
         ndata = []
         for index, row in data.iterrows():
             data_point = self.format_data(row)
-            ndata.append(common.fuzzyfy_instance_clustered(data_point, self.cluster, self.alpha_cut))
+            ndata.append(common.fuzzyfy_instance_clustered(data_point, self.cluster, alpha_cut=self.alpha_cut))
 
         return ndata
 
