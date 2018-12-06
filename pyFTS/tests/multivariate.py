@@ -18,6 +18,17 @@ from pyFTS.models.multivariate import common, variable, mvfts, cmvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
+dataset = pd.read_csv('https://query.data.world/s/2bgegjggydd3venttp3zlosh3wpjqj', sep=';')
+
+dataset['data'] = pd.to_datetime(dataset["data"], format='%Y-%m-%d %H:%M:%S')
+
+data = dataset['glo_avg'].values
+
+train_mv = dataset.iloc[:24505]
+test_mv = dataset.iloc[24505:]
+
+
+
 '''
 model = Util.load_obj('/home/petronio/Downloads/ClusteredMVFTS1solarorder2knn3')
 
@@ -40,7 +51,7 @@ for ix, row in df.iterrows():
 '''
 
 # Multivariate time series
-
+'''
 dataset = pd.read_csv('https://query.data.world/s/2bgegjggydd3venttp3zlosh3wpjqj', sep=';')
 
 dataset['data'] = pd.to_datetime(dataset["data"], format='%Y-%m-%d %H:%M:%S')
@@ -63,7 +74,16 @@ model.append_variable(vavg)
 model.target_variable = vavg
 model.fit(train_mv)
 
+Util.persist_obj(model, model.shortname)
+'''
+
+#model = Util.load_obj("ClusteredMVFTS")
+
+model = Util.load_obj("ClusteredMVFTS2loadorder2knn2")
+
 print(model)
+
+print(model.predict(test_mv))
 
 '''
 train_mv = {}

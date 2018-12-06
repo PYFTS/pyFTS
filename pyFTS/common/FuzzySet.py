@@ -141,7 +141,7 @@ def fuzzyfy(data, partitioner, **kwargs):
         if mode == 'vector':
             return fuzzyfy_instance(data, partitioner.sets, partitioner.ordered_sets)
         elif mode == 'both':
-            mv = fuzzyfy_instances(data, partitioner.sets, partitioner.ordered_sets)
+            mv = fuzzyfy_instance(data, partitioner.sets, partitioner.ordered_sets)
             fsets = [(partitioner.ordered_sets[ix], mv[ix])
                      for ix in np.arange(len(mv))
                      if mv[ix] >= alpha_cut]

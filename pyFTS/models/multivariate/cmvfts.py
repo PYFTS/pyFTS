@@ -69,7 +69,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
         if self.pre_fuzzyfy:
             ndata = self.fuzzyfy(ndata)
         else:
-            ndata = [self.format(k) for k in ndata.to_dict('records')]
+            ndata = [self.format_data(k) for k in ndata.to_dict('records')]
 
         return self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
 
