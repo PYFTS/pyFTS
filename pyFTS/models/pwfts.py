@@ -505,9 +505,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             # Find all bins of past distributions with probability greater than zero
 
-            for ct, d in enumerate(self.lags):
-                dd = ret[k - d]
-                vals = [float(v) for v in dd.bins if round(dd.density(v), 4) > 0]
+            for ct, lag in enumerate(self.lags):
+                dd = ret[k - lag]
+                vals = [float(v) for v in dd.bins if np.round(dd.density(v), 4) > 0.0]
                 lags.append( sorted(vals) )
 
 
@@ -516,9 +516,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             for path in product(*lags):
 
                 # get the combined probabilities for this path
-
-                pk = np.prod([ret[k - self.max_lag + o].density(path[ct])
-                              for ct, o in enumerate(self.lags)])
+                pk = np.prod([ret[k - (self.max_lag + lag)].density(path[ct])
+                              for ct, lag in enumerate(self.lags)])
 
 
                 d = self.forecast_distribution(path)[0]

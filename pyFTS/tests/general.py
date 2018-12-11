@@ -32,7 +32,9 @@ pfts1_taiex.fit(dataset[:train_split], save_model=True, file_path='pwfts', order
 pfts1_taiex.shortname = "1st Order"
 #print(pfts1_taiex)
 
-tmp = pfts1_taiex.predict(dataset[train_split:train_split+200], type='distribution')
+#tmp = pfts1_taiex.predict(dataset[train_split:train_split+200], type='distribution')
+
+tmp = pfts1_taiex.predict(dataset[train_split:train_split+200], type='distribution', steps_ahead=20)
 
 '''
 #dataset = SP500.get_data()[11500:16000]
