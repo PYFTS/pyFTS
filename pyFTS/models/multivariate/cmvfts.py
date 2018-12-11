@@ -1,5 +1,6 @@
 
 import numpy as np
+import pandas as pd
 from pyFTS.common import FuzzySet, FLR, fts, flrg
 from pyFTS.models import hofts
 from pyFTS.models.multivariate import mvfts, grid, common
@@ -55,23 +56,37 @@ class ClusteredMVFTS(mvfts.MVFTS):
         if self.model.is_high_order:
             self.model.order = self.order
 
-        if self.pre_fuzzyfy:
-            ndata = self.fuzzyfy(data)
-        else:
-            ndata = [self.format_data(k) for k in data.to_dict('records')]
+        ndata = self.check_data(data)
 
         self.model.train(ndata, fuzzyfied=self.pre_fuzzyfy)
 
         self.cluster.prune()
 
+    def check_data(self, data):
+        if self.pre_fuzzyfy:
+            ndata = self.fuzzyfy(data)
+        else:
+            ndata = [self.format_data(k) for k in data.to_dict('records')]
+
+        return ndata
+
     def forecast(self, ndata, **kwargs):
 
-        if self.pre_fuzzyfy:
-            ndata = self.fuzzyfy(ndata)
-        else:
-            ndata = [self.format_data(k) for k in ndata.to_dict('records')]
+        ndata = self.check_data(ndata)
 
         return self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
+
+    def forecast_multivariate(self, data, **kwargs):
+
+        ndata = self.check_data(data)
+
+        ret = {}
+        for var in self.explanatory_variables:
+            self.cluster.change_target_variable(var)
+            ret[var.name] = self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
+
+        columns = ret.keys()
+        return pd.DataFrame(ret, columns=columns)
 
     def __str__(self):
         """String representation of the model"""

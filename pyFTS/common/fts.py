@@ -88,7 +88,7 @@ class FTS(object):
 
         :param data: time series with minimal length to the order of the model
 
-        :keyword type: the forecasting type, one of these values: point(default), interval or distribution.
+        :keyword type: the forecasting type, one of these values: point(default), interval, distribution or multivariate.
         :keyword steps_ahead: The forecasting horizon, i. e., the number of steps ahead to forecast
         :keyword start: in the multi step forecasting, the index of the data where to start forecasting
         :keyword distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster
@@ -130,6 +130,8 @@ class FTS(object):
                     ret = self.forecast_interval(ndata, **kwargs)
                 elif type == 'distribution':
                     ret = self.forecast_distribution(ndata, **kwargs)
+                elif type == 'multivariate':
+                    ret = self.forecast_multivariate(ndata, **kwargs)
             elif steps_ahead > 1:
                 if type == 'point':
                     ret = self.forecast_ahead(ndata, steps_ahead, **kwargs)
@@ -137,8 +139,10 @@ class FTS(object):
                     ret = self.forecast_ahead_interval(ndata, steps_ahead, **kwargs)
                 elif type == 'distribution':
                     ret = self.forecast_ahead_distribution(ndata, steps_ahead, **kwargs)
+                elif type == 'multivariate':
+                    ret = self.forecast_ahead_multivariate(ndata, **kwargs)
 
-            if not ['point', 'interval', 'distribution'].__contains__(type):
+            if not ['point', 'interval', 'distribution', 'multivariate'].__contains__(type):
                 raise ValueError('The argument \'type\' has an unknown value.')
 
         else:
@@ -183,6 +187,16 @@ class FTS(object):
         :return: a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions
         """
         raise NotImplementedError('This model do not perform one step ahead distribution forecasts!')
+
+    def forecast_multivariate(self, data, **kwargs):
+        """
+        Multivariate forecast one step ahead
+
+        :param data: Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model
+        :param kwargs: model specific parameters
+        :return: a Pandas Dataframe object representing the forecasted values for each variable
+        """
+        raise NotImplementedError('This model do not perform one step ahead multivariate forecasts!')
 
     def forecast_ahead(self, data, steps, **kwargs):
         """
@@ -232,6 +246,17 @@ class FTS(object):
         :return: a list with the forecasted Probability Distributions
         """
         raise NotImplementedError('This model do not perform multi step ahead distribution forecasts!')
+
+    def forecast_ahead_multivariate(self, data, steps, **kwargs):
+        """
+        Multivariate forecast n step ahead
+
+        :param data: Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model
+        :param steps: the number of steps ahead to forecast
+        :param kwargs: model specific parameters
+        :return: a Pandas Dataframe object representing the forecasted values for each variable
+        """
+        raise NotImplementedError('This model do not perform one step ahead multivariate forecasts!')
 
     def train(self, data, **kwargs):
         """

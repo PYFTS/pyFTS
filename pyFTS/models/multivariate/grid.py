@@ -86,7 +86,6 @@ class GridCluster(partitioner.Partitioner):
 
         sys.setrecursionlimit(1000)
 
-
     def knn(self, data):
         tmp = [data[k.name]
                for k in self.mvfts.explanatory_variables]
@@ -106,3 +105,7 @@ class GridCluster(partitioner.Partitioner):
 
     def fuzzyfy(self, data, **kwargs):
         return fuzzyfy_instance_clustered(data, self, **kwargs)
+
+    def change_target_variable(self, variable):
+        for fset in self.sets:
+            self.sets[fset].target_variable = variable
