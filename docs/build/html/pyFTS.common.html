@@ -1668,6 +1668,28 @@ when the LHS pattern is identified on time t.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyFTS.common.fts.FTS.forecast_ahead_multivariate">
+<code class="descname">forecast_ahead_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/fts.html#FTS.forecast_ahead_multivariate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.fts.FTS.forecast_ahead_multivariate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multivariate forecast n step ahead</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model</li>
+<li><strong>steps</strong> – the number of steps ahead to forecast</li>
+<li><strong>kwargs</strong> – model specific parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a Pandas Dataframe object representing the forecasted values for each variable</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyFTS.common.fts.FTS.forecast_distribution">
 <code class="descname">forecast_distribution</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/fts.html#FTS.forecast_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.fts.FTS.forecast_distribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Probabilistic forecast one step ahead</p>
@@ -1703,6 +1725,27 @@ when the LHS pattern is identified on time t.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the prediction intervals</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.common.fts.FTS.forecast_multivariate">
+<code class="descname">forecast_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/fts.html#FTS.forecast_multivariate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.fts.FTS.forecast_multivariate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multivariate forecast one step ahead</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model</li>
+<li><strong>kwargs</strong> – model specific parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a Pandas Dataframe object representing the forecasted values for each variable</p>
 </td>
 </tr>
 </tbody>
@@ -1846,7 +1889,7 @@ needed to forecast a single step ahead</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data</strong> – time series with minimal length to the order of the model</li>
-<li><strong>type</strong> – the forecasting type, one of these values: point(default), interval or distribution.</li>
+<li><strong>type</strong> – the forecasting type, one of these values: point(default), interval, distribution or multivariate.</li>
 <li><strong>steps_ahead</strong> – The forecasting horizon, i. e., the number of steps ahead to forecast</li>
 <li><strong>start</strong> – in the multi step forecasting, the index of the data where to start forecasting</li>
 <li><strong>distributed</strong> – boolean, indicate if the forecasting procedure will be distributed in a dispy cluster</li>

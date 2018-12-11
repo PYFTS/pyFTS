@@ -74,6 +74,7 @@
   <h1>Source code for pyFTS.models.multivariate.cmvfts</h1><div class="highlight"><pre>
 <span></span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">FLR</span><span class="p">,</span> <span class="n">fts</span><span class="p">,</span> <span class="n">flrg</span>
 <span class="kn">from</span> <span class="nn">pyFTS.models</span> <span class="k">import</span> <span class="n">hofts</span>
 <span class="kn">from</span> <span class="nn">pyFTS.models.multivariate</span> <span class="k">import</span> <span class="n">mvfts</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">common</span>
@@ -129,23 +130,37 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">is_high_order</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_fuzzyfy</span><span class="p">:</span>
-            <span class="n">ndata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fuzzyfy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ndata</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">)]</span>
+        <span class="n">ndata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="n">fuzzyfied</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_fuzzyfy</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="ClusteredMVFTS.check_data"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.check_data">[docs]</a>    <span class="k">def</span> <span class="nf">check_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_fuzzyfy</span><span class="p">:</span>
+            <span class="n">ndata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fuzzyfy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ndata</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">ndata</span></div>
+
 <div class="viewcode-block" id="ClusteredMVFTS.forecast"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast">[docs]</a>    <span class="k">def</span> <span class="nf">forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_fuzzyfy</span><span class="p">:</span>
-            <span class="n">ndata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fuzzyfy</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ndata</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ndata</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">)]</span>
+        <span class="n">ndata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="n">fuzzyfied</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_fuzzyfy</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClusteredMVFTS.forecast_multivariate"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_multivariate">[docs]</a>    <span class="k">def</span> <span class="nf">forecast_multivariate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">ndata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">explanatory_variables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">change_target_variable</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+            <span class="n">ret</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="n">fuzzyfied</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_fuzzyfy</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">columns</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;String representation of the model&quot;&quot;&quot;</span>

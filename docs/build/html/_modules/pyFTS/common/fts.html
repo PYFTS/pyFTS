@@ -162,7 +162,7 @@
 
 <span class="sd">        :param data: time series with minimal length to the order of the model</span>
 
-<span class="sd">        :keyword type: the forecasting type, one of these values: point(default), interval or distribution.</span>
+<span class="sd">        :keyword type: the forecasting type, one of these values: point(default), interval, distribution or multivariate.</span>
 <span class="sd">        :keyword steps_ahead: The forecasting horizon, i. e., the number of steps ahead to forecast</span>
 <span class="sd">        :keyword start: in the multi step forecasting, the index of the data where to start forecasting</span>
 <span class="sd">        :keyword distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster</span>
@@ -204,6 +204,8 @@
                     <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_interval</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;distribution&#39;</span><span class="p">:</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_distribution</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;multivariate&#39;</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_multivariate</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">steps_ahead</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;point&#39;</span><span class="p">:</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_ahead</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="n">steps_ahead</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -211,8 +213,10 @@
                     <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_ahead_interval</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="n">steps_ahead</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;distribution&#39;</span><span class="p">:</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_ahead_distribution</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="n">steps_ahead</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;multivariate&#39;</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_ahead_multivariate</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">,</span> <span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="s1">&#39;distribution&#39;</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">,</span> <span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="s1">&#39;distribution&#39;</span><span class="p">,</span> <span class="s1">&#39;multivariate&#39;</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The argument </span><span class="se">\&#39;</span><span class="s1">type</span><span class="se">\&#39;</span><span class="s1"> has an unknown value.&#39;</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -257,6 +261,16 @@
 <span class="sd">        :return: a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This model do not perform one step ahead distribution forecasts!&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FTS.forecast_multivariate"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.forecast_multivariate">[docs]</a>    <span class="k">def</span> <span class="nf">forecast_multivariate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multivariate forecast one step ahead</span>
+
+<span class="sd">        :param data: Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model</span>
+<span class="sd">        :param kwargs: model specific parameters</span>
+<span class="sd">        :return: a Pandas Dataframe object representing the forecasted values for each variable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This model do not perform one step ahead multivariate forecasts!&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FTS.forecast_ahead"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.forecast_ahead">[docs]</a>    <span class="k">def</span> <span class="nf">forecast_ahead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -306,6 +320,17 @@
 <span class="sd">        :return: a list with the forecasted Probability Distributions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This model do not perform multi step ahead distribution forecasts!&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FTS.forecast_ahead_multivariate"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.forecast_ahead_multivariate">[docs]</a>    <span class="k">def</span> <span class="nf">forecast_ahead_multivariate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multivariate forecast n step ahead</span>
+
+<span class="sd">        :param data: Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model</span>
+<span class="sd">        :param steps: the number of steps ahead to forecast</span>
+<span class="sd">        :param kwargs: model specific parameters</span>
+<span class="sd">        :return: a Pandas Dataframe object representing the forecasted values for each variable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This model do not perform one step ahead multivariate forecasts!&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FTS.train"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

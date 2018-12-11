@@ -487,6 +487,11 @@ transformations and partitioners.</p>
 <em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.cmvfts.</code><code class="descname">ClusteredMVFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.mvfts.MVFTS" title="pyFTS.models.multivariate.mvfts.MVFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.mvfts.MVFTS</span></code></a></p>
 <p>Meta model for multivariate, high order, clustered multivariate FTS</p>
+<dl class="method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.check_data">
+<code class="descname">check_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.check_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.check_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.cluster">
 <code class="descname">cluster</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.cluster" title="Permalink to this definition">¶</a></dt>
@@ -520,6 +525,27 @@ transformations and partitioners.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_multivariate">
+<code class="descname">forecast_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.forecast_multivariate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_multivariate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multivariate forecast one step ahead</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model</li>
+<li><strong>kwargs</strong> – model specific parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a Pandas Dataframe object representing the forecasted values for each variable</p>
 </td>
 </tr>
 </tbody>
