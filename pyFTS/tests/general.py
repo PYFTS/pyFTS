@@ -17,21 +17,22 @@ from pyFTS.common import Transformations
 tdiff = Transformations.Differential(1)
 
 
-from pyFTS.data import TAIEX, SP500, NASDAQ, Malaysia
+from pyFTS.data import TAIEX, SP500, NASDAQ, Malaysia, Enrollments
 
-dataset = Malaysia.get_data('temperature')[:1000]
+train_split = 2000
+test_length = 200
 
-p = Grid.GridPartitioner(data=dataset, npart=20)
+dataset = TAIEX.get_data()
 
-print(p)
+partitioner = Grid.GridPartitioner(data=dataset[:train_split], npart=35)
+partitioner_diff = Grid.GridPartitioner(data=dataset[:train_split], npart=5, transformation=tdiff)
 
-model = pwfts.ProbabilisticWeightedFTS(partitioner=p, order=2)
+pfts1_taiex = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner)
+pfts1_taiex.fit(dataset[:train_split], save_model=True, file_path='pwfts', order=1)
+pfts1_taiex.shortname = "1st Order"
+#print(pfts1_taiex)
 
-model.fit(dataset) #[22, 22, 23, 23, 24])
-
-print(model)
-
-Measures.get_point_statistics(dataset, model)
+tmp = pfts1_taiex.predict(dataset[train_split:train_split+200], type='distribution')
 
 '''
 #dataset = SP500.get_data()[11500:16000]
