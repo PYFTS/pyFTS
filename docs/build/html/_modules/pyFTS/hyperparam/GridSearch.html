@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>pyFTS.hyperparam.GridSearch &#8212; pyFTS 1.2.3 documentation</title>
+    <title>pyFTS.hyperparam.GridSearch &#8212; pyFTS 1.4 documentation</title>
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyFTS 1.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>
@@ -94,7 +94,7 @@
     <span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="metodo_cluster"><a class="viewcode-back" href="../../../pyFTS.hyperparam.html#pyFTS.hyperparam.GridSearch.metodo_cluster">[docs]</a><span class="k">def</span> <span class="nf">metodo_cluster</span><span class="p">(</span><span class="n">individual</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
+<div class="viewcode-block" id="cluster_method"><a class="viewcode-back" href="../../../pyFTS.hyperparam.html#pyFTS.hyperparam.GridSearch.cluster_method">[docs]</a><span class="k">def</span> <span class="nf">cluster_method</span><span class="p">(</span><span class="n">individual</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">Util</span><span class="p">,</span> <span class="n">Membership</span>
     <span class="kn">from</span> <span class="nn">pyFTS.models</span> <span class="k">import</span> <span class="n">hofts</span>
     <span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Entropy</span>
@@ -116,7 +116,7 @@
         <span class="n">partitioner</span> <span class="o">=</span> <span class="n">Entropy</span><span class="o">.</span><span class="n">EntropyPartitioner</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">train</span><span class="p">,</span> <span class="n">npart</span><span class="o">=</span><span class="n">npart</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">mf</span><span class="p">)</span>
 
 
-    <span class="n">model</span> <span class="o">=</span> <span class="n">hofts</span><span class="o">.</span><span class="n">HighOrderFTS</span><span class="p">(</span><span class="n">partitioner</span><span class="o">=</span><span class="n">partitioner</span><span class="p">,</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">hofts</span><span class="o">.</span><span class="n">WeightedHighOrderFTS</span><span class="p">(</span><span class="n">partitioner</span><span class="o">=</span><span class="n">partitioner</span><span class="p">,</span>
                                <span class="n">lags</span><span class="o">=</span><span class="n">individual</span><span class="p">[</span><span class="s1">&#39;lags&#39;</span><span class="p">],</span>
                                <span class="n">alpha_cut</span><span class="o">=</span><span class="n">individual</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">],</span>
                                <span class="n">order</span><span class="o">=</span><span class="n">individual</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">])</span>
@@ -125,8 +125,33 @@
 
     <span class="n">rmse</span><span class="p">,</span> <span class="n">mape</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">Measures</span><span class="o">.</span><span class="n">get_point_statistics</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">individual</span><span class="p">,</span> <span class="n">rmse</span></div>
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 
+    <span class="k">return</span> <span class="n">individual</span><span class="p">,</span> <span class="n">rmse</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">mape</span><span class="p">,</span> <span class="n">u</span></div>
+
+
+<div class="viewcode-block" id="process_jobs"><a class="viewcode-back" href="../../../pyFTS.hyperparam.html#pyFTS.hyperparam.GridSearch.process_jobs">[docs]</a><span class="k">def</span> <span class="nf">process_jobs</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">datasetname</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">,</span> <span class="n">rmse</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">mape</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">job</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">dispy</span><span class="o">.</span><span class="n">DispyJob</span><span class="o">.</span><span class="n">Finished</span> <span class="ow">and</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Processing result of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+            
+            <span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rmse&#39;</span><span class="p">:</span> <span class="n">rmse</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s1">&#39;mape&#39;</span><span class="p">:</span> <span class="n">mape</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="n">u</span> <span class="p">}</span>
+            
+            <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+                <span class="n">record</span> <span class="o">=</span> <span class="p">(</span><span class="n">datasetname</span><span class="p">,</span> <span class="s1">&#39;GridSearch&#39;</span><span class="p">,</span> <span class="s1">&#39;WHOFTS&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;mf&#39;</span><span class="p">],</span>
+                          <span class="n">result</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;partitioner&#39;</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;npart&#39;</span><span class="p">],</span>
+                          <span class="n">result</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;lags&#39;</span><span class="p">]),</span> <span class="n">metric</span><span class="p">,</span> <span class="n">metrics</span><span class="p">[</span><span class="n">metric</span><span class="p">])</span>
+                          
+                <span class="nb">print</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+
+                <span class="n">hUtil</span><span class="o">.</span><span class="n">insert_hyperparam</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">exception</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span></div>
+    
 
 <div class="viewcode-block" id="execute"><a class="viewcode-back" href="../../../pyFTS.hyperparam.html#pyFTS.hyperparam.GridSearch.execute">[docs]</a><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">hyperparams</span><span class="p">,</span> <span class="n">datasetname</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
@@ -144,11 +169,18 @@
     <span class="n">index</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys_sorted</span><span class="p">)):</span>
         <span class="n">index</span><span class="p">[</span><span class="n">keys_sorted</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span> <span class="o">=</span> <span class="n">k</span>
+        
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluation order: </span><span class="se">\n</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
 
     <span class="n">hp_values</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">hyperparams</span><span class="p">[</span><span class="n">hp</span><span class="p">]]</span>
         <span class="k">for</span> <span class="n">hp</span> <span class="ow">in</span> <span class="n">keys_sorted</span>
     <span class="p">]</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluation values: </span><span class="se">\n</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hp_values</span><span class="p">))</span>
+    
+    <span class="n">cluster</span><span class="p">,</span> <span class="n">http_server</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">start_dispy_cluster</span><span class="p">(</span><span class="n">cluster_method</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">)</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">hUtil</span><span class="o">.</span><span class="n">open_hyperparam_db</span><span class="p">(</span><span class="s1">&#39;hyperparam.db&#39;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">hp_values</span><span class="p">):</span>
         <span class="n">partitions</span> <span class="o">=</span> <span class="n">instance</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="s1">&#39;partitions&#39;</span><span class="p">]]</span>
@@ -156,13 +188,17 @@
         <span class="n">mf</span> <span class="o">=</span> <span class="n">instance</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="s1">&#39;mf&#39;</span><span class="p">]]</span>
         <span class="n">alpha_cut</span> <span class="o">=</span> <span class="n">instance</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]]</span>
         <span class="n">order</span> <span class="o">=</span> <span class="n">instance</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]]</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">lag1</span> <span class="ow">in</span> <span class="n">lags</span><span class="p">:</span> <span class="c1"># o é o lag1</span>
             <span class="n">_lags</span> <span class="o">=</span> <span class="p">[</span><span class="n">lag1</span><span class="p">]</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">lag2</span> <span class="ow">in</span> <span class="n">lags</span><span class="p">:</span>  <span class="c1"># o é o lag1</span>
                     <span class="n">_lags2</span> <span class="o">=</span> <span class="p">[</span><span class="n">lag1</span><span class="p">,</span> <span class="n">lag1</span><span class="o">+</span><span class="n">lag2</span><span class="p">]</span>
+                    <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
                         <span class="k">for</span> <span class="n">lag3</span> <span class="ow">in</span> <span class="n">lags</span><span class="p">:</span>  <span class="c1"># o é o lag1</span>
+                            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
                             <span class="n">_lags3</span> <span class="o">=</span> <span class="p">[</span><span class="n">lag1</span><span class="p">,</span> <span class="n">lag1</span> <span class="o">+</span> <span class="n">lag2</span><span class="p">,</span> <span class="n">lag1</span> <span class="o">+</span> <span class="n">lag2</span><span class="o">+</span><span class="n">lag3</span> <span class="p">]</span>
                             <span class="n">individuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dict_individual</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">partitions</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">_lags3</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="p">))</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -170,33 +206,20 @@
                             <span class="n">dict_individual</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">partitions</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">_lags2</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">individuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dict_individual</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">partitions</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">_lags</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="p">))</span>
+                
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+                <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
 
-
-    <span class="n">cluster</span><span class="p">,</span> <span class="n">http_server</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">start_dispy_cluster</span><span class="p">(</span><span class="n">metodo_cluster</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">)</span>
-
-    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">individuals</span><span class="p">:</span>
-        <span class="n">job</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
-        <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
-
-
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">hUtil</span><span class="o">.</span><span class="n">open_hyperparam_db</span><span class="p">(</span><span class="s1">&#39;hyperparam.db&#39;</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
-        <span class="n">result</span><span class="p">,</span> <span class="n">rmse</span> <span class="o">=</span> <span class="n">job</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">dispy</span><span class="o">.</span><span class="n">DispyJob</span><span class="o">.</span><span class="n">Finished</span> <span class="ow">and</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-
-            <span class="n">record</span> <span class="o">=</span> <span class="p">(</span><span class="n">datasetname</span><span class="p">,</span> <span class="s1">&#39;GridSearch&#39;</span><span class="p">,</span> <span class="s1">&#39;HOFTS&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;mf&#39;</span><span class="p">],</span>
-                      <span class="n">result</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;partitioner&#39;</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;npart&#39;</span><span class="p">],</span>
-                      <span class="n">result</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;lags&#39;</span><span class="p">]),</span> <span class="s1">&#39;rmse&#39;</span><span class="p">,</span> <span class="n">rmse</span><span class="p">)</span>
-
-            <span class="n">hUtil</span><span class="o">.</span><span class="n">insert_hyperparam</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">exception</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">individuals</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing individual </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ind</span><span class="p">))</span>
+                    <span class="n">job</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+                    <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+                    
+                <span class="n">process_jobs</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">datasetname</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+                
+                <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+                
+                <span class="n">individuals</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">Util</span><span class="o">.</span><span class="n">stop_dispy_cluster</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">http_server</span><span class="p">)</span></div>
 </pre></div>
@@ -215,7 +238,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyFTS 1.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

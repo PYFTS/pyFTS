@@ -24,9 +24,9 @@ copyright = '2018, Machine Intelligence and Data Science Laboratory - UFMG - Bra
 author = 'Machine Intelligence and Data Science Laboratory - UFMG - Brazil'
 
 # The short X.Y version
-version = ''
+version = '1'
 # The full version, including alpha/beta/rc tags
-release = '1.2.3'
+release = '1.4'
 
 
 # -- General configuration ---------------------------------------------------

@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>pyFTS.models.multivariate.common &#8212; pyFTS 1.2.3 documentation</title>
+    <title>pyFTS.models.multivariate.common &#8212; pyFTS 1.4 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>
@@ -116,11 +116,16 @@
     <span class="k">return</span> <span class="p">[(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fs</span><span class="p">)</span> <span class="k">for</span> <span class="n">fs</span> <span class="ow">in</span> <span class="n">fsets</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="fuzzyfy_instance_clustered"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.fuzzyfy_instance_clustered">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_instance_clustered</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="n">cluster</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="fuzzyfy_instance_clustered"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.fuzzyfy_instance_clustered">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_instance_clustered</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="n">cluster</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">alpha_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;sets&#39;</span><span class="p">)</span>
     <span class="n">fsets</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">fset</span> <span class="ow">in</span> <span class="n">cluster</span><span class="o">.</span><span class="n">knn</span><span class="p">(</span><span class="n">data_point</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">cluster</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">fset</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">data_point</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">alpha_cut</span><span class="p">:</span>
-            <span class="n">fsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fset</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;sets&#39;</span><span class="p">:</span>
+                <span class="n">fsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fset</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span><span class="s1">&#39;both&#39;</span><span class="p">:</span>
+                <span class="n">fsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">(</span><span class="n">fset</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">fset</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">data_point</span><span class="p">))</span> <span class="p">)</span>
     <span class="k">return</span> <span class="n">fsets</span></div>
 
 
@@ -141,7 +146,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.2.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
