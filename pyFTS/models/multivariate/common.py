@@ -28,6 +28,12 @@ class MultivariateFuzzySet(Composite.FuzzySet):
         if variable == self.target_variable.name:
             self.centroid = set.centroid
 
+    def set_target_variable(self, variable):
+        #print(self.target_variable, variable)
+        self.target_variable = variable
+        #print(self.centroid,self.sets[variable.name].centroid)
+        self.centroid = self.sets[variable.name].centroid
+
     def membership(self, x):
         mv = []
         for var in self.sets.keys():

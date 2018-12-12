@@ -82,11 +82,15 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         ret = {}
         for var in self.explanatory_variables:
-            self.cluster.change_target_variable(var)
+            if self.target_variable.name != var.name:
+                self.target_variable = var
+                self.cluster.change_target_variable(var)
+                self.model.partitioner = self.cluster
+                self.reset_calculated_values()
+
             ret[var.name] = self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
 
-        columns = ret.keys()
-        return pd.DataFrame(ret, columns=columns)
+        return pd.DataFrame(ret, columns=ret.keys())
 
     def __str__(self):
         """String representation of the model"""

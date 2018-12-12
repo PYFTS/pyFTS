@@ -202,18 +202,18 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             #return self.flrg_lhs_unconditional_probability(flrg)
 
     def flrg_lhs_conditional_probability(self, x, flrg):
-        mv = flrg.get_membership(x, self.sets)
+        mv = flrg.get_membership(x, self.partitioner.sets)
         pb = self.flrg_lhs_unconditional_probability(flrg)
         return mv * pb
 
     def get_midpoint(self, flrg):
         if flrg.get_key() in self.flrgs:
             tmp = self.flrgs[flrg.get_key()]
-            ret = tmp.get_midpoint(self.sets) #sum(np.array([tmp.rhs_unconditional_probability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
+            ret = tmp.get_midpoint(self.partitioner.sets) #sum(np.array([tmp.rhs_unconditional_probability(s) * self.setsDict[s].centroid for s in tmp.RHS]))
         else:
             if len(flrg.LHS) > 0:
                 pi = 1 / len(flrg.LHS)
-                ret = sum(np.array([pi * self.sets[s].centroid for s in flrg.LHS]))
+                ret = sum(np.array([pi * self.partitioner.sets[s].centroid for s in flrg.LHS]))
             else:
                 ret = np.nan
         return ret
@@ -224,19 +224,19 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             _flrg = self.flrgs[flrg.get_key()]
             cond = []
             for s in _flrg.RHS.keys():
-                _set = self.sets[s]
+                _set = self.partitioner.sets[s]
                 tmp = _flrg.rhs_unconditional_probability(s) * (_set.membership(x) / _set.partition_function(uod=self.get_UoD()))
                 cond.append(tmp)
             ret = sum(np.array(cond))
         else:
             pi = 1 / len(flrg.LHS)
-            ret = sum(np.array([pi * self.sets[s].membership(x) for s in flrg.LHS]))
+            ret = sum(np.array([pi * self.partitioner.sets[s].membership(x) for s in flrg.LHS]))
         return ret
 
     def get_upper(self, flrg):
         if flrg.get_key() in self.flrgs:
             tmp = self.flrgs[flrg.get_key()]
-            ret = tmp.get_upper(self.sets)
+            ret = tmp.get_upper(self.partitioner.sets)
         else:
             ret = 0
         return ret
@@ -244,7 +244,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def get_lower(self, flrg):
         if flrg.get_key() in self.flrgs:
             tmp = self.flrgs[flrg.get_key()]
-            ret = tmp.get_lower(self.sets)
+            ret = tmp.get_lower(self.partitioner.sets)
         else:
             ret = 0
         return ret
@@ -398,8 +398,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 for s in flrgs:
                     if s.get_key() in self.flrgs:
                         flrg = self.flrgs[s.get_key()]
-                        pk = flrg.lhs_conditional_probability(sample, self.sets, self.global_frequency_count, uod, nbins)
-                        wi = flrg.rhs_conditional_probability(bin, self.sets, uod, nbins)
+                        pk = flrg.lhs_conditional_probability(sample, self.partitioner.sets, self.global_frequency_count, uod, nbins)
+                        wi = flrg.rhs_conditional_probability(bin, self.partitioner.sets, uod, nbins)
                         num.append(wi * pk)
                         den.append(pk)
                     else:

@@ -106,5 +106,9 @@ class FLRG(object):
     def __len__(self):
         return len(self.RHS)
 
+    def reset_calculated_values(self):
+        self.midpoint = None
+        self.upper = None
+        self.lower = None
 
 

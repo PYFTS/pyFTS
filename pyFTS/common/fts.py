@@ -507,8 +507,22 @@ class FTS(object):
         return len(self.flrgs)
 
     def len_total(self):
+        """
+        Total length of the model, adding the number of terms in all rules
+
+        :return:
+        """
         return sum([len(k) for k in self.flrgs])
 
+    def reset_calculated_values(self):
+        """
+        Reset all pre-calculated values on the FLRG's
+
+        :return:
+        """
+
+        for flrg in self.flrgs.keys():
+            self.flrgs[flrg].reset_calculated_values()
 
 
 

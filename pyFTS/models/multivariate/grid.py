@@ -108,4 +108,4 @@ class GridCluster(partitioner.Partitioner):
 
     def change_target_variable(self, variable):
         for fset in self.sets:
-            self.sets[fset].target_variable = variable
+            self.sets[fset].set_target_variable(variable)
