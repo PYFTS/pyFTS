@@ -33,6 +33,7 @@ class Partitioner(object):
         self.extractor = kwargs.get('extractor', lambda x: x)
         """Anonymous function used to extract a single primitive type from an object instance"""
         self.ordered_sets = None
+        """A ordered list of the fuzzy sets names, sorted by their middle point"""
 
         if kwargs.get('preprocess',True):
 
@@ -114,7 +115,7 @@ class Partitioner(object):
         :param ax: Matplotlib axis
         """
         ax.set_title(self.name)
-        ax.set_ylim([0, 1])
+        ax.set_ylim([0, 1.1])
         ax.set_xlim([self.min, self.max])
         ticks = []
         x = []
@@ -139,12 +140,14 @@ class Partitioner(object):
         """
         if s.mf == Membership.trimf:
             ax.plot([s.parameters[0], s.parameters[1], s.parameters[2]], [0, s.alpha, 0])
-        elif s.mf == Membership.gaussmf:
-            tmpx = [kk for kk in np.arange(s.lower, s.upper)]
-            tmpy = [s.membership(kk) for kk in np.arange(s.lower, s.upper)]
+        elif s.mf in (Membership.gaussmf, Membership.bellmf, Membership.sigmf):
+            tmpx = np.linspace(s.lower, s.upper, 100)
+            tmpy = [s.membership(kk) for kk in tmpx]
             ax.plot(tmpx, tmpy)
         elif s.mf == Membership.trapmf:
             ax.plot(s.parameters, [0, s.alpha, s.alpha, 0])
+        elif s.mf == Membership.singleton:
+            ax.plot([s.parameters[0],s.parameters[0]], [0, s.alpha])
 
     def __str__(self):
         """

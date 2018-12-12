@@ -581,8 +581,22 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FTS.len_total"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.len_total">[docs]</a>    <span class="k">def</span> <span class="nf">len_total</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">])</span></div></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Total length of the model, adding the number of terms in all rules</span>
 
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="FTS.reset_calculated_values"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.reset_calculated_values">[docs]</a>    <span class="k">def</span> <span class="nf">reset_calculated_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset all pre-calculated values on the FLRG&#39;s</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">flrg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="p">]</span><span class="o">.</span><span class="n">reset_calculated_values</span><span class="p">()</span></div></div>
 
 
 

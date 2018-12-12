@@ -87,4 +87,4 @@ def singleton(x, parameters):
     :param parameters: a list with one real value
     :returns
     """
-    return x == parameters[0]
+    return 1 if x == parameters[0] else 0

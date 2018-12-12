@@ -9,32 +9,31 @@ import matplotlib.pylab as plt
 import pandas as pd
 
 from pyFTS.common import Util as cUtil, FuzzySet
-from pyFTS.partitioners import Grid, Entropy, Util as pUtil
+from pyFTS.partitioners import Grid, Entropy, Util as pUtil, Simple
 from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts
-from pyFTS.common import Transformations
+from pyFTS.common import Transformations, Membership
 
 tdiff = Transformations.Differential(1)
 
 
 from pyFTS.data import TAIEX, SP500, NASDAQ, Malaysia, Enrollments
 
-train_split = 2000
-test_length = 200
+fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15,7])
 
-dataset = TAIEX.get_data()
 
-partitioner = Grid.GridPartitioner(data=dataset[:train_split], npart=35)
-partitioner_diff = Grid.GridPartitioner(data=dataset[:train_split], npart=5, transformation=tdiff)
+fs = Simple.SimplePartitioner()
 
-pfts1_taiex = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner)
-pfts1_taiex.fit(dataset[:train_split], save_model=True, file_path='pwfts', order=1)
-pfts1_taiex.shortname = "1st Order"
-#print(pfts1_taiex)
+fs.append("A", Membership.trimf, [0,1,2])
+fs.append("B", Membership.trapmf, [1,2,3,4])
+fs.append("C", Membership.gaussmf, [5,1])
+fs.append("D", Membership.singleton, [8])
+fs.append("E", Membership.sigmf, [2, 10])
 
-#tmp = pfts1_taiex.predict(dataset[train_split:train_split+200], type='distribution')
+fs.plot(ax)
 
-tmp = pfts1_taiex.predict(dataset[train_split:train_split+200], type='distribution', steps_ahead=20)
+print(fs)
+
 
 '''
 #dataset = SP500.get_data()[11500:16000]

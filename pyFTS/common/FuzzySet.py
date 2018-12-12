@@ -27,12 +27,18 @@ class FuzzySet(object):
         """In multivariate time series, indicate for which variable this fuzzy set belogs"""
         self.Z = None
         """Partition function in respect to the membership function"""
-        if self.mf == Membership.trimf:
-            self.lower = min(parameters)
-            self.upper = max(parameters)
-        elif self.mf == Membership.gaussmf:
+
+        if self.mf == Membership.gaussmf:
             self.lower = parameters[0] - parameters[1]*3
             self.upper = parameters[0] + parameters[1]*3
+        elif self.mf == Membership.sigmf:
+            k = (parameters[1] / (2 * parameters[0]))
+            self.lower = parameters[1] - k
+            self.upper = parameters[1] + k
+        else:
+            self.lower = min(parameters)
+            self.upper = max(parameters)
+
         self.metadata = {}
 
     def transform(self, x):

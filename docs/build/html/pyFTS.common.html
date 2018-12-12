@@ -1451,6 +1451,11 @@ when the LHS pattern is identified on time t.</p>
 <dd><p>Number of lags on LHS</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="pyFTS.common.flrg.FLRG.reset_calculated_values">
+<code class="descname">reset_calculated_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/flrg.html#FLRG.reset_calculated_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.flrg.FLRG.reset_calculated_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -1818,7 +1823,16 @@ when the LHS pattern is identified on time t.</p>
 <dl class="method">
 <dt id="pyFTS.common.fts.FTS.len_total">
 <code class="descname">len_total</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/fts.html#FTS.len_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.fts.FTS.len_total" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Total length of the model, adding the number of terms in all rules</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="pyFTS.common.fts.FTS.max_lag">
@@ -1903,6 +1917,20 @@ accept one value (the actual value of the variable) and return the next value.</
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a numpy array with the forecasted data</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.common.fts.FTS.reset_calculated_values">
+<code class="descname">reset_calculated_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/fts.html#FTS.reset_calculated_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.fts.FTS.reset_calculated_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset all pre-calculated values on the FLRG’s</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
