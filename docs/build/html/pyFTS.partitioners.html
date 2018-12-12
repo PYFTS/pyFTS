@@ -72,7 +72,7 @@
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Grid">pyFTS.partitioners.Grid module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Huarng">pyFTS.partitioners.Huarng module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Singleton">pyFTS.partitioners.Singleton module</a></li>
-<li><a class="reference internal" href="#pyfts-partitioners-simple-module">pyFTS.partitioners.Simple module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.Simple">pyFTS.partitioners.Simple module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Util">pyFTS.partitioners.Util module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.parallel_util">pyFTS.partitioners.parallel_util module</a></li>
 </ul>
@@ -505,8 +505,36 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="pyfts-partitioners-simple-module">
-<h2>pyFTS.partitioners.Simple module<a class="headerlink" href="#pyfts-partitioners-simple-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyFTS.partitioners.Simple">
+<span id="pyfts-partitioners-simple-module"></span><h2>pyFTS.partitioners.Simple module<a class="headerlink" href="#module-pyFTS.partitioners.Simple" title="Permalink to this headline">¶</a></h2>
+<p>Simple Partitioner for manually informed fuzzy sets</p>
+<dl class="class">
+<dt id="pyFTS.partitioners.Simple.SimplePartitioner">
+<em class="property">class </em><code class="descclassname">pyFTS.partitioners.Simple.</code><code class="descname">SimplePartitioner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Simple.html#SimplePartitioner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
+<p>Simple Partitioner for manually informed fuzzy sets</p>
+<dl class="method">
+<dt id="pyFTS.partitioners.Simple.SimplePartitioner.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>name</em>, <em>mf</em>, <em>parameters</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Simple.html#SimplePartitioner.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append a new partition (fuzzy set) to the partitioner</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – Fuzzy set name</li>
+<li><strong>mf</strong> – One of the pyFTS.common.Membership functions</li>
+<li><strong>parameters</strong> – A list with the parameters for the membership function</li>
+<li><strong>kwargs</strong> – Optional arguments for the fuzzy set</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyFTS.partitioners.Util">
 <span id="pyfts-partitioners-util-module"></span><h2>pyFTS.partitioners.Util module<a class="headerlink" href="#module-pyFTS.partitioners.Util" title="Permalink to this headline">¶</a></h2>

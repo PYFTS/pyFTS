@@ -71,7 +71,7 @@ pyFTS.partitioners.Singleton module
 pyFTS.partitioners.Simple module
 --------------------------------
 
-.. automodule:: pyFTS.partitioners.Sinple
+.. automodule:: pyFTS.partitioners.Simple
     :members:
     :undoc-members:
     :show-inheritance:
