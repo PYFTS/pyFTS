@@ -86,7 +86,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
                 self.target_variable = var
                 self.cluster.change_target_variable(var)
                 self.model.partitioner = self.cluster
-                self.reset_calculated_values()
+                self.model.reset_calculated_values()
 
             ret[var.name] = self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
 

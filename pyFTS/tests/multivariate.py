@@ -46,3 +46,5 @@ ax[1][0].scatter(test['y'].values,test['x'].values)
 ax[1][0].scatter(forecasts['y'].values,forecasts['x'].values)
 ax[1][1].plot(test['y'].values)
 ax[1][1].plot(forecasts['y'].values)
+
+print(forecasts)
