@@ -19,20 +19,20 @@ tdiff = Transformations.Differential(1)
 
 from pyFTS.data import TAIEX, SP500, NASDAQ, Malaysia, Enrollments
 
-fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15,7])
+from pyFTS.data import mackey_glass
+y = mackey_glass.get_data()
 
+from pyFTS.partitioners import Grid
+from pyFTS.models import pwfts
 
-fs = Simple.SimplePartitioner()
+partitioner = Grid.GridPartitioner(data=y, npart=35)
 
-fs.append("A", Membership.trimf, [0,1,2])
-fs.append("B", Membership.trapmf, [1,2,3,4])
-fs.append("C", Membership.gaussmf, [5,1])
-fs.append("D", Membership.singleton, [8])
-fs.append("E", Membership.sigmf, [2, 10])
+model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner, order=2)
+model.fit(y[:800])
 
-fs.plot(ax)
+from pyFTS.benchmarks import benchmarks as bchmk
 
-print(fs)
+distributions = model.predict(y[800:820], steps_ahead=20, type='distribution')
 
 
 '''

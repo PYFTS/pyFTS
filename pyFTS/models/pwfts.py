@@ -21,7 +21,7 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
         self.Z = None
 
     def get_membership(self, data, sets):
-        if isinstance(data, (np.ndarray, list)):
+        if isinstance(data, (np.ndarray, list, tuple, set)):
             return np.nanprod([sets[key].membership(data[count])
                                for count, key in enumerate(self.LHS, start=0)])
         else:
