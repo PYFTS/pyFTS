@@ -49,11 +49,12 @@ class WeightedHighOrderFLRG(flrg.FLRG):
         self.w = None
 
     def append_rhs(self, fset, **kwargs):
+        count = kwargs.get('count',1.0)
         if fset not in self.RHS:
-            self.RHS[fset] = 1.0
+            self.RHS[fset] = count
         else:
-            self.RHS[fset] += 1.0
-        self.count += 1.0
+            self.RHS[fset] += count
+        self.count += count
 
     def append_lhs(self, c):
         self.LHS.append(c)

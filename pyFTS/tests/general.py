@@ -27,12 +27,14 @@ from pyFTS.models import pwfts
 
 partitioner = Grid.GridPartitioner(data=y, npart=35)
 
-model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner, order=2)
+model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner, order=2, lags=[3,4])
 model.fit(y[:800])
 
 from pyFTS.benchmarks import benchmarks as bchmk
 
-distributions = model.predict(y[800:820], steps_ahead=20, type='distribution')
+distributions = model.predict(y[800:820])
+
+print(distributions)
 
 
 '''

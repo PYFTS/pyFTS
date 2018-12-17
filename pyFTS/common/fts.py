@@ -403,6 +403,26 @@ class FTS(object):
         self.benchmark_only = model.benchmark_only
         self.indexer = model.indexer
 
+    def append_rule(self, flrg):
+        """
+        Append FLRG rule to the model
+
+        :param flrg: rule
+        :return:
+        """
+
+        if flrg.get_key() not in self.flrgs:
+            self.flrgs[flrg.get_key()] = flrg
+        else:
+            if isinstance(flrg.RHS, (list, set)):
+                for k in flrg.RHS:
+                    self.flrgs[flrg.get_key()].append_rhs(k)
+            elif isinstance(flrg.RHS, dict):
+                for key, value in flrg.RHS.items():
+                    self.flrgs[flrg.get_key()].append_rhs(key, count=value)
+            else:
+                self.flrgs[flrg.get_key()].append_rhs(flrg.RHS)
+
     def merge(self, model):
         """
         Merge the FLRG rules from other model
@@ -411,19 +431,8 @@ class FTS(object):
         :return:
         """
 
-        for key in model.flrgs.keys():
-            flrg = model.flrgs[key]
-            if flrg.get_key() not in self.flrgs:
-                self.flrgs[flrg.get_key()] = flrg
-            else:
-                if isinstance(flrg.RHS, (list, set)):
-                    for k in flrg.RHS:
-                        self.flrgs[flrg.get_key()].append_rhs(k)
-                elif isinstance(flrg.RHS, dict):
-                    for k in flrg.RHS.keys():
-                        self.flrgs[flrg.get_key()].append_rhs(flrg.RHS[k])
-                else:
-                    self.flrgs[flrg.get_key()].append_rhs(flrg.RHS)
+        for key, flrg in model.flrgs.items():
+            self.append_rule(flrg)
 
     def append_transformation(self, transformation):
         if transformation is not None:

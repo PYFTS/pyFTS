@@ -28,13 +28,12 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
             return sets[self.LHS[0]].membership(data)
 
     def append_rhs(self, c, **kwargs):
-        mv = kwargs.get('mv', 1.0)
-        self.frequency_count += mv
+        count = kwargs.get('count', 1.0)
+        self.frequency_count += count
         if c in self.RHS:
-            self.rhs_count[c] += mv
+            self.RHS[c] += count
         else:
-            self.RHS[c] = c
-            self.rhs_count[c] = mv
+            self.RHS[c] = count
 
     def lhs_conditional_probability(self, x, sets, norm, uod, nbins):
         pk = self.frequency_count / norm
@@ -173,7 +172,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 mvs = []
                 for set, mv in fuzzyfied:
-                    self.flrgs[flrg.get_key()].append_rhs(set, mv=lhs_mv * mv)
+                    self.flrgs[flrg.get_key()].append_rhs(set, count=lhs_mv * mv)
                     mvs.append(mv)
 
                 tmp_fq = sum([lhs_mv*kk for kk in mvs if kk > 0])

@@ -20,12 +20,13 @@ class ImprovedWeightedFLRG(flrg.FLRG):
         self.w = None
 
     def append_rhs(self, c, **kwargs):
+        count = kwargs.get('count', 1.0)
         if c not in self.RHS:
             self.RHS[c] = c
-            self.rhs_counts[c] = 1.0
+            self.rhs_counts[c] = count
         else:
-            self.rhs_counts[c] += 1.0
-        self.count += 1.0
+            self.rhs_counts[c] += count
+        self.count += count
 
     def weights(self):
         if self.w is None:

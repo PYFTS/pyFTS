@@ -22,8 +22,9 @@ class ExponentialyWeightedFLRG(flrg.FLRG):
         self.w = None
 
     def append_rhs(self, c, **kwargs):
+        count = kwargs.get('count', 1.0)
         self.RHS.append(c)
-        self.count = self.count + 1.0
+        self.count += count
 
     def weights(self):
         if self.w is None:
