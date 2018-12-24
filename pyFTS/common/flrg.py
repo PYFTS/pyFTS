@@ -73,7 +73,7 @@ class FLRG(object):
         if isinstance(self.RHS, (list, set)):
             return np.array([sets[s].centroid for s in self.RHS])
         elif isinstance(self.RHS, dict):
-            return np.array([sets[self.RHS[s]].centroid for s in self.RHS.keys()])
+            return np.array([sets[s].centroid for s in self.RHS.keys()])
 
     def get_lower(self, sets):
         """
