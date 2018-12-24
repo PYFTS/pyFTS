@@ -5,7 +5,7 @@ setup(
     packages=['pyFTS', 'pyFTS.benchmarks', 'pyFTS.common', 'pyFTS.data', 'pyFTS.models.ensemble',
               'pyFTS.models', 'pyFTS.models.seasonal', 'pyFTS.partitioners', 'pyFTS.probabilistic',
               'pyFTS.tests', 'pyFTS.models.nonstationary', 'pyFTS.models.multivariate',
-              'pyFTS.models.incremental', 'pyFTS.hyperparam'],
+              'pyFTS.models.incremental', 'pyFTS.hyperparam', 'pyFTS.distributed'],
     version='1.4',
     description='Fuzzy Time Series for Python',
     author='Petronio Candido L. e Silva',

@@ -147,10 +147,21 @@ class FTS(object):
 
         else:
 
-            nodes = kwargs.get("nodes", ['127.0.0.1'])
-            num_batches = kwargs.get('num_batches', 10)
+            if distributed == 'dispy':
+                from pyFTS.distributed import dispy
 
-            ret = Util.distributed_predict(self, kwargs, nodes, ndata, num_batches)
+                nodes = kwargs.get("nodes", ['127.0.0.1'])
+                num_batches = kwargs.get('num_batches', 10)
+
+                ret = dispy.distributed_predict(self, kwargs, nodes, ndata, num_batches)
+
+            elif distributed == 'spark':
+                from pyFTS.distributed import spark
+
+                nodes = kwargs.get("nodes", 'spark://192.168.0.110:7077')
+                app  = kwargs.get("app", 'pyFTS')
+                ret = spark.distributed_predict(data=ndata, model=self, url=nodes, app=app)
+
 
         if not self.is_multivariate:
             kwargs['type'] = type
@@ -323,12 +334,20 @@ class FTS(object):
 
         batch_save_interval = kwargs.get('batch_save_interval', 10)
 
-        if distributed:
-            nodes = kwargs.get('nodes', False)
-            train_method = kwargs.get('train_method', Util.simple_model_train)
-            Util.distributed_train(self, train_method, nodes, type(self), data, num_batches, {},
-                                   batch_save=batch_save, file_path=file_path,
-                                   batch_save_interval=batch_save_interval)
+        if distributed is not None:
+
+            if distributed == 'dispy':
+                from pyFTS.distributed import dispy
+                nodes = kwargs.get('nodes', False)
+                train_method = kwargs.get('train_method', dispy.simple_model_train)
+                dispy.distributed_train(self, train_method, nodes, type(self), data, num_batches, {},
+                                       batch_save=batch_save, file_path=file_path,
+                                       batch_save_interval=batch_save_interval)
+            elif distributed == 'spark':
+                from pyFTS.distributed import spark
+
+                spark.distributed_train(self, data, self.partitioner,
+                                        url='spark://192.168.0.110:7077', app='pyFTS')
         else:
 
             if dump == 'time':
