@@ -13,23 +13,6 @@ import os
 os.environ['PYSPARK_PYTHON'] = '/usr/bin/python3'
 os.environ['PYSPARK_DRIVER_PYTHON'] = '/usr/bin/python3'
 
-conf = None
-
-
-def get_conf(url, app):
-    """
-
-
-    :param url:
-    :param app:
-    :return:
-    """
-    if conf is None:
-        conf = SparkConf()
-        conf.setMaster(url)
-        conf.setAppName(app)
-
-    return conf
 
 
 def get_partitioner(shared_partitioner):
@@ -47,7 +30,7 @@ def get_partitioner(shared_partitioner):
     return fs_tmp
 
 
-def slave_train(data):
+def slave_train(data, shared_method, shared_partitioner, shared_order):
     """
 
     :param data:
@@ -64,13 +47,29 @@ def slave_train(data):
     return [(k, model.flrgs[k]) for k in model.flrgs]
 
 
-def distributed_train(model, data, partitioner, url='spark://192.168.0.110:7077', app='pyFTS'):
-    with SparkContext(conf=get_conf(url=url, app=app)) as context:
-        shared_partitioner = context.broadcast(partitioner.sets)
+def distributed_train(model, data, url='spark://192.168.0.110:7077', app='pyFTS'):
+    """
 
-        flrgs = context.parallelize(data).mapPartitions(slave_train)
 
-        model = hofts.WeightedHighOrderFTS(partitioner=partitioner, order=shared_order.value)
+    :param model:
+    :param data:
+    :param url:
+    :param app:
+    :return:
+    """
+
+    conf = SparkConf()
+    conf.setMaster(url)
+    conf.setAppName(app)
+
+    with SparkContext(conf=conf) as context:
+        shared_partitioner = context.broadcast(model.partitioner.sets)
+        shared_order = context.broadcast(model.order)
+        shared_method = context.broadcast(type(model))
+
+        func = lambda x: slave_train(x, shared_method, shared_partitioner, shared_order)
+
+        flrgs = context.parallelize(data).mapPartitions(func)
 
         for k in flrgs.collect():
             model.append_rule(k[1])

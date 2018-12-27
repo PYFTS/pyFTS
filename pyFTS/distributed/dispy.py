@@ -20,7 +20,6 @@ def stop_dispy_cluster(cluster, http_server):
     cluster.close()
 
 
-
 def simple_model_train(model, data, parameters):
     model.train(data, **parameters)
     return model
@@ -50,7 +49,7 @@ def distributed_train(model, train_method, nodes, fts_method, data, num_batches=
         else:
             ndata = data[ct - model.order: ct + batch_size]
 
-        tmp_model = fts_method(str(bcount))
+        tmp_model = fts_method()
 
         tmp_model.clone_parameters(model)
 

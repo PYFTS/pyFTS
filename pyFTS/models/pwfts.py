@@ -16,7 +16,6 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
     def __init__(self, order):
         super(ProbabilisticWeightedFLRG, self).__init__(order)
         self.RHS = {}
-        self.rhs_count = {}
         self.frequency_count = 0.0
         self.Z = None
 
@@ -43,11 +42,11 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
         return tmp
 
     def rhs_unconditional_probability(self, c):
-        return self.rhs_count[c] / self.frequency_count
+        return self.RHS[c] / self.frequency_count
 
     def rhs_conditional_probability(self, x, sets, uod, nbins):
         total = 0.0
-        for rhs in self.RHS:
+        for rhs in self.RHS.keys():
             set = sets[rhs]
             wi = self.rhs_unconditional_probability(rhs)
             mv = set.membership(x) / set.partition_function(uod, nbins=nbins)
@@ -68,28 +67,30 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
         '''Return the expectation of the PWFLRG, the weighted sum'''
         if self.midpoint is None:
             self.midpoint = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].centroid
-                                             for s in self.RHS]))
+                                             for s in self.RHS.keys()]))
 
         return self.midpoint
 
     def get_upper(self, sets):
         if self.upper is None:
-            self.upper = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].upper for s in self.RHS]))
+            self.upper = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].upper
+                                          for s in self.RHS.keys()]))
 
         return self.upper
 
     def get_lower(self, sets):
         if self.lower is None:
-            self.lower = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].lower for s in self.RHS]))
+            self.lower = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].lower
+                                          for s in self.RHS.keys()]))
 
         return self.lower
 
     def __str__(self):
         tmp2 = ""
-        for c in sorted(self.RHS):
+        for c in sorted(self.RHS.keys()):
             if len(tmp2) > 0:
                 tmp2 = tmp2 + ", "
-            tmp2 = tmp2 + "(" + str(round(self.rhs_count[c] / self.frequency_count, 3)) + ")" + c
+            tmp2 = tmp2 + "(" + str(round(self.RHS[c] / self.frequency_count, 3)) + ")" + c
         return self.get_key() + " -> " + tmp2
 
 
@@ -530,7 +531,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def __str__(self):
         tmp = self.name + ":\n"
-        for r in sorted(self.flrgs):
+        for r in sorted(self.flrgs.keys()):
             p = round(self.flrgs[r].frequency_count / self.global_frequency_count, 3)
             tmp = tmp + "(" + str(p) + ") " + str(self.flrgs[r]) + "\n"
         return tmp

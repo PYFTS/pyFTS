@@ -322,7 +322,7 @@ class FTS(object):
 
         dump = kwargs.get('dump', None)
 
-        num_batches = kwargs.get('num_batches', None)
+        num_batches = kwargs.get('num_batches', 1)
 
         save = kwargs.get('save_model', False)  # save model on disk
 
@@ -334,7 +334,7 @@ class FTS(object):
 
         batch_save_interval = kwargs.get('batch_save_interval', 10)
 
-        if distributed is not None:
+        if distributed is not None and distributed:
 
             if distributed == 'dispy':
                 from pyFTS.distributed import dispy
@@ -345,9 +345,10 @@ class FTS(object):
                                        batch_save_interval=batch_save_interval)
             elif distributed == 'spark':
                 from pyFTS.distributed import spark
+                url = kwargs.get('url', 'spark://192.168.0.110:7077')
+                app = kwargs.get('app', 'pyFTS')
 
-                spark.distributed_train(self, data, self.partitioner,
-                                        url='spark://192.168.0.110:7077', app='pyFTS')
+                spark.distributed_train(self, data, url=url, app=app)
         else:
 
             if dump == 'time':

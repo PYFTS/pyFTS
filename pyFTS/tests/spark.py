@@ -13,15 +13,20 @@ import os
 os.environ['PYSPARK_PYTHON'] = '/usr/bin/python3'
 os.environ['PYSPARK_DRIVER_PYTHON'] = '/usr/bin/python3'
 
-conf = SparkConf()
-conf.setMaster('spark://192.168.0.110:7077')
-conf.setAppName('pyFTS')
-
 data = TAIEX.get_data()
 
 fs = Grid.GridPartitioner(data=data, npart=50)
 
+model = hofts.WeightedHighOrderFTS(partitioner=fs, order=2)
 
+model.fit(data, distributed='spark', url='spark://192.168.0.110:7077')
+#model.fit(data, distributed='dispy', nodes=['192.168.0.110'])
+
+print(model)
+
+
+
+'''
 def fun(x):
     return (x, x % 2)
 
@@ -76,7 +81,7 @@ with SparkContext(conf=conf) as sc:
 
     print(model)
 
-
+'''
 
 
 

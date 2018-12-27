@@ -18,6 +18,53 @@ from pyFTS.models.multivariate import common, variable, mvfts, cmvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
+dataset = pd.read_csv('/home/petronio/Downloads/kalang.csv', sep=',')
+
+dataset['date'] = pd.to_datetime(dataset["date"], format='%Y-%m-%d %H:%M:%S')
+
+train_uv = dataset['value'].values[:24505]
+test_uv = dataset['value'].values[24505:]
+
+train_mv = dataset.iloc[:24505]
+test_mv = dataset.iloc[24505:]
+
+print(train_mv)
+
+sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
+
+vhour = variable.Variable("Hour", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                          data=train_mv, partitioner_specific=sp)
+
+vvalue = variable.Variable("Pollution", data_label="value", alias='value',
+                         partitioner=Grid.GridPartitioner, npart=35,
+                         data=train_mv)
+
+parameters = [
+    {},{},
+    {'order':2, 'knn': 1},
+    {'order':2, 'knn': 2},
+    {'order':2, 'knn': 3},
+]
+
+for ct, method in enumerate([mvfts.MVFTS, wmvfts.WeightedMVFTS,
+                             cmvfts.ClusteredMVFTS,cmvfts.ClusteredMVFTS,cmvfts.ClusteredMVFTS]):
+    print(method)
+    model = method(**parameters[ct])
+    model.shortname += str(ct)
+    model.append_variable(vhour)
+    model.append_variable(vvalue)
+    model.target_variable = vvalue
+    model.fit(train_mv)
+
+    Util.persist_obj(model, model.shortname)
+
+    forecasts = model.predict(test_mv.iloc[:100])
+
+    print(model)
+
+
+
+'''
 from pyFTS.data import henon
 df = henon.get_dataframe(iterations=1000)
 
@@ -48,3 +95,4 @@ ax[1][1].plot(test['y'].values)
 ax[1][1].plot(forecasts['y'].values)
 
 print(forecasts)
+'''

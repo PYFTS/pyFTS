@@ -25,20 +25,24 @@ from pyFTS.data import TAIEX, SP500, NASDAQ, Malaysia, Enrollments
 from pyFTS.partitioners import Grid
 from pyFTS.models import pwfts, tsaur
 
-train = TAIEX.get_data()[:1000]
-test = TAIEX.get_data()[1000:1200]
+dataset = pd.read_csv('/home/petronio/Downloads/kalang.csv', sep=',')
 
-partitioner = Grid.GridPartitioner(data=train, npart=35)
+dataset['date'] = pd.to_datetime(dataset["date"], format='%Y-%m-%d %H:%M:%S')
 
-#model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner) #, order=2, lags=[3,4])
-model = tsaur.MarkovWeightedFTS(partitioner=partitioner)
-model.fit(train)
+train_uv = dataset['value'].values[:24505]
+test_uv = dataset['value'].values[24505:]
+
+partitioner = Grid.GridPartitioner(data=train_uv, npart=35)
+
+model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner) #, order=2, lags=[3,4])
+#model = tsaur.MarkovWeightedFTS(partitioner=partitioner)
+model.fit(train_uv)
 
 from pyFTS.benchmarks import benchmarks as bchmk
 
 print(model)
 
-print(model.forecast(test))
+print(model.forecast(test_uv))
 
 #distributions = model.predict(y[800:820])
 
