@@ -142,7 +142,9 @@ def evaluate(dataset, individual, **kwargs):
             if model is None:
                 raise Exception("Phenotype returned None")
 
-            rmse, _, _ = Measures.get_point_statistics(test, model)
+            forecasts = model.predict(test)
+
+            rmse = Measures.rmse(test[model.order:], forecasts[:-1]) #.get_point_statistics(test, model)
             lengths.append(len(model))
 
             results.append(rmse)

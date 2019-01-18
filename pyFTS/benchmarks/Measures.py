@@ -68,7 +68,7 @@ def mape(targets, forecasts):
         targets = np.array(targets)
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
-    return np.mean(np.abs((targets - forecasts) / targets)) * 100
+    return np.mean(np.abs(np.divide((targets - forecasts), targets))) * 100
 
 
 def smape(targets, forecasts, type=2):
