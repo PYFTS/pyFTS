@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
+import time
 
-from pyFTS.data import Enrollments, TAIEX
+from pyFTS.data import Enrollments, TAIEX, SONDA
 from pyFTS.partitioners import Grid, Simple
 from pyFTS.models import hofts
 
@@ -12,19 +13,50 @@ import os
 # make sure pyspark tells workers to use python3 not 2 if both are installed
 os.environ['PYSPARK_PYTHON'] = '/usr/bin/python3'
 os.environ['PYSPARK_DRIVER_PYTHON'] = '/usr/bin/python3'
-
-data = TAIEX.get_data()
+#'''
+data = SONDA.get_data('glo_avg')
 
 fs = Grid.GridPartitioner(data=data, npart=50)
 
 model = hofts.WeightedHighOrderFTS(partitioner=fs, order=2)
 
-model.fit(data, distributed='spark', url='spark://192.168.0.110:7077')
+_s1 = time.time()
+model.fit(data, distributed='spark', url='spark://192.168.0.106:7077')
+_s2 = time.time()
+
+print(_s2-_s1)
+
 #model.fit(data, distributed='dispy', nodes=['192.168.0.110'])
+'''
 
+from pyFTS.models.multivariate import common, variable, mvfts, wmvfts, cmvfts, grid
+from pyFTS.models.seasonal import partitioner as seasonal
+from pyFTS.models.seasonal.common import DateTime
+
+dataset = pd.read_csv('/home/petronio/Downloads/kalang.csv', sep=',')
+
+dataset['date'] = pd.to_datetime(dataset["date"], format='%Y-%m-%d %H:%M:%S')
+
+train_mv = dataset.iloc[:24505]
+test_mv = dataset.iloc[24505:]
+
+sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
+
+vhour = variable.Variable("Hour", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                          data=train_mv, partitioner_specific=sp, data_type=pd.datetime, mask='%Y-%m-%d %H:%M:%S')
+
+vvalue = variable.Variable("Pollution", data_label="value", alias='value',
+                         partitioner=Grid.GridPartitioner, npart=35, data_type=np.float64,
+                         data=train_mv)
+
+fs = grid.GridCluster(explanatory_variables=[vhour, vvalue], target_variable=vvalue)
+#model = wmvfts.WeightedMVFTS(explanatory_variables=[vhour, vvalue], target_variable=vvalue)
+model = cmvfts.ClusteredMVFTS(explanatory_variables=[vhour, vvalue], target_variable=vvalue,
+                              partitioner=fs)
+
+model.fit(train_mv, distributed='spark', url='spark://192.168.0.106:7077')
+#'''
 print(model)
-
-
 
 '''
 def fun(x):

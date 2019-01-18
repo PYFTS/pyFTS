@@ -26,6 +26,10 @@ class FuzzySet(FuzzySet.FuzzySet):
             self.mf = []
             self.parameters = []
 
+        self.lower = None
+        self.upper = None
+        self.centroid = None
+
 
     def membership(self, x):
         """
@@ -62,3 +66,13 @@ class FuzzySet(FuzzySet.FuzzySet):
         :return:
         """
         self.sets.append(set)
+
+        if self.lower is None or self.lower > set.lower:
+            self.lower = set.lower
+
+        if self.upper is None or self.upper < set.upper:
+            self.upper = set.upper
+
+        if self.centroid is None or self.centroid < set.centroid:
+            self.centroid = set.centroid
+

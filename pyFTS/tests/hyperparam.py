@@ -2,14 +2,14 @@ import numpy as np
 from pyFTS.hyperparam import GridSearch, Evolutionary
 
 def get_dataset():
+    #from pyFTS.data import SONDA
     from pyFTS.data import Malaysia
 
-    ds = Malaysia.get_data('temperature')[:1000]
-    # ds =  pd.read_csv('Malaysia.csv',delimiter=',' )[['temperature']].values[:2000].flatten().tolist()
-    #train = ds[:800]
-    #test = ds[800:]
+    #data = SONDA.get_data('temperature')[:1000]
+    data = Malaysia.get_data('temperature')[:1000]
 
-    return 'Malaysia.temperature', ds #train, test
+    #return 'SONDA.glo_avg', data #train, test
+    return 'Malaysia.temperature', data #train, test
 
 """
 hyperparams = {
@@ -39,4 +39,28 @@ datsetname, dataset  = get_dataset()
 
 #Evolutionary.cluster_method(dataset, 70, 20, .8, .3, 1)
 
-Evolutionary.execute(datsetname, dataset, nodes=nodes, ngen=50, npop=30, )
+'''
+from pyFTS.models import hofts
+from pyFTS.partitioners import Grid
+from pyFTS.benchmarks import Measures
+
+fs = Grid.GridPartitioner(data=dataset[:800], npart=30)
+
+model = hofts.WeightedHighOrderFTS(partitioner=fs, order=2)
+
+model.fit(dataset[:800])
+
+model.predict(dataset[800:1000])
+
+Measures.get_point_statistics(dataset[800:1000], model)
+
+print(model)
+
+'''
+ret = Evolutionary.execute(datsetname, dataset,
+                     ngen=30, npop=20, pcruz=.5, pmut=.3,
+                     window_size=800, experiments=30)
+                     #parameters={'distributed': 'spark', 'url': 'spark://192.168.0.106:7077'})
+
+print(ret)
+#'''

@@ -28,8 +28,6 @@ test_uv = dataset['value'].values[24505:]
 train_mv = dataset.iloc[:24505]
 test_mv = dataset.iloc[24505:]
 
-print(train_mv)
-
 sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
 
 vhour = variable.Variable("Hour", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=24,
@@ -46,21 +44,16 @@ parameters = [
     {'order':2, 'knn': 3},
 ]
 
-for ct, method in enumerate([mvfts.MVFTS, wmvfts.WeightedMVFTS,
-                             cmvfts.ClusteredMVFTS,cmvfts.ClusteredMVFTS,cmvfts.ClusteredMVFTS]):
-    print(method)
-    model = method(**parameters[ct])
-    model.shortname += str(ct)
-    model.append_variable(vhour)
-    model.append_variable(vvalue)
-    model.target_variable = vvalue
-    model.fit(train_mv)
+#for ct, method in enumerate([, wmvfts.WeightedMVFTS,
+#                             cmvfts.ClusteredMVFTS,cmvfts.ClusteredMVFTS,cmvfts.ClusteredMVFTS]):
+model = mvfts.MVFTS()
 
-    Util.persist_obj(model, model.shortname)
+model.append_variable(vhour)
+model.append_variable(vvalue)
+model.target_variable = vvalue
+model.fit(train_mv)
 
-    forecasts = model.predict(test_mv.iloc[:100])
-
-    print(model)
+print(model)
 
 
 

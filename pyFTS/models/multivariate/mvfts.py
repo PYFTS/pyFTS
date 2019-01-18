@@ -12,8 +12,8 @@ class MVFTS(fts.FTS):
     """
     def __init__(self, **kwargs):
         super(MVFTS, self).__init__(**kwargs)
-        self.explanatory_variables = []
-        self.target_variable = None
+        self.explanatory_variables = kwargs.get('explanatory_variables',[])
+        self.target_variable = kwargs.get('target_variable',None)
         self.flrgs = {}
         self.is_multivariate = True
         self.shortname = "MVFTS"

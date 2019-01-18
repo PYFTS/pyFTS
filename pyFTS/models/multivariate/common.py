@@ -7,12 +7,12 @@ class MultivariateFuzzySet(Composite.FuzzySet):
     """
     Multivariate Composite Fuzzy Set
     """
-    def __init__(self, name, **kwargs):
+    def __init__(self, **kwargs):
         """
         Create an empty composite fuzzy set
         :param name: fuzzy set name
         """
-        super(MultivariateFuzzySet, self).__init__(name)
+        super(MultivariateFuzzySet, self).__init__("")
         self.sets = {}
         self.target_variable = kwargs.get('target_variable',None)
 
@@ -28,10 +28,10 @@ class MultivariateFuzzySet(Composite.FuzzySet):
         if variable == self.target_variable.name:
             self.centroid = set.centroid
 
+        self.name += set.name
+
     def set_target_variable(self, variable):
-        #print(self.target_variable, variable)
         self.target_variable = variable
-        #print(self.centroid,self.sets[variable.name].centroid)
         self.centroid = self.sets[variable.name].centroid
 
     def membership(self, x):
@@ -40,7 +40,6 @@ class MultivariateFuzzySet(Composite.FuzzySet):
             data = x[var]
             mv.append(self.sets[var].membership(data))
         return np.nanmin(mv)
-
 
 
 def fuzzyfy_instance(data_point, var):

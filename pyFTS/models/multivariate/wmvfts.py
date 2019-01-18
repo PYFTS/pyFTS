@@ -20,11 +20,12 @@ class WeightedFLRG(mvflrg.FLRG):
         self.w = None
 
     def append_rhs(self, fset, **kwargs):
+        count = kwargs.get('count', 1.0)
         if fset not in self.RHS:
-            self.RHS[fset] = 1.0
+            self.RHS[fset] = count
         else:
-            self.RHS[fset] += 1.0
-        self.count += 1.0
+            self.RHS[fset] += count
+        self.count += count
 
     def weights(self):
         if self.w is None:
@@ -51,10 +52,6 @@ class WeightedMVFTS(mvfts.MVFTS):
     """
     def __init__(self, **kwargs):
         super(WeightedMVFTS, self).__init__(order=1, **kwargs)
-        self.explanatory_variables = []
-        self.target_variable = None
-        self.flrgs = {}
-        self.is_multivariate = True
         self.shortname = "WeightedMVFTS"
         self.name = "Weighted Multivariate FTS"
 

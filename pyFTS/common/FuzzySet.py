@@ -125,6 +125,7 @@ def fuzzyfy(data, partitioner, **kwargs):
     :keyword method: the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)
     :keyword mode: the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership
     values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )
+    
     :returns a list with the fuzzyfied values, depending on the mode
     """
     alpha_cut = kwargs.get('alpha_cut', 0.)

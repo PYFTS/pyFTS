@@ -1,3 +1,4 @@
+import pandas as pd
 from pyFTS.common import fts, FuzzySet, FLR, Membership, tree
 from pyFTS.partitioners import Grid
 from pyFTS.models.multivariate import FLR as MVFLR
@@ -24,6 +25,10 @@ class Variable:
         self.data_label = kwargs.get('data_label', self.name)
         """A string with the column name on DataFrame"""
         self.type = kwargs.get('type', 'common')
+        self.data_type = kwargs.get('data_type', None)
+        """The type of the data column on Pandas Dataframe"""
+        self.mask = kwargs.get('mask', None)
+        """The mask for format the data column on Pandas Dataframe"""
         self.transformation = kwargs.get('transformation', None)
         self.transformation_params = kwargs.get('transformation_params', None)
         self.partitioner = None

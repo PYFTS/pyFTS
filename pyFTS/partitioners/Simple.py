@@ -21,6 +21,15 @@ class SimplePartitioner(partitioner.Partitioner):
 
         self.partitions = 0
 
+    def append_complex(self, fs):
+        self.sets[fs.name] = fs
+        self.partitions += 1
+
+        self.ordered_sets = [key for key in sorted(self.sets.keys(), key=lambda k: self.sets[k].centroid)]
+
+        self.min = self.sets[self.ordered_sets[0]].lower
+        self.max = self.sets[self.ordered_sets[-1]].upper
+
     def append(self, name, mf, parameters, **kwargs):
         """
         Append a new partition (fuzzy set) to the partitioner
@@ -39,7 +48,7 @@ class SimplePartitioner(partitioner.Partitioner):
         if mf is None or mf not in (Membership.trimf, Membership.gaussmf,
                                     Membership.trapmf, Membership.singleton,
                                     Membership.sigmf):
-            raise ValueError("The mf parameter should be one of pyFTS.common.Membership functions")
+            raise ValueError("The mf parameter should be one of pyFTS.common.Membership functions, not {}".format(mf))
 
         if mf == Membership.trimf:
             if len(parameters) != 3:

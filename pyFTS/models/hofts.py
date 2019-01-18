@@ -90,7 +90,6 @@ class HighOrderFTS(fts.FTS):
         self.is_high_order = True
         self.min_order = 1
         self.order= kwargs.get("order", self.min_order)
-        self.lags = kwargs.get("lags", None)
         self.configure_lags(**kwargs)
 
     def configure_lags(self, **kwargs):

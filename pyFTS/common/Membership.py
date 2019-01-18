@@ -74,7 +74,7 @@ def sigmf(x, parameters):
 
     :param x:
     :param parameters: an list with 2 real values (smoothness and midpoint)
-    :return:
+    :return
     """
     return 1 / (1 + math.exp(-parameters[0] * (x - parameters[1])))
 

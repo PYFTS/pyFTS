@@ -38,6 +38,9 @@ class FTS(object):
         """A boolean value indicating if the model support probabilistic forecasting, default: False"""
         self.is_multivariate = False
         """A boolean value indicating if the model support multivariate time series (Pandas DataFrame), default: False"""
+        self.is_clustered = False
+        """A boolean value indicating if the model support multivariate time series (Pandas DataFrame), but works like 
+        a monovariate method, default: False"""
         self.dump = False
         self.transformations = []
         """A list with the data transformations (common.Transformations) applied on model pre and post processing, default: []"""
@@ -61,6 +64,8 @@ class FTS(object):
         """Flag indicating if the test data will be clipped inside the training Universe of Discourse"""
         self.alpha_cut = kwargs.get("alpha_cut", 0.0)
         """A float with the minimal membership to be considered on fuzzyfication process"""
+        self.lags = kwargs.get("lags", None)
+        """The list of lag indexes for high order models"""
         self.max_lag = self.order
         """A integer indicating the largest lag used by the model. This value also indicates the minimum number of past lags 
         needed to forecast a single step ahead"""

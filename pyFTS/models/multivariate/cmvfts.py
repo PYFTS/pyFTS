@@ -13,13 +13,6 @@ class ClusteredMVFTS(mvfts.MVFTS):
     def __init__(self, **kwargs):
         super(ClusteredMVFTS, self).__init__(**kwargs)
 
-        self.cluster_method = kwargs.get('cluster_method', grid.GridCluster)
-        """The cluster method to be called when a new model is build"""
-        self.cluster_params = kwargs.get('cluster_params', {})
-        """The cluster method parameters"""
-        self.cluster = kwargs.get('cluster', None)
-        """The trained clusterer"""
-
         self.fts_method = kwargs.get('fts_method', hofts.WeightedHighOrderFTS)
         """The FTS method to be called when a new model is build"""
         self.fts_params = kwargs.get('fts_params', {})
@@ -29,6 +22,8 @@ class ClusteredMVFTS(mvfts.MVFTS):
         self.knn = kwargs.get('knn', 2)
 
         self.is_high_order = True
+
+        self.is_clustered = True
 
         self.order = kwargs.get("order", 2)
         self.lags = kwargs.get("lags", None)
@@ -43,16 +38,13 @@ class ClusteredMVFTS(mvfts.MVFTS):
         ndata = []
         for index, row in data.iterrows():
             data_point = self.format_data(row)
-            ndata.append(common.fuzzyfy_instance_clustered(data_point, self.cluster, alpha_cut=self.alpha_cut))
+            ndata.append(common.fuzzyfy_instance_clustered(data_point, self.partitioner, alpha_cut=self.alpha_cut))
 
         return ndata
 
     def train(self, data, **kwargs):
 
-        if self.cluster is None:
-            self.cluster = self.cluster_method(data=data, mvfts=self, neighbors=self.knn, **self.cluster_params)
-
-        self.model = self.fts_method(partitioner=self.cluster, **self.fts_params)
+        self.model = self.fts_method(partitioner=self.partitioner, **self.fts_params)
         if self.model.is_high_order:
             self.model.order = self.order
 
@@ -60,7 +52,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         self.model.train(ndata, fuzzyfied=self.pre_fuzzyfy)
 
-        self.cluster.prune()
+        self.partitioner.prune()
 
     def check_data(self, data):
         if self.pre_fuzzyfy:
@@ -84,8 +76,8 @@ class ClusteredMVFTS(mvfts.MVFTS):
         for var in self.explanatory_variables:
             if self.target_variable.name != var.name:
                 self.target_variable = var
-                self.cluster.change_target_variable(var)
-                self.model.partitioner = self.cluster
+                self.partitioner.change_target_variable(var)
+                self.model.partitioner = self.partitioner
                 self.model.reset_calculated_values()
 
             ret[var.name] = self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
