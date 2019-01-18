@@ -144,7 +144,7 @@ def evaluate(dataset, individual, **kwargs):
 
             forecasts = model.predict(test)
 
-            rmse = Measures.rmse(test[model.order:], forecasts[:-1]) #.get_point_statistics(test, model)
+            rmse = Measures.rmse(test[model.max_lag:], forecasts[:-1]) #.get_point_statistics(test, model)
             lengths.append(len(model))
 
             results.append(rmse)
