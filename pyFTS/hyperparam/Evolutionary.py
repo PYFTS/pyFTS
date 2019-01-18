@@ -13,6 +13,7 @@ from pyFTS.partitioners import Grid, Entropy  # , Huarng
 from pyFTS.models import hofts
 from pyFTS.common import Membership
 from pyFTS.hyperparam import Util as hUtil
+from pyFTS.distributed import dispy
 
 
 #
@@ -437,35 +438,40 @@ def GeneticAlgorithm(dataset, **kwargs):
         if no_improvement_count == mgen:
             break
 
-    if collect_statistics:
-        return best, generation_statistics
-    else:
-        return best
+
+    return best, statistics
 
 
 def cluster_method(dataset, **kwargs):
     from pyFTS.hyperparam.Evolutionary import GeneticAlgorithm
 
     inicio = time.time()
-    ret = GeneticAlgorithm(dataset, **kwargs)
+    ret, statistics = GeneticAlgorithm(dataset, **kwargs)
     fim = time.time()
     ret['time'] = fim - inicio
     ret['size'] = ret['len_lags']
-    return ret
+    return ret, statistics
 
 
 def process_jobs(jobs, datasetname, conn):
     for job in jobs:
-        result = job()
+        result,statistics = job()
         if job.status == dispy.DispyJob.Finished and result is not None:
             print("Processing result of {}".format(result))
 
             log_result(conn, datasetname, result)
-                
+
+            persist_statistics(statistics)
 
         else:
             print(job.exception)
             print(job.stdout)
+
+
+def persist_statistics(statistics):
+    import json
+    with open('statistics.txt', 'w') as file:
+        file.write(json.dumps(statistics))
 
 
 def log_result(conn, datasetname, result):
@@ -490,8 +496,9 @@ def execute(datasetname, dataset, **kwargs):
     if not distributed:
         ret = []
         for i in range(experiments):
-            result = cluster_method(dataset, **kwargs)
+            result, statistics = cluster_method(dataset, **kwargs)
             log_result(conn, datasetname, result)
+            persist_statistics(statistics)
             ret.append(result)
 
         return result
@@ -499,7 +506,7 @@ def execute(datasetname, dataset, **kwargs):
     elif distributed=='dispy':
         nodes = kwargs.get('nodes', ['127.0.0.1'])
 
-        cluster, http_server = Util.start_dispy_cluster(cluster_method, nodes=nodes)
+        cluster, http_server = dispy.start_dispy_cluster(cluster_method, nodes=nodes)
 
 
         jobs = []
@@ -511,4 +518,4 @@ def execute(datasetname, dataset, **kwargs):
 
         process_jobs(jobs, datasetname, conn)
 
-        Util.stop_dispy_cluster(cluster, http_server)
+        dispy.stop_dispy_cluster(cluster, http_server)

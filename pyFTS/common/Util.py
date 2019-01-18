@@ -8,6 +8,7 @@ import dill
 import numpy as np
 
 
+
 def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
     if axis is None and rules_by_axis is None:
         rows = 1

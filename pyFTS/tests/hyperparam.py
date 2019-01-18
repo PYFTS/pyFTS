@@ -67,6 +67,7 @@ print(ret)
 
 from pyFTS.hyperparam import Evolutionary
 
+"""
 from pyFTS.data import SONDA
 
 data = np.array(SONDA.get_data('glo_avg'))
@@ -77,15 +78,28 @@ dataset = data[:1000000]
 
 del(data)
 
-ret, statistics = Evolutionary.GeneticAlgorithm(dataset, ngen=30, npop=20, pcruz=.5,
-                                                pmut=.3, window_size=800000, collect_statistics=True,
-                                                parameters={'distributed': 'spark',
-                                                            'url': 'spark://192.168.0.106:7077'})
+"""
 
-import json
+import pandas as pd
+df = pd.read_csv('https://query.data.world/s/i7eb73c4rluf2luasppsyxaurx5ol7', sep=';')
+dataset = df['glo_avg'].values
 
-print(ret)
+from pyFTS.models import hofts
+from pyFTS.partitioners import Grid
+from pyFTS.benchmarks import Measures
 
-with open('statistics.txt', 'w') as file:
-     file.write(json.dumps(statistics)) # use `json.loads` to do the reverse
+from time import  time
+
+t1 = time()
+
+
+Evolutionary.execute('SONDA', dataset,
+                     ngen=20, mgen=5, npop=15, pcruz=.5, pmut=.3,
+                     window_size=35000, train_rate=.6, increment_rate=1,
+                     collect_statistics=True, experiments=1)
+                     #distributed='dispy', nodes=['192.168.0.110','192.168.0.106','192.168.0.107'])
+
+t2 = time()
+
+print(t2 - t1)
 
