@@ -42,13 +42,14 @@ def random_genotype():
     :return: the genotype, a dictionary with all hyperparameters
     '''
     order = random.randint(1, 3)
+    lags = [k for k in np.arange(1, order+1)]
     return genotype(
         random.randint(1, 4),
         random.randint(10, 100),
         random.randint(1, 2),
         order,
         random.uniform(0, .5),
-        sorted(random.sample(range(1, 50), order)),
+        lags,
         None,
         None
     )
