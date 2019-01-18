@@ -88,10 +88,10 @@ def phenotype(individual, train, parameters={}):
         else:
             mf = Membership.trimf
 
-        if individual['partitioner'] == 1:
-            partitioner = Grid.GridPartitioner(data=train, npart=individual['npart'], func=mf)
-        elif individual['partitioner'] == 2:
-            partitioner = Entropy.EntropyPartitioner(data=train, npart=individual['npart'], func=mf)
+        #if individual['partitioner'] == 1:
+        partitioner = Grid.GridPartitioner(data=train, npart=individual['npart'], func=mf)
+        #elif individual['partitioner'] == 2:
+        #    partitioner = Entropy.EntropyPartitioner(data=train, npart=individual['npart'], func=mf)
 
         model = hofts.WeightedHighOrderFTS(partitioner=partitioner,
                                            lags=individual['lags'],
@@ -372,11 +372,12 @@ def GeneticAlgorithm(dataset, **kwargs):
     last_best = population[0]
     best = population[1]
 
+    print("Evaluating initial population {}".format(time.time()))
     for individual in population:
         individual['len_lags'], individual['rmse'] = evaluate(dataset, individual, **kwargs)
 
     for i in range(ngen):
-        print("GENERATION {}".format(i))
+        print("GENERATION {} {}".format(i, time.time()))
 
         generation_statistics = {}
 
@@ -403,7 +404,6 @@ def GeneticAlgorithm(dataset, **kwargs):
             if collect_statistics:
                 _f1.append(f1)
                 _f2.append(f2)
-            #print('eval {}'.format(individual))
 
         if collect_statistics:
             generation_statistics['population'] = {'f1': np.nanmedian(_f1), 'f2': np.nanmedian(_f2)}
@@ -426,13 +426,13 @@ def GeneticAlgorithm(dataset, **kwargs):
 
         if last_best['rmse'] <= best['rmse'] and last_best['len_lags'] <= best['len_lags']:
             no_improvement_count += 1
-            #print("WITHOUT IMPROVEMENT {}".format(no_improvement_count))
+            print("WITHOUT IMPROVEMENT {}".format(no_improvement_count))
             pmut += .05
         else:
             no_improvement_count = 0
             pcruz = kwargs.get('pcruz', .5)
             pmut = kwargs.get('pmut', .3)
-            #print(best)
+            print(best)
 
         if no_improvement_count == mgen:
             break

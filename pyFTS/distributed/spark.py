@@ -180,7 +180,7 @@ def distributed_train(model, data, url=SPARK_ADDR, app='pyFTS'):
 
             func = lambda x: slave_train_univariate(x, **parameters)
 
-            flrgs = context.parallelize(data).repartition(nodes*2).mapPartitions(func)
+            flrgs = context.parallelize(data).repartition(nodes*4).mapPartitions(func)
 
             for k in flrgs.collect():
                 model.append_rule(k[1])
