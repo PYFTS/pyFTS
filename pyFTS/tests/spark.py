@@ -4,7 +4,7 @@ import time
 
 from pyFTS.data import Enrollments, TAIEX, SONDA
 from pyFTS.partitioners import Grid, Simple
-from pyFTS.models import hofts
+from pyFTS.common import Util
 
 from pyspark import SparkConf
 from pyspark import SparkContext
@@ -14,17 +14,65 @@ import os
 os.environ['PYSPARK_PYTHON'] = '/usr/bin/python3'
 os.environ['PYSPARK_DRIVER_PYTHON'] = '/usr/bin/python3'
 #'''
-data = SONDA.get_data('glo_avg')
+data = SONDA.get_dataframe()
 
-fs = Grid.GridPartitioner(data=data, npart=50)
+data = data[['datahora','glo_avg']]
 
-model = hofts.WeightedHighOrderFTS(partitioner=fs, order=2)
+data = data[~(np.isnan(data['glo_avg']) | np.equal(data['glo_avg'], 0.0))]
+
+train = data.iloc[:1500000]
+test = data.iloc[1500000:]
+
+from pyFTS.models.multivariate import common, variable, wmvfts
+from pyFTS.models.seasonal import partitioner as seasonal
+from pyFTS.models.seasonal.common import DateTime
+from pyFTS.partitioners import Grid
+
+import matplotlib.pyplot as plt
+
+#fig, ax = plt.subplots(nrows=3, ncols=1, figsize=[15,5])
+
+
+sp = {'seasonality': DateTime.day_of_year , 'names': ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec']}
+
+vmonth = variable.Variable("Month", data_label="datahora", partitioner=seasonal.TimeGridPartitioner, npart=12, alpha_cut=.25,
+                           data=train, partitioner_specific=sp)
+
+#vmonth.partitioner.plot(ax[0])
+
+sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k) for k in range(0,24)]}
+
+vhour = variable.Variable("Hour", data_label="datahora", partitioner=seasonal.TimeGridPartitioner, npart=24, alpha_cut=.2,
+                          data=train, partitioner_specific=sp)
+
+#vhour.partitioner.plot(ax[1])
+
+
+vavg = variable.Variable("Radiation", data_label="glo_avg", alias='R',
+                         partitioner=Grid.GridPartitioner, npart=35, alpha_cut=.3,
+                         data=train)
+
+#vavg.partitioner.plot(ax[2])
+
+#plt.tight_layout()
+
+#Util.show_and_save_image(fig, 'variables', True)
+
+model = wmvfts.WeightedMVFTS(explanatory_variables=[vmonth,vhour,vavg], target_variable=vavg)
+
 
 _s1 = time.time()
-model.fit(data, distributed='spark', url='spark://192.168.0.106:7077')
+#model.fit(train)
+model.fit(data, distributed='spark', url='spark://192.168.0.106:7077', num_batches=5)
 _s2 = time.time()
 
 print(_s2-_s1)
+
+Util.persist_obj(model, 'sonda_wmvfts')
+
+from pyFTS.benchmarks import Measures
+
+#print(Measures.get_point_statistics(test, model))
 
 #model.fit(data, distributed='dispy', nodes=['192.168.0.110'])
 '''
@@ -56,7 +104,7 @@ model = cmvfts.ClusteredMVFTS(explanatory_variables=[vhour, vvalue], target_vari
 
 model.fit(train_mv, distributed='spark', url='spark://192.168.0.106:7077')
 #'''
-print(model)
+#print(model)
 
 '''
 def fun(x):

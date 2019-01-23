@@ -8,7 +8,6 @@ import dill
 import numpy as np
 
 
-
 def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
     if axis is None and rules_by_axis is None:
         rows = 1
@@ -126,8 +125,8 @@ def show_and_save_image(fig, file, flag, lgd=None):
     :param flag: if True the image will be saved
     :param lgd: legend
     """
+    plt.show()
     if flag:
-        plt.show()
         if lgd is not None:
             fig.savefig(file, additional_artists=lgd,bbox_inches='tight')  #bbox_extra_artists=(lgd,), )
         else:

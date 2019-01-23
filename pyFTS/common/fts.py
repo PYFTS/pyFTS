@@ -163,9 +163,7 @@ class FTS(object):
             elif distributed == 'spark':
                 from pyFTS.distributed import spark
 
-                nodes = kwargs.get("nodes", 'spark://192.168.0.110:7077')
-                app  = kwargs.get("app", 'pyFTS')
-                ret = spark.distributed_predict(data=ndata, model=self, url=nodes, app=app)
+                ret = spark.distributed_predict(data=ndata, model=self, **kwargs)
 
 
         if not self.is_multivariate:

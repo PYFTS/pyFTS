@@ -96,7 +96,7 @@ t1 = time()
 Evolutionary.execute('SONDA', dataset,
                      ngen=20, mgen=5, npop=15, pcruz=.5, pmut=.3,
                      window_size=35000, train_rate=.6, increment_rate=1,
-                     collect_statistics=True, experiments=1)
+                     collect_statistics=True, experiments=5)
                      #distributed='dispy', nodes=['192.168.0.110','192.168.0.106','192.168.0.107'])
 
 t2 = time()
