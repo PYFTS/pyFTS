@@ -27,7 +27,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         self.order = kwargs.get("order", 2)
         self.lags = kwargs.get("lags", None)
-        self.alpha_cut = kwargs.get('alpha_cut', 0.25)
+        self.alpha_cut = kwargs.get('alpha_cut', 0.0)
 
         self.shortname = "ClusteredMVFTS"
         self.name = "Clustered Multivariate FTS"
@@ -38,7 +38,8 @@ class ClusteredMVFTS(mvfts.MVFTS):
         ndata = []
         for index, row in data.iterrows():
             data_point = self.format_data(row)
-            ndata.append(common.fuzzyfy_instance_clustered(data_point, self.partitioner, alpha_cut=self.alpha_cut))
+            ndata.append(common.fuzzyfy_instance_clustered(data_point, self.partitioner,
+                                                           alpha_cut=self.alpha_cut))
 
         return ndata
 

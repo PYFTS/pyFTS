@@ -19,7 +19,7 @@ def acf(data, k):
     :param k: 
     :return: 
     """
-    mu = np.mean(data)
+    mu = np.nanmean(data)
     sigma = np.var(data)
     n = len(data)
     s = 0
@@ -68,7 +68,7 @@ def mape(targets, forecasts):
         targets = np.array(targets)
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
-    return np.mean(np.abs(np.divide((targets - forecasts), targets))) * 100
+    return np.nanmean(np.abs(np.divide(np.subtract(targets, forecasts), targets))) * 100
 
 
 def smape(targets, forecasts, type=2):
@@ -85,11 +85,11 @@ def smape(targets, forecasts, type=2):
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
     if type == 1:
-        return np.mean(np.abs(forecasts - targets) / ((forecasts + targets) / 2))
+        return np.nanmean(np.abs(forecasts - targets) / ((forecasts + targets) / 2))
     elif type == 2:
-        return np.mean(np.abs(forecasts - targets) / (abs(forecasts) + abs(targets))) * 100
+        return np.nanmean(np.abs(forecasts - targets) / (np.abs(forecasts) + abs(targets))) * 100
     else:
-        return sum(np.abs(forecasts - targets)) / sum(forecasts + targets)
+        return np.sum(np.abs(forecasts - targets)) / np.sum(forecasts + targets)
 
 
 def mape_interval(targets, forecasts):
@@ -114,9 +114,9 @@ def UStatistic(targets, forecasts):
     naive = []
     y = []
     for k in np.arange(0, l - 1):
-        y.append((forecasts[k] - targets[k]) ** 2)
-        naive.append((targets[k + 1] - targets[k]) ** 2)
-    return np.sqrt(sum(y) / sum(naive))
+        y.append(np.subtract(forecasts[k], targets[k]) ** 2)
+        naive.append(np.subtract(targets[k + 1], targets[k]) ** 2)
+    return np.sqrt(np.divide(np.sum(y), np.sum(naive)))
 
 
 def TheilsInequality(targets, forecasts):
@@ -188,7 +188,7 @@ def coverage(targets, forecasts):
             preds.append(1)
         else:
             preds.append(0)
-    return np.mean(preds)
+    return np.nanmean(preds)
 
 
 def pinball(tau, target, forecast):
@@ -201,9 +201,9 @@ def pinball(tau, target, forecast):
     :return: float, distance of forecast to the tau-quantile of the target
     """
     if target >= forecast:
-        return (target - forecast) * tau
+        return np.subtract(target, forecast) * tau
     else:
-        return (forecast - target) * (1 - tau)
+        return np.subtract(forecast, target) * (1 - tau)
 
 
 def pinball_mean(tau, targets, forecasts):

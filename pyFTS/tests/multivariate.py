@@ -14,14 +14,7 @@ import os
 os.environ['PYSPARK_PYTHON'] = '/usr/bin/python3'
 os.environ['PYSPARK_DRIVER_PYTHON'] = '/usr/bin/python3'
 #'''
-data = SONDA.get_dataframe()
 
-data = data[['datahora','glo_avg']]
-
-data = data[~(np.isnan(data['glo_avg']) | np.equal(data['glo_avg'], 0.0))]
-
-train = data.iloc[:1500000]
-test = data.iloc[1500000:]
 
 from pyFTS.models.multivariate import common, variable, wmvfts
 from pyFTS.models.seasonal import partitioner as seasonal
@@ -96,12 +89,14 @@ from pyFTS.models.multivariate import common, variable, mvfts, wmvfts, cmvfts, g
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
-dataset = pd.read_csv('/home/petronio/Downloads/kalang.csv', sep=',')
+dataset = pd.read_csv('/home/petronio/Downloads/Klang-daily Max.csv', sep=',')
 
-dataset['date'] = pd.to_datetime(dataset["date"], format='%Y-%m-%d %H:%M:%S')
+dataset['date'] = pd.to_datetime(dataset["Day/Month/Year"], format='%m/%d/%Y')
+dataset['value'] = dataset['Daily-Max API']
 
-train_mv = dataset.iloc[:24505]
-test_mv = dataset.iloc[24505:]
+
+train_mv = dataset.iloc[:732]
+test_mv = dataset.iloc[732:]
 
 sp = {'seasonality': DateTime.day_of_week, 'names': ['mon','tue','wed','tur','fri','sat','sun']}
 
@@ -109,24 +104,34 @@ vday = variable.Variable("DayOfWeek", data_label="date", partitioner=seasonal.Ti
                           data=train_mv, partitioner_specific=sp)
 
 
-print(vday.partitioner)
+sp = {'seasonality': DateTime.day_of_year, 'names': ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']}
 
+vmonth = variable.Variable("Month", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=12,
+                          data=train_mv, partitioner_specific=sp)
 
-sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
-vhour = variable.Variable("Hour", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=24,
-                          data=train_mv, partitioner_specific=sp, data_type=pd.datetime, mask='%Y-%m-%d %H:%M:%S')
 
 vvalue = variable.Variable("Pollution", data_label="value", alias='value',
-                         partitioner=Entropy.EntropyPartitioner, npart=35, data_type=np.float64,
+                         partitioner=Grid.GridPartitioner, npart=35,
                          data=train_mv)
 
-fs = grid.GridCluster(explanatory_variables=[vhour, vvalue], target_variable=vvalue)
+fs = grid.GridCluster(explanatory_variables=[vday, vmonth, vvalue], target_variable=vvalue)
+
+print(len(fs.sets))
+
 #model = wmvfts.WeightedMVFTS(explanatory_variables=[vhour, vvalue], target_variable=vvalue)
-model = cmvfts.ClusteredMVFTS(explanatory_variables=[vhour, vvalue], target_variable=vvalue,
-                              partitioner=fs)
+model = cmvfts.ClusteredMVFTS(explanatory_variables=[vday, vmonth, vvalue], target_variable=vvalue,
+                              partitioner=fs, knn=5, order=2)
 
 model.fit(train_mv) #, distributed='spark', url='spark://192.168.0.106:7077')
 #'''
+#print(model)
+
+print(len(fs.sets))
+
+
+from pyFTS.benchmarks import Measures
+print(Measures.get_point_statistics(test_mv, model))
+
 #print(model)
 
 '''

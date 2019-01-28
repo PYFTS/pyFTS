@@ -9,6 +9,7 @@ import numpy as np
 from pyFTS.common import FuzzySet, FLR, fts, flrg
 from itertools import product
 
+
 class HighOrderFLRG(flrg.FLRG):
     """Conventional High Order Fuzzy Logical Relationship Group"""
     def __init__(self, order, **kwargs):
@@ -184,6 +185,8 @@ class HighOrderFTS(fts.FTS):
 
         explain = kwargs.get('explain', False)
 
+        fuzzyfied = kwargs.get('fuzzyfied', False)
+
         ret = []
 
         l = len(ndata) if not explain else self.max_lag + 1
@@ -191,26 +194,31 @@ class HighOrderFTS(fts.FTS):
         if l < self.max_lag:
             return ndata
 
-        for k in np.arange(self.max_lag, l+1):
+        for k in np.arange(self.max_lag, l):
+
+            sample = ndata[k - self.max_lag: k]
 
             if explain:
                 print("Fuzzyfication \n")
 
-            if not kwargs.get('fuzzyfied', False):
-                flrgs = self.generate_lhs_flrg(ndata[k - self.max_lag: k], explain)
+            if not fuzzyfied:
+                flrgs = self.generate_lhs_flrg(sample, explain)
             else:
-                flrgs = self.generate_lhs_flrg_fuzzyfied(ndata[k - self.max_lag: k], explain)
+                flrgs = self.generate_lhs_flrg_fuzzyfied(sample, explain)
 
             if explain:
                 print("Rules:\n")
 
-            tmp = []
+            midpoints = []
+            memberships = []
             for flrg in flrgs:
 
                 if flrg.get_key() not in self.flrgs:
                     if len(flrg.LHS) > 0:
                         mp = self.partitioner.sets[flrg.LHS[-1]].centroid
-                        tmp.append(mp)
+                        mv = self.partitioner.sets[flrg.LHS[-1]].membership(sample[-1]) if not fuzzyfied else None
+                        midpoints.append(mp)
+                        memberships.append(mv)
 
                         if explain:
                             print("\t {} -> {} (Naïve)\t Midpoint: {}\n".format(str(flrg.LHS), flrg.LHS[-1],
@@ -218,12 +226,15 @@ class HighOrderFTS(fts.FTS):
                 else:
                     flrg = self.flrgs[flrg.get_key()]
                     mp = flrg.get_midpoint(self.partitioner.sets)
-                    tmp.append(mp)
+                    mv = flrg.get_membership(sample, self.partitioner.sets) if not fuzzyfied else None
+                    midpoints.append(mp)
+                    memberships.append(mv)
 
                     if explain:
                         print("\t {} \t Midpoint: {}\n".format(str(flrg), mp))
+                        print("\t {} \t Membership: {}\n".format(str(flrg), mv))
 
-            final = np.nanmean(tmp)
+            final = np.dot(midpoints, memberships)  if not fuzzyfied else np.nanmean(midpoints)
             ret.append(final)
 
             if explain:

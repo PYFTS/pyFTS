@@ -526,7 +526,7 @@ class FTS(object):
             for r in sorted(self.flrgs, key=lambda key: self.flrgs[key].get_midpoint(self.partitioner.sets)):
                 tmp = "{0}{1}\n".format(tmp, str(self.flrgs[r]))
         else:
-            for r in self.model.flrgs:
+            for r in self.flrgs:
                 tmp = "{0}{1}\n".format(tmp, str(self.flrgs[r]))
         return tmp
 
