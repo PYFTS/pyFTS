@@ -50,6 +50,11 @@ class TimeGridPartitioner(partitioner.Partitioner):
         if self.season == DateTime.year:
             dlen = (self.max - self.min)
             partlen = dlen / self.partitions
+        elif self.season == DateTime.day_of_week:
+            self.min = 1
+            self.max = 8
+            partlen = 1
+            pl2 = 1
         else:
             partlen = self.season.value / self.partitions
             pl2 = partlen / 2

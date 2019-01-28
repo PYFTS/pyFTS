@@ -76,3 +76,9 @@ class FuzzySet(FuzzySet.FuzzySet):
         if self.centroid is None or self.centroid < set.centroid:
             self.centroid = set.centroid
 
+
+    def __str__(self):
+        tmp = str([str(k) for k in self.sets])
+        return "{}: {}".format(self.name, tmp)
+
+
