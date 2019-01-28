@@ -65,7 +65,7 @@ class Partitioner(object):
             self.sets = self.build(ndata)
 
             if self.ordered_sets is None and self.setnames is not None:
-                self.ordered_sets = self.setnames
+                self.ordered_sets = self.setnames[:len(self.sets)-1]
             else:
                 self.ordered_sets = FuzzySet.set_ordered(self.sets)
 
