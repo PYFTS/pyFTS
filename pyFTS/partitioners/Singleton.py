@@ -20,10 +20,10 @@ class SingletonPartitioner(partitioner.Partitioner):
     def build(self, data):
         sets = {}
 
+        kwargs = {'type': self.type, 'variable': self.variable}
+
         for count, instance in enumerate(data):
             _name = self.get_name(count)
-            sets[_name] = FuzzySet.FuzzySet(_name, Membership.singleton, [instance], instance)
-
-        kwargs = {'type': self.type, 'variable': self.variable}
+            sets[_name] = FuzzySet.FuzzySet(_name, Membership.singleton, [instance], instance, **kwargs)
 
         return sets

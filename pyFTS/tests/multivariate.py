@@ -72,7 +72,7 @@ print(_s2-_s1)
 Util.persist_obj(model, 'sonda_wmvfts')
 '''
 
-model = Util.load_obj('sonda_wmvfts')
+#model = Util.load_obj('sonda_wmvfts')
 
 '''
 from pyFTS.benchmarks import Measures
@@ -84,13 +84,13 @@ _s2 = time.time()
 print(_s2-_s1)
 '''
 
-print(len(model))
+#print(len(model))
 
 
 #
 
 #model.fit(data, distributed='dispy', nodes=['192.168.0.110'])
-'''
+#'''
 
 from pyFTS.models.multivariate import common, variable, mvfts, wmvfts, cmvfts, grid
 from pyFTS.models.seasonal import partitioner as seasonal
@@ -104,6 +104,11 @@ train_mv = dataset.iloc[:24505]
 test_mv = dataset.iloc[24505:]
 
 sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
+
+sp = {'seasonality': DateTime.day_of_week, 'names': ['mon','tue','wed','tur','fri','sat','sun']}
+
+vday = variable.Variable("DayOfWeek", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=7,
+                          data=train_mv, partitioner_specific=sp)
 
 vhour = variable.Variable("Hour", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=24,
                           data=train_mv, partitioner_specific=sp, data_type=pd.datetime, mask='%Y-%m-%d %H:%M:%S')

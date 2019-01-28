@@ -87,6 +87,8 @@ class EntropyPartitioner(partitioner.Partitioner):
     def build(self, data):
         sets = {}
 
+        kwargs = {'type': self.type, 'variable': self.variable}
+
         partitions = bestSplit(data, self.partitions)
         partitions.append(self.min)
         partitions.append(self.max)
@@ -96,13 +98,13 @@ class EntropyPartitioner(partitioner.Partitioner):
             _name = self.get_name(c)
             if self.membership_function == Membership.trimf:
                 sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
-                                              [partitions[c - 1], partitions[c], partitions[c + 1]],partitions[c])
+                                              [partitions[c - 1], partitions[c], partitions[c + 1]],partitions[c], **kwargs)
             elif self.membership_function == Membership.trapmf:
                 b1 = (partitions[c] - partitions[c - 1])/2
                 b2 = (partitions[c + 1] - partitions[c]) / 2
                 sets[_name] = FuzzySet.FuzzySet(_name, Membership.trapmf,
                                               [partitions[c - 1], partitions[c] - b1,
                                                partitions[c] + b2, partitions[c + 1]],
-                                              partitions[c])
+                                              partitions[c], **kwargs)
 
         return sets

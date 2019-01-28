@@ -32,6 +32,8 @@ class HuarngPartitioner(partitioner.Partitioner):
 
         sets = {}
 
+        kwargs = {'type': self.type, 'variable': self.variable}
+
         dlen = self.max - self.min
         npart = math.ceil(dlen / base)
         partition = math.ceil(self.min)
@@ -39,14 +41,14 @@ class HuarngPartitioner(partitioner.Partitioner):
             _name = self.get_name(c)
             if self.membership_function == Membership.trimf:
                 sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
-                                               [partition - base, partition, partition + base], partition)
+                                               [partition - base, partition, partition + base], partition, **kwargs)
             elif self.membership_function == Membership.gaussmf:
                 sets[_name] = FuzzySet.FuzzySet(_name, Membership.gaussmf,
                                               [partition, base/2], partition)
             elif self.membership_function == Membership.trapmf:
                 sets[_name] = FuzzySet.FuzzySet(_name, Membership.trapmf,
                                               [partition - base, partition - (base/2),
-                                               partition + (base / 2), partition + base], partition)
+                                               partition + (base / 2), partition + base], partition, **kwargs)
 
             partition += base
 

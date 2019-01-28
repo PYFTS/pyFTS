@@ -113,6 +113,8 @@ class FCMPartitioner(partitioner.Partitioner):
     def build(self, data):
         sets = {}
 
+        kwargs = {'type': self.type, 'variable': self.variable}
+
         centroids = fuzzy_cmeans(self.partitions, data, 1, 2)
         centroids.append(self.max)
         centroids.append(self.min)
@@ -124,13 +126,13 @@ class FCMPartitioner(partitioner.Partitioner):
                 sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
                                                 [round(centroids[c - 1], 3), round(centroids[c], 3),
                                                  round(centroids[c + 1], 3)],
-                                                round(centroids[c], 3))
+                                                round(centroids[c], 3), **kwargs)
             elif self.membership_function == Membership.trapmf:
                 q1 = (round(centroids[c], 3) - round(centroids[c - 1], 3)) / 2
                 q2 = (round(centroids[c + 1], 3) - round(centroids[c], 3)) / 2
                 sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
                                                 [round(centroids[c - 1], 3), round(centroids[c], 3) - q1,
                                                  round(centroids[c], 3) + q2, round(centroids[c + 1], 3)],
-                                                round(centroids[c], 3))
+                                                round(centroids[c], 3), **kwargs)
 
         return sets
