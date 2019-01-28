@@ -25,14 +25,29 @@ from pyFTS.data import TAIEX, SP500, NASDAQ, Malaysia, Enrollments
 from pyFTS.partitioners import Grid
 from pyFTS.models import pwfts, tsaur
 
-dataset = pd.read_csv('/home/petronio/Downloads/kalang.csv', sep=',')
+dataset = pd.read_csv('/home/petronio/Downloads/Klang-daily Max.csv', sep=',')
 
-dataset['date'] = pd.to_datetime(dataset["date"], format='%Y-%m-%d %H:%M:%S')
+dataset['date'] = pd.to_datetime(dataset["Day/Month/Year"], format='%m/%d/%Y')
+dataset['value'] = dataset['Daily-Max API']
 
-train_uv = dataset['value'].values[:24505]
-test_uv = dataset['value'].values[24505:]
 
-partitioner = Grid.GridPartitioner(data=train_uv, npart=35)
+train_uv = dataset['value'].values[:732]
+test_uv = dataset['value'].values[732:]
+
+from itertools import product
+
+levels = ['VeryLow', 'Low', 'Medium', 'High', 'VeryHigh']
+sublevels = [str(k) for k in np.arange(0, 7)]
+names = []
+for combination in product(*[levels, sublevels]):
+    names.append(combination[0] + combination[1])
+
+print(names)
+
+#partitioner = Grid.GridPartitioner(data=train_uv, npart=35, names=names)
+partitioner = Entropy.EntropyPartitioner(data=train_uv,npart=35, names=names)
+
+print(partitioner)
 
 model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner) #, order=2, lags=[3,4])
 #model = tsaur.MarkovWeightedFTS(partitioner=partitioner)

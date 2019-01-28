@@ -94,8 +94,8 @@ class EntropyPartitioner(partitioner.Partitioner):
         partitions.append(self.max)
         partitions = list(set(partitions))
         partitions.sort()
-        for c in np.arange(1, len(partitions) - 1):
-            _name = self.get_name(c)
+        for c in np.arange(1, len(partitions)-1):
+            _name = self.get_name(c-1)
             if self.membership_function == Membership.trimf:
                 sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf,
                                               [partitions[c - 1], partitions[c], partitions[c + 1]],partitions[c], **kwargs)

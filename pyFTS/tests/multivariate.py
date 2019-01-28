@@ -3,7 +3,7 @@ import pandas as pd
 import time
 
 from pyFTS.data import Enrollments, TAIEX, SONDA
-from pyFTS.partitioners import Grid, Simple
+from pyFTS.partitioners import Grid, Simple, Entropy
 from pyFTS.common import Util
 
 from pyspark import SparkConf
@@ -114,7 +114,7 @@ vhour = variable.Variable("Hour", data_label="date", partitioner=seasonal.TimeGr
                           data=train_mv, partitioner_specific=sp, data_type=pd.datetime, mask='%Y-%m-%d %H:%M:%S')
 
 vvalue = variable.Variable("Pollution", data_label="value", alias='value',
-                         partitioner=Grid.GridPartitioner, npart=35, data_type=np.float64,
+                         partitioner=Entropy.EntropyPartitioner, npart=35, data_type=np.float64,
                          data=train_mv)
 
 fs = grid.GridCluster(explanatory_variables=[vhour, vvalue], target_variable=vvalue)
@@ -122,7 +122,7 @@ fs = grid.GridCluster(explanatory_variables=[vhour, vvalue], target_variable=vva
 model = cmvfts.ClusteredMVFTS(explanatory_variables=[vhour, vvalue], target_variable=vvalue,
                               partitioner=fs)
 
-model.fit(train_mv, distributed='spark', url='spark://192.168.0.106:7077')
+model.fit(train_mv) #, distributed='spark', url='spark://192.168.0.106:7077')
 #'''
 #print(model)
 
