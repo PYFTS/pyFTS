@@ -3,7 +3,7 @@ import pandas as pd
 from enum import Enum
 from pyFTS.common import FuzzySet, Membership
 from pyFTS.partitioners import partitioner, Grid
-from datetime import date as dt
+from datetime import date as dt, datetime as dtm
 
 
 
@@ -30,7 +30,9 @@ class DateTime(Enum):
     second_of_day = 86400
 
 
-def strip_datepart(date, date_part):
+def strip_datepart(date, date_part, mask=''):
+    if isinstance(date, str):
+        date = dtm.strptime(date, mask)
     if date_part == DateTime.year:
         tmp = date.year
     elif date_part == DateTime.month:

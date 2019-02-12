@@ -20,6 +20,10 @@ class TimeGridPartitioner(partitioner.Partitioner):
         super(TimeGridPartitioner, self).__init__(name="TimeGrid", preprocess=False, **kwargs)
 
         self.season = kwargs.get('seasonality', DateTime.day_of_year)
+        '''Seasonality, a pyFTS.models.seasonal.common.DateTime object'''
+        self.mask = kwargs.get('mask', '%Y-%m-%d %H:%M:%S')
+        '''A string with datetime formating mask'''
+
         data = kwargs.get('data', None)
         if self.season == DateTime.year:
             ndata = [strip_datepart(k, self.season) for k in data]
@@ -40,7 +44,7 @@ class TimeGridPartitioner(partitioner.Partitioner):
             self.ordered_sets = FS.set_ordered(self.sets)
 
         if self.type == 'seasonal':
-            self.extractor = lambda x: strip_datepart(x, self.season)
+            self.extractor = lambda x: strip_datepart(x, self.season, self.mask)
 
     def build(self, data):
         sets = {}

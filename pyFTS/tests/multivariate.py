@@ -89,20 +89,26 @@ from pyFTS.models.multivariate import common, variable, mvfts, wmvfts, cmvfts, g
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
-dataset = pd.read_csv('/home/petronio/Downloads/Klang-daily Max.csv', sep=',')
+dataset = pd.read_csv('/home/petronio/Downloads/gefcom12.csv')
+dataset = dataset.dropna()
 
-dataset['date'] = pd.to_datetime(dataset["Day/Month/Year"], format='%m/%d/%Y')
-dataset['value'] = dataset['Daily-Max API']
+train_mv = dataset.iloc[:25000]
+test_mv = dataset.iloc[25000:]
+
+from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.models.seasonal import partitioner as seasonal
+from pyFTS.models.seasonal.common import DateTime
 
 
-train_mv = dataset.iloc[:732]
-test_mv = dataset.iloc[732:]
+sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k) for k in range(0,24)]}
+
+vhour = variable.Variable("Hour", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                          data=train_mv, partitioner_specific=sp)
 
 sp = {'seasonality': DateTime.day_of_week, 'names': ['mon','tue','wed','tur','fri','sat','sun']}
 
 vday = variable.Variable("DayOfWeek", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=7,
                           data=train_mv, partitioner_specific=sp)
-
 
 sp = {'seasonality': DateTime.day_of_year, 'names': ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']}
 
@@ -110,86 +116,50 @@ vmonth = variable.Variable("Month", data_label="date", partitioner=seasonal.Time
                           data=train_mv, partitioner_specific=sp)
 
 
-vvalue = variable.Variable("Pollution", data_label="value", alias='value',
+vload = variable.Variable("Load", data_label="load", alias='load',
                          partitioner=Grid.GridPartitioner, npart=35,
                          data=train_mv)
 
-fs = grid.GridCluster(explanatory_variables=[vday, vmonth, vvalue], target_variable=vvalue)
+vtemp = variable.Variable("Temperature", data_label="temperature", alias='temperature',
+                         partitioner=Grid.GridPartitioner, npart=35,
+                         data=train_mv)
 
-print(len(fs.sets))
+from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
+from itertools import combinations
 
-#model = wmvfts.WeightedMVFTS(explanatory_variables=[vhour, vvalue], target_variable=vvalue)
-model = cmvfts.ClusteredMVFTS(explanatory_variables=[vday, vmonth, vvalue], target_variable=vvalue,
-                              partitioner=fs, knn=5, order=2)
+models = []
 
-model.fit(train_mv) #, distributed='spark', url='spark://192.168.0.106:7077')
-#'''
-#print(model)
+variables = [vhour, vday, vmonth, vtemp]
 
-print(len(fs.sets))
-
-
-from pyFTS.benchmarks import Measures
-print(Measures.get_point_statistics(test_mv, model))
-
-#print(model)
-
-'''
-def fun(x):
-    return (x, x % 2)
+parameters = [
+    {}, {},
+    {'order': 2, 'knn': 1},
+    {'order': 2, 'knn': 2},
+    {'order': 2, 'knn': 3},
+]
 
 
-def get_fs():
-    fs_tmp = Simple.SimplePartitioner()
+for ct, method in enumerate([mvfts.MVFTS, wmvfts.WeightedMVFTS,
+                             cmvfts.ClusteredMVFTS, cmvfts.ClusteredMVFTS, cmvfts.ClusteredMVFTS]):
+    for nc in np.arange(1, 5):
+        for comb in combinations(variables, nc):
+            _vars = []
+            _vars.extend(comb)
+            _vars.append(vload)
 
-    for fset in part.value.keys():
-        fz = part.value[fset]
-        fs_tmp.append(fset, fz.mf, fz.parameters)
+            if not method == cmvfts.ClusteredMVFTS:
+                model = method(explanatory_variables=_vars, target_variable=vload, **parameters[ct])
+            else:
+                fs = grid.GridCluster(explanatory_variables=_vars, target_variable=vload)
+                model = method(explanatory_variables=_vars, target_variable=vload, partitioner=fs, **parameters[ct])
 
-    return fs_tmp
+            for _v in comb:
+                model.shortname += _v.name
 
-def fuzzyfy(x):
+            model.fit(train_mv)
 
-    fs_tmp = get_fs()
+            models.append(model.shortname)
 
-    ret = []
+            #Util.persist_obj(model, model.shortname)
 
-    for k in x:
-        ret.append(fs_tmp.fuzzyfy(k, mode='both'))
-
-    return ret
-
-
-def train(fuzzyfied):
-    model = hofts.WeightedHighOrderFTS(partitioner=get_fs(), order=order.value)
-
-    ndata = [k for k in fuzzyfied]
-
-    model.train(ndata)
-
-    return [(k, model.flrgs[k]) for k in model.flrgs]
-
-
-with SparkContext(conf=conf) as sc:
-
-    part = sc.broadcast(fs.sets)
-
-    order = sc.broadcast(2)
-
-    #ret = sc.parallelize(np.arange(0,100)).map(fun)
-
-    #fuzzyfied = sc.parallelize(data).mapPartitions(fuzzyfy)
-
-    flrgs = sc.parallelize(data).mapPartitions(train)
-
-    model = hofts.WeightedHighOrderFTS(partitioner=fs, order=order.value)
-
-    for k in flrgs.collect():
-        model.append_rule(k[1])
-
-    print(model)
-
-'''
-
-
-
+            forecasts = model.predict(test_mv.iloc[:100])

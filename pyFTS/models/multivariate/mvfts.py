@@ -51,7 +51,7 @@ class MVFTS(fts.FTS):
         flrs = []
         lags = {}
         for vc, var in enumerate(self.explanatory_variables):
-            data_point = data[var.data_label]
+            data_point = data[var.name]
             lags[vc] = common.fuzzyfy_instance(data_point, var)
 
         root = tree.FLRGTreeNode(None)
@@ -75,7 +75,7 @@ class MVFTS(fts.FTS):
         flrs = []
         for ct in range(1, len(data.index)):
             ix = data.index[ct-1]
-            data_point = data.loc[ix]
+            data_point = self.format_data( data.loc[ix] )
 
             tmp_flrs = self.generate_lhs_flrs(data_point)
 
@@ -111,7 +111,8 @@ class MVFTS(fts.FTS):
         ret = []
         ndata = self.apply_transformations(data)
         for index, row in ndata.iterrows():
-            flrs = self.generate_lhs_flrs(row)
+            data_point = self.format_data(row)
+            flrs = self.generate_lhs_flrs(data_point)
             mvs = []
             mps = []
             for flr in flrs:
@@ -120,7 +121,7 @@ class MVFTS(fts.FTS):
                     mvs.append(0.)
                     mps.append(0.)
                 else:
-                    mvs.append(self.flrgs[flrg.get_key()].get_membership(self.format_data(row), self.explanatory_variables))
+                    mvs.append(self.flrgs[flrg.get_key()].get_membership(data_point, self.explanatory_variables))
                     mps.append(self.flrgs[flrg.get_key()].get_midpoint(self.target_variable.partitioner.sets))
 
             mv = np.array(mvs)
