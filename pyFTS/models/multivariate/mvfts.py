@@ -1,9 +1,22 @@
-from pyFTS.common import fts, FuzzySet, FLR, Membership, tree
+from pyFTS.common import fts, FuzzySet, FLR, Membership
 from pyFTS.partitioners import Grid
 from pyFTS.models.multivariate import FLR as MVFLR, common, flrg as mvflrg
+from itertools import product
 
 import numpy as np
 import pandas as pd
+
+
+def product_dict(**kwargs):
+    '''
+    Code by Seth Johnson
+    :param kwargs:
+    :return:
+    '''
+    keys = kwargs.keys()
+    vals = kwargs.values()
+    for instance in product(*vals):
+        yield dict(zip(keys, instance))
 
 
 class MVFTS(fts.FTS):
@@ -52,22 +65,18 @@ class MVFTS(fts.FTS):
         lags = {}
         for vc, var in enumerate(self.explanatory_variables):
             data_point = data[var.name]
-            lags[vc] = common.fuzzyfy_instance(data_point, var)
+            lags[var.name] = common.fuzzyfy_instance(data_point, var, tuples=False)
 
-        root = tree.FLRGTreeNode(None)
-
-        tree.build_tree_without_order(root, lags, 0)
-
-        for p in root.paths():
-            path = list(reversed(list(filter(None.__ne__, p))))
-
+        for path in product_dict(**lags):
             flr = MVFLR.FLR()
 
-            for v, s in path:
-                flr.set_lhs(v, s)
+            for var, fset in path.items():
+                flr.set_lhs(var, fset)
 
             if len(flr.LHS.keys()) == len(self.explanatory_variables):
                 flrs.append(flr)
+            else:
+                print(flr)
 
         return flrs
 
@@ -110,6 +119,7 @@ class MVFTS(fts.FTS):
     def forecast(self, data, **kwargs):
         ret = []
         ndata = self.apply_transformations(data)
+        c = 0
         for index, row in ndata.iterrows():
             data_point = self.format_data(row)
             flrs = self.generate_lhs_flrs(data_point)
@@ -118,8 +128,17 @@ class MVFTS(fts.FTS):
             for flr in flrs:
                 flrg = mvflrg.FLRG(lhs=flr.LHS)
                 if flrg.get_key() not in self.flrgs:
-                    mvs.append(0.)
-                    mps.append(0.)
+                    #Naïve approach is applied when no rules were found
+                    if self.target_variable.name in flrg.LHS:
+                        fs = flrg.LHS[self.target_variable.name]
+                        fset = self.target_variable.partitioner.sets[fs]
+                        mp = fset.centroid
+                        mv = fset.membership(data_point[self.target_variable.name])
+                        mvs.append(mv)
+                        mps.append(mp)
+                    else:
+                        mvs.append(0.)
+                        mps.append(0.)
                 else:
                     mvs.append(self.flrgs[flrg.get_key()].get_membership(data_point, self.explanatory_variables))
                     mps.append(self.flrgs[flrg.get_key()].get_midpoint(self.target_variable.partitioner.sets))

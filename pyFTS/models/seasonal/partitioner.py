@@ -55,10 +55,13 @@ class TimeGridPartitioner(partitioner.Partitioner):
             dlen = (self.max - self.min)
             partlen = dlen / self.partitions
         elif self.season == DateTime.day_of_week:
-            self.min = 1
-            self.max = 8
-            partlen = 1
-            pl2 = 1
+            self.min, self.max, partlen, pl2 = 0, 7, 1, 1
+        elif self.season == DateTime.hour:
+            self.min, self.max, partlen, pl2 = 0, 24, 1, 1
+        elif self.season == DateTime.month:
+            self.min, self.max, partlen, pl2 = 1, 13, 1, 1
+        elif self.season  in (DateTime.half, DateTime.third, DateTime.quarter, DateTime.sixth):
+            self.min, self.max, partlen, pl2 = 1, self.season.value+1, 1, 1
         else:
             partlen = self.season.value / self.partitions
             pl2 = partlen / 2

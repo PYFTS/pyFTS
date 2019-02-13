@@ -177,8 +177,11 @@ def persist_obj(obj, file):
     :param obj: object on memory
     :param file: file name to store the object
     """
-    with open(file, 'wb') as _file:
-        dill.dump(obj, _file)
+    try:
+        with open(file, 'wb') as _file:
+            dill.dump(obj, _file)
+    except Exception as ex:
+        print("File {} could not be saved due exception {}".format(file, ex))
 
 
 def load_obj(file):

@@ -42,9 +42,12 @@ class MultivariateFuzzySet(Composite.FuzzySet):
         return np.nanmin(mv)
 
 
-def fuzzyfy_instance(data_point, var):
+def fuzzyfy_instance(data_point, var, tuples=True):
     fsets = FuzzySet.fuzzyfy(data_point, var.partitioner, mode='sets', method='fuzzy', alpha_cut=var.alpha_cut)
-    return [(var.name, fs) for fs in fsets]
+    if tuples:
+        return [(var.name, fs) for fs in fsets]
+    else:
+        return fsets
 
 
 def fuzzyfy_instance_clustered(data_point, cluster, **kwargs):

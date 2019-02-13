@@ -6,9 +6,15 @@ from pyFTS.partitioners import partitioner, Grid
 from datetime import date as dt, datetime as dtm
 
 
-
 class DateTime(Enum):
+    """
+    Data and Time granularity for time granularity and seasonality identification
+    """
     year = 1
+    half = 2        # six months
+    third = 3       # four months
+    quarter = 4     # three months
+    sixth = 6       # two months
     month = 12
     day_of_month = 30
     day_of_year = 364
@@ -37,6 +43,8 @@ def strip_datepart(date, date_part, mask=''):
         tmp = date.year
     elif date_part == DateTime.month:
         tmp = date.month
+    elif date_part in (DateTime.half, DateTime.third, DateTime.quarter, DateTime.sixth):
+        tmp = (date.month // date_part.value) + 1
     elif date_part == DateTime.day_of_year:
         tmp = date.timetuple().tm_yday
     elif date_part == DateTime.day_of_month:
