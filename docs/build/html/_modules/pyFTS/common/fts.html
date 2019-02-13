@@ -112,6 +112,9 @@
         <span class="sd">&quot;&quot;&quot;A boolean value indicating if the model support probabilistic forecasting, default: False&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_multivariate</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="sd">&quot;&quot;&quot;A boolean value indicating if the model support multivariate time series (Pandas DataFrame), default: False&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_clustered</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="sd">&quot;&quot;&quot;A boolean value indicating if the model support multivariate time series (Pandas DataFrame), but works like </span>
+<span class="sd">        a monovariate method, default: False&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dump</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="sd">&quot;&quot;&quot;A list with the data transformations (common.Transformations) applied on model pre and post processing, default: []&quot;&quot;&quot;</span>
@@ -135,6 +138,8 @@
         <span class="sd">&quot;&quot;&quot;Flag indicating if the test data will be clipped inside the training Universe of Discourse&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alpha_cut&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;A float with the minimal membership to be considered on fuzzyfication process&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lags</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lags&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The list of lag indexes for high order models&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span>
         <span class="sd">&quot;&quot;&quot;A integer indicating the largest lag used by the model. This value also indicates the minimum number of past lags </span>
 <span class="sd">        needed to forecast a single step ahead&quot;&quot;&quot;</span>
@@ -221,10 +226,19 @@
 
         <span class="k">else</span><span class="p">:</span>
 
-            <span class="n">nodes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">])</span>
-            <span class="n">num_batches</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_batches&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">distributed</span> <span class="o">==</span> <span class="s1">&#39;dispy&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">pyFTS.distributed</span> <span class="k">import</span> <span class="n">dispy</span>
 
-            <span class="n">ret</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">distributed_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="n">num_batches</span><span class="p">)</span>
+                <span class="n">nodes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">])</span>
+                <span class="n">num_batches</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_batches&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">dispy</span><span class="o">.</span><span class="n">distributed_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="n">num_batches</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">distributed</span> <span class="o">==</span> <span class="s1">&#39;spark&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">pyFTS.distributed</span> <span class="k">import</span> <span class="n">spark</span>
+
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">distributed_predict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ndata</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multivariate</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span>
@@ -385,7 +399,7 @@
 
         <span class="n">dump</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dump&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-        <span class="n">num_batches</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_batches&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">num_batches</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_batches&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="n">save</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;save_model&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># save model on disk</span>
 
@@ -397,12 +411,21 @@
 
         <span class="n">batch_save_interval</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batch_save_interval&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">distributed</span><span class="p">:</span>
-            <span class="n">nodes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-            <span class="n">train_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;train_method&#39;</span><span class="p">,</span> <span class="n">Util</span><span class="o">.</span><span class="n">simple_model_train</span><span class="p">)</span>
-            <span class="n">Util</span><span class="o">.</span><span class="n">distributed_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_method</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_batches</span><span class="p">,</span> <span class="p">{},</span>
-                                   <span class="n">batch_save</span><span class="o">=</span><span class="n">batch_save</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
-                                   <span class="n">batch_save_interval</span><span class="o">=</span><span class="n">batch_save_interval</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">distributed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">distributed</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">distributed</span> <span class="o">==</span> <span class="s1">&#39;dispy&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">pyFTS.distributed</span> <span class="k">import</span> <span class="n">dispy</span>
+                <span class="n">nodes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">train_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;train_method&#39;</span><span class="p">,</span> <span class="n">dispy</span><span class="o">.</span><span class="n">simple_model_train</span><span class="p">)</span>
+                <span class="n">dispy</span><span class="o">.</span><span class="n">distributed_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_method</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_batches</span><span class="p">,</span> <span class="p">{},</span>
+                                       <span class="n">batch_save</span><span class="o">=</span><span class="n">batch_save</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+                                       <span class="n">batch_save_interval</span><span class="o">=</span><span class="n">batch_save_interval</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">distributed</span> <span class="o">==</span> <span class="s1">&#39;spark&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">pyFTS.distributed</span> <span class="k">import</span> <span class="n">spark</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="s1">&#39;spark://192.168.0.110:7077&#39;</span><span class="p">)</span>
+                <span class="n">app</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="s1">&#39;pyFTS&#39;</span><span class="p">)</span>
+
+                <span class="n">spark</span><span class="o">.</span><span class="n">distributed_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
 
             <span class="k">if</span> <span class="n">dump</span> <span class="o">==</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span>
@@ -477,6 +500,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_only</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">benchmark_only</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">indexer</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">indexer</span></div>
 
+<div class="viewcode-block" id="FTS.append_rule"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.append_rule">[docs]</a>    <span class="k">def</span> <span class="nf">append_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flrg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append FLRG rule to the model</span>
+
+<span class="sd">        :param flrg: rule</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span> <span class="o">=</span> <span class="n">flrg</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="FTS.merge"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Merge the FLRG rules from other model</span>
@@ -485,19 +528,8 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">flrgs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">flrg</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span> <span class="o">=</span> <span class="n">flrg</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
-                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">append_rhs</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">flrg</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">flrgs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append_rule</span><span class="p">(</span><span class="n">flrg</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FTS.append_transformation"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.append_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">append_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">transformation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

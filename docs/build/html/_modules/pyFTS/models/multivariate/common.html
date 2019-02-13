@@ -81,12 +81,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Multivariate Composite Fuzzy Set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an empty composite fuzzy set</span>
 <span class="sd">        :param name: fuzzy set name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MultivariateFuzzySet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MultivariateFuzzySet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sets</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
 
@@ -100,12 +100,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span>
 
         <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">centroid</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">centroid</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+=</span> <span class="nb">set</span><span class="o">.</span><span class="n">name</span></div>
 
 <div class="viewcode-block" id="MultivariateFuzzySet.set_target_variable"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.MultivariateFuzzySet.set_target_variable">[docs]</a>    <span class="k">def</span> <span class="nf">set_target_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
-        <span class="c1">#print(self.target_variable, variable)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span> <span class="o">=</span> <span class="n">variable</span>
-        <span class="c1">#print(self.centroid,self.sets[variable.name].centroid)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span></div>
 
 <div class="viewcode-block" id="MultivariateFuzzySet.membership"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.MultivariateFuzzySet.membership">[docs]</a>    <span class="k">def</span> <span class="nf">membership</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -114,7 +114,6 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span>
             <span class="n">mv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">mv</span><span class="p">)</span></div></div>
-
 
 
 <div class="viewcode-block" id="fuzzyfy_instance"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.fuzzyfy_instance">[docs]</a><span class="k">def</span> <span class="nf">fuzzyfy_instance</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>

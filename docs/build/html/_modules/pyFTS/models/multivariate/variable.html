@@ -72,7 +72,8 @@
           <div class="body" role="main">
             
   <h1>Source code for pyFTS.models.multivariate.variable</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">fts</span><span class="p">,</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">FLR</span><span class="p">,</span> <span class="n">Membership</span><span class="p">,</span> <span class="n">tree</span>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">fts</span><span class="p">,</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">FLR</span><span class="p">,</span> <span class="n">Membership</span><span class="p">,</span> <span class="n">tree</span>
 <span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">Grid</span>
 <span class="kn">from</span> <span class="nn">pyFTS.models.multivariate</span> <span class="k">import</span> <span class="n">FLR</span> <span class="k">as</span> <span class="n">MVFLR</span>
 
@@ -98,6 +99,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data_label</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_label&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;A string with the column name on DataFrame&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;common&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The type of the data column on Pandas Dataframe&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mask&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The mask for format the data column on Pandas Dataframe&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transformation&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformation_params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transformation_params&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span> <span class="o">=</span> <span class="kc">None</span>

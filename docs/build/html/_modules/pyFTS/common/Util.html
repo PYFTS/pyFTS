@@ -199,8 +199,8 @@
 <span class="sd">    :param flag: if True the image will be saved</span>
 <span class="sd">    :param lgd: legend</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">lgd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">additional_artists</span><span class="o">=</span><span class="n">lgd</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>  <span class="c1">#bbox_extra_artists=(lgd,), )</span>
         <span class="k">else</span><span class="p">:</span>
@@ -281,131 +281,6 @@
 
 
 
-<div class="viewcode-block" id="start_dispy_cluster"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Util.start_dispy_cluster">[docs]</a><span class="k">def</span> <span class="nf">start_dispy_cluster</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">dispy</span><span class="o">,</span> <span class="nn">dispy.httpd</span><span class="o">,</span> <span class="nn">logging</span>
-
-    <span class="n">cluster</span> <span class="o">=</span> <span class="n">dispy</span><span class="o">.</span><span class="n">JobCluster</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">ping_interval</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-
-    <span class="n">http_server</span> <span class="o">=</span> <span class="n">dispy</span><span class="o">.</span><span class="n">httpd</span><span class="o">.</span><span class="n">DispyHTTPServer</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">cluster</span><span class="p">,</span> <span class="n">http_server</span></div>
-
-
-
-<div class="viewcode-block" id="stop_dispy_cluster"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Util.stop_dispy_cluster">[docs]</a><span class="k">def</span> <span class="nf">stop_dispy_cluster</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">http_server</span><span class="p">):</span>
-    <span class="n">cluster</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>  <span class="c1"># wait for all jobs to finish</span>
-
-    <span class="n">cluster</span><span class="o">.</span><span class="n">print_status</span><span class="p">()</span>
-
-    <span class="n">http_server</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>  <span class="c1"># this waits until browser gets all updates</span>
-    <span class="n">cluster</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-
-
-
-<div class="viewcode-block" id="simple_model_train"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Util.simple_model_train">[docs]</a><span class="k">def</span> <span class="nf">simple_model_train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">model</span></div>
-
-
-<div class="viewcode-block" id="distributed_train"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Util.distributed_train">[docs]</a><span class="k">def</span> <span class="nf">distributed_train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_method</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">fts_method</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_batches</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                      <span class="n">train_parameters</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">dispy</span><span class="o">,</span> <span class="nn">dispy.httpd</span><span class="o">,</span> <span class="nn">datetime</span>
-
-    <span class="n">batch_save</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batch_save&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># save model between batches</span>
-
-    <span class="n">batch_save_interval</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batch_save_interval&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-    <span class="n">file_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_path&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="n">cluster</span><span class="p">,</span> <span class="n">http_server</span> <span class="o">=</span> <span class="n">start_dispy_cluster</span><span class="p">(</span><span class="n">train_method</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[{0: %H:%M:%S}] Distrituted Train Started&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()))</span>
-
-    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="n">num_batches</span><span class="p">)</span>
-    <span class="n">bcount</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">for</span> <span class="n">ct</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span><span class="p">:</span>
-            <span class="n">ndata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ct</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">:</span><span class="n">ct</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ndata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ct</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">:</span> <span class="n">ct</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
-
-        <span class="n">tmp_model</span> <span class="o">=</span> <span class="n">fts_method</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">bcount</span><span class="p">))</span>
-
-        <span class="n">tmp_model</span><span class="o">.</span><span class="n">clone_parameters</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-
-        <span class="n">job</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">tmp_model</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="n">train_parameters</span><span class="p">)</span>
-        <span class="n">job</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">bcount</span>  <span class="c1"># associate an ID to identify jobs (if needed later)</span>
-        <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
-
-        <span class="n">bcount</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[{0: %H:%M:%S}] Processing batch &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">job</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">dispy</span><span class="o">.</span><span class="n">DispyJob</span><span class="o">.</span><span class="n">Finished</span> <span class="ow">and</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">batch_save</span> <span class="ow">and</span> <span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">id</span> <span class="o">%</span> <span class="n">batch_save_interval</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">persist_obj</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">exception</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[{0: %H:%M:%S}] Finished batch &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[{0: %H:%M:%S}] Distrituted Train Finished&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()))</span>
-
-    <span class="n">stop_dispy_cluster</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">http_server</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">model</span></div>
-
-
-
-<div class="viewcode-block" id="simple_model_predict"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Util.simple_model_predict">[docs]</a><span class="k">def</span> <span class="nf">simple_model_predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="distributed_predict"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Util.distributed_predict">[docs]</a><span class="k">def</span> <span class="nf">distributed_predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_batches</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">dispy</span><span class="o">,</span> <span class="nn">dispy.httpd</span>
-
-    <span class="n">cluster</span><span class="p">,</span> <span class="n">http_server</span> <span class="o">=</span> <span class="n">start_dispy_cluster</span><span class="p">(</span><span class="n">simple_model_predict</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
-
-    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="n">num_batches</span><span class="p">)</span>
-    <span class="n">bcount</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">for</span> <span class="n">ct</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span><span class="p">:</span>
-            <span class="n">ndata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ct</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">:</span><span class="n">ct</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ndata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ct</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">:</span> <span class="n">ct</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
-
-        <span class="n">job</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="n">job</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">bcount</span>  <span class="c1"># associate an ID to identify jobs (if needed later)</span>
-        <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
-
-        <span class="n">bcount</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">job</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">dispy</span><span class="o">.</span><span class="n">DispyJob</span><span class="o">.</span><span class="n">Finished</span> <span class="ow">and</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">id</span> <span class="o">&lt;</span> <span class="n">batch_size</span><span class="p">:</span>
-                <span class="n">ret</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tmp</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ret</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">exception</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-
-    <span class="n">stop_dispy_cluster</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">http_server</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">ret</span></div>
 </pre></div>
 
           </div>
