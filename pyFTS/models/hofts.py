@@ -187,6 +187,8 @@ class HighOrderFTS(fts.FTS):
 
         fuzzyfied = kwargs.get('fuzzyfied', False)
 
+        mode = kwargs.get('mode', 'mean')
+
         ret = []
 
         l = len(ndata) if not explain else self.max_lag + 1
@@ -234,7 +236,11 @@ class HighOrderFTS(fts.FTS):
                         print("\t {} \t Midpoint: {}\n".format(str(flrg), mp))
                         print("\t {} \t Membership: {}\n".format(str(flrg), mv))
 
-            final = np.dot(midpoints, memberships)  if not fuzzyfied else np.nanmean(midpoints)
+            if mode == "mean" or fuzzyfied:
+                final = np.nanmean(midpoints)
+            else:
+                final = np.dot(midpoints, memberships)
+
             ret.append(final)
 
             if explain:
