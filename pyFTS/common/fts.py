@@ -101,7 +101,8 @@ class FTS(object):
         :keyword explain: try to explain, step by step, the one-step-ahead point forecasting result given the input data.
         :keyword generators: for multivariate methods on multi step ahead forecasting, generators is a dict where the keys
                             are the variables names (except the target_variable) and the values are lambda functions that
-                            accept one value (the actual value of the variable) and return the next value.
+                            accept one value (the actual value of the variable) and return the next value or trained FTS
+                            models that accept the actual values and forecast new ones.
 
         :return: a numpy array with the forecasted data
         """

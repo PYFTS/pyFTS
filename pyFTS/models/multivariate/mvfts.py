@@ -2,6 +2,7 @@ from pyFTS.common import fts, FuzzySet, FLR, Membership
 from pyFTS.partitioners import Grid
 from pyFTS.models.multivariate import FLR as MVFLR, common, flrg as mvflrg
 from itertools import product
+from types import LambdaType
 
 import numpy as np
 import pandas as pd
@@ -52,11 +53,15 @@ class MVFTS(fts.FTS):
     def apply_transformations(self, data, params=None, updateUoD=False, **kwargs):
         ndata = data.copy(deep=True)
         for var in self.explanatory_variables:
-            if self.uod_clip and var.partitioner.type == 'common':
-                ndata[var.data_label] = np.clip(ndata[var.data_label].values,
-                                                var.partitioner.min, var.partitioner.max)
+            try:
+                values = ndata[var.data_label].values #if isinstance(ndata, pd.DataFrame) else ndata[var.data_label]
+                if self.uod_clip and var.partitioner.type == 'common':
+                    ndata[var.data_label] = np.clip(values,
+                                                    var.partitioner.min, var.partitioner.max)
 
-            ndata[var.data_label] = var.apply_transformations(ndata[var.data_label].values)
+                ndata[var.data_label] = var.apply_transformations(values)
+            except:
+                pass
 
         return ndata
 
@@ -120,7 +125,7 @@ class MVFTS(fts.FTS):
         ret = []
         ndata = self.apply_transformations(data)
         c = 0
-        for index, row in ndata.iterrows():
+        for index, row in ndata.iterrows() if isinstance(ndata, pd.DataFrame) else enumerate(ndata):
             data_point = self.format_data(row)
             flrs = self.generate_lhs_flrs(data_point)
             mvs = []
@@ -159,7 +164,8 @@ class MVFTS(fts.FTS):
             raise Exception('You must provide parameter \'generators\'! generators is a dict where the keys' +
                             ' are the variables names (except the target_variable) and the values are ' +
                             'lambda functions that accept one value (the actual value of the variable) '
-                            ' and return the next value.')
+                            ' and return the next value or trained FTS models that accept the actual values and '
+                            'forecast new ones.')
 
         ndata = self.apply_transformations(data)
 
@@ -174,13 +180,20 @@ class MVFTS(fts.FTS):
 
             ret.append(tmp)
 
-            last_data_point = sample.loc[sample.index[-1]]
-
             new_data_point = {}
 
             for var in self.explanatory_variables:
                 if var.name != self.target_variable.name:
-                    new_data_point[var.data_label] = generators[var.name](last_data_point[var.data_label])
+                    if isinstance(generators[var.name], LambdaType):
+                        last_data_point = ndata.loc[sample.index[-1]]
+                        new_data_point[var.data_label] = generators[var.name](last_data_point[var.data_label])
+                    elif isinstance(generators[var.name], fts.FTS):
+                        model = generators[var.name]
+                        last_data_point = ndata.loc[[sample.index[-model.order]]]
+                        if not model.is_multivariate:
+                            last_data_point = last_data_point[var.data_label].values
+
+                        new_data_point[var.data_label] = model.forecast(last_data_point)[0]
 
             new_data_point[self.target_variable.data_label] = tmp
 

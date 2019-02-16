@@ -30,9 +30,13 @@ class Variable:
         self.mask = kwargs.get('mask', None)
         """The mask for format the data column on Pandas Dataframe"""
         self.transformation = kwargs.get('transformation', None)
+        """Pre processing transformation for the variable"""
         self.transformation_params = kwargs.get('transformation_params', None)
         self.partitioner = None
+        """UoD partitioner for the variable data"""
         self.alpha_cut = kwargs.get('alpha_cut', 0.0)
+        """Minimal membership value to be considered on fuzzyfication process"""
+
 
         if kwargs.get('data', None) is not None:
             self.build(**kwargs)

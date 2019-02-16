@@ -128,30 +128,21 @@ vtemp = variable.Variable("Temperature", data_label="temperature", alias='temper
 
 from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
 
-vars = [vhour, vday, vload]
+from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
 
-#fs = grid.GridCluster(explanatory_variables=vars, target_variable=vload)
+mtemp = wmvfts.WeightedMVFTS(explanatory_variables=[vhour, vmonth, vtemp], target_variable=vtemp)
+mtemp.fit(train_mv)
 
-#model = mvfts.MVFTS(explanatory_variables=vars, target_variable=vload)
-model = wmvfts.WeightedMVFTS(explanatory_variables=vars, target_variable=vload)
-#model = cmvfts.ClusteredMVFTS(explanatory_variables=vars, target_variable=vload,order=2, knn=3, partitioner=fs)
-model.fit(train_mv)
-print(model.shortname)
-Util.persist_obj(model, model.shortname)
-#'''
+from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
 
-#model = Util.load_obj('MVFTS')
+mload = wmvfts.WeightedMVFTS(explanatory_variables=[vhour, vday, vtemp, vload], target_variable=vload)
+mload.fit(train_mv)
 
-with open("rules.txt","w") as file:
-    file.write(str(model))
 
-forecasts = model.predict(test_mv.iloc[:100])
-forecasts.insert(0,None)
+time_generator = lambda x : pd.to_datetime(x) + pd.to_timedelta(1, unit='h')
+temp_generator = mtemp
 
-fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15,3])
-ax.plot(test_mv['load'].values[:100],label='Original')
-ax.plot(forecasts, label='predicted')
-handles, labels = ax.get_legend_handles_labels()
-lgd = ax.legend(handles, labels, loc=2, bbox_to_anchor=(1, 1))
 
-Util.show_and_save_image(fig, model.shortname, True)
+forecasts = mload.predict(test_mv.iloc[:1], steps_ahead=48, generators={'Hour': time_generator,
+                                                                        'DayOfWeek': time_generator,
+                                                                        "Temperature": mtemp})
