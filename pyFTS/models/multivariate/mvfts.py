@@ -162,7 +162,7 @@ class MVFTS(fts.FTS):
 
         if generators is None:
             raise Exception('You must provide parameter \'generators\'! generators is a dict where the keys' +
-                            ' are the variables names (except the target_variable) and the values are ' +
+                            ' are the dataframe column names (except the target_variable) and the values are ' +
                             'lambda functions that accept one value (the actual value of the variable) '
                             ' and return the next value or trained FTS models that accept the actual values and '
                             'forecast new ones.')
@@ -182,18 +182,18 @@ class MVFTS(fts.FTS):
 
             new_data_point = {}
 
-            for var in self.explanatory_variables:
-                if var.name != self.target_variable.name:
-                    if isinstance(generators[var.name], LambdaType):
+            for data_label in generators.keys():
+                if data_label != self.target_variable.data_label:
+                    if isinstance(generators[data_label], LambdaType):
                         last_data_point = ndata.loc[sample.index[-1]]
-                        new_data_point[var.data_label] = generators[var.name](last_data_point[var.data_label])
-                    elif isinstance(generators[var.name], fts.FTS):
-                        model = generators[var.name]
+                        new_data_point[data_label] = generators[data_label](last_data_point[data_label])
+                    elif isinstance(generators[data_label], fts.FTS):
+                        model = generators[data_label]
                         last_data_point = ndata.loc[[sample.index[-model.order]]]
                         if not model.is_multivariate:
-                            last_data_point = last_data_point[var.data_label].values
+                            last_data_point = last_data_point[data_label].values
 
-                        new_data_point[var.data_label] = model.forecast(last_data_point)[0]
+                        new_data_point[data_label] = model.forecast(last_data_point)[0]
 
             new_data_point[self.target_variable.data_label] = tmp
 

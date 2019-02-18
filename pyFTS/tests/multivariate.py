@@ -133,16 +133,23 @@ from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
 mtemp = wmvfts.WeightedMVFTS(explanatory_variables=[vhour, vmonth, vtemp], target_variable=vtemp)
 mtemp.fit(train_mv)
 
+Util.persist_obj(mtemp, 'mtemp')
+
+from pyFTS.models import hofts
+
+#mtemp = hofts.WeightedHighOrderFTS(order=2, partitioner=vtemp.partitioner)
+#mtemp.fit(train_mv['temperature'].values)
+
 from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
 
-mload = wmvfts.WeightedMVFTS(explanatory_variables=[vhour, vday, vtemp, vload], target_variable=vload)
+mload = wmvfts.WeightedMVFTS(explanatory_variables=[vtemp, vload], target_variable=vload)
 mload.fit(train_mv)
+
+Util.persist_obj(mload, 'mload')
 
 
 time_generator = lambda x : pd.to_datetime(x) + pd.to_timedelta(1, unit='h')
-temp_generator = mtemp
 
 
-forecasts = mload.predict(test_mv.iloc[:1], steps_ahead=48, generators={'Hour': time_generator,
-                                                                        'DayOfWeek': time_generator,
-                                                                        "Temperature": mtemp})
+forecasts = mload.predict(test_mv.iloc[:1], steps_ahead=48, generators={'date': time_generator,
+                                                                        'temperature': mtemp})
