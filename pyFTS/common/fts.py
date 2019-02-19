@@ -223,13 +223,11 @@ class FTS(object):
         :return: a list with the forecasted values
         """
 
-
-
         if isinstance(data, np.ndarray):
             data = data.tolist()
 
         ret = []
-        for k in np.arange(0,steps):
+        for k in np.arange(0, steps):
             tmp = self.forecast(data[-self.max_lag:], **kwargs)
 
             if isinstance(tmp,(list, np.ndarray)):

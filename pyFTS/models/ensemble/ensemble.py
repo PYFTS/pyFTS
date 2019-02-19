@@ -135,7 +135,7 @@ class EnsembleFTS(fts.FTS):
         ret = []
 
         for k in np.arange(self.order, l+1):
-            sample = data[k - self.order : k]
+            sample = data[k - self.max_lag : k]
             tmp = self.get_models_forecasts(sample)
             point = self.get_point(tmp)
             ret.append(point)

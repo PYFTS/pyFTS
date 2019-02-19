@@ -31,7 +31,4 @@ y = [np.sin(k) for k in x]
 part = Grid.GridPartitioner(data=y, npart=35)
 model = hofts.HighOrderFTS(order=2, partitioner=part)
 model.fit(y)
-forecasts = model.predict(y)
-
-print([round(k,2) for k in y[2:]])
-print([round(k,2) for k in forecasts[:-1]])
+forecasts = model.predict(y, steps_ahead=10)
