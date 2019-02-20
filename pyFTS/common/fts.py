@@ -24,6 +24,8 @@ class FTS(object):
         """A string with the model name"""
         self.detail = kwargs.get('name',"")
         """A string with the model detailed information"""
+        self.is_wrapper = False
+        """Indicates that this model is a wrapper for other(s) method(s)"""
         self.is_high_order = False
         """A boolean value indicating if the model support orders greater than 1, default: False"""
         self.min_order = 1
@@ -313,11 +315,12 @@ class FTS(object):
         if 'partitioner' in kwargs:
             self.partitioner = kwargs.pop('partitioner')
 
-        if (self.sets is None or len(self.sets) == 0) and not self.benchmark_only and not self.is_multivariate:
-            if self.partitioner is not None:
-                self.sets = self.partitioner.sets
-            else:
-                raise Exception("Fuzzy sets were not provided for the model. Use 'sets' parameter or 'partitioner'. ")
+        if not self.is_wrapper:
+            if (self.sets is None or len(self.sets) == 0) and not self.benchmark_only and not self.is_multivariate:
+                if self.partitioner is not None:
+                    self.sets = self.partitioner.sets
+                else:
+                    raise Exception("Fuzzy sets were not provided for the model. Use 'sets' parameter or 'partitioner'. ")
 
         if 'order' in kwargs:
             self.order = kwargs.pop('order')

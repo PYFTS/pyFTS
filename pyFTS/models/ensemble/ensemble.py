@@ -31,6 +31,7 @@ class EnsembleFTS(fts.FTS):
         self.shortname = "EnsembleFTS"
         self.name = "Ensemble FTS"
         self.flrgs = {}
+        self.is_wrapper = True
         self.has_point_forecasting = True
         self.has_interval_forecasting = True
         self.has_probability_forecasting = True

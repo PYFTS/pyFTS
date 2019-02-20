@@ -46,10 +46,11 @@ class IncrementalEnsembleFTS(ensemble.EnsembleFTS):
 
         partitioner = self.partitioner_method(data=data, **self.partitioner_params)
         model = self.fts_method(partitioner=partitioner, **self.fts_params)
-        if self.model.is_high_order:
-            self.model = self.fts_method(partitioner=partitioner, order=self.order, **self.fts_params)
+        if model.is_high_order:
+            model = self.fts_method(partitioner=partitioner, order=self.order, **self.fts_params)
         model.fit(data, **kwargs)
-        self.models.pop(0)
+        if len(self.models) > 0:
+            self.models.pop(0)
         self.models.append(model)
 
     def _point_smoothing(self, forecasts):

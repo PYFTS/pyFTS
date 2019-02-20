@@ -7,15 +7,21 @@ import numpy as np
 import pandas as pd
 from pyFTS.partitioners import Grid
 from pyFTS.common import Transformations
-from pyFTS import hofts, song, yu, cheng, ismailefendi, sadaei, hwang
 from pyFTS.models import chen
-from pyFTS.models.ensemble import ensemble
+from pyFTS.models.incremental import IncrementalEnsemble, TimeVariant
 
-os.chdir("/home/petronio/dados/Dropbox/Doutorado/Codigos/")
+from pyFTS.data import AirPassengers
 
-diff = Transformations.Differential(1)
 
-passengers = pd.read_csv("DataSets/AirPassengers.csv", sep=",")
+passengers = AirPassengers.get_data()
+
+model = IncrementalEnsemble.IncrementalEnsembleFTS(order=2, window_length=20, batch_size=5)
+
+model.fit(passengers[:40])
+
+model.predict(passengers[40:])
+
+'''
 passengers = np.array(passengers["Passengers"])
 
 e = ensemble.AllMethodEnsembleFTS(alpha=0.25, point_method="median", interval_method='quantile')
@@ -115,5 +121,6 @@ print(_normal)
 #                                    distributions=[True,False],  save=True, file="pictures/distribution_ahead_arma",
 #                                    time_from=60, time_to=10, tam=[12,5])
 
+'''
 
 

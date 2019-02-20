@@ -14,21 +14,8 @@ from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts
 from pyFTS.common import Transformations, Membership
 
-tdiff = Transformations.Differential(1)
+from pyFTS.data import artificial
 
-
-from pyFTS.data import TAIEX, SP500, NASDAQ, Malaysia, Enrollments
-
-#from pyFTS.data import mackey_glass
-#y = mackey_glass.get_data()
-
-from pyFTS.partitioners import Grid
-from pyFTS.models import pwfts, tsaur
-
-x = [k for k in np.arange(-2*np.pi, 2*np.pi, 0.5)]
-y = [np.sin(k) for k in x]
-
-part = Grid.GridPartitioner(data=y, npart=35)
-model = hofts.HighOrderFTS(order=2, partitioner=part)
-model.fit(y)
-forecasts = model.predict(y, steps_ahead=10)
+cd = artificial.SignalEmulator()
+cd.stationary_gaussian(10,3,length=100)
+cd.incremental_gaussian(0.5,0,start=100,length=200)
