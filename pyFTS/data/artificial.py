@@ -164,12 +164,16 @@ def _append(additive, start, before, new):
         for k in range(start):
             new.insert(0,0)
 
-        l = len(before)
+        l1 = len(before)
+        l2 = len(new)
+
+        if l2 < l1:
+            new.extend(np.zeros(l1 - l2).tolist())
 
         if len(before) == 0:
             tmp = np.array(new)
         else:
-            tmp = np.array(before) + np.array(new[:l])
+            tmp = np.array(before) + np.array(new)
         return tmp.tolist()
 
 
@@ -198,6 +202,7 @@ class SignalEmulator(object):
         parameters = {'mu': mu, 'sigma': sigma}
         self.components.append({'dist': 'gaussian', 'type': 'constant',
                                 'parameters': parameters, 'args': kwargs})
+        return self
 
     def incremental_gaussian(self, mu, sigma, **kwargs):
         """
@@ -216,6 +221,7 @@ class SignalEmulator(object):
         parameters = {'mu': mu, 'sigma': sigma}
         self.components.append({'dist': 'gaussian', 'type': 'incremental',
                                 'parameters': parameters, 'args': kwargs})
+        return self
 
     def periodic_gaussian(self, type, period, mu_min, sigma_min, mu_max, sigma_max, **kwargs):
         """
@@ -235,15 +241,19 @@ class SignalEmulator(object):
                       'mu_min': mu_min, 'sigma_min': sigma_min, 'mu_max': mu_max, 'sigma_max': sigma_max}
         self.components.append({'dist': 'gaussian', 'type': 'periodic',
                                 'parameters': parameters, 'args': kwargs})
+        return self
 
-    def blip(self, intensity, **kwargs):
+    def blip(self, **kwargs):
         """
 
         :param intensity:
         :param kwargs:
         :return:
         """
-        self.components.append({'dist': 'blip', 'type': 'blip', 'parameters': [intensity, kwargs]})
+        parameters = {}
+        self.components.append({'dist': 'blip', 'type': 'blip',
+                                'parameters': parameters, 'args':kwargs})
+        return self
 
     def run(self):
         signal = []
@@ -275,6 +285,21 @@ class SignalEmulator(object):
                 else:
                     tmp = generate_linear_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_max,
                                                         it=num, num=1, vmin=vmin, vmax=vmax)
+            elif component['type'] == 'blip':
+                _mx = np.nanmax(signal)
+                _mn = np.nanmin(signal)
+
+                _mx += 2*_mx if _mx > 0 else -2*_mx
+                _mn += -2*_mn if _mn > 0 else 2*_mn
+
+                if vmax is not None:
+                    _mx = min(_mx, vmax) if vmax > 0 else max(_mx, vmax)
+                if vmin is not None:
+                    _mn = max(_mn, vmin) if vmin > 0 else min(_mn, vmin)
+
+                start = np.random.randint(0, len(signal))
+                tmp = [_mx] if np.random.rand() >= .5 else [-_mn]
+
 
             last_num = num
             last_it = it
