@@ -163,8 +163,14 @@ def _append(additive, start, before, new):
     else:
         for k in range(start):
             new.insert(0,0)
-        tmp = np.array(before) + np.array(new)
-        return tmp
+
+        l = len(before)
+
+        if len(before) == 0:
+            tmp = np.array(new)
+        else:
+            tmp = np.array(before) + np.array(new[:l])
+        return tmp.tolist()
 
 
 

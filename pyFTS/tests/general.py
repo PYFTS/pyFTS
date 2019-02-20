@@ -17,5 +17,8 @@ from pyFTS.common import Transformations, Membership
 from pyFTS.data import artificial
 
 cd = artificial.SignalEmulator()
-cd.stationary_gaussian(10,3,length=100)
-cd.incremental_gaussian(0.5,0,start=100,length=200)
+cd.stationary_gaussian(1,.2,length=10, it=1)
+cd.incremental_gaussian(0.5, 0,start=5,length=5)
+#cd.stationary_gaussian(3,.2,length=10, it=1, additive=True)
+print(len(cd.run()))
+
