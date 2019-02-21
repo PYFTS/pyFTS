@@ -49,7 +49,7 @@ def generate_linear_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_m
     :return:
     """
 
-    if period > num:
+    if period > it:
         raise("The 'period' parameter must be lesser than 'it' parameter")
 
     mu_inc = (mu_max - mu_min)/period
@@ -72,6 +72,8 @@ def generate_linear_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_m
 
         mu += (mu_inc if signal else -mu_inc)
         sigma += (sigma_inc if signal else -sigma_inc)
+
+        sigma = max(sigma, 0.005)
 
     return ret
 
@@ -105,8 +107,10 @@ def generate_senoidal_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma
             tmp = np.minimum(np.full(num, vmax), tmp)
         ret.extend(tmp)
 
-        mu += mu_range * np.sin (period * k)
-        sigma += mu_range * np.sin (period * k)
+        mu += mu_range * np.sin(period * k)
+        sigma += sigma_range * np.sin(period * k)
+
+        sigma = max(sigma, 0.005)
 
     return ret
 
@@ -169,6 +173,8 @@ def _append(additive, start, before, new):
 
         if l2 < l1:
             new.extend(np.zeros(l1 - l2).tolist())
+        elif 0 < l1 < l2:
+            new = new[:l1]
 
         if len(before) == 0:
             tmp = np.array(new)
@@ -275,11 +281,11 @@ class SignalEmulator(object):
                 tmp = generate_gaussian_linear(0, 0, parameters['mu'], parameters['sigma'],
                                          it=num, num=1, vmin=vmin, vmax=vmax)
             elif component['type'] == 'periodic':
-                period = component['period']
+                period = parameters['period']
                 mu_min, sigma_min = parameters['mu_min'],parameters['sigma_min']
                 mu_max, sigma_max = parameters['mu_max'],parameters['sigma_max']
 
-                if parameters['type'] == 'senoidal':
+                if parameters['type'] == 'sinoidal':
                     tmp = generate_senoidal_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_max,
                                                         it=num, num=1, vmin=vmin, vmax=vmax)
                 else:
@@ -299,7 +305,6 @@ class SignalEmulator(object):
 
                 start = np.random.randint(0, len(signal))
                 tmp = [_mx] if np.random.rand() >= .5 else [-_mn]
-
 
             last_num = num
             last_it = it

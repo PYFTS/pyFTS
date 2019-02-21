@@ -16,10 +16,17 @@ from pyFTS.common import Transformations, Membership
 
 from pyFTS.data import artificial
 
+"""
 cd = artificial.SignalEmulator()\
     .stationary_gaussian(0,.2,length=10, it=1)\
     .incremental_gaussian(0.5, 0,start=5,length=5)\
     .blip()\
     .stationary_gaussian(3,.2,length=10, it=1, additive=False)
 print([round(k,3) for k in cd.run()])
+"""
 
+signal = artificial.SignalEmulator()\
+    .stationary_gaussian(1,0.2,length=130,it=10)\
+    .periodic_gaussian('sinoidal',100, 0.5,0.5,10,1,start=100,length=2000)\
+    .blip()\
+    .run()
