@@ -101,7 +101,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lags</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lags&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">alpha_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">shortname</span> <span class="o">=</span> <span class="s2">&quot;ClusteredMVFTS&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Clustered Multivariate FTS&quot;</span>
@@ -112,7 +112,8 @@
         <span class="n">ndata</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
             <span class="n">data_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-            <span class="n">ndata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">fuzzyfy_instance_clustered</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_cut</span><span class="p">))</span>
+            <span class="n">ndata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">fuzzyfy_instance_clustered</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="p">,</span>
+                                                           <span class="n">alpha_cut</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_cut</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">ndata</span></div>
 

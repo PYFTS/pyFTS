@@ -29,6 +29,14 @@ pyFTS.data.common module
 Datasets
 --------
 
+Artificial and synthetic data generators
+----------------------------------------
+
+.. automodule:: pyFTS.data.artificial
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 AirPassengers dataset
 -------------------------------
 
@@ -139,14 +147,6 @@ TAIEX dataset
 -----------------------
 
 .. automodule:: pyFTS.data.TAIEX
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyFTS.data.artificial module
-----------------------------
-
-.. automodule:: pyFTS.data.artificial
     :members:
     :undoc-members:
     :show-inheritance:

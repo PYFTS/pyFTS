@@ -1,5 +1,5 @@
 pyFTS.models.incremental package
-=============================
+================================
 
 Module contents
 ---------------
@@ -13,10 +13,19 @@ Module contents
 Submodules
 ----------
 
-pyFTS.models.incremental.Retrainer module
--------------------------------------
+pyFTS.models.incremental.TimeVariant module
+-------------------------------------------
 
-.. automodule:: pyFTS.models.incremental.Retrainer
+.. automodule:: pyFTS.models.incremental.TimeVariant
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+    
+pyFTS.models.incremental.IncrementalEnsemble module
+---------------------------------------------------
+
+.. automodule:: pyFTS.models.incremental.IncrementalEnsemble
     :members:
     :undoc-members:
     :show-inheritance:

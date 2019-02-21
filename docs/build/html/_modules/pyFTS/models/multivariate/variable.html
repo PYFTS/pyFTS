@@ -104,9 +104,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mask&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;The mask for format the data column on Pandas Dataframe&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transformation&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Pre processing transformation for the variable&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformation_params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transformation_params&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;UoD partitioner for the variable data&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Minimal membership value to be considered on fuzzyfication process&quot;&quot;&quot;</span>
+
 
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

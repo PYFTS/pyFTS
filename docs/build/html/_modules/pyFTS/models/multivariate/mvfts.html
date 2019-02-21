@@ -72,12 +72,26 @@
           <div class="body" role="main">
             
   <h1>Source code for pyFTS.models.multivariate.mvfts</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">fts</span><span class="p">,</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">FLR</span><span class="p">,</span> <span class="n">Membership</span><span class="p">,</span> <span class="n">tree</span>
+<span></span><span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">fts</span><span class="p">,</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">FLR</span><span class="p">,</span> <span class="n">Membership</span>
 <span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">Grid</span>
 <span class="kn">from</span> <span class="nn">pyFTS.models.multivariate</span> <span class="k">import</span> <span class="n">FLR</span> <span class="k">as</span> <span class="n">MVFLR</span><span class="p">,</span> <span class="n">common</span><span class="p">,</span> <span class="n">flrg</span> <span class="k">as</span> <span class="n">mvflrg</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">LambdaType</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+
+<div class="viewcode-block" id="product_dict"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.mvfts.product_dict">[docs]</a><span class="k">def</span> <span class="nf">product_dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Code by Seth Johnson</span>
+<span class="sd">    :param kwargs:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">vals</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">instance</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="MVFTS"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.mvfts.MVFTS">[docs]</a><span class="k">class</span> <span class="nc">MVFTS</span><span class="p">(</span><span class="n">fts</span><span class="o">.</span><span class="n">FTS</span><span class="p">):</span>
@@ -113,11 +127,15 @@
 <div class="viewcode-block" id="MVFTS.apply_transformations"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.mvfts.MVFTS.apply_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">updateUoD</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">ndata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">explanatory_variables</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uod_clip</span> <span class="ow">and</span> <span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;common&#39;</span><span class="p">:</span>
-                <span class="n">ndata</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                                                <span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">ndata</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="c1">#if isinstance(ndata, pd.DataFrame) else ndata[var.data_label]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uod_clip</span> <span class="ow">and</span> <span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;common&#39;</span><span class="p">:</span>
+                    <span class="n">ndata</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">values</span><span class="p">,</span>
+                                                    <span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
 
-            <span class="n">ndata</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">apply_transformations</span><span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+                <span class="n">ndata</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">apply_transformations</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
 
         <span class="k">return</span> <span class="n">ndata</span></div>
 
@@ -125,23 +143,19 @@
         <span class="n">flrs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">lags</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">vc</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">explanatory_variables</span><span class="p">):</span>
-            <span class="n">data_point</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span>
-            <span class="n">lags</span><span class="p">[</span><span class="n">vc</span><span class="p">]</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">fuzzyfy_instance</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+            <span class="n">data_point</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">lags</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">fuzzyfy_instance</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">tuples</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">FLRGTreeNode</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-
-        <span class="n">tree</span><span class="o">.</span><span class="n">build_tree_without_order</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">lags</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">paths</span><span class="p">():</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">,</span> <span class="n">p</span><span class="p">))))</span>
-
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">product_dict</span><span class="p">(</span><span class="o">**</span><span class="n">lags</span><span class="p">):</span>
             <span class="n">flr</span> <span class="o">=</span> <span class="n">MVFLR</span><span class="o">.</span><span class="n">FLR</span><span class="p">()</span>
 
-            <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
-                <span class="n">flr</span><span class="o">.</span><span class="n">set_lhs</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">fset</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">flr</span><span class="o">.</span><span class="n">set_lhs</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">fset</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">explanatory_variables</span><span class="p">):</span>
                 <span class="n">flrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">flr</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">flrs</span></div>
 
@@ -149,7 +163,7 @@
         <span class="n">flrs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ct</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)):</span>
             <span class="n">ix</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">ct</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">data_point</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+            <span class="n">data_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="p">)</span>
 
             <span class="n">tmp_flrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_lhs_flrs</span><span class="p">(</span><span class="n">data_point</span><span class="p">)</span>
 
@@ -184,17 +198,28 @@
 <div class="viewcode-block" id="MVFTS.forecast"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.mvfts.MVFTS.forecast">[docs]</a>    <span class="k">def</span> <span class="nf">forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">ndata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_transformations</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">ndata</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-            <span class="n">flrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_lhs_flrs</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">ndata</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="k">else</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ndata</span><span class="p">):</span>
+            <span class="n">data_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">flrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_lhs_flrs</span><span class="p">(</span><span class="n">data_point</span><span class="p">)</span>
             <span class="n">mvs</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">mps</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">flr</span> <span class="ow">in</span> <span class="n">flrs</span><span class="p">:</span>
                 <span class="n">flrg</span> <span class="o">=</span> <span class="n">mvflrg</span><span class="o">.</span><span class="n">FLRG</span><span class="p">(</span><span class="n">lhs</span><span class="o">=</span><span class="n">flr</span><span class="o">.</span><span class="n">LHS</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
-                    <span class="n">mvs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
-                    <span class="n">mps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+                    <span class="c1">#Naïve approach is applied when no rules were found</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">:</span>
+                        <span class="n">fs</span> <span class="o">=</span> <span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                        <span class="n">fset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">fs</span><span class="p">]</span>
+                        <span class="n">mp</span> <span class="o">=</span> <span class="n">fset</span><span class="o">.</span><span class="n">centroid</span>
+                        <span class="n">mv</span> <span class="o">=</span> <span class="n">fset</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="n">data_point</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                        <span class="n">mvs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mv</span><span class="p">)</span>
+                        <span class="n">mps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mp</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">mvs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+                        <span class="n">mps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">mvs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">get_membership</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">row</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">explanatory_variables</span><span class="p">))</span>
+                    <span class="n">mvs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">get_membership</span><span class="p">(</span><span class="n">data_point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">explanatory_variables</span><span class="p">))</span>
                     <span class="n">mps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span><span class="o">.</span><span class="n">get_midpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">))</span>
 
             <span class="n">mv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mvs</span><span class="p">)</span>
@@ -211,9 +236,10 @@
 
         <span class="k">if</span> <span class="n">generators</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;You must provide parameter </span><span class="se">\&#39;</span><span class="s1">generators</span><span class="se">\&#39;</span><span class="s1">! generators is a dict where the keys&#39;</span> <span class="o">+</span>
-                            <span class="s1">&#39; are the variables names (except the target_variable) and the values are &#39;</span> <span class="o">+</span>
+                            <span class="s1">&#39; are the dataframe column names (except the target_variable) and the values are &#39;</span> <span class="o">+</span>
                             <span class="s1">&#39;lambda functions that accept one value (the actual value of the variable) &#39;</span>
-                            <span class="s1">&#39; and return the next value.&#39;</span><span class="p">)</span>
+                            <span class="s1">&#39; and return the next value or trained FTS models that accept the actual values and &#39;</span>
+                            <span class="s1">&#39;forecast new ones.&#39;</span><span class="p">)</span>
 
         <span class="n">ndata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_transformations</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -228,13 +254,20 @@
 
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 
-            <span class="n">last_data_point</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sample</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-
             <span class="n">new_data_point</span> <span class="o">=</span> <span class="p">{}</span>
 
-            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">explanatory_variables</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                    <span class="n">new_data_point</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">generators</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">](</span><span class="n">last_data_point</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">data_label</span> <span class="ow">in</span> <span class="n">generators</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">data_label</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">data_label</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">generators</span><span class="p">[</span><span class="n">data_label</span><span class="p">],</span> <span class="n">LambdaType</span><span class="p">):</span>
+                        <span class="n">last_data_point</span> <span class="o">=</span> <span class="n">ndata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sample</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+                        <span class="n">new_data_point</span><span class="p">[</span><span class="n">data_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">generators</span><span class="p">[</span><span class="n">data_label</span><span class="p">](</span><span class="n">last_data_point</span><span class="p">[</span><span class="n">data_label</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">generators</span><span class="p">[</span><span class="n">data_label</span><span class="p">],</span> <span class="n">fts</span><span class="o">.</span><span class="n">FTS</span><span class="p">):</span>
+                        <span class="n">model</span> <span class="o">=</span> <span class="n">generators</span><span class="p">[</span><span class="n">data_label</span><span class="p">]</span>
+                        <span class="n">last_data_point</span> <span class="o">=</span> <span class="n">ndata</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="n">sample</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">]]]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span><span class="p">:</span>
+                            <span class="n">last_data_point</span> <span class="o">=</span> <span class="n">last_data_point</span><span class="p">[</span><span class="n">data_label</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+                        <span class="n">new_data_point</span><span class="p">[</span><span class="n">data_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">last_data_point</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="n">new_data_point</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">data_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
 

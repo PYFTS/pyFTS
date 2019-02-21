@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>pyFTS.models.incremental.Retrainer &#8212; pyFTS 1.4 documentation</title>
+    <title>pyFTS.models.incremental.TimeVariant &#8212; pyFTS 1.4 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
@@ -71,7 +71,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for pyFTS.models.incremental.Retrainer</h1><div class="highlight"><pre>
+  <h1>Source code for pyFTS.models.incremental.TimeVariant</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Meta model that wraps another FTS method and continously retrain it using a data window with the most recent data</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -81,7 +81,7 @@
 <span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">Grid</span>
 
 
-<div class="viewcode-block" id="Retrainer"><a class="viewcode-back" href="../../../../pyFTS.models.incremental.html#pyFTS.models.incremental.Retrainer.Retrainer">[docs]</a><span class="k">class</span> <span class="nc">Retrainer</span><span class="p">(</span><span class="n">fts</span><span class="o">.</span><span class="n">FTS</span><span class="p">):</span>
+<div class="viewcode-block" id="Retrainer"><a class="viewcode-back" href="../../../../pyFTS.models.incremental.html#pyFTS.models.incremental.TimeVariant.Retrainer">[docs]</a><span class="k">class</span> <span class="nc">Retrainer</span><span class="p">(</span><span class="n">fts</span><span class="o">.</span><span class="n">FTS</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Meta model for incremental/online learning</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -112,7 +112,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">uod_clip</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span>
 
-<div class="viewcode-block" id="Retrainer.train"><a class="viewcode-back" href="../../../../pyFTS.models.incremental.html#pyFTS.models.incremental.Retrainer.Retrainer.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Retrainer.train"><a class="viewcode-back" href="../../../../pyFTS.models.incremental.html#pyFTS.models.incremental.TimeVariant.Retrainer.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner_method</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">partitioner_params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fts_method</span><span class="p">(</span><span class="n">partitioner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">fts_params</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">is_high_order</span><span class="p">:</span>
@@ -121,7 +121,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shortname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">shortname</span></div>
 
-<div class="viewcode-block" id="Retrainer.forecast"><a class="viewcode-back" href="../../../../pyFTS.models.incremental.html#pyFTS.models.incremental.Retrainer.Retrainer.forecast">[docs]</a>    <span class="k">def</span> <span class="nf">forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Retrainer.forecast"><a class="viewcode-back" href="../../../../pyFTS.models.incremental.html#pyFTS.models.incremental.TimeVariant.Retrainer.forecast">[docs]</a>    <span class="k">def</span> <span class="nf">forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="n">horizon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span>

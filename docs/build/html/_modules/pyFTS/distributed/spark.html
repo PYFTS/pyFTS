@@ -1,0 +1,432 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-55120145-3']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>pyFTS.distributed.spark &#8212; pyFTS 1.4 documentation</title>
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyFTS 1.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo_heading2.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyFTS.distributed.spark</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">pyFTS.data</span> <span class="k">import</span> <span class="n">Enrollments</span><span class="p">,</span> <span class="n">TAIEX</span>
+<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Simple</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models.multivariate</span> <span class="k">import</span> <span class="n">partitioner</span> <span class="k">as</span> <span class="n">mv_partitioner</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models</span> <span class="k">import</span> <span class="n">hofts</span>
+
+<span class="kn">from</span> <span class="nn">pyspark</span> <span class="k">import</span> <span class="n">SparkConf</span>
+<span class="kn">from</span> <span class="nn">pyspark</span> <span class="k">import</span> <span class="n">SparkContext</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># make sure pyspark tells workers to use python3 not 2 if both are installed</span>
+<span class="n">SPARK_ADDR</span> <span class="o">=</span> <span class="s1">&#39;spark://192.168.0.110:7077&#39;</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYSPARK_PYTHON&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/usr/bin/python3&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYSPARK_DRIVER_PYTHON&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/usr/bin/python3&#39;</span>
+
+<div class="viewcode-block" id="create_spark_conf"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.create_spark_conf">[docs]</a><span class="k">def</span> <span class="nf">create_spark_conf</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">spark_executor_memory</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spark_executor_memory&quot;</span><span class="p">,</span> <span class="s2">&quot;2g&quot;</span><span class="p">)</span>
+    <span class="n">spark_driver_memory</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spark_driver_memory&quot;</span><span class="p">,</span> <span class="s2">&quot;2g&quot;</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="n">SPARK_ADDR</span><span class="p">)</span>
+    <span class="n">app</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;app&quot;</span><span class="p">,</span> <span class="s1">&#39;pyFTS&#39;</span><span class="p">)</span>
+
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">SparkConf</span><span class="p">()</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">setMaster</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">setAppName</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;spark.executor.memory&quot;</span><span class="p">,</span> <span class="n">spark_executor_memory</span><span class="p">)</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;spark.driver.memory&quot;</span><span class="p">,</span> <span class="n">spark_driver_memory</span><span class="p">)</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;spark.memory.offHeap.enabled&quot;</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;spark.memory.offHeap.size&quot;</span><span class="p">,</span><span class="s2">&quot;16g&quot;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">conf</span></div>
+
+<div class="viewcode-block" id="get_partitioner"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.get_partitioner">[docs]</a><span class="k">def</span> <span class="nf">get_partitioner</span><span class="p">(</span><span class="n">shared_partitioner</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;common&#39;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param part:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="o">==</span><span class="s1">&#39;common&#39;</span><span class="p">:</span>
+        <span class="n">fs_tmp</span> <span class="o">=</span> <span class="n">Simple</span><span class="o">.</span><span class="n">SimplePartitioner</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">fset</span> <span class="ow">in</span> <span class="n">shared_partitioner</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">fz</span> <span class="o">=</span> <span class="n">shared_partitioner</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="n">fset</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="o">==</span><span class="s1">&#39;common&#39;</span><span class="p">:</span>
+            <span class="n">fs_tmp</span><span class="o">.</span><span class="n">append_complex</span><span class="p">(</span><span class="n">fz</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;multivariate&#39;</span><span class="p">:</span>
+            <span class="n">fs_tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fz</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fs_tmp</span></div>
+
+
+<div class="viewcode-block" id="get_clustered_partitioner"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.get_clustered_partitioner">[docs]</a><span class="k">def</span> <span class="nf">get_clustered_partitioner</span><span class="p">(</span><span class="n">explanatory_variables</span><span class="p">,</span> <span class="n">target_variable</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">pyFTS.models.multivariate.common</span> <span class="k">import</span> <span class="n">MultivariateFuzzySet</span>
+    <span class="n">fs_tmp</span> <span class="o">=</span> <span class="n">mv_partitioner</span><span class="o">.</span><span class="n">MultivariatePartitioner</span><span class="p">(</span><span class="n">explanatory_variables</span><span class="o">=</span><span class="n">explanatory_variables</span><span class="p">,</span>
+                                           <span class="n">target_variable</span><span class="o">=</span><span class="n">target_variable</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;partitioner_names&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="n">MultivariateFuzzySet</span><span class="p">(</span><span class="n">target_variable</span><span class="o">=</span><span class="n">target_variable</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">fset</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;partitioner_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tmp</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="n">fs</span><span class="o">.</span><span class="n">append_set</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">fset</span><span class="p">)</span>
+        <span class="n">fs_tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fs</span><span class="p">)</span>
+
+    <span class="n">fs_tmp</span><span class="o">.</span><span class="n">build_index</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">fs_tmp</span></div>
+
+
+<div class="viewcode-block" id="get_variables"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.get_variables">[docs]</a><span class="k">def</span> <span class="nf">get_variables</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="n">explanatory_variables</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">target_variable</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;variables&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyFTS.models.multivariate</span> <span class="k">import</span> <span class="n">common</span><span class="p">,</span> <span class="n">variable</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_type&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                <span class="n">data_label</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_label&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                <span class="n">alpha_cut</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_alpha&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                <span class="c1">#data_type=parameters[&#39;{}_data_type&#39;.format(name)].value,</span>
+                                <span class="c1">#mask=parameters[&#39;{}_mask&#39;.format(name)].value,</span>
+                                <span class="p">)</span>
+        <span class="n">var</span><span class="o">.</span><span class="n">partitioner</span> <span class="o">=</span> <span class="n">get_partitioner</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_partitioner&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)])</span>
+        <span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_partitioner_type&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="n">explanatory_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="n">target_variable</span> <span class="o">=</span> <span class="n">var</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">explanatory_variables</span><span class="p">,</span> <span class="n">target_variable</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="create_univariate_model"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.create_univariate_model">[docs]</a><span class="k">def</span> <span class="nf">create_univariate_model</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">partitioner</span><span class="o">=</span><span class="n">get_partitioner</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;partitioner&#39;</span><span class="p">]),</span>
+                                           <span class="n">order</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                           <span class="n">lags</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;lags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">partitioner</span><span class="o">=</span><span class="n">get_partitioner</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;partitioner&#39;</span><span class="p">]),</span>
+                                           <span class="n">alpha_cut</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">model</span></div>
+
+<div class="viewcode-block" id="slave_train_univariate"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.slave_train_univariate">[docs]</a><span class="k">def</span> <span class="nf">slave_train_univariate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">create_univariate_model</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+    <span class="n">ndata</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">flrgs</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span></div>
+    
+
+<div class="viewcode-block" id="slave_forecast_univariate"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.slave_forecast_univariate">[docs]</a><span class="k">def</span> <span class="nf">slave_forecast_univariate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">create_univariate_model</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+    <span class="n">ndata</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+
+    <span class="n">forecasts</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">forecasts</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="create_multivariate_model"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.create_multivariate_model">[docs]</a><span class="k">def</span> <span class="nf">create_multivariate_model</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="n">explanatory_variables</span><span class="p">,</span> <span class="n">target_variable</span> <span class="o">=</span> <span class="n">get_variables</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+    <span class="c1">#vars = [(v.name, v.name) for v in explanatory_variables]</span>
+
+    <span class="c1">#return [(&#39;vars&#39;, vars), (&#39;target&#39;,[target_variable.name])]</span>
+
+    <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;clustered&#39;</span><span class="p">:</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="n">get_clustered_partitioner</span><span class="p">(</span><span class="n">explanatory_variables</span><span class="p">,</span> <span class="n">target_variable</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">explanatory_variables</span><span class="o">=</span><span class="n">explanatory_variables</span><span class="p">,</span>
+                                           <span class="n">target_variable</span><span class="o">=</span><span class="n">target_variable</span><span class="p">,</span>
+                                           <span class="n">partitioner</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
+                                           <span class="n">order</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                           <span class="n">alpha_cut</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                           <span class="n">lags</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;lags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">explanatory_variables</span><span class="o">=</span><span class="n">explanatory_variables</span><span class="p">,</span>
+                                               <span class="n">target_variable</span><span class="o">=</span><span class="n">target_variable</span><span class="p">,</span>
+                                               <span class="n">order</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                               <span class="n">alpha_cut</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                               <span class="n">lags</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;lags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">explanatory_variables</span><span class="o">=</span><span class="n">explanatory_variables</span><span class="p">,</span>
+                                               <span class="n">target_variable</span><span class="o">=</span><span class="n">target_variable</span><span class="p">,</span>
+                                               <span class="n">alpha_cut</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+<div class="viewcode-block" id="slave_train_multivariate"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.slave_train_multivariate">[docs]</a><span class="k">def</span> <span class="nf">slave_train_multivariate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    
+    <span class="n">model</span> <span class="o">=</span> <span class="n">create_multivariate_model</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+    <span class="n">ndata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;clustered&#39;</span><span class="p">:</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="p">[(</span><span class="n">fset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span> <span class="k">for</span> <span class="n">fset</span><span class="p">,</span><span class="n">count</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">count</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="n">flrgs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">flrgs</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+
+        <span class="k">return</span> <span class="p">[(</span><span class="s1">&#39;counts&#39;</span><span class="p">,</span> <span class="n">counts</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;flrgs&#39;</span><span class="p">,</span> <span class="n">flrgs</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">flrgs</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="slave_forecast_multivariate"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.slave_forecast_multivariate">[docs]</a><span class="k">def</span> <span class="nf">slave_forecast_multivariate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    
+    <span class="n">model</span> <span class="o">=</span> <span class="n">create_multivariate_model</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+    <span class="n">ndata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">forecasts</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">forecasts</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="share_parameters"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.share_parameters">[docs]</a><span class="k">def</span> <span class="nf">share_parameters</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span><span class="p">:</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="s1">&#39;common&#39;</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;partitioner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">alpha_cut</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;lags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">lags</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;max_lag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">max_lag</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">is_clustered</span><span class="p">:</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="s1">&#39;clustered&#39;</span><span class="p">)</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fset</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;partitioner_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">fset</span><span class="o">.</span><span class="n">sets</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;partitioner_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="s1">&#39;multivariate&#39;</span><span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">explanatory_variables</span><span class="p">:</span>
+            <span class="c1">#if var.data_type is None:</span>
+            <span class="c1">#    raise Exception(&quot;It is mandatory to inform the data_type parameter for each variable when the training is distributed! &quot;)</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_type&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+            <span class="c1">#parameters[&#39;{}_data_type&#39;.format(var.name)] = context.broadcast(var.data_type)</span>
+            <span class="c1">#parameters[&#39;{}_mask&#39;.format(var.name)] = context.broadcast(var.mask)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_label&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">data_label</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_alpha&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">alpha_cut</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_partitioner&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_partitioner_type&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">target_variable</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;alpha_cut&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">alpha_cut</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;lags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">lags</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;max_lag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">max_lag</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">parameters</span></div>
+    
+
+<div class="viewcode-block" id="distributed_train"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.distributed_train">[docs]</a><span class="k">def</span> <span class="nf">distributed_train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">    :param model:</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :param url:</span>
+<span class="sd">    :param app:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">num_batches</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num_batches&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">create_spark_conf</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">SparkContext</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">)</span> <span class="k">as</span> <span class="n">context</span><span class="p">:</span>
+
+        <span class="n">nodes</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">defaultParallelism</span>
+        
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">share_parameters</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">slave_train_univariate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+            <span class="n">flrgs</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="n">nodes</span><span class="o">*</span><span class="n">num_batches</span><span class="p">)</span><span class="o">.</span><span class="n">mapPartitions</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">flrgs</span><span class="o">.</span><span class="n">collect</span><span class="p">():</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">append_rule</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">)</span>
+
+            <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">slave_train_multivariate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+            <span class="n">flrgs</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">mapPartitions</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">flrgs</span><span class="o">.</span><span class="n">collect</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;clustered&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;counts&#39;</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">fset</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="n">model</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">count</span><span class="p">[</span><span class="n">fset</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span>
+                    <span class="k">elif</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;flrgs&#39;</span><span class="p">:</span>
+                        <span class="n">model</span><span class="o">.</span><span class="n">append_rule</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">append_rule</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+<div class="viewcode-block" id="distributed_predict"><a class="viewcode-back" href="../../../pyFTS.distributed.html#pyFTS.distributed.spark.distributed_predict">[docs]</a><span class="k">def</span> <span class="nf">distributed_predict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">    :param model:</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :param url:</span>
+<span class="sd">    :param app:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">num_batches</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num_batches&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">create_spark_conf</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">with</span> <span class="n">SparkContext</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">)</span> <span class="k">as</span> <span class="n">context</span><span class="p">:</span>
+
+        <span class="n">nodes</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">defaultParallelism</span>
+        
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">share_parameters</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="o">.</span><span class="n">is_multivariate</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">slave_forecast_univariate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+            <span class="n">forecasts</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="n">nodes</span> <span class="o">*</span> <span class="n">num_batches</span><span class="p">)</span><span class="o">.</span><span class="n">mapPartitions</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">)</span>
+
+            <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">slave_forecast_multivariate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+            <span class="n">forecasts</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="n">nodes</span> <span class="o">*</span> <span class="n">num_batches</span><span class="p">)</span><span class="o">.</span><span class="n">mapPartitions</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">forecasts</span><span class="o">.</span><span class="n">collect</span><span class="p">():</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyFTS 1.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+    </div>
+  </body>
+</html>

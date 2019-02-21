@@ -27,5 +27,13 @@ pyFTS.hyperparam.GridSearch module
     :members:
     :undoc-members:
     :show-inheritance:
+    
+pyFTS.hyperparam.Evolutionary module
+------------------------------------
+
+.. automodule:: pyFTS.hyperparam.Evolutionary
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 

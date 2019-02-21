@@ -28,7 +28,7 @@
     <script type="text/javascript" src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pyFTS.hyperparam package" href="pyFTS.hyperparam.html" />
+    <link rel="next" title="pyFTS.distributed package" href="pyFTS.distributed.html" />
     <link rel="prev" title="pyFTS.common package" href="pyFTS.common.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -45,7 +45,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyFTS.hyperparam.html" title="pyFTS.hyperparam package"
+          <a href="pyFTS.distributed.html" title="pyFTS.distributed package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="pyFTS.common.html" title="pyFTS.common package"
@@ -67,6 +67,7 @@
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.common">pyFTS.data.common module</a></li>
 <li><a class="reference internal" href="#datasets">Datasets</a></li>
+<li><a class="reference internal" href="#module-pyFTS.data.artificial">Artificial and synthetic data generators</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.AirPassengers">AirPassengers dataset</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.Bitcoin">Bitcoin dataset</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.DowJones">DowJones dataset</a></li>
@@ -81,7 +82,6 @@
 <li><a class="reference internal" href="#module-pyFTS.data.SONDA">SONDA dataset</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.SP500">S&amp;P 500 dataset</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.TAIEX">TAIEX dataset</a></li>
-<li><a class="reference internal" href="#module-pyFTS.data.artificial">pyFTS.data.artificial module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.henon">Henon chaotic time series</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.logistic_map">Logistic_map chaotic time series</a></li>
 <li><a class="reference internal" href="#module-pyFTS.data.lorentz">Lorentz chaotic time series</a></li>
@@ -96,8 +96,8 @@
   <p class="topless"><a href="pyFTS.common.html"
                         title="previous chapter">pyFTS.common package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pyFTS.hyperparam.html"
-                        title="next chapter">pyFTS.hyperparam package</a></p>
+  <p class="topless"><a href="pyFTS.distributed.html"
+                        title="next chapter">pyFTS.distributed package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -165,6 +165,273 @@ If the file don’t already exists, it will be downloaded and decompressed.</p>
 </div>
 <div class="section" id="datasets">
 <h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyFTS.data.artificial">
+<span id="artificial-and-synthetic-data-generators"></span><h2>Artificial and synthetic data generators<a class="headerlink" href="#module-pyFTS.data.artificial" title="Permalink to this headline">¶</a></h2>
+<p>Facilities to generate synthetic stochastic processes</p>
+<dl class="class">
+<dt id="pyFTS.data.artificial.SignalEmulator">
+<em class="property">class </em><code class="descclassname">pyFTS.data.artificial.</code><code class="descname">SignalEmulator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Emulate a complex signal built from several additive and non-additive components</p>
+<dl class="method">
+<dt id="pyFTS.data.artificial.SignalEmulator.blip">
+<code class="descname">blip</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.blip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.blip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an outlier greater than the maximum or lower then the minimum previous values of the signal,
+and insert it on a random location of the signal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the current SignalEmulator instance, for method chaining</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.data.artificial.SignalEmulator.components">
+<code class="descname">components</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Components of the signal</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.data.artificial.SignalEmulator.incremental_gaussian">
+<code class="descname">incremental_gaussian</code><span class="sig-paren">(</span><em>mu</em>, <em>sigma</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.incremental_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.incremental_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an additive gaussian interference on a previous signal</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mu</strong> – increment on mean</li>
+<li><strong>sigma</strong> – increment on variance</li>
+<li><strong>start</strong> – lag index to start this signal, the default value is 0</li>
+<li><strong>it</strong> – Number of iterations, the default value is 1</li>
+<li><strong>length</strong> – Number of samples generated on each iteration, the default value is 100</li>
+<li><strong>vmin</strong> – Lower bound value of generated data, the default value is None</li>
+<li><strong>vmax</strong> – Upper bound value of generated data, the default value is None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the current SignalEmulator instance, for method chaining</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.data.artificial.SignalEmulator.periodic_gaussian">
+<code class="descname">periodic_gaussian</code><span class="sig-paren">(</span><em>type</em>, <em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an additive periodic gaussian interference on a previous signal</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>type</strong> – ‘linear’ or ‘sinoidal’</li>
+<li><strong>period</strong> – the period of recurrence</li>
+<li><strong>mu</strong> – increment on mean</li>
+<li><strong>sigma</strong> – increment on variance</li>
+<li><strong>start</strong> – lag index to start this signal, the default value is 0</li>
+<li><strong>it</strong> – Number of iterations, the default value is 1</li>
+<li><strong>length</strong> – Number of samples generated on each iteration, the default value is 100</li>
+<li><strong>vmin</strong> – Lower bound value of generated data, the default value is None</li>
+<li><strong>vmax</strong> – Upper bound value of generated data, the default value is None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the current SignalEmulator instance, for method chaining</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.data.artificial.SignalEmulator.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the signal</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a list of float values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.data.artificial.SignalEmulator.stationary_gaussian">
+<code class="descname">stationary_gaussian</code><span class="sig-paren">(</span><em>mu</em>, <em>sigma</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.stationary_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.stationary_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a continuous Gaussian signal with mean mu and variance sigma.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mu</strong> – mean</li>
+<li><strong>sigma</strong> – variance</li>
+<li><strong>additive</strong> – If False it cancels the previous signal and start this one, if True
+this signal is added to the previous one</li>
+<li><strong>start</strong> – lag index to start this signal, the default value is 0</li>
+<li><strong>it</strong> – Number of iterations, the default value is 1</li>
+<li><strong>length</strong> – Number of samples generated on each iteration, the default value is 100</li>
+<li><strong>vmin</strong> – Lower bound value of generated data, the default value is None</li>
+<li><strong>vmax</strong> – Upper bound value of generated data, the default value is None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the current SignalEmulator instance, for method chaining</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.artificial.generate_gaussian_linear">
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_gaussian_linear</code><span class="sig-paren">(</span><em>mu_ini</em>, <em>sigma_ini</em>, <em>mu_inc</em>, <em>sigma_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_gaussian_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_gaussian_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate data sampled from Gaussian distribution, with constant or linear changing parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mu_ini</strong> – Initial mean</li>
+<li><strong>sigma_ini</strong> – Initial variance</li>
+<li><strong>mu_inc</strong> – Mean increment after ‘num’ samples</li>
+<li><strong>sigma_inc</strong> – Variance increment after ‘num’ samples</li>
+<li><strong>it</strong> – Number of iterations</li>
+<li><strong>num</strong> – Number of samples generated on each iteration</li>
+<li><strong>vmin</strong> – Lower bound value of generated data</li>
+<li><strong>vmax</strong> – Upper bound value of generated data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.artificial.generate_linear_periodic_gaussian">
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_linear_periodic_gaussian</code><span class="sig-paren">(</span><em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_linear_periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_linear_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a periodic linear variation on mean and variance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>period</strong> – the period of recurrence</li>
+<li><strong>mu_min</strong> – initial (and minimum) mean of each period</li>
+<li><strong>sigma_min</strong> – initial (and minimum) variance of each period</li>
+<li><strong>mu_max</strong> – final (and maximum) mean of each period</li>
+<li><strong>sigma_max</strong> – final (and maximum) variance of each period</li>
+<li><strong>it</strong> – Number of iterations</li>
+<li><strong>num</strong> – Number of samples generated on each iteration</li>
+<li><strong>vmin</strong> – Lower bound value of generated data</li>
+<li><strong>vmax</strong> – Upper bound value of generated data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.artificial.generate_sinoidal_periodic_gaussian">
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_sinoidal_periodic_gaussian</code><span class="sig-paren">(</span><em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_sinoidal_periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_sinoidal_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a periodic sinoidal variation on mean and variance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>period</strong> – the period of recurrence</li>
+<li><strong>mu_min</strong> – initial (and minimum) mean of each period</li>
+<li><strong>sigma_min</strong> – initial (and minimum) variance of each period</li>
+<li><strong>mu_max</strong> – final (and maximum) mean of each period</li>
+<li><strong>sigma_max</strong> – final (and maximum) variance of each period</li>
+<li><strong>it</strong> – Number of iterations</li>
+<li><strong>num</strong> – Number of samples generated on each iteration</li>
+<li><strong>vmin</strong> – Lower bound value of generated data</li>
+<li><strong>vmax</strong> – Upper bound value of generated data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.artificial.generate_uniform_linear">
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_uniform_linear</code><span class="sig-paren">(</span><em>min_ini</em>, <em>max_ini</em>, <em>min_inc</em>, <em>max_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_uniform_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_uniform_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate data sampled from Uniform distribution, with constant or  linear changing bounds</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mu_ini</strong> – Initial mean</li>
+<li><strong>sigma_ini</strong> – Initial variance</li>
+<li><strong>mu_inc</strong> – Mean increment after ‘num’ samples</li>
+<li><strong>sigma_inc</strong> – Variance increment after ‘num’ samples</li>
+<li><strong>it</strong> – Number of iterations</li>
+<li><strong>num</strong> – Number of samples generated on each iteration</li>
+<li><strong>vmin</strong> – Lower bound value of generated data</li>
+<li><strong>vmax</strong> – Upper bound value of generated data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.artificial.random_walk">
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">random_walk</code><span class="sig-paren">(</span><em>n=500</em>, <em>type='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#random_walk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.random_walk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple random walk</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> – number of samples</li>
+<li><strong>type</strong> – ‘gaussian’ or ‘uniform’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.data.artificial.white_noise">
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">white_noise</code><span class="sig-paren">(</span><em>n=500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#white_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.white_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple Gaussian noise signal
+:param n: number of samples
+:return:</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyFTS.data.AirPassengers">
 <span id="airpassengers-dataset"></span><h2>AirPassengers dataset<a class="headerlink" href="#module-pyFTS.data.AirPassengers" title="Permalink to this headline">¶</a></h2>
@@ -629,74 +896,6 @@ If the file don’t already exists, it will be downloaded and decompressed.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pyFTS.data.artificial">
-<span id="pyfts-data-artificial-module"></span><h2>pyFTS.data.artificial module<a class="headerlink" href="#module-pyFTS.data.artificial" title="Permalink to this headline">¶</a></h2>
-<p>Facilities to generate synthetic stochastic processes</p>
-<dl class="function">
-<dt id="pyFTS.data.artificial.generate_gaussian_linear">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_gaussian_linear</code><span class="sig-paren">(</span><em>mu_ini</em>, <em>sigma_ini</em>, <em>mu_inc</em>, <em>sigma_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_gaussian_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_gaussian_linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate data sampled from Gaussian distribution, with constant or linear changing parameters</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mu_ini</strong> – Initial mean</li>
-<li><strong>sigma_ini</strong> – Initial variance</li>
-<li><strong>mu_inc</strong> – Mean increment after ‘num’ samples</li>
-<li><strong>sigma_inc</strong> – Variance increment after ‘num’ samples</li>
-<li><strong>it</strong> – Number of iterations</li>
-<li><strong>num</strong> – Number of samples generated on each iteration</li>
-<li><strong>vmin</strong> – Lower bound value of generated data</li>
-<li><strong>vmax</strong> – Upper bound value of generated data</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.artificial.generate_uniform_linear">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_uniform_linear</code><span class="sig-paren">(</span><em>min_ini</em>, <em>max_ini</em>, <em>min_inc</em>, <em>max_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_uniform_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_uniform_linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate data sampled from Uniform distribution, with constant or  linear changing bounds</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mu_ini</strong> – Initial mean</li>
-<li><strong>sigma_ini</strong> – Initial variance</li>
-<li><strong>mu_inc</strong> – Mean increment after ‘num’ samples</li>
-<li><strong>sigma_inc</strong> – Variance increment after ‘num’ samples</li>
-<li><strong>it</strong> – Number of iterations</li>
-<li><strong>num</strong> – Number of samples generated on each iteration</li>
-<li><strong>vmin</strong> – Lower bound value of generated data</li>
-<li><strong>vmax</strong> – Upper bound value of generated data</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.artificial.random_walk">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">random_walk</code><span class="sig-paren">(</span><em>n=500</em>, <em>type='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#random_walk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.random_walk" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.artificial.white_noise">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">white_noise</code><span class="sig-paren">(</span><em>n=500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#white_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.white_noise" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
 <div class="section" id="module-pyFTS.data.henon">
 <span id="henon-chaotic-time-series"></span><h2>Henon chaotic time series<a class="headerlink" href="#module-pyFTS.data.henon" title="Permalink to this headline">¶</a></h2>
 <ol class="upperalpha simple" start="13">
@@ -955,7 +1154,7 @@ dz/dt = b + z( x - c )</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyFTS.hyperparam.html" title="pyFTS.hyperparam package"
+          <a href="pyFTS.distributed.html" title="pyFTS.distributed package"
              >next</a> |</li>
         <li class="right" >
           <a href="pyFTS.common.html" title="pyFTS.common package"

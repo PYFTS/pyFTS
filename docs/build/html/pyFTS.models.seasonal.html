@@ -359,7 +359,7 @@
 <dt id="pyFTS.models.seasonal.common.DateTime">
 <em class="property">class </em><code class="descclassname">pyFTS.models.seasonal.common.</code><code class="descname">DateTime</code><a class="reference internal" href="_modules/pyFTS/models/seasonal/common.html#DateTime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
-<p>An enumeration.</p>
+<p>Data and Time granularity for time granularity and seasonality identification</p>
 <dl class="attribute">
 <dt id="pyFTS.models.seasonal.common.DateTime.day_of_month">
 <code class="descname">day_of_month</code><em class="property"> = 30</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.day_of_month" title="Permalink to this definition">¶</a></dt>
@@ -376,8 +376,8 @@
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="pyFTS.models.seasonal.common.DateTime.hour">
-<code class="descname">hour</code><em class="property"> = 6</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.hour" title="Permalink to this definition">¶</a></dt>
+<dt id="pyFTS.models.seasonal.common.DateTime.half">
+<code class="descname">half</code><em class="property"> = 2</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.half" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -431,6 +431,11 @@
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="pyFTS.models.seasonal.common.DateTime.quarter">
+<code class="descname">quarter</code><em class="property"> = 4</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.quarter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="pyFTS.models.seasonal.common.DateTime.second">
 <code class="descname">second</code><em class="property"> = 8</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.second" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -448,6 +453,16 @@
 <dl class="attribute">
 <dt id="pyFTS.models.seasonal.common.DateTime.second_of_minute">
 <code class="descname">second_of_minute</code><em class="property"> = 60.00001</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.second_of_minute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.models.seasonal.common.DateTime.sixth">
+<code class="descname">sixth</code><em class="property"> = 6</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.sixth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.models.seasonal.common.DateTime.third">
+<code class="descname">third</code><em class="property"> = 3</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.third" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -482,7 +497,7 @@
 
 <dl class="function">
 <dt id="pyFTS.models.seasonal.common.strip_datepart">
-<code class="descclassname">pyFTS.models.seasonal.common.</code><code class="descname">strip_datepart</code><span class="sig-paren">(</span><em>date</em>, <em>date_part</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/common.html#strip_datepart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.common.strip_datepart" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.models.seasonal.common.</code><code class="descname">strip_datepart</code><span class="sig-paren">(</span><em>date</em>, <em>date_part</em>, <em>mask=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/common.html#strip_datepart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.common.strip_datepart" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -585,12 +600,24 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="pyFTS.models.seasonal.partitioner.TimeGridPartitioner.mask">
+<code class="descname">mask</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.models.seasonal.partitioner.TimeGridPartitioner.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string with datetime formating mask</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pyFTS.models.seasonal.partitioner.TimeGridPartitioner.plot">
 <code class="descname">plot</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/partitioner.html#TimeGridPartitioner.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.partitioner.TimeGridPartitioner.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the
 :param ax:
 :return:</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.models.seasonal.partitioner.TimeGridPartitioner.season">
+<code class="descname">season</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.models.seasonal.partitioner.TimeGridPartitioner.season" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seasonality, a pyFTS.models.seasonal.common.DateTime object</p>
 </dd></dl>
 
 </dd></dl>

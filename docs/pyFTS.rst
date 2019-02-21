@@ -9,6 +9,7 @@ Subpackages
     pyFTS.benchmarks
     pyFTS.common
     pyFTS.data
+    pyFTS.distributed
     pyFTS.hyperparam
     pyFTS.models
     pyFTS.partitioners

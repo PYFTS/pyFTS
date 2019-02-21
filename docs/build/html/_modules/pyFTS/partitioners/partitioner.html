@@ -139,7 +139,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">setnames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setnames</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setnames</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">)]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span> <span class="o">=</span> <span class="n">FuzzySet</span><span class="o">.</span><span class="n">set_ordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
 
