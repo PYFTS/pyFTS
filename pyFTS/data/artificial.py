@@ -36,17 +36,18 @@ def generate_gaussian_linear(mu_ini, sigma_ini, mu_inc, sigma_inc, it=100, num=1
 
 def generate_linear_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_max, it=100, num=10, vmin=None, vmax=None):
     """
+    Generates a periodic linear variation on mean and variance
 
-    :param period:
-    :param mu_min:
-    :param sigma_min:
-    :param mu_max:
-    :param sigma_max:
-    :param it:
-    :param num:
-    :param vmin:
-    :param vmax:
-    :return:
+    :param period: the period of recurrence
+    :param mu_min: initial (and minimum) mean of each period
+    :param sigma_min: initial (and minimum) variance of each period
+    :param mu_max: final (and maximum) mean of each period
+    :param sigma_max: final (and maximum) variance of each period
+    :param it: Number of iterations
+    :param num: Number of samples generated on each iteration
+    :param vmin: Lower bound value of generated data
+    :param vmax: Upper bound value of generated data
+    :return: A list of it*num float values
     """
 
     if period > it:
@@ -78,21 +79,21 @@ def generate_linear_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_m
     return ret
 
 
-def generate_senoidal_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_max, it=100, num=10, vmin=None, vmax=None):
+def generate_sinoidal_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_max, it=100, num=10, vmin=None, vmax=None):
     """
+    Generates a periodic sinoidal variation on mean and variance
 
-    :param period:
-    :param mu_min:
-    :param sigma_min:
-    :param mu_max:
-    :param sigma_max:
-    :param it:
-    :param num:
-    :param vmin:
-    :param vmax:
-    :return:
+    :param period: the period of recurrence
+    :param mu_min: initial (and minimum) mean of each period
+    :param sigma_min: initial (and minimum) variance of each period
+    :param mu_max: final (and maximum) mean of each period
+    :param sigma_max: final (and maximum) variance of each period
+    :param it: Number of iterations
+    :param num: Number of samples generated on each iteration
+    :param vmin: Lower bound value of generated data
+    :param vmax: Upper bound value of generated data
+    :return: A list of it*num float values
     """
-
     mu_range = mu_max - mu_min
     sigma_range = sigma_max - sigma_min
     mu = mu_min
@@ -145,10 +146,21 @@ def generate_uniform_linear(min_ini, max_ini, min_inc, max_inc, it=100, num=10, 
 
 
 def white_noise(n=500):
+    """
+    Simple Gaussian noise signal
+    :param n: number of samples
+    :return:
+    """
     return np.random.normal(0, 1, n)
 
 
 def random_walk(n=500, type='gaussian'):
+    """
+    Simple random walk
+    :param n: number of samples
+    :param type: 'gaussian' or 'uniform'
+    :return:
+    """
     if type == 'gaussian':
         tmp = generate_gaussian_linear(0, 1, 0, 0, it=1, num=n)
     else:
@@ -185,6 +197,9 @@ def _append(additive, start, before, new):
 
 
 class SignalEmulator(object):
+    """
+    Emulate a complex signal built from several additive and non-additive components
+    """
 
     def __init__(self, **kwargs):
         super(SignalEmulator, self).__init__()
@@ -196,14 +211,14 @@ class SignalEmulator(object):
         Creates a continuous Gaussian signal with mean mu and variance sigma.
         :param mu: mean
         :param sigma: variance
-        :keyword cummulative: If False it cancels the previous signal and start this one, if True
-                              this signal is added to the previous one
+        :keyword additive: If False it cancels the previous signal and start this one, if True
+                           this signal is added to the previous one
         :keyword start: lag index to start this signal, the default value is 0
         :keyword it: Number of iterations, the default value is 1
         :keyword length: Number of samples generated on each iteration, the default value is 100
         :keyword vmin: Lower bound value of generated data, the default value is None
         :keyword vmax: Upper bound value of generated data, the default value is None
-        :return: A list of it*num float values
+        :return: the current SignalEmulator instance, for method chaining
         """
         parameters = {'mu': mu, 'sigma': sigma}
         self.components.append({'dist': 'gaussian', 'type': 'constant',
@@ -213,16 +228,14 @@ class SignalEmulator(object):
     def incremental_gaussian(self, mu, sigma, **kwargs):
         """
         Creates an additive gaussian interference on a previous signal
-        :param mu:
-        :param sigma:
-        :keyword cummulative: If False it cancels the previous signal and start this one, if True
-                              this signal is added to the previous one
+        :param mu: increment on mean
+        :param sigma: increment on variance
         :keyword start: lag index to start this signal, the default value is 0
         :keyword it: Number of iterations, the default value is 1
         :keyword length: Number of samples generated on each iteration, the default value is 100
         :keyword vmin: Lower bound value of generated data, the default value is None
         :keyword vmax: Upper bound value of generated data, the default value is None
-        :return: A list of it*num float values
+        :return: the current SignalEmulator instance, for method chaining
         """
         parameters = {'mu': mu, 'sigma': sigma}
         self.components.append({'dist': 'gaussian', 'type': 'incremental',
@@ -232,16 +245,16 @@ class SignalEmulator(object):
     def periodic_gaussian(self, type, period, mu_min, sigma_min, mu_max, sigma_max, **kwargs):
         """
         Creates an additive periodic gaussian interference on a previous signal
-        :param mu:
-        :param sigma:
-        :keyword additive: If False it cancels the previous signal and start this one, if True
-                              this signal is added to the previous one
+        :param type: 'linear' or 'sinoidal'
+        :param period: the period of recurrence
+        :param mu: increment on mean
+        :param sigma: increment on variance
         :keyword start: lag index to start this signal, the default value is 0
         :keyword it: Number of iterations, the default value is 1
         :keyword length: Number of samples generated on each iteration, the default value is 100
         :keyword vmin: Lower bound value of generated data, the default value is None
         :keyword vmax: Upper bound value of generated data, the default value is None
-        :return: A list of it*num float values
+        :return: the current SignalEmulator instance, for method chaining
         """
         parameters = {'type':type, 'period':period,
                       'mu_min': mu_min, 'sigma_min': sigma_min, 'mu_max': mu_max, 'sigma_max': sigma_max}
@@ -251,10 +264,10 @@ class SignalEmulator(object):
 
     def blip(self, **kwargs):
         """
+        Creates an outlier greater than the maximum or lower then the minimum previous values of the signal,
+        and insert it on a random location of the signal.
 
-        :param intensity:
-        :param kwargs:
-        :return:
+        :return: the current SignalEmulator instance, for method chaining
         """
         parameters = {}
         self.components.append({'dist': 'blip', 'type': 'blip',
@@ -262,6 +275,11 @@ class SignalEmulator(object):
         return self
 
     def run(self):
+        """
+        Render the signal
+
+        :return: a list of float values
+        """
         signal = []
         last_it = 10
         last_num = 10
@@ -286,8 +304,8 @@ class SignalEmulator(object):
                 mu_max, sigma_max = parameters['mu_max'],parameters['sigma_max']
 
                 if parameters['type'] == 'sinoidal':
-                    tmp = generate_senoidal_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_max,
-                                                        it=num, num=1, vmin=vmin, vmax=vmax)
+                    tmp = generate_sinoidal_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_max,
+                                                              it=num, num=1, vmin=vmin, vmax=vmax)
                 else:
                     tmp = generate_linear_periodic_gaussian(period, mu_min, sigma_min, mu_max, sigma_max,
                                                         it=num, num=1, vmin=vmin, vmax=vmax)
