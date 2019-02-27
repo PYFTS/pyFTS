@@ -45,7 +45,7 @@ class IncrementalEnsembleFTS(ensemble.EnsembleFTS):
 
         self.is_high_order = True
         self.uod_clip = False
-        #self.max_lag = self.window_length + self.max_lag
+        self.max_lag = self.window_length + self.max_lag
 
     def train(self, data, **kwargs):
 
