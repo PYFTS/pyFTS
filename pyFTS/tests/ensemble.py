@@ -19,7 +19,9 @@ model = IncrementalEnsemble.IncrementalEnsembleFTS(order=2, window_length=20, ba
 
 model.fit(passengers[:40])
 
-model.predict(passengers[40:])
+forecasts = model.predict(passengers[40:])
+
+print(forecasts)
 
 '''
 passengers = np.array(passengers["Passengers"])

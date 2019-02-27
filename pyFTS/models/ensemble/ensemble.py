@@ -104,7 +104,7 @@ class EnsembleFTS(fts.FTS):
         elif self.point_method == 'exponential':
             l = len(self.models)
             if l == 1:
-                return forecasts
+                return forecasts[0]
             ret = np.nansum([np.exp(-(self.exp_factor * (l - k))) * forecasts[k] for k in range(l)])
 
         return ret
