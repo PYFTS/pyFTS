@@ -43,10 +43,12 @@ class EnsembleFTS(fts.FTS):
         self.alpha = kwargs.get("alpha", 0.05)
         """The quantiles """
         self.point_method = kwargs.get('point_method', 'mean')
-        """The method used to mix the several model's forecasts into a unique point forecast. Options: mean, median, quantile"""
+        """The method used to mix the several model's forecasts into a unique point forecast. Options: mean, median, quantile, exponential"""
         self.interval_method = kwargs.get('interval_method', 'quantile')
         """The method used to mix the several model's forecasts into a interval forecast. Options: quantile, extremum, normal"""
-        self.order = 1
+        #self.order = 1
+        self.exp_factor = kwargs.get('exp_factor', 0.5)
+        """Multiplicative factor on exponential averaging of the models"""
 
     def append_model(self, model):
         """
@@ -80,9 +82,9 @@ class EnsembleFTS(fts.FTS):
                     data = self.indexer.get_data(data)
 
                 sample = data[-model.order:]
-                forecast = model.forecast(sample)
+                forecast = model.predict(sample)
                 if isinstance(forecast, (list,np.ndarray)) and len(forecast) > 0:
-                    forecast = int(forecast[-1])
+                    forecast = forecast[-1]
                 elif isinstance(forecast, (list,np.ndarray)) and len(forecast) == 0:
                     forecast = np.nan
             if isinstance(forecast, list):
@@ -99,6 +101,11 @@ class EnsembleFTS(fts.FTS):
         elif self.point_method == 'quantile':
             alpha = kwargs.get("alpha",0.05)
             ret = np.percentile(forecasts, alpha*100)
+        elif self.point_method == 'exponential':
+            l = len(self.models)
+            if l == 1:
+                return forecasts
+            ret = np.nansum([np.exp(-(self.exp_factor * (l - k))) * forecasts[k] for k in range(l)])
 
         return ret
 

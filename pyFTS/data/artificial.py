@@ -299,7 +299,7 @@ def white_noise(n=500):
 def random_walk(n=500, type='gaussian'):
     """
     Simple random walk
-    
+
     :param n: number of samples
     :param type: 'gaussian' or 'uniform'
     :return:

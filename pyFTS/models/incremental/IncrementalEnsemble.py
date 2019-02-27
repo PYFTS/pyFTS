@@ -38,6 +38,11 @@ class IncrementalEnsembleFTS(ensemble.EnsembleFTS):
         self.batch_size = kwargs.get('batch_size', 10)
         """The batch interval between each retraining"""
 
+        self.num_models = kwargs.get('num_models', 5)
+        """The number of models to hold in the ensemble"""
+
+        self.point_method = kwargs.get('point_method', 'exponential')
+
         self.is_high_order = True
         self.uod_clip = False
         #self.max_lag = self.window_length + self.max_lag
@@ -49,16 +54,9 @@ class IncrementalEnsembleFTS(ensemble.EnsembleFTS):
         if model.is_high_order:
             model = self.fts_method(partitioner=partitioner, order=self.order, **self.fts_params)
         model.fit(data, **kwargs)
-        if len(self.models) > 0:
+        self.append_model(model)
+        if len(self.models) > self.num_models:
             self.models.pop(0)
-        self.models.append(model)
-
-    def _point_smoothing(self, forecasts):
-        l = len(self.models)
-
-        ret = np.nansum([np.exp(-(l-k)) * forecasts[k] for k in range(l)])
-
-        return ret
 
     def forecast(self, data, **kwargs):
         l = len(data)
@@ -79,7 +77,7 @@ class IncrementalEnsembleFTS(ensemble.EnsembleFTS):
 
             sample = data[k - self.max_lag: k]
             tmp = self.get_models_forecasts(sample)
-            point = self._point_smoothing(tmp)
+            point = self.get_point(tmp)
             ret.append(point)
 
         return ret
