@@ -102,9 +102,8 @@ class EnsembleFTS(fts.FTS):
             l = len(self.models)
             if l == 1:
                 return forecasts[0]
-            w = [np.exp(-(l - k)) for k in range(l)]
-            sw = sum(w)
-            w = w / sw
+            w = np.array([np.exp(-(l - k)) for k in range(l)])
+            w = w / np.nansum(w)
             ret = np.nansum([w[k] * forecasts[k] for k in range(l)])
 
         return ret
