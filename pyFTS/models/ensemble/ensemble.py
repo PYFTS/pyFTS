@@ -46,9 +46,6 @@ class EnsembleFTS(fts.FTS):
         """The method used to mix the several model's forecasts into a unique point forecast. Options: mean, median, quantile, exponential"""
         self.interval_method = kwargs.get('interval_method', 'quantile')
         """The method used to mix the several model's forecasts into a interval forecast. Options: quantile, extremum, normal"""
-        #self.order = 1
-        self.exp_factor = kwargs.get('exp_factor', 0.5)
-        """Multiplicative factor on exponential averaging of the models"""
 
     def append_model(self, model):
         """
@@ -105,7 +102,10 @@ class EnsembleFTS(fts.FTS):
             l = len(self.models)
             if l == 1:
                 return forecasts[0]
-            ret = np.nansum([np.exp(-(self.exp_factor * (l - k))) * forecasts[k] for k in range(l)])
+            w = [np.exp(-(l - k)) for k in range(l)]
+            sw = sum(w)
+            w = w / sw
+            ret = np.nansum([w[k] * forecasts[k] for k in range(l)])
 
         return ret
 
