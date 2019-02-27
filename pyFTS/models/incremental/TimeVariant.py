@@ -37,6 +37,7 @@ class Retrainer(fts.FTS):
         self.is_high_order = True
         self.uod_clip = False
         self.max_lag = self.window_length + self.order
+        self.is_wrapper = True
 
     def train(self, data, **kwargs):
         self.partitioner = self.partitioner_method(data=data, **self.partitioner_params)
