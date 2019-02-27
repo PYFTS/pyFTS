@@ -72,7 +72,7 @@ class IncrementalEnsembleFTS(ensemble.EnsembleFTS):
             if k >= self.window_length:
                 data_window.pop(0)
 
-            if k % self.batch_size == 0 and k >= self.window_length:
+            if k % self.batch_size == 0 and k - self.max_lag >= self.window_length:
                 self.train(data_window, **kwargs)
 
             sample = data[k - self.max_lag: k]
