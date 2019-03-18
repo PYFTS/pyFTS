@@ -13,11 +13,12 @@ from pyFTS.partitioners import Grid, Entropy  # , Huarng
 from pyFTS.models import hofts
 from pyFTS.common import Membership
 from pyFTS.hyperparam import Util as hUtil
-from pyFTS.distributed import dispy
+from pyFTS.distributed import dispy as dUtil
 
+__measures = ['f1', 'f2', 'rmse', 'size']
 
 #
-def genotype(mf, npart, partitioner, order, alpha, lags, len_lags, rmse):
+def genotype(mf, npart, partitioner, order, alpha, lags, f1, f2):
     '''
     Create the individual genotype
 
@@ -27,12 +28,12 @@ def genotype(mf, npart, partitioner, order, alpha, lags, len_lags, rmse):
     :param order: model order
     :param alpha: alpha-cut
     :param lags: array with lag indexes
-    :param len_lags: parsimony fitness value
-    :param rmse: accuracy fitness value
+    :param f1: accuracy fitness value
+    :param f2: parsimony fitness value
     :return: the genotype, a dictionary with all hyperparameters
     '''
     ind = dict(mf=mf, npart=npart, partitioner=partitioner, order=order,
-               alpha=alpha, lags=lags, len_lags=len_lags, rmse=rmse)
+               alpha=alpha, lags=lags, f1=f1, f2=f2)
     return ind
 
 
@@ -122,17 +123,19 @@ def evaluate(dataset, individual, **kwargs):
     '''
     from pyFTS.common import Util
     from pyFTS.benchmarks import Measures
+    from pyFTS.hyperparam.Evolutionary import phenotype, __measures
+    import numpy as np
 
     window_size = kwargs.get('window_size', 800)
     train_rate = kwargs.get('train_rate', .8)
     increment_rate = kwargs.get('increment_rate', .2)
     parameters = kwargs.get('parameters',{})
 
-    if individual['rmse'] is not None and individual['len_lags'] is not None:
-        return individual['len_lags'], individual['rmse']
+    if individual['f1'] is not None and individual['f2'] is not None:
+        return { key: individual[key] for key in __measures }
 
     try:
-        results = []
+        errors = []
         lengths = []
 
         for count, train, test in Util.sliding_window(dataset, window_size, train=train_rate, inc=increment_rate):
@@ -144,22 +147,25 @@ def evaluate(dataset, individual, **kwargs):
 
             forecasts = model.predict(test)
 
-            rmse = Measures.rmse(test[model.max_lag:], forecasts[:-1]) #.get_point_statistics(test, model)
+            rmse = Measures.rmse(test[model.max_lag:], forecasts) #.get_point_statistics(test, model)
             lengths.append(len(model))
 
-            results.append(rmse)
+            errors.append(rmse)
 
-            _lags = sum(model.lags) * 100
+        _lags = sum(model.lags) * 100
 
-            rmse = np.nansum([.6 * np.nanmean(results), .4 * np.nanstd(results)])
-            len_lags = np.nansum([.4 * np.nanmean(lengths), .6 * _lags])
+        _rmse = np.nanmean(errors)
+        _len = np.nanmean(lengths)
+
+        f1 = np.nansum([.6 * _rmse, .4 * np.nanstd(errors)])
+        f2 = np.nansum([.4 * _len, .6 * _lags])
 
         #print("EVALUATION {}".format(individual))
-        return len_lags, rmse
+        return {'f1': f1, 'f2': f2, 'rmse': _rmse, 'size': _len }
 
     except Exception as ex:
-        print("EVALUATION EXCEPTION!", str(ex), str(individual))
-        return np.inf, np.inf
+        #print("EVALUATION EXCEPTION!", str(ex), str(individual))
+        return {'f1': np.inf, 'f2': np.inf, 'rmse': np.inf, 'size': np.inf }
 
 
 def tournament(population, objective):
@@ -191,10 +197,10 @@ def double_tournament(population):
     :return:
     '''
 
-    ancestor1 = tournament(population, 'rmse')
-    ancestor2 = tournament(population, 'rmse')
+    ancestor1 = tournament(population, 'f1')
+    ancestor2 = tournament(population, 'f1')
 
-    selected = tournament([ancestor1, ancestor2], 'len_lags')
+    selected = tournament([ancestor1, ancestor2], 'f2')
 
     return selected
 
@@ -242,7 +248,7 @@ def crossover(parents):
     r1 = random.randint(0, n)
     r2 = random.randint(0, n)
 
-    if parents[r1]['rmse'] < parents[r2]['rmse']:
+    if parents[r1]['f1'] < parents[r2]['f1']:
         best = parents[r1]
         worst = parents[r2]
     else:
@@ -315,8 +321,8 @@ def mutation(individual, pmut):
         # Chama a função mutation_lags
         individual['lags'] = mutation_lags( individual['lags'],  individual['order'])
 
-        individual['rmse'] = None
-        individual['len_lags'] = None
+        individual['f1'] = None
+        individual['f2'] = None
 
     return individual
 
@@ -329,12 +335,14 @@ def elitism(population, new_population):
     :param new_population:
     :return:
     '''
-    population = sorted(population, key=itemgetter('rmse'))
+    population = sorted(population, key=itemgetter('f1'))
     best = population[0]
 
-    new_population = sorted(new_population, key=itemgetter('rmse'))
-    if new_population[0]["rmse"] > best["rmse"]:
+    new_population = sorted(new_population, key=itemgetter('f1'))
+    if new_population[0]["f1"] > best["f1"]:
         new_population.insert(0,best)
+    elif new_population[0]["f1"] == best["f1"] and new_population[0]["f2"] > best["f2"]:
+        new_population.insert(0, best)
 
     return new_population
 
@@ -363,6 +371,10 @@ def GeneticAlgorithm(dataset, **kwargs):
     npop = kwargs.get('npop',20)
     pcruz = kwargs.get('pcruz',.5)
     pmut = kwargs.get('pmut',.3)
+    distributed = kwargs.get('distributed', False)
+
+    if distributed == 'dispy':
+        cluster = kwargs.pop('cluster', None)
 
     collect_statistics = kwargs.get('collect_statistics', False)
 
@@ -376,8 +388,25 @@ def GeneticAlgorithm(dataset, **kwargs):
     best = population[1]
 
     print("Evaluating initial population {}".format(time.time()))
-    for individual in population:
-        individual['len_lags'], individual['rmse'] = evaluate(dataset, individual, **kwargs)
+    if not distributed:
+        for individual in population:
+            ret = evaluate(dataset, individual, **kwargs)
+            for key in __measures:
+                individual[key] = ret[key]
+    elif distributed=='dispy':
+        jobs = []
+        for ct, individual in enumerate(population):
+            job = cluster.submit(dataset, individual, **kwargs)
+            job.id = ct
+            jobs.append(job)
+        for job in jobs:
+            result = job()
+            if job.status == dispy.DispyJob.Finished and result is not None:
+                for key in __measures:
+                    population[job.id][key] = result[key]
+            else:
+                print(job.exception)
+                print(job.stdout)
 
     for i in range(ngen):
         print("GENERATION {} {}".format(i, time.time()))
@@ -400,16 +429,41 @@ def GeneticAlgorithm(dataset, **kwargs):
             new_population[ct] = mutation(individual, pmut)
 
         # Evaluation
-        _f1 = _f2 = []
-        for individual in new_population:
-            f1, f2 = evaluate(dataset, individual, **kwargs)
-            individual['len_lags'], individual['rmse'] = f1, f2
-            if collect_statistics:
-                _f1.append(f1)
-                _f2.append(f2)
+        if collect_statistics:
+            stats = {}
+            for key in __measures:
+                stats[key] = []
+
+        if not distributed:
+            for individual in new_population:
+                ret = evaluate(dataset, individual, **kwargs)
+                for key in __measures:
+                    individual[key] = ret[key]
+                    if collect_statistics: stats[key].append(ret[key])
+
+        elif distributed == 'dispy':
+            jobs = []
+
+            for ct, individual in enumerate(new_population):
+                job = cluster.submit(dataset, individual, **kwargs)
+                job.id = ct
+                jobs.append(job)
+            for job in jobs:
+                print('job id {}'.format(job.id))
+                result = job()
+                if job.status == dispy.DispyJob.Finished and result is not None:
+                    for key in __measures:
+                        new_population[job.id][key] = result[key]
+                        if collect_statistics: stats[key].append(ret[key])
+                else:
+                    print(job.exception)
+                    print(job.stdout)
+
 
         if collect_statistics:
-            generation_statistics['population'] = {'f1': np.nanmedian(_f1), 'f2': np.nanmedian(_f2)}
+            mean_stats = {key: np.nanmedian(stats[key]) for key in __measures }
+
+            generation_statistics['population'] = mean_stats
 
         # Elitism
         population = elitism(population, new_population)
@@ -423,11 +477,11 @@ def GeneticAlgorithm(dataset, **kwargs):
         best = population[0]
 
         if collect_statistics:
-            generation_statistics['best'] = {'f1': best["len_lags"], 'f2': best["rmse"]}
+            generation_statistics['best'] = {key: best[key] for key in __measures }
 
             statistics.append(generation_statistics)
 
-        if last_best['rmse'] <= best['rmse'] and last_best['len_lags'] <= best['len_lags']:
+        if last_best['f1'] <= best['f1'] and last_best['f2'] <= best['f2']:
             no_improvement_count += 1
             print("WITHOUT IMPROVEMENT {}".format(no_improvement_count))
             pmut += .05
@@ -444,35 +498,15 @@ def GeneticAlgorithm(dataset, **kwargs):
     return best, statistics
 
 
-def cluster_method(dataset, **kwargs):
-    from pyFTS.hyperparam.Evolutionary import GeneticAlgorithm
-
-    inicio = time.time()
-    ret, statistics = GeneticAlgorithm(dataset, **kwargs)
-    fim = time.time()
-    ret['time'] = fim - inicio
-    ret['size'] = ret['len_lags']
-    return ret, statistics
-
-
-def process_jobs(jobs, datasetname, conn):
-    for job in jobs:
-        result,statistics = job()
-        if job.status == dispy.DispyJob.Finished and result is not None:
-            print("Processing result of {}".format(result))
-
-            log_result(conn, datasetname, result)
-
-            persist_statistics(statistics)
-
-        else:
-            print(job.exception)
-            print(job.stdout)
+def process_experiment(result, datasetname, conn):
+    log_result(conn, datasetname, result['individual'])
+    persist_statistics(result['statistics'])
+    return result['individual']
 
 
 def persist_statistics(statistics):
     import json
-    with open('statistics.txt', 'w') as file:
+    with open('statistics{}.txt'.format(time.time()), 'w') as file:
         file.write(json.dumps(statistics))
 
 
@@ -491,33 +525,29 @@ def log_result(conn, datasetname, result):
 def execute(datasetname, dataset, **kwargs):
     conn = hUtil.open_hyperparam_db('hyperparam.db')
 
-    distributed = kwargs.get('distributed', False)
-
     experiments = kwargs.get('experiments', 30)
 
-    if not distributed:
-        ret = []
-        for i in range(experiments):
-            result, statistics = cluster_method(dataset, **kwargs)
-            log_result(conn, datasetname, result)
-            persist_statistics(statistics)
-            ret.append(result)
+    distributed = kwargs.get('distributed', False)
 
-        return result
-
-    elif distributed=='dispy':
+    if distributed == 'dispy':
         nodes = kwargs.get('nodes', ['127.0.0.1'])
+        cluster, http_server = dUtil.start_dispy_cluster(evaluate, nodes=nodes)
+        kwargs['cluster'] = cluster
 
-        cluster, http_server = dispy.start_dispy_cluster(cluster_method, nodes=nodes)
+    ret = []
+    for i in range(experiments):
+        print("Experiment {}".format(i))
 
+        start = time.time()
+        ret, statistics = GeneticAlgorithm(dataset, **kwargs)
+        end = time.time()
+        ret['time'] = end - start
+        experiment = {'individual': ret, 'statistics': statistics}
 
-        jobs = []
+        ret = process_experiment(experiment, datasetname, conn)
 
-        for i in range(experiments):
-            print("Experiment {}".format(i))
-            job = cluster.submit(dataset, **kwargs)
-            jobs.append(job)
+        if distributed == 'dispy':
+            dUtil.stop_dispy_cluster(cluster, http_server)
 
-        process_jobs(jobs, datasetname, conn)
+    return ret
 
-        dispy.stop_dispy_cluster(cluster, http_server)

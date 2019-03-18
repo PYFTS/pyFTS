@@ -218,10 +218,10 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
         raise ValueError("Type parameter has a unkown value!")
 
     if distributed:
-        import dispy, dispy.httpd
+        import pyFTS.distributed.dispy as dispy
 
         nodes = kwargs.get("nodes", ['127.0.0.1'])
-        cluster, http_server = cUtil.start_dispy_cluster(experiment_method, nodes)
+        cluster, http_server = dispy.start_dispy_cluster(experiment_method, nodes)
 
     jobs = []
 
@@ -306,7 +306,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
             if progress:
                 progressbar.update(1)
             job()
-            if job.status == dispy.DispyJob.Finished and job is not None:
+            if job.status == dispy.dispy.DispyJob.Finished and job is not None:
                 tmp = job.result
                 synthesis_method(dataset, tag, tmp, conn)
             else:
@@ -317,7 +317,7 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
 
         cluster.wait()  # wait for all jobs to finish
 
-        cUtil.stop_dispy_cluster(cluster, http_server)
+        dispy.stop_dispy_cluster(cluster, http_server)
 
     conn.close()
 

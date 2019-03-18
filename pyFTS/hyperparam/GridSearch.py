@@ -4,8 +4,9 @@ from pyFTS.models import hofts
 from pyFTS.partitioners import Grid, Entropy
 from pyFTS.benchmarks import Measures
 from pyFTS.hyperparam import Util as hUtil
-import numpy as np
+from pyFTS.distributed import dispy as dUtil
 import dispy
+import numpy as np
 from itertools import product
 
 
@@ -20,11 +21,12 @@ def dict_individual(mf, partitioner, partitions, order, lags, alpha_cut):
     }
 
 
-def cluster_method(individual, train, test):
+def cluster_method(individual, dataset, **kwargs):
     from pyFTS.common import Util, Membership
     from pyFTS.models import hofts
     from pyFTS.partitioners import Grid, Entropy
     from pyFTS.benchmarks import Measures
+    import numpy as np
 
     if individual['mf'] == 1:
         mf = Membership.trimf
@@ -35,42 +37,58 @@ def cluster_method(individual, train, test):
     else:
         mf = Membership.trimf
 
-    if individual['partitioner'] == 1:
-        partitioner = Grid.GridPartitioner(data=train, npart=individual['npart'], func=mf)
-    elif individual['partitioner'] == 2:
-        npart = individual['npart'] if individual['npart'] > 10 else 10
-        partitioner = Entropy.EntropyPartitioner(data=train, npart=npart, func=mf)
+    window_size = kwargs.get('window_size', 800)
+    train_rate = kwargs.get('train_rate', .8)
+    increment_rate = kwargs.get('increment_rate', .2)
+    parameters = kwargs.get('parameters', {})
 
+    errors = []
+    sizes = []
 
-    model = hofts.WeightedHighOrderFTS(partitioner=partitioner,
-                               lags=individual['lags'],
-                               alpha_cut=individual['alpha'],
-                               order=individual['order'])
+    for count, train, test in Util.sliding_window(dataset, window_size, train=train_rate, inc=increment_rate):
 
-    model.fit(train)
+        if individual['partitioner'] == 1:
+            partitioner = Grid.GridPartitioner(data=train, npart=individual['npart'], func=mf)
+        elif individual['partitioner'] == 2:
+            npart = individual['npart'] if individual['npart'] > 10 else 10
+            partitioner = Entropy.EntropyPartitioner(data=train, npart=npart, func=mf)
 
-    rmse, mape, u = Measures.get_point_statistics(test, model)
+        model = hofts.WeightedHighOrderFTS(partitioner=partitioner,
+                                   lags=individual['lags'],
+                                   alpha_cut=individual['alpha'],
+                                   order=individual['order'])
+        model.fit(train)
 
-    size = len(model)
+        forecasts = model.predict(test)
 
-    return individual, rmse, size, mape, u
+        #rmse, mape, u = Measures.get_point_statistics(test, model)
+        rmse = Measures.rmse(test[model.max_lag:], forecasts)
+
+        size = len(model)
+
+        errors.append(rmse)
+        sizes.append(size)
+
+    return {'parameters': individual, 'rmse': np.nanmean(errors), 'size': np.nanmean(size)}
 
 
 def process_jobs(jobs, datasetname, conn):
-    for job in jobs:
-        result, rmse, size, mape, u = job()
+    for ct, job in enumerate(jobs):
+        print("Processing job {}".format(ct))
+        result = job()
         if job.status == dispy.DispyJob.Finished and result is not None:
             print("Processing result of {}".format(result))
             
-            metrics = {'rmse': rmse, 'size': size, 'mape': mape, 'u': u }
+            metrics = {'rmse': result['rmse'], 'size': result['size']}
             
             for metric in metrics.keys():
 
-                record = (datasetname, 'GridSearch', 'WHOFTS', None, result['mf'],
-                          result['order'], result['partitioner'], result['npart'],
-                          result['alpha'], str(result['lags']), metric, metrics[metric])
-                          
-                print(record)
+                param = result['parameters']
+
+                record = (datasetname, 'GridSearch', 'WHOFTS', None, param['mf'],
+                          param['order'], param['partitioner'], param['npart'],
+                          param['alpha'], str(param['lags']), metric, metrics[metric])
+
 
                 hUtil.insert_hyperparam(record, conn)
 
@@ -79,7 +97,7 @@ def process_jobs(jobs, datasetname, conn):
             print(job.stdout)
     
 
-def execute(hyperparams, datasetname, train, test, **kwargs):
+def execute(hyperparams, datasetname, dataset, **kwargs):
 
     nodes = kwargs.get('nodes',['127.0.0.1'])
 
@@ -105,7 +123,7 @@ def execute(hyperparams, datasetname, train, test, **kwargs):
     
     print("Evaluation values: \n {}".format(hp_values))
     
-    cluster, http_server = Util.start_dispy_cluster(cluster_method, nodes=nodes)
+    cluster, http_server = dUtil.start_dispy_cluster(cluster_method, nodes=nodes)
     conn = hUtil.open_hyperparam_db('hyperparam.db')
 
     for instance in product(*hp_values):
@@ -133,12 +151,12 @@ def execute(hyperparams, datasetname, train, test, **kwargs):
             else:
                 individuals.append(dict_individual(mf, partitioner, partitions, order, _lags, alpha_cut))
                 
-            if count > 50:
+            if count > 10:
                 jobs = []
 
                 for ind in individuals:
                     print("Testing individual {}".format(ind))
-                    job = cluster.submit(ind, train, test)
+                    job = cluster.submit(ind, dataset, **kwargs)
                     jobs.append(job)
                     
                 process_jobs(jobs, datasetname, conn)
@@ -147,4 +165,4 @@ def execute(hyperparams, datasetname, train, test, **kwargs):
                 
                 individuals = []
 
-    Util.stop_dispy_cluster(cluster, http_server)
+    dUtil.stop_dispy_cluster(cluster, http_server)

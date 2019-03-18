@@ -1,5 +1,6 @@
-import dispy, dispy.httpd, logging
+import dispy as dispy, dispy.httpd, logging
 from pyFTS.common import Util
+import numpy as np
 
 
 def start_dispy_cluster(method, nodes):
