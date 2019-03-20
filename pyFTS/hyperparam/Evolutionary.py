@@ -376,7 +376,7 @@ def GeneticAlgorithm(dataset, **kwargs):
     if distributed == 'dispy':
         cluster = kwargs.pop('cluster', None)
 
-    collect_statistics = kwargs.get('collect_statistics', False)
+    collect_statistics = kwargs.get('collect_statistics', True)
 
     no_improvement_count = 0
 
@@ -454,7 +454,7 @@ def GeneticAlgorithm(dataset, **kwargs):
                 if job.status == dispy.DispyJob.Finished and result is not None:
                     for key in __measures:
                         new_population[job.id][key] = result[key]
-                        if collect_statistics: stats[key].append(ret[key])
+                        if collect_statistics: stats[key].append(result[key])
                 else:
                     print(job.exception)
                     print(job.stdout)
@@ -535,7 +535,7 @@ def execute(datasetname, dataset, **kwargs):
         kwargs['cluster'] = cluster
 
     ret = []
-    for i in range(experiments):
+    for i in np.arange(experiments):
         print("Experiment {}".format(i))
 
         start = time.time()
@@ -546,8 +546,8 @@ def execute(datasetname, dataset, **kwargs):
 
         ret = process_experiment(experiment, datasetname, conn)
 
-        if distributed == 'dispy':
-            dUtil.stop_dispy_cluster(cluster, http_server)
+    if distributed == 'dispy':
+        dUtil.stop_dispy_cluster(cluster, http_server)
 
     return ret
 
