@@ -64,6 +64,10 @@ class EnsembleFTS(fts.FTS):
         if model.has_seasonality:
             self.has_seasonality = True
 
+        if model.original_min < self.original_min:
+            self.original_min = model.original_min
+        elif model.original_max > self.original_max:
+            self.original_max = model.original_max
 
     def train(self, data, **kwargs):
         pass

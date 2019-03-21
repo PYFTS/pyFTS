@@ -12,6 +12,34 @@ from pyFTS.models.incremental import IncrementalEnsemble, TimeVariant
 
 from pyFTS.data import AirPassengers, artificial
 
+from pyFTS.models.ensemble import ensemble
+from pyFTS.models import hofts
+from pyFTS.data import TAIEX
+
+data = TAIEX.get_data()
+
+model = ensemble.EnsembleFTS()
+
+for k in [15, 25, 35]:
+    for order in [1, 2]:
+        fs = Grid.GridPartitioner(data=data, npart=k)
+        tmp = hofts.WeightedHighOrderFTS(partitioner=fs)
+
+        tmp.fit(data)
+
+        model.append_model(tmp)
+
+forecasts = model.predict(data, type='interval', method='quantile', alpha=.05)
+
+from pyFTS.benchmarks import benchmarks as bchmk
+
+#f, ax = plt.subplots(1, 1, figsize=[20, 5])
+
+#ax.plot(data)
+#bchmk.plot_interval(ax, forecasts, 3, "")
+print(forecasts)
+
+'''
 mu_local = 5
 sigma_local = 0.25
 mu_drift = 10
@@ -33,7 +61,7 @@ model2 = IncrementalEnsemble.IncrementalEnsembleFTS(partitioner_method=Grid.Grid
 forecasts = model2.predict(signal)
 
 print(forecasts)
-
+'''
 '''
 passengers = np.array(passengers["Passengers"])
 
