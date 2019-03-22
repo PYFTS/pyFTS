@@ -13,7 +13,7 @@ from pyFTS.common import FuzzySet, FLR, fts, tree
 from pyFTS.models import hofts
 
 
-class IntervalFTS(hofts.HighOrderFTS):
+class IntervalFTS(hofts.WeightedHighOrderFTS):
     """
     High Order Interval Fuzzy Time Series
     """
@@ -43,9 +43,9 @@ class IntervalFTS(hofts.HighOrderFTS):
         if len(flrg.LHS) > 0:
             if flrg.get_key() in self.flrgs:
                 tmp = self.flrgs[flrg.get_key()]
-                ret = tmp.get_lower(self.sets)
+                ret = tmp.get_lower(self.partitioner.sets)
             else:
-                ret = self.sets[flrg.LHS[-1]].lower
+                ret = self.partitioner.sets[flrg.LHS[-1]].lower
         return ret
 
     def get_sequence_membership(self, data, fuzzySets):

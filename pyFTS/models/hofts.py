@@ -66,8 +66,35 @@ class WeightedHighOrderFLRG(flrg.FLRG):
         return self.w
 
     def get_midpoint(self, sets):
-        mp = np.array([sets[c].centroid for c in self.RHS.keys()])
-        return mp.dot(self.weights())
+        if self.midpoint is None:
+            mp = np.array([sets[c].centroid for c in self.RHS.keys()])
+            self.midpoint = mp.dot(self.weights())
+
+        return self.midpoint
+
+    def get_lower(self, sets):
+        """
+        Returns the lower bound value for the RHS fuzzy sets
+
+        :param sets: fuzzy sets
+        :return: lower bound value
+        """
+        if self.lower is None:
+            lw = np.array([sets[s].lower for s in self.RHS.keys()])
+            self.lower = lw.dot(self.weights())
+        return self.lower
+
+    def get_upper(self, sets):
+        """
+        Returns the upper bound value for the RHS fuzzy sets
+
+        :param sets: fuzzy sets
+        :return: upper bound value
+        """
+        if self.upper is None:
+            up = np.array([sets[s].upper for s in self.RHS.keys()])
+            self.upper = up.dot(self.weights())
+        return self.upper
 
     def __str__(self):
         _str = ""
