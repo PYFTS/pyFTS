@@ -145,8 +145,9 @@ class MVFTS(fts.FTS):
                         mvs.append(0.)
                         mps.append(0.)
                 else:
-                    mvs.append(self.flrgs[flrg.get_key()].get_membership(data_point, self.explanatory_variables))
-                    mps.append(self.flrgs[flrg.get_key()].get_midpoint(self.target_variable.partitioner.sets))
+                    _flrg = self.flrgs[flrg.get_key()]
+                    mvs.append(_flrg.get_membership(data_point, self.explanatory_variables))
+                    mps.append(_flrg.get_midpoint(self.target_variable.partitioner.sets))
 
             mv = np.array(mvs)
             mp = np.array(mps)
@@ -199,6 +200,49 @@ class MVFTS(fts.FTS):
 
             ndata = ndata.append(new_data_point, ignore_index=True)
 
+        return ret
+
+    def forecast_interval(self, data, **kwargs):
+        ret = []
+        ndata = self.apply_transformations(data)
+        c = 0
+        for index, row in ndata.iterrows() if isinstance(ndata, pd.DataFrame) else enumerate(ndata):
+            data_point = self.format_data(row)
+            flrs = self.generate_lhs_flrs(data_point)
+            mvs = []
+            ups = []
+            los = []
+            for flr in flrs:
+                flrg = mvflrg.FLRG(lhs=flr.LHS)
+                if flrg.get_key() not in self.flrgs:
+                    #Naïve approach is applied when no rules were found
+                    if self.target_variable.name in flrg.LHS:
+                        fs = flrg.LHS[self.target_variable.name]
+                        fset = self.target_variable.partitioner.sets[fs]
+                        up = fset.upper
+                        lo = fset.lower
+                        mv = fset.membership(data_point[self.target_variable.name])
+                        mvs.append(mv)
+                        ups.append(up)
+                        los.append(lo)
+                    else:
+                        mvs.append(0.)
+                        ups.append(0.)
+                        los.append(0.)
+                else:
+                    _flrg = self.flrgs[flrg.get_key()]
+                    mvs.append(_flrg.get_membership(data_point, self.explanatory_variables))
+                    ups.append(_flrg.get_upper(self.target_variable.partitioner.sets))
+                    los.append(_flrg.get_lower(self.target_variable.partitioner.sets))
+
+            mv = np.array(mvs)
+            up = np.dot(mv, np.array(ups).T) / np.sum(mv)
+            lo = np.dot(mv, np.array(los).T) / np.sum(mv)
+
+            ret.append([lo, up])
+
+        ret = self.target_variable.apply_inverse_transformations(ret,
+                                                           params=data[self.target_variable.data_label].values)
         return ret
 
 

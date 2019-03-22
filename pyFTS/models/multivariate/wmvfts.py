@@ -33,8 +33,23 @@ class WeightedFLRG(mvflrg.FLRG):
         return self.w
 
     def get_midpoint(self, sets):
-        mp = np.array([sets[c].centroid for c in self.RHS.keys()])
-        return mp.dot(self.weights())
+        if self.midpoint is None:
+            mp = np.array([sets[c].centroid for c in self.RHS.keys()])
+            self.midpoint = mp.dot(self.weights())
+
+        return self.midpoint
+
+    def get_lower(self, sets):
+        if self.lower is None:
+            lw = np.array([sets[s].lower for s in self.RHS.keys()])
+            self.lower = lw.dot(self.weights())
+        return self.lower
+
+    def get_upper(self, sets):
+        if self.upper is None:
+            up = np.array([sets[s].upper for s in self.RHS.keys()])
+            self.upper = up.dot(self.weights())
+        return self.upper
 
 
     def __str__(self):
