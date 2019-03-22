@@ -85,6 +85,7 @@ print(_s2-_s1)
 #model.fit(data, distributed='dispy', nodes=['192.168.0.110'])
 #'''
 
+'''
 from pyFTS.models.multivariate import common, variable, mvfts, wmvfts, cmvfts, grid
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
@@ -99,7 +100,7 @@ from pyFTS.models.multivariate import common, variable, mvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 
-#'''
+
 sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k) for k in range(0,24)]}
 
 vhour = variable.Variable("Hour", data_label="date", partitioner=seasonal.TimeGridPartitioner, npart=24,
@@ -153,3 +154,37 @@ time_generator = lambda x : pd.to_datetime(x) + pd.to_timedelta(1, unit='h')
 
 forecasts = mload.predict(test_mv.iloc[:1], steps_ahead=48, generators={'date': time_generator,
                                                                         'temperature': mtemp})
+
+'''
+
+
+data = pd.read_csv('https://query.data.world/s/6xfb5useuotbbgpsnm5b2l3wzhvw2i', sep=';')
+
+train = data.iloc[:9000]
+test = data.iloc[9000:9200]
+
+from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.models.seasonal import partitioner as seasonal
+from pyFTS.models.seasonal.common import DateTime
+from pyFTS.partitioners import Grid
+
+sp = {'seasonality': DateTime.day_of_year , 'names': ['Jan','Fev','Mar','Abr','Mai','Jun','Jul', 'Ago','Set','Out','Nov','Dez']}
+
+vmonth = variable.Variable("Month", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=12,
+                           data=train, partitioner_specific=sp)
+
+sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k) for k in range(0,24)]}
+
+vhour = variable.Variable("Hour", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                          data=train, partitioner_specific=sp)
+
+vavg = variable.Variable("Radiation", data_label="glo_avg", alias='rad',
+                         partitioner=Grid.GridPartitioner, npart=30, alpha_cut=.3,
+                         data=train)
+
+from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts
+
+model = wmvfts.WeightedMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
+model.fit(train)
+
+forecasts = model.predict(test, type='interval')

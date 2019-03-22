@@ -22,7 +22,6 @@ class FLRG(flg.FLRG):
                 self.LHS[var] = []
             self.LHS[var].append(fset)
 
-
     def append_rhs(self, fset, **kwargs):
         self.RHS.add(fset)
 
@@ -33,6 +32,18 @@ class FLRG(flg.FLRG):
             mvs.append(var.partitioner.sets[s].membership(data[var.name]))
 
         return np.nanmin(mvs)
+
+    def get_lower(self, sets):
+        if self.lower is None:
+            self.lower = min([sets[rhs].lower for rhs in self.RHS])
+
+        return self.lower
+
+    def get_upper(self, sets):
+        if self.upper is None:
+            self.upper = max([sets[rhs].upper for rhs in self.RHS])
+
+        return self.upper
 
     def __str__(self):
         _str = ""

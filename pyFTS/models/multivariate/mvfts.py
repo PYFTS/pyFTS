@@ -236,8 +236,8 @@ class MVFTS(fts.FTS):
                     los.append(_flrg.get_lower(self.target_variable.partitioner.sets))
 
             mv = np.array(mvs)
-            up = np.dot(mv, np.array(ups).T) / np.sum(mv)
-            lo = np.dot(mv, np.array(los).T) / np.sum(mv)
+            up = np.dot(mv, np.array(ups).T) / np.nansum(mv)
+            lo = np.dot(mv, np.array(los).T) / np.nansum(mv)
 
             ret.append([lo, up])
 
