@@ -10,13 +10,11 @@ from copy import deepcopy
 import traceback
 
 import matplotlib as plt
-import matplotlib.cm as cmx
-import matplotlib.colors as pltcolors
+
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-from pyFTS.probabilistic import ProbabilityDistribution
 from pyFTS.common import Transformations
 from pyFTS.models import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, hwang
 from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts
@@ -26,12 +24,6 @@ from pyFTS.benchmarks import Util as bUtil
 from pyFTS.common import Util as cUtil
 # from sklearn.cross_validation import KFold
 from pyFTS.partitioners import Grid
-from matplotlib import rc
-
-#rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-## for Palatino and other serif fonts use:
-#rc('font',**{'family':'serif','serif':['Palatino']})
-#rc('text', usetex=True)
 
 colors = ['grey', 'darkgrey', 'rosybrown', 'maroon', 'red','orange', 'gold', 'yellow', 'olive', 'green',
           'darkgreen', 'cyan', 'lightblue','blue', 'darkblue', 'purple', 'darkviolet' ]
@@ -681,144 +673,10 @@ def print_distribution_statistics(original, models, steps, resolution):
 
 
 
-def plot_compared_intervals_ahead(original, models, colors, distributions, time_from, time_to, intervals = True,
-                               save=False, file=None, tam=[20, 5], resolution=None,
-                               cmap='Blues', linewidth=1.5):
-    """
-    Plot the forecasts of several one step ahead models, by point or by interval
-
-    :param original: Original time series data (list)
-    :param models: List of models to compare
-    :param colors: List of models colors
-    :param distributions: True to plot a distribution
-    :param time_from: index of data poit to start the ahead forecasting
-    :param time_to: number of steps ahead to forecast
-    :param interpol: Fill space between distribution plots
-    :param save: Save the picture on file
-    :param file: Filename to save the picture
-    :param tam: Size of the picture
-    :param resolution: 
-    :param cmap: Color map to be used on distribution plot 
-    :param option: Distribution type to be passed for models
-    :return: 
-    """
-    fig = plt.figure(figsize=tam)
-    ax = fig.add_subplot(111)
-
-    cm = plt.get_cmap(cmap)
-    cNorm = pltcolors.Normalize(vmin=0, vmax=1)
-    scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=cm)
-
-    if resolution is None: resolution = (max(original) - min(original)) / 100
-
-    mi = []
-    ma = []
-
-    for count, fts in enumerate(models, start=0):
-        if fts.has_probability_forecasting and distributions[count]:
-            density = fts.forecast_ahead_distribution(original[time_from - fts.order:time_from], time_to,
-                                                      resolution=resolution)
-
-            #plot_density_scatter(ax, cmap, density, fig, resolution, time_from, time_to)
-            plot_density_rectange(ax, cm, density, fig, resolution, time_from, time_to)
-
-        if fts.has_interval_forecasting and intervals:
-            forecasts = fts.forecast_ahead_interval(original[time_from - fts.order:time_from], time_to)
-            lower = [kk[0] for kk in forecasts]
-            upper = [kk[1] for kk in forecasts]
-            mi.append(min(lower))
-            ma.append(max(upper))
-            for k in np.arange(0, time_from - fts.order):
-                lower.insert(0, None)
-                upper.insert(0, None)
-            ax.plot(lower, color=colors[count], label=fts.shortname, linewidth=linewidth)
-            ax.plot(upper, color=colors[count], linewidth=linewidth*1.5)
-
-    ax.plot(original, color='black', label="Original", linewidth=linewidth*1.5)
-    handles0, labels0 = ax.get_legend_handles_labels()
-    if True in distributions:
-        lgd = ax.legend(handles0, labels0, loc=2)
-    else:
-        lgd = ax.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
-    _mi = min(mi)
-    if _mi < 0:
-        _mi *= 1.1
-    else:
-        _mi *= 0.9
-    _ma = max(ma)
-    if _ma < 0:
-        _ma *= 0.9
-    else:
-        _ma *= 1.1
-
-    ax.set_ylim([_mi, _ma])
-    ax.set_ylabel('F(T)')
-    ax.set_xlabel('T')
-    ax.set_xlim([0, len(original)])
-
-    cUtil.show_and_save_image(fig, file, save, lgd=lgd)
 
 
 
-def plot_density_rectange(ax, cmap, density, fig, resolution, time_from, time_to):
-    """
-    Auxiliar function to plot_compared_intervals_ahead
-    """
-    from matplotlib.patches import Rectangle
-    from matplotlib.collections import PatchCollection
-    patches = []
-    colors = []
-    for x in density.index:
-        for y in density.columns:
-            s = Rectangle((time_from + x, y), 1, resolution, fill=True, lw = 0)
-            patches.append(s)
-            colors.append(density[y][x]*5)
-    pc = PatchCollection(patches=patches, match_original=True)
-    pc.set_clim([0, 1])
-    pc.set_cmap(cmap)
-    pc.set_array(np.array(colors))
-    ax.add_collection(pc)
-    cb = fig.colorbar(pc, ax=ax)
-    cb.set_label('Density')
 
-
-def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=None):
-    from matplotlib.patches import Rectangle
-    from matplotlib.collections import PatchCollection
-    patches = []
-    colors = []
-    for ct, dt in enumerate(probabilitydist):
-        disp = 0.0
-        if reference_data is not None:
-            disp = reference_data[time_from+ct]
-
-        for y in dt.bins:
-            s = Rectangle((time_from+ct, y+disp), 1, dt.resolution, fill=True, lw = 0)
-            patches.append(s)
-            colors.append(dt.density(y))
-    scale = Transformations.Scale()
-    colors = scale.apply(colors)
-    pc = PatchCollection(patches=patches, match_original=True)
-    pc.set_clim([0, 1])
-    pc.set_cmap(cmap)
-    pc.set_array(np.array(colors))
-    ax.add_collection(pc)
-    cb = fig.colorbar(pc, ax=ax)
-    cb.set_label('Density')
-
-
-def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False, ls='-', linewidth=1):
-    lower = [kk[0] for kk in intervals]
-    upper = [kk[1] for kk in intervals]
-    mi = min(lower) * 0.95
-    ma = max(upper) * 1.05
-    for k in np.arange(0, order):
-        lower.insert(0, None)
-        upper.insert(0, None)
-    if typeonlegend: label += " (Interval)"
-    axis.plot(lower, color=color, label=label, ls=ls,linewidth=linewidth)
-    axis.plot(upper, color=color, ls=ls,linewidth=linewidth)
-    return [mi, ma]
 
 
 def plot_point(axis, points, order, label, color='red', ls='-', linewidth=1):
@@ -880,7 +738,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
                     ls = "-"
                 else:
                     ls = "--"
-                tmpmi, tmpma = plot_interval(ax, forecasts, fts.order, label=lbl, typeonlegend=typeonlegend,
+                tmpmi, tmpma = Util.plot_interval(ax, forecasts, fts.order, label=lbl, typeonlegend=typeonlegend,
                                              color=colors[count], ls=ls, linewidth=linewidth)
                 mi.append(tmpmi)
                 ma.append(tmpma)
@@ -900,15 +758,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
     #Util.show_and_save_image(fig, file, save, lgd=legends)
 
 
-def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
-    fig = plt.figure(figsize=tam)
-    ax = fig.add_subplot(111)
 
-    for k,m in enumerate(pmfs,start=0):
-        m.plot(ax, color=lcolors[k])
-
-    handles0, labels0 = ax.get_legend_handles_labels()
-    ax.legend(handles0, labels0)
 
 
 
