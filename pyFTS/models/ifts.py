@@ -13,7 +13,7 @@ from pyFTS.common import FuzzySet, FLR, fts, tree
 from pyFTS.models import hofts
 
 
-class IntervalFTS(hofts.HighOrderFTS):
+class IntervalFTS(hofts.WeightedHighOrderFTS):
     """
     High Order Interval Fuzzy Time Series
     """
