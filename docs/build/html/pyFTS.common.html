@@ -1254,9 +1254,123 @@ bisect but with a simpler API and support for key functions.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyFTS.common.Util.plot_compared_intervals_ahead">
+<code class="descclassname">pyFTS.common.Util.</code><code class="descname">plot_compared_intervals_ahead</code><span class="sig-paren">(</span><em>original, models, colors, distributions, time_from, time_to, intervals=True, save=False, file=None, tam=[20, 5], resolution=None, cmap='Blues', linewidth=1.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/Util.html#plot_compared_intervals_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.Util.plot_compared_intervals_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the forecasts of several one step ahead models, by point or by interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>original</strong> – Original time series data (list)</li>
+<li><strong>models</strong> – List of models to compare</li>
+<li><strong>colors</strong> – List of models colors</li>
+<li><strong>distributions</strong> – True to plot a distribution</li>
+<li><strong>time_from</strong> – index of data poit to start the ahead forecasting</li>
+<li><strong>time_to</strong> – number of steps ahead to forecast</li>
+<li><strong>interpol</strong> – Fill space between distribution plots</li>
+<li><strong>save</strong> – Save the picture on file</li>
+<li><strong>file</strong> – Filename to save the picture</li>
+<li><strong>tam</strong> – Size of the picture</li>
+<li><strong>resolution</strong> – </li>
+<li><strong>cmap</strong> – Color map to be used on distribution plot</li>
+<li><strong>option</strong> – Distribution type to be passed for models</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.common.Util.plot_density_rectange">
+<code class="descclassname">pyFTS.common.Util.</code><code class="descname">plot_density_rectange</code><span class="sig-paren">(</span><em>ax</em>, <em>cmap</em>, <em>density</em>, <em>fig</em>, <em>resolution</em>, <em>time_from</em>, <em>time_to</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/Util.html#plot_density_rectange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.Util.plot_density_rectange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Auxiliar function to plot_compared_intervals_ahead</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.common.Util.plot_distribution">
+<code class="descclassname">pyFTS.common.Util.</code><code class="descname">plot_distribution</code><span class="sig-paren">(</span><em>ax</em>, <em>cmap</em>, <em>probabilitydist</em>, <em>fig</em>, <em>time_from</em>, <em>reference_data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/Util.html#plot_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.Util.plot_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot forecasted ProbabilityDistribution objects on a matplotlib axis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> – matplotlib axis</li>
+<li><strong>cmap</strong> – matplotlib colormap name</li>
+<li><strong>probabilitydist</strong> – list of ProbabilityDistribution objects</li>
+<li><strong>fig</strong> – matplotlib figure</li>
+<li><strong>time_from</strong> – starting time (on x axis) to begin the plots</li>
+<li><strong>reference_data</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.common.Util.plot_interval">
+<code class="descclassname">pyFTS.common.Util.</code><code class="descname">plot_interval</code><span class="sig-paren">(</span><em>axis</em>, <em>intervals</em>, <em>order</em>, <em>label</em>, <em>color='red'</em>, <em>typeonlegend=False</em>, <em>ls='-'</em>, <em>linewidth=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/Util.html#plot_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.Util.plot_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot forecasted intervals on matplotlib</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>axis</strong> – matplotlib axis</li>
+<li><strong>intervals</strong> – list of forecasted intervals</li>
+<li><strong>order</strong> – order of the model that create the forecasts</li>
+<li><strong>label</strong> – figure label</li>
+<li><strong>color</strong> – matplotlib color name</li>
+<li><strong>typeonlegend</strong> – </li>
+<li><strong>ls</strong> – matplotlib line style</li>
+<li><strong>linewidth</strong> – matplotlib width</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.common.Util.plot_probability_distributions">
+<code class="descclassname">pyFTS.common.Util.</code><code class="descname">plot_probability_distributions</code><span class="sig-paren">(</span><em>pmfs, lcolors, tam=[15, 7]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/Util.html#plot_probability_distributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.Util.plot_probability_distributions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="pyFTS.common.Util.plot_rules">
 <code class="descclassname">pyFTS.common.Util.</code><code class="descname">plot_rules</code><span class="sig-paren">(</span><em>model, size=[5, 5], axis=None, rules_by_axis=None, columns=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/Util.html#plot_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.Util.plot_rules" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plot the FLRG rules of a FTS model on a matplotlib axis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> – FTS model</li>
+<li><strong>size</strong> – figure size</li>
+<li><strong>axis</strong> – matplotlib axis</li>
+<li><strong>rules_by_axis</strong> – number of rules plotted by column</li>
+<li><strong>columns</strong> – number of columns</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.common.Util.show_and_save_image">

@@ -295,6 +295,22 @@ transformations and partitioners.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyFTS.models.multivariate.flrg.FLRG.get_lower">
+<code class="descname">get_lower</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/flrg.html#FLRG.get_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.get_lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the lower bound value for the RHS fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">lower bound value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyFTS.models.multivariate.flrg.FLRG.get_membership">
 <code class="descname">get_membership</code><span class="sig-paren">(</span><em>data</em>, <em>variables</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/flrg.html#FLRG.get_membership"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.get_membership" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the membership value of the FLRG for the input data</p>
@@ -310,6 +326,22 @@ transformations and partitioners.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the membership value</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.multivariate.flrg.FLRG.get_upper">
+<code class="descname">get_upper</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/flrg.html#FLRG.get_upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.get_upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the upper bound value for the RHS fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">upper bound value</td>
 </tr>
 </tbody>
 </table>
@@ -427,6 +459,27 @@ transformations and partitioners.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast_interval">
+<code class="descname">forecast_interval</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.forecast_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interval forecast one step ahead</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
+<li><strong>kwargs</strong> – model specific parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the prediction intervals</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyFTS.models.multivariate.mvfts.MVFTS.format_data">
 <code class="descname">format_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.format_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.format_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -488,6 +541,22 @@ transformations and partitioners.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_lower">
+<code class="descname">get_lower</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedFLRG.get_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the lower bound value for the RHS fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">lower bound value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_midpoint">
 <code class="descname">get_midpoint</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedFLRG.get_midpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_midpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the midpoint value for the RHS fuzzy sets</p>
@@ -498,6 +567,22 @@ transformations and partitioners.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the midpoint value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_upper">
+<code class="descname">get_upper</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedFLRG.get_upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the upper bound value for the RHS fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">upper bound value</td>
 </tr>
 </tbody>
 </table>

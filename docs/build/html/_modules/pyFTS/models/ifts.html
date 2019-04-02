@@ -87,7 +87,7 @@
 <span class="kn">from</span> <span class="nn">pyFTS.models</span> <span class="k">import</span> <span class="n">hofts</span>
 
 
-<div class="viewcode-block" id="IntervalFTS"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.ifts.IntervalFTS">[docs]</a><span class="k">class</span> <span class="nc">IntervalFTS</span><span class="p">(</span><span class="n">hofts</span><span class="o">.</span><span class="n">HighOrderFTS</span><span class="p">):</span>
+<div class="viewcode-block" id="IntervalFTS"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.ifts.IntervalFTS">[docs]</a><span class="k">class</span> <span class="nc">IntervalFTS</span><span class="p">(</span><span class="n">hofts</span><span class="o">.</span><span class="n">WeightedHighOrderFTS</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    High Order Interval Fuzzy Time Series</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -117,9 +117,9 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">get_lower</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">get_lower</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">lower</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitioner</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="n">flrg</span><span class="o">.</span><span class="n">LHS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">lower</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="IntervalFTS.get_sequence_membership"><a class="viewcode-back" href="../../../pyFTS.models.html#pyFTS.models.ifts.IntervalFTS.get_sequence_membership">[docs]</a>    <span class="k">def</span> <span class="nf">get_sequence_membership</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">):</span>

@@ -12,6 +12,8 @@ from pyFTS.probabilistic import ProbabilityDistribution
 from pyFTS.common import Transformations
 
 
+
+
 def plot_compared_intervals_ahead(original, models, colors, distributions, time_from, time_to, intervals = True,
                                save=False, file=None, tam=[20, 5], resolution=None,
                                cmap='Blues', linewidth=1.5):
@@ -124,6 +126,17 @@ def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
     ax.legend(handles0, labels0)
 
 def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=None):
+    '''
+    Plot forecasted ProbabilityDistribution objects on a matplotlib axis
+
+    :param ax: matplotlib axis
+    :param cmap: matplotlib colormap name
+    :param probabilitydist: list of ProbabilityDistribution objects
+    :param fig: matplotlib figure
+    :param time_from: starting time (on x axis) to begin the plots
+    :param reference_data:
+    :return:
+    '''
     from matplotlib.patches import Rectangle
     from matplotlib.collections import PatchCollection
     patches = []
@@ -149,6 +162,19 @@ def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=
 
 
 def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False, ls='-', linewidth=1):
+    '''
+    Plot forecasted intervals on matplotlib
+
+    :param axis: matplotlib axis
+    :param intervals: list of forecasted intervals
+    :param order: order of the model that create the forecasts
+    :param label: figure label
+    :param color: matplotlib color name
+    :param typeonlegend:
+    :param ls: matplotlib line style
+    :param linewidth: matplotlib width
+    :return:
+    '''
     lower = [kk[0] for kk in intervals]
     upper = [kk[1] for kk in intervals]
     mi = min(lower) * 0.95
@@ -163,6 +189,16 @@ def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False
 
 
 def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
+    '''
+    Plot the FLRG rules of a FTS model on a matplotlib axis
+
+    :param model: FTS model
+    :param size: figure size
+    :param axis: matplotlib axis
+    :param rules_by_axis: number of rules plotted by column
+    :param columns: number of columns
+    :return:
+    '''
     if axis is None and rules_by_axis is None:
         rows = 1
     elif axis is None and rules_by_axis is not None:
