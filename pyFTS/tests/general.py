@@ -11,19 +11,20 @@ import pandas as pd
 from pyFTS.common import Util as cUtil, FuzzySet
 from pyFTS.partitioners import Grid, Entropy, Util as pUtil, Simple
 from pyFTS.benchmarks import benchmarks as bchmk, Measures
-from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts
+from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei
 from pyFTS.common import Transformations, Membership
 
 from pyFTS.data import TAIEX
 
-fs = Grid.GridPartitioner(data=TAIEX.get_data(), npart=23)
+data = TAIEX.get_data()
 
-print(fs.min, fs.max)
+fs = Grid.GridPartitioner(data=data, npart=23)
 
-tmp = fs.search(5500)
-print(tmp)
+test = [2000, 5000, 5500, 12000]
 
-tmp = fs.fuzzyfy(5500, method='fuzzy', alpha_cut=0.3)
-print(tmp)
-
+for method in [yu.WeightedFTS, tsaur.MarkovWeightedFTS, song.ConventionalFTS, sadaei.ExponentialyWeightedFTS, ismailefendi.ImprovedWeightedFTS,
+               chen.ConventionalFTS, cheng.TrendWeightedFTS, hofts.HighOrderFTS, pwfts.ProbabilisticWeightedFTS]:
+    model = method(partitioner=fs)
+    model.fit(data)
+    print(model.forecast(test))
 

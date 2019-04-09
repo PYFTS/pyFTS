@@ -43,7 +43,7 @@ class MultivariateFuzzySet(Composite.FuzzySet):
 
 
 def fuzzyfy_instance(data_point, var, tuples=True):
-    fsets = FuzzySet.fuzzyfy(data_point, var.partitioner, mode='sets', method='fuzzy', alpha_cut=var.alpha_cut)
+    fsets = var.partitioner(data_point, mode='sets', method='fuzzy', alpha_cut=var.alpha_cut)
     if tuples:
         return [(var.name, fs) for fs in fsets]
     else:

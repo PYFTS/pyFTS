@@ -142,6 +142,7 @@ class Partitioner(object):
             ret = []
             for inst in data:
                 mv = self.fuzzyfy(inst, **kwargs)
+                ret.append(mv)
             return ret
 
         alpha_cut = kwargs.get('alpha_cut', 0.)
@@ -157,6 +158,7 @@ class Partitioner(object):
             mv[ix] = tmp if tmp >= alpha_cut else 0.
 
         ix = np.ravel(np.argwhere(mv > 0.))
+
         if ix.size == 0:
             mv[self.check_bounds(data)] = 1.
 
@@ -170,6 +172,10 @@ class Partitioner(object):
             mx = max(mv)
             ix = np.ravel(np.argwhere(mv == mx))
             return self.ordered_sets[ix[0]]
+        elif mode == 'both':
+            ix = np.ravel(np.argwhere(mv > 0.))
+            sets = [(self.ordered_sets[i], mv[i]) for i in ix]
+            return sets
 
     def check_bounds(self, data):
         if data < self.min:
