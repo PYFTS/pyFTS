@@ -63,7 +63,7 @@ class ImprovedWeightedFTS(fts.FTS):
 
     def train(self, ndata, **kwargs):
 
-        tmpdata = FuzzySet.fuzzyfy(ndata, partitioner=self.partitioner, method='maximum', mode='sets')
+        tmpdata = self.partitioner.fuzzyfy(ndata, method='maximum', mode='sets')
         flrs = FLR.generate_recurrent_flrs(tmpdata)
         self.generate_flrg(flrs)
 
