@@ -1,5 +1,6 @@
 from pyFTS.common import FuzzySet, Membership
 import numpy as np
+from scipy.spatial import KDTree
 import matplotlib.pylab as plt
 
 
@@ -34,6 +35,8 @@ class Partitioner(object):
         """Anonymous function used to extract a single primitive type from an object instance"""
         self.ordered_sets = None
         """A ordered list of the fuzzy sets names, sorted by their middle point"""
+        self.kdtree = None
+        """A spatial index to help in fuzzyfication"""
 
         if kwargs.get('preprocess',True):
 
@@ -105,8 +108,95 @@ class Partitioner(object):
         """
         return self.sets[self.ordered_sets[-1]]
 
+    def build_index(self):
+        points = []
+
+        #self.index = {}
+
+        for ct, key in enumerate(self.ordered_sets):
+            fset = self.sets[key]
+            points.append([fset.lower, fset.centroid, fset.upper])
+            #self.index[ct] = fset.name
+
+        import sys
+        sys.setrecursionlimit(100000)
+
+        self.kdtree = KDTree(points)
+
+        sys.setrecursionlimit(1000)
+
     def fuzzyfy(self, data, **kwargs):
-        return FuzzySet.fuzzyfy(data, self, **kwargs)
+        """
+        A general method for fuzzyfication.
+
+        :param data: input value to be fuzzyfied
+        :keyword alpha_cut: the minimal membership value to be considered on fuzzyfication (only for mode='sets')
+        :keyword method: the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)
+        :keyword mode: the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership
+        values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )
+
+        :returns a list with the fuzzyfied values, depending on the mode
+        """
+
+        if isinstance(data, (list, np.ndarray)):
+            ret = []
+            for inst in data:
+                mv = self.fuzzyfy(inst, **kwargs)
+            return ret
+
+        alpha_cut = kwargs.get('alpha_cut', 0.)
+        mode = kwargs.get('mode', 'sets')
+        method = kwargs.get('method', 'fuzzy')
+
+        nearest = self.search(data, type='index')
+
+        mv = np.zeros(self.partitions)
+
+        for ix in nearest:
+            tmp = self[ix].membership(data)
+            mv[ix] = tmp if tmp >= alpha_cut else 0.
+
+        ix = np.ravel(np.argwhere(mv > 0.))
+        if ix.size == 0:
+            mv[self.check_bounds(data)] = 1.
+
+        if method == 'fuzzy' and mode == 'vector':
+            return mv
+        elif method == 'fuzzy' and mode == 'sets':
+            ix = np.ravel(np.argwhere(mv > 0.))
+            sets = [self.ordered_sets[i] for i in ix]
+            return sets
+        elif method == 'maximum' and mode == 'sets':
+            mx = max(mv)
+            ix = np.ravel(np.argwhere(mv == mx))
+            return self.ordered_sets[ix[0]]
+
+    def check_bounds(self, data):
+        if data < self.min:
+            return 0
+        elif data > self.max:
+            return self.partitions-1
+
+    def search(self, data, type='index', results=3):
+        '''
+        Perform a search for the nearest fuzzy sets of the point 'data'. This function were designed to work with several
+        overlapped fuzzy sets.
+
+        :param data: the value to search for the nearest fuzzy sets
+        :param type: the return type: 'index' for the fuzzy set indexes or 'name' for fuzzy set names.
+        :param results: the number of nearest fuzzy sets to return
+        :return: a list with the nearest fuzzy sets
+        '''
+        if self.kdtree is None:
+            self.build_index()
+
+        _, ix = self.kdtree.query([data, data, data], results)
+
+        if type == 'name':
+            return [self.ordered_sets[k] for k in sorted(ix)]
+        else:
+            return sorted(ix)
+
 
     def plot(self, ax, rounding=0):
         """
@@ -167,3 +257,32 @@ class Partitioner(object):
         :return: number of partitions
         """
         return self.partitions
+
+    def __getitem__(self, item):
+        """
+        Return a fuzzy set by its order or its name.
+
+        :param item: If item is an integer then it represents the fuzzy set index (order), if it was a string then
+        it represents the fuzzy set name.
+        :return: the fuzzy set
+        """
+        if isinstance(item, (int, np.int, np.int8, np.int16, np.int32, np.int64)):
+            if item < 0 or item >= self.partitions:
+                raise ValueError("The fuzzy set index must be between 0 and {}.".format(self.partitions))
+            return self.sets[self.ordered_sets[item]]
+        elif isinstance(item, str):
+            if item not in self.sets:
+                raise ValueError("The fuzzy set with name {} does not exist.".format(item))
+            return self.sets[item]
+        else:
+            raise ValueError("The parameter 'item' must be an integer or a string and the value informed was {} of type {}!".format(item, type(item)))
+
+    def __iter__(self):
+        """
+        Iterate over the fuzzy sets, ordered by its midpoints.
+
+        :return: An iterator over the fuzzy sets.
+        """
+        for key in self.ordered_sets:
+            yield self.sets[key]
+

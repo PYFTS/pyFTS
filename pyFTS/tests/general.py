@@ -14,19 +14,16 @@ from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts
 from pyFTS.common import Transformations, Membership
 
-from pyFTS.data import artificial
+from pyFTS.data import TAIEX
 
-"""
-cd = artificial.SignalEmulator()\
-    .stationary_gaussian(0,.2,length=10, it=1)\
-    .incremental_gaussian(0.5, 0,start=5,length=5)\
-    .blip()\
-    .stationary_gaussian(3,.2,length=10, it=1, additive=False)
-print([round(k,3) for k in cd.run()])
-"""
+fs = Grid.GridPartitioner(data=TAIEX.get_data(), npart=23)
 
-signal = artificial.SignalEmulator()\
-    .stationary_gaussian(1,0.2,length=130,it=10)\
-    .periodic_gaussian('sinoidal',100, 0.5,0.5,10,1,start=100,length=2000)\
-    .blip()\
-    .run()
+print(fs.min, fs.max)
+
+tmp = fs.search(5500)
+print(tmp)
+
+tmp = fs.fuzzyfy(5500, method='fuzzy', alpha_cut=0.3)
+print(tmp)
+
+

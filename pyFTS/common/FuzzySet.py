@@ -7,6 +7,7 @@ class FuzzySet(object):
     """
     Fuzzy Set
     """
+
     def __init__(self, name, mf, parameters, centroid, alpha=1.0, **kwargs):
         """
         Create a Fuzzy Set
@@ -23,15 +24,15 @@ class FuzzySet(object):
         """The alpha cut value"""
         self.type = kwargs.get('type', 'common')
         """The fuzzy set type (common, composite, nonstationary, etc)"""
-        self.variable = kwargs.get('variable',None)
+        self.variable = kwargs.get('variable', None)
         """In multivariate time series, indicate for which variable this fuzzy set belogs"""
         self.Z = None
         """Partition function in respect to the membership function"""
 
         if parameters is not None:
             if self.mf == Membership.gaussmf:
-                self.lower = parameters[0] - parameters[1]*3
-                self.upper = parameters[0] + parameters[1]*3
+                self.lower = parameters[0] - parameters[1] * 3
+                self.upper = parameters[0] + parameters[1] * 3
             elif self.mf == Membership.sigmf:
                 k = (parameters[1] / (2 * parameters[0]))
                 self.lower = parameters[1] - k
@@ -61,7 +62,7 @@ class FuzzySet(object):
         """
         return self.mf(self.transform(x), self.parameters) * self.alpha
 
-    def partition_function(self,uod=None, nbins=100):
+    def partition_function(self, uod=None, nbins=100):
         """
         Calculate the partition function over the membership function.
 
@@ -101,7 +102,7 @@ def __binary_search(x, fuzzy_sets, ordered_sets):
         fs2 = ordered_sets[midpoint + 1] if midpoint < max_len else ordered_sets[max_len]
 
         if fuzzy_sets[fs1].centroid <= fuzzy_sets[fs].transform(x) <= fuzzy_sets[fs2].centroid:
-            return (midpoint-1, midpoint, midpoint+1)
+            return (midpoint - 1, midpoint, midpoint + 1)
         elif midpoint <= 1:
             return [0]
         elif midpoint >= max_len:
@@ -125,7 +126,7 @@ def fuzzyfy(data, partitioner, **kwargs):
     :keyword method: the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)
     :keyword mode: the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership
     values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )
-    
+
     :returns a list with the fuzzyfied values, depending on the mode
     """
     alpha_cut = kwargs.get('alpha_cut', 0.)
@@ -294,6 +295,7 @@ def grant_bounds(data, fuzzy_sets, ordered_sets):
         return fuzzy_sets[ordered_sets[-1]].upper
     else:
         return data
+
 
 def check_bounds(data, fuzzy_sets, ordered_sets):
     if data < fuzzy_sets[ordered_sets[0]].lower:
