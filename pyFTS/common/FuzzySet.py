@@ -121,13 +121,12 @@ def fuzzyfy(data, partitioner, **kwargs):
     :param data: input value to be fuzzyfied
     :param partitioner: a trained pyFTS.partitioners.Partitioner object
     :param kwargs: dict, optional arguments
-
     :keyword alpha_cut: the minimal membership value to be considered on fuzzyfication (only for mode='sets')
     :keyword method: the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)
     :keyword mode: the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership
     values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )
-
     :returns a list with the fuzzyfied values, depending on the mode
+    
     """
     alpha_cut = kwargs.get('alpha_cut', 0.)
     mode = kwargs.get('mode', 'sets')

@@ -127,7 +127,7 @@ class Partitioner(object):
 
     def fuzzyfy(self, data, **kwargs):
         """
-        A general method for fuzzyfication.
+        Fuzzyfy the input data according to this partitioner fuzzy sets.
 
         :param data: input value to be fuzzyfied
         :keyword alpha_cut: the minimal membership value to be considered on fuzzyfication (only for mode='sets')
@@ -178,6 +178,14 @@ class Partitioner(object):
             return sets
 
     def check_bounds(self, data):
+        '''
+        Check if the input data is outside the known Universe of Discourse and, if it is, round it to the closest
+        fuzzy set.
+
+        :param data: input data to be verified
+        :return: the index of the closest fuzzy set when data is outside de universe of discourse or None if
+        the data is inside the UoD.
+        '''
         if data < self.min:
             return 0
         elif data > self.max:

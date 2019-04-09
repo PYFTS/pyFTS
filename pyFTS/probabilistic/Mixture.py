@@ -7,7 +7,7 @@ from pyFTS.probabilistic import ProbabilityDistribution
 
 class Mixture(ProbabilityDistribution.ProbabilityDistribution):
     """
-
+    Mix two or more Probability Distributions smoothing them with weights.
     """
     def __init__(self, type="mixture", **kwargs):
         self.models = []
@@ -21,7 +21,7 @@ class Mixture(ProbabilityDistribution.ProbabilityDistribution):
         if not isinstance(values, list):
             values = [values]
 
-        for ct, m in enumerate(self.models):
+        #for ct, m in enumerate(self.models):
 
-        probs = [m.density(values) ]
+        #probs = [m.density(values) ]
 
