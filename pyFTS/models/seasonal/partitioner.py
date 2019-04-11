@@ -4,6 +4,7 @@ from pyFTS.partitioners import partitioner, Grid
 from pyFTS.models.seasonal.common import DateTime, FuzzySet, strip_datepart
 import numpy as np
 import matplotlib.pylab as plt
+from scipy.spatial import KDTree
 
 
 class TimeGridPartitioner(partitioner.Partitioner):
@@ -56,6 +57,8 @@ class TimeGridPartitioner(partitioner.Partitioner):
             partlen = dlen / self.partitions
         elif self.season == DateTime.day_of_week:
             self.min, self.max, partlen, pl2 = 0, 7, 1, 1
+        elif self.season == DateTime.minute:
+            self.min, self.max, partlen, pl2 = 0, 60, 1, 1
         elif self.season == DateTime.hour:
             self.min, self.max, partlen, pl2 = 0, 24, 1, 1
         elif self.season == DateTime.month:
@@ -77,7 +80,7 @@ class TimeGridPartitioner(partitioner.Partitioner):
                                              self.season.value + 0.0000001], self.season.value, alpha=.5,
                                             **kwargs))
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
-                                            [c - partlen, c, c + partlen], c,
+                                            [c - 0.0000001, c, c + partlen], c,
                                             **kwargs))
                     tmp.centroid = c
                     sets[set_name] = tmp
@@ -88,7 +91,7 @@ class TimeGridPartitioner(partitioner.Partitioner):
                                              pl2], 0.0, alpha=.5,
                                             **kwargs))
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
-                                            [c - partlen, c, c + partlen], c,
+                                            [c - partlen, c, c + 0.0000001], c,
                                             **kwargs))
                     tmp.centroid = c
                     sets[set_name] = tmp
@@ -121,6 +124,51 @@ class TimeGridPartitioner(partitioner.Partitioner):
         self.min = 0
 
         return sets
+
+    def build_index(self):
+        points = []
+
+        fset = self.sets[self.ordered_sets[0]]
+        points.append([fset.centroid, fset.centroid, fset.centroid])
+
+        for ct, key in enumerate(self.ordered_sets[1:-2]):
+            fset = self.sets[key]
+            points.append([fset.lower, fset.centroid, fset.upper])
+
+        fset = self.sets[self.ordered_sets[-1]]
+        points.append([fset.centroid, fset.centroid, fset.centroid])
+
+        import sys
+        sys.setrecursionlimit(100000)
+
+        self.kdtree = KDTree(points)
+
+        sys.setrecursionlimit(1000)
+
+    def search(self, data, type='index', results=3):
+        '''
+        Perform a search for the nearest fuzzy sets of the point 'data'. This function were designed to work with several
+        overlapped fuzzy sets.
+
+        :param data: the value to search for the nearest fuzzy sets
+        :param type: the return type: 'index' for the fuzzy set indexes or 'name' for fuzzy set names.
+        :param results: the number of nearest fuzzy sets to return
+        :return: a list with the nearest fuzzy sets
+        '''
+        if self.kdtree is None:
+            self.build_index()
+
+        _, ix = self.kdtree.query([data, data, data], results)
+
+        if 0 in ix:
+            ix[-1] = self.partitions-1
+        elif self.partitions-1 in ix:
+            ix[-1] = 0
+
+        if type == 'name':
+            return [self.ordered_sets[k] for k in sorted(ix)]
+        else:
+            return sorted(ix)
 
 
     def plot(self, ax):

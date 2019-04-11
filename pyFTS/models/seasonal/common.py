@@ -19,9 +19,9 @@ class DateTime(Enum):
     day_of_month = 30
     day_of_year = 364
     day_of_week = 7
-    hour = 6
-    minute = 7
-    second = 8
+    hour = 24
+    minute = 60
+    second = 60
     hour_of_day = 24
     hour_of_week = 168
     hour_of_month = 744

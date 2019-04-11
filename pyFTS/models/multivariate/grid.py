@@ -31,3 +31,52 @@ class GridCluster(partitioner.MultivariatePartitioner):
 
         self.build_index()
 
+
+class IncrementalGridCluster(partitioner.MultivariatePartitioner):
+    def __init__(self, **kwargs):
+        super(IncrementalGridCluster, self).__init__(**kwargs)
+        self.name="IncrementalGridCluster"
+        self.build(None)
+
+    def fuzzyfy(self, data, **kwargs):
+
+        if isinstance(data, pd.DataFrame):
+            ret = []
+            for inst in data.iterrows():
+                mv = self.fuzzyfy(inst, **kwargs)
+                ret.append(mv)
+            return ret
+
+        alpha_cut = kwargs.get('alpha_cut', 0.)
+        mode = kwargs.get('mode', 'sets')
+
+        fsets = {}
+        ret = []
+        for var in self.explanatory_variables:
+            fsets[var.name] = var.partitioner.fuzzyfy(data[var.name], mode='sets')
+
+        fset = [val for key, val in fsets.items()]
+
+        for p in product(*fset):
+            key = ''.join(p)
+            if key not in self.sets:
+                mvfset = MultivariateFuzzySet(target_variable=self.target_variable)
+                for ct, fs in enumerate(p):
+                    mvfset.append_set(self.explanatory_variables[ct].name,
+                                      self.explanatory_variables[ct].partitioner[fs])
+                mvfset.name = key
+                self.sets[key] = mvfset
+
+            if mode=='sets':
+                ret.append(key)
+            elif mode=='vector':
+                raise NotImplementedError()
+            elif mode == 'both':
+                mvfset = self.sets[key]
+                ret.append((key, mvfset.membership(data)))
+
+        return ret
+
+    def prune(self):
+        pass
+
