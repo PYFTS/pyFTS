@@ -8,7 +8,7 @@ from pyFTS.models.multivariate import mvfts, grid, common
 
 class ClusteredMVFTS(mvfts.MVFTS):
     """
-    Meta model for multivariate, high order, clustered multivariate FTS
+    Meta model for high order, clustered multivariate FTS
     """
     def __init__(self, **kwargs):
         super(ClusteredMVFTS, self).__init__(**kwargs)
