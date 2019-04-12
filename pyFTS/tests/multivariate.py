@@ -171,25 +171,29 @@ from pyFTS.partitioners import Grid
 sp = {'seasonality': DateTime.day_of_year , 'names': ['Jan','Fev','Mar','Abr','Mai','Jun','Jul', 'Ago','Set','Out','Nov','Dez']}
 
 vmonth = variable.Variable("Month", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=12,
-                           data=train, partitioner_specific=sp)
+                           data=train, partitioner_specific=sp, alpha_cut=.5)
 
 sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k) for k in range(0,24)]}
 
 vhour = variable.Variable("Hour", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=24,
-                          data=train, partitioner_specific=sp)
+                          data=train, partitioner_specific=sp, alpha_cut=.5)
+
+#print(vhour.partitioner)
+
+#print(vmonth.partitioner.fuzzyfy(180))
 
 vavg = variable.Variable("Radiation", data_label="glo_avg", alias='rad',
-                         partitioner=Grid.GridPartitioner, npart=30, alpha_cut=.3,
+                         partitioner=Grid.GridPartitioner, npart=25, alpha_cut=.3,
                          data=train)
 
 from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
 
 fs = grid.IncrementalGridCluster(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
+
+
 model = cmvfts.ClusteredMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg,
                               partitioner=fs, knn=3)
 
 model.fit(train)
 
-print(fs)
-
-print(model)
+print(len(model))

@@ -45,7 +45,6 @@ class MVFTS(fts.FTS):
     def format_data(self, data):
         ndata = {}
         for var in self.explanatory_variables:
-            #ndata[var.name] = data[var.data_label]
             ndata[var.name] = var.partitioner.extractor(data[var.data_label])
 
         return ndata

@@ -77,21 +77,21 @@ class TimeGridPartitioner(partitioner.Partitioner):
                     tmp = Composite(set_name, superset=True, **kwargs)
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
                                             [self.season.value - pl2, self.season.value,
-                                             self.season.value + 0.0000001], self.season.value, alpha=.5,
+                                             self.season.value + pl2], self.season.value, alpha=1,
                                             **kwargs))
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
-                                            [c - 0.0000001, c, c + partlen], c,
+                                            [c - partlen, c, c + partlen], c,
                                             **kwargs))
                     tmp.centroid = c
                     sets[set_name] = tmp
                 elif c == self.max - partlen:
                     tmp = Composite(set_name, superset=True, **kwargs)
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
-                                            [0.0000001, 0.0,
-                                             pl2], 0.0, alpha=.5,
+                                            [-pl2, 0.0,
+                                             pl2], 0.0, alpha=1,
                                             **kwargs))
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
-                                            [c - partlen, c, c + 0.0000001], c,
+                                            [c - partlen, c, c + partlen], c,
                                             **kwargs))
                     tmp.centroid = c
                     sets[set_name] = tmp
@@ -129,14 +129,14 @@ class TimeGridPartitioner(partitioner.Partitioner):
         points = []
 
         fset = self.sets[self.ordered_sets[0]]
-        points.append([fset.centroid, fset.centroid, fset.centroid])
+        points.append([fset.sets[1].lower, fset.sets[1].centroid, fset.sets[1].upper])
 
-        for ct, key in enumerate(self.ordered_sets[1:-2]):
+        for ct, key in enumerate(self.ordered_sets[1:-1]):
             fset = self.sets[key]
             points.append([fset.lower, fset.centroid, fset.upper])
 
         fset = self.sets[self.ordered_sets[-1]]
-        points.append([fset.centroid, fset.centroid, fset.centroid])
+        points.append([fset.sets[1].lower, fset.sets[1].centroid, fset.sets[1].upper])
 
         import sys
         sys.setrecursionlimit(100000)
@@ -145,7 +145,7 @@ class TimeGridPartitioner(partitioner.Partitioner):
 
         sys.setrecursionlimit(1000)
 
-    def search(self, data, type='index', results=3):
+    def search(self, data, **kwargs):
         '''
         Perform a search for the nearest fuzzy sets of the point 'data'. This function were designed to work with several
         overlapped fuzzy sets.
@@ -155,15 +155,21 @@ class TimeGridPartitioner(partitioner.Partitioner):
         :param results: the number of nearest fuzzy sets to return
         :return: a list with the nearest fuzzy sets
         '''
+
+        type = kwargs.get('type','index')
+        results = kwargs.get('results',3)
+
         if self.kdtree is None:
             self.build_index()
 
         _, ix = self.kdtree.query([data, data, data], results)
 
+        ix = ix.tolist()
+
         if 0 in ix:
-            ix[-1] = self.partitions-1
+            ix.insert(0, self.partitions-1)
         elif self.partitions-1 in ix:
-            ix[-1] = 0
+            ix.insert(0, 0)
 
         if type == 'name':
             return [self.ordered_sets[k] for k in sorted(ix)]

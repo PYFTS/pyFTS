@@ -191,7 +191,7 @@ class Partitioner(object):
         elif data > self.max:
             return self.partitions-1
 
-    def search(self, data, type='index', results=3):
+    def search(self, data, **kwargs):
         '''
         Perform a search for the nearest fuzzy sets of the point 'data'. This function were designed to work with several
         overlapped fuzzy sets.
@@ -203,6 +203,9 @@ class Partitioner(object):
         '''
         if self.kdtree is None:
             self.build_index()
+
+        type = kwargs.get('type','index')
+        results = kwargs.get('results', 3)
 
         _, ix = self.kdtree.query([data, data, data], results)
 

@@ -42,18 +42,41 @@ class IncrementalGridCluster(partitioner.MultivariatePartitioner):
 
         if isinstance(data, pd.DataFrame):
             ret = []
-            for inst in data.iterrows():
+            for index, inst in data.iterrows():
                 mv = self.fuzzyfy(inst, **kwargs)
                 ret.append(mv)
             return ret
 
+        if self.kdtree is not None:
+            fsets = self.search(data, **kwargs)
+        else:
+            fsets = self.incremental_search(data, **kwargs)
+
+        if len(fsets) == 0:
+            fsets = self.incremental_search(data, **kwargs)
+            raise Exception("{}".format(data))
+
+        mode = kwargs.get('mode', 'sets')
+        if mode == 'sets':
+            return fsets
+        elif mode == 'vector':
+            raise NotImplementedError()
+        elif mode == 'both':
+            ret = []
+            for key in fsets:
+                mvfset = self.sets[key]
+                ret.append((key, mvfset.membership(data)))
+            return ret
+
+    def incremental_search(self, data, **kwargs):
         alpha_cut = kwargs.get('alpha_cut', 0.)
         mode = kwargs.get('mode', 'sets')
 
         fsets = {}
         ret = []
         for var in self.explanatory_variables:
-            fsets[var.name] = var.partitioner.fuzzyfy(data[var.name], mode='sets')
+            ac = alpha_cut if alpha_cut > 0. else var.alpha_cut
+            fsets[var.name] = var.partitioner.fuzzyfy(data[var.name], mode='sets', alpha_cut=ac)
 
         fset = [val for key, val in fsets.items()]
 
@@ -66,17 +89,11 @@ class IncrementalGridCluster(partitioner.MultivariatePartitioner):
                                       self.explanatory_variables[ct].partitioner[fs])
                 mvfset.name = key
                 self.sets[key] = mvfset
+            ret.append(key)
 
-            if mode=='sets':
-                ret.append(key)
-            elif mode=='vector':
-                raise NotImplementedError()
-            elif mode == 'both':
-                mvfset = self.sets[key]
-                ret.append((key, mvfset.membership(data)))
 
         return ret
 
     def prune(self):
-        pass
+        self.build_index()
 

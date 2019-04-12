@@ -27,6 +27,13 @@ class MultivariatePartitioner(partitioner.Partitioner):
         data = kwargs.get('data', None)
         self.build(data)
 
+    def format_data(self, data):
+        ndata = {}
+        for var in self.explanatory_variables:
+            ndata[var.name] = var.partitioner.extractor(data[var.data_label])
+
+        return ndata
+
     def build(self, data):
         pass
 
@@ -45,10 +52,22 @@ class MultivariatePartitioner(partitioner.Partitioner):
 
         self.build_index()
 
-    def knn(self, data):
-        tmp = [data[k.name]
-               for k in self.explanatory_variables]
-        tmp, ix = self.kdtree.query(tmp, self.neighbors)
+    def search(self, data, **kwargs):
+        '''
+        Perform a search for the nearest fuzzy sets of the point 'data'. This function were designed to work with several
+        overlapped fuzzy sets.
+
+        :param data: the value to search for the nearest fuzzy sets
+        :param type: the return type: 'index' for the fuzzy set indexes or 'name' for fuzzy set names.
+        :return: a list with the nearest fuzzy sets
+        '''
+        if self.kdtree is None:
+            self.build_index()
+
+        type = kwargs.get('type', 'index')
+
+        ndata = [data[k.name] for k in self.explanatory_variables]
+        _, ix = self.kdtree.query(ndata, self.neighbors)
 
         if not isinstance(ix, (list, np.ndarray)):
             ix = [ix]
@@ -58,9 +77,14 @@ class MultivariatePartitioner(partitioner.Partitioner):
             for k in ix:
                 tmp.append(self.index[k])
                 self.count[self.index[k]] = 1
-            return tmp
-        else:
+
+        if type == 'name':
             return [self.index[k] for k in ix]
+        elif type == 'index':
+            return sorted(ix)
+
+
+
 
     def fuzzyfy(self, data, **kwargs):
         return fuzzyfy_instance_clustered(data, self, **kwargs)
