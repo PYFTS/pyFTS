@@ -48,13 +48,9 @@ class IncrementalGridCluster(partitioner.MultivariatePartitioner):
             return ret
 
         if self.kdtree is not None:
-            fsets = self.search(data, **kwargs)
+            fsets = self.search(data, type='name')
         else:
-            fsets = self.incremental_search(data, **kwargs)
-
-        if len(fsets) == 0:
-            fsets = self.incremental_search(data, **kwargs)
-            raise Exception("{}".format(data))
+            fsets = self.incremental_search(data, type='name')
 
         mode = kwargs.get('mode', 'sets')
         if mode == 'sets':

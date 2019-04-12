@@ -188,7 +188,7 @@ vavg = variable.Variable("Radiation", data_label="glo_avg", alias='rad',
 
 from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
 
-fs = grid.IncrementalGridCluster(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
+fs = grid.GridCluster(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
 
 
 model = cmvfts.ClusteredMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg,
@@ -196,4 +196,4 @@ model = cmvfts.ClusteredMVFTS(explanatory_variables=[vmonth, vhour, vavg], targe
 
 model.fit(train)
 
-print(len(model))
+model.predict(test)
