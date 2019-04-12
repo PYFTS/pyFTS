@@ -22,5 +22,5 @@ class GranularWMVFTS(cmvfts.ClusteredMVFTS):
         self.partitioner = grid.IncrementalGridCluster(
             explanatory_variables=self.explanatory_variables,
             target_variable=self.target_variable)
-        super.train(data,**kwargs)
+        super(GranularWMVFTS, self).train(data,**kwargs)
 
