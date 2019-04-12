@@ -44,9 +44,9 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
     def train(self, data, **kwargs):
 
+        self.fts_params['order'] = self.order
+
         self.model = self.fts_method(partitioner=self.partitioner, **self.fts_params)
-        if self.model.is_high_order:
-            self.model.order = self.order
 
         ndata = self.check_data(data)
 

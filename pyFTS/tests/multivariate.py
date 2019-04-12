@@ -186,14 +186,13 @@ vavg = variable.Variable("Radiation", data_label="glo_avg", alias='rad',
                          partitioner=Grid.GridPartitioner, npart=25, alpha_cut=.3,
                          data=train)
 
-from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
+from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid, granular
 
-fs = grid.GridCluster(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
-
-
-model = cmvfts.ClusteredMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg,
-                              partitioner=fs, knn=3)
+model = granular.GranularWMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg,
+                              order=2, knn=7)
 
 model.fit(train)
 
-model.predict(test)
+print(model)
+
+#model.predict(test)

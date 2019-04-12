@@ -21,6 +21,7 @@ class GranularWMVFTS(cmvfts.ClusteredMVFTS):
     def train(self, data, **kwargs):
         self.partitioner = grid.IncrementalGridCluster(
             explanatory_variables=self.explanatory_variables,
-            target_variable=self.target_variable)
+            target_variable=self.target_variable,
+            neighbors=self.knn)
         super(GranularWMVFTS, self).train(data,**kwargs)
 
