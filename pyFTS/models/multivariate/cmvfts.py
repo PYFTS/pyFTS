@@ -4,6 +4,7 @@ import pandas as pd
 from pyFTS.common import FuzzySet, FLR, fts, flrg
 from pyFTS.models import hofts
 from pyFTS.models.multivariate import mvfts, grid, common
+from types import LambdaType
 
 
 class ClusteredMVFTS(mvfts.MVFTS):
@@ -72,17 +73,52 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         ndata = self.check_data(data)
 
-        ret = {}
-        for var in self.explanatory_variables:
-            if self.target_variable.name != var.name:
-                self.target_variable = var
-                self.partitioner.change_target_variable(var)
-                self.model.partitioner = self.partitioner
-                self.model.reset_calculated_values()
+        generators = kwargs.get('generators', {})
 
-            ret[var.name] = self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
+        already_processed_cols = []
+
+        ret = {}
+
+        ret[self.target_variable.data_label] = self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
+
+        for var in self.explanatory_variables:
+            if var.data_label not in already_processed_cols:
+                if var.data_label in generators:
+                    if isinstance(generators[var.data_label], LambdaType):
+                        fx = generators[var.data_label]
+                        if len(data[var.data_label].values) > self.order:
+                            ret[var.data_label] = [fx(k) for k in data[var.data_label].values[self.order:]]
+                        else:
+                            ret[var.data_label] = [fx(data[var.data_label].values[-1])]
+                    elif isinstance(generators[var.data_label], fts.FTS):
+                        model = generators[var.data_label]
+                        if not model.is_multivariate:
+                            ret[var.data_label] = model.forecast(data[var.data_label].values)
+                        else:
+                            ret[var.data_label] = model.forecast(data)
+                elif self.target_variable.name != var.name:
+                    self.target_variable = var
+                    self.partitioner.change_target_variable(var)
+                    self.model.partitioner = self.partitioner
+                    self.model.reset_calculated_values()
+                    ret[var.data_label] = self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
+
+                already_processed_cols.append(var.data_label)
 
         return pd.DataFrame(ret, columns=ret.keys())
+
+    def forecast_ahead_multivariate(self, data, steps, **kwargs):
+
+        ndata = self.apply_transformations(data)
+
+        ret = ndata.iloc[:self.order]
+
+        for k in np.arange(0, steps):
+            sample = ret.iloc[k:self.order+k]
+            tmp = self.forecast_multivariate(sample, **kwargs)
+            ret = ret.append(tmp, ignore_index=True)
+
+        return ret
 
     def __str__(self):
         """String representation of the model"""

@@ -14,12 +14,13 @@ from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei
 from pyFTS.common import Transformations, Membership
 
+'''
 dataset = pd.read_csv('https://query.data.world/s/2bgegjggydd3venttp3zlosh3wpjqj', sep=';')
 
 dataset['data'] = pd.to_datetime(dataset["data"], format='%Y-%m-%d %H:%M:%S')
 
 train_mv = dataset.iloc[:24505]
-test_mv = dataset.iloc[24505:]
+test_mv = dataset.iloc[24505:24605]
 
 from itertools import product
 
@@ -65,22 +66,41 @@ parameters = [
     {'order': 2, 'knn': 3},
 ]
 
-for ct, method in enumerate([mvfts.MVFTS, wmvfts.WeightedMVFTS,
-                             cmvfts.ClusteredMVFTS, cmvfts.ClusteredMVFTS, cmvfts.ClusteredMVFTS]):
+from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid, granular
+from pyFTS.benchmarks import Measures
 
-    if method != cmvfts.ClusteredMVFTS:
-        model = method(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg, **parameters[ct])
-    else:
-        fs = grid.GridCluster(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
-        model = method(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg, partitioner=fs,
-                       **parameters[ct])
+time_generator = lambda x : pd.to_datetime(x) + pd.to_timedelta(1, unit='h')
 
-    model.shortname += str(ct)
-    model.fit(train_mv)
+model = granular.GranularWMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg, order=2, knn=2)
 
-    forecasts = model.predict(test_mv.iloc[:100])
+model.fit(train_mv)
 
-    print(model.shortname, forecasts)
+forecasts = model.predict(test_mv, type='multivariate', generators={'data': time_generator}, steps_ahead=24 )
 
+print(forecasts)
 
+'''
 
+from pyFTS.data import lorentz
+df = lorentz.get_dataframe(iterations=5000)
+
+train = df.iloc[:4000]
+test = df.iloc[4000:]
+
+from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.partitioners import Grid
+
+vx = variable.Variable("x", data_label="x", alias='x', partitioner=Grid.GridPartitioner, npart=45, data=train)
+vy = variable.Variable("y", data_label="y", alias='y', partitioner=Grid.GridPartitioner, npart=45, data=train)
+vz = variable.Variable("z", data_label="z", alias='z', partitioner=Grid.GridPartitioner, npart=45, data=train)
+
+from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid, granular
+from pyFTS.benchmarks import Measures
+
+model = granular.GranularWMVFTS(explanatory_variables=[vx, vy, vz], target_variable=vx, order=5, knn=2)
+
+model.fit(train)
+
+forecasts = model.predict(test, type='multivariate', steps_ahead=20)
+
+print(forecasts)

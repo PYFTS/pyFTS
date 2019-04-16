@@ -148,7 +148,7 @@ class FTS(object):
                 elif type == 'distribution':
                     ret = self.forecast_ahead_distribution(ndata, steps_ahead, **kwargs)
                 elif type == 'multivariate':
-                    ret = self.forecast_ahead_multivariate(ndata, **kwargs)
+                    ret = self.forecast_ahead_multivariate(ndata, steps_ahead, **kwargs)
 
             if not ['point', 'interval', 'distribution', 'multivariate'].__contains__(type):
                 raise ValueError('The argument \'type\' has an unknown value.')
