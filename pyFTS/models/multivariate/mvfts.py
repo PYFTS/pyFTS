@@ -9,11 +9,11 @@ import pandas as pd
 
 
 def product_dict(**kwargs):
-    '''
+    """
     Code by Seth Johnson
     :param kwargs:
     :return:
-    '''
+    """
     keys = kwargs.keys()
     vals = kwargs.values()
     for instance in product(*vals):
@@ -243,7 +243,6 @@ class MVFTS(fts.FTS):
         ret = self.target_variable.apply_inverse_transformations(ret,
                                                            params=data[self.target_variable.data_label].values)
         return ret
-
 
     def clone_parameters(self, model):
         super(MVFTS, self).clone_parameters(model)

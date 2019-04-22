@@ -381,8 +381,8 @@
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="pyFTS.models.seasonal.common.DateTime.hour_of_day">
-<code class="descname">hour_of_day</code><em class="property"> = 24</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.hour_of_day" title="Permalink to this definition">¶</a></dt>
+<dt id="pyFTS.models.seasonal.common.DateTime.hour">
+<code class="descname">hour</code><em class="property"> = 24</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.hour" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -401,13 +401,13 @@
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="pyFTS.models.seasonal.common.DateTime.minute_of_day">
-<code class="descname">minute_of_day</code><em class="property"> = 1440</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.minute_of_day" title="Permalink to this definition">¶</a></dt>
+<dt id="pyFTS.models.seasonal.common.DateTime.minute">
+<code class="descname">minute</code><em class="property"> = 60</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.minute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="pyFTS.models.seasonal.common.DateTime.minute_of_hour">
-<code class="descname">minute_of_hour</code><em class="property"> = 60</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.minute_of_hour" title="Permalink to this definition">¶</a></dt>
+<dt id="pyFTS.models.seasonal.common.DateTime.minute_of_day">
+<code class="descname">minute_of_day</code><em class="property"> = 1440</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.minute_of_day" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -433,11 +433,6 @@
 <dl class="attribute">
 <dt id="pyFTS.models.seasonal.common.DateTime.quarter">
 <code class="descname">quarter</code><em class="property"> = 4</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.quarter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyFTS.models.seasonal.common.DateTime.second">
-<code class="descname">second</code><em class="property"> = 8</em><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime.second" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -600,6 +595,11 @@
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="pyFTS.models.seasonal.partitioner.TimeGridPartitioner.build_index">
+<code class="descname">build_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/partitioner.html#TimeGridPartitioner.build_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.partitioner.TimeGridPartitioner.build_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="pyFTS.models.seasonal.partitioner.TimeGridPartitioner.mask">
 <code class="descname">mask</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.models.seasonal.partitioner.TimeGridPartitioner.mask" title="Permalink to this definition">¶</a></dt>
@@ -612,6 +612,29 @@
 <dd><p>Plot the
 :param ax:
 :return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.seasonal.partitioner.TimeGridPartitioner.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/partitioner.html#TimeGridPartitioner.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.partitioner.TimeGridPartitioner.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a search for the nearest fuzzy sets of the point ‘data’. This function were designed to work with several
+overlapped fuzzy sets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – the value to search for the nearest fuzzy sets</li>
+<li><strong>type</strong> – the return type: ‘index’ for the fuzzy set indexes or ‘name’ for fuzzy set names.</li>
+<li><strong>results</strong> – the number of nearest fuzzy sets to return</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the nearest fuzzy sets</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">

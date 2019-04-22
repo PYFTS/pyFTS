@@ -145,6 +145,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span>
         <span class="sd">&quot;&quot;&quot;A integer indicating the largest lag used by the model. This value also indicates the minimum number of past lags </span>
 <span class="sd">        needed to forecast a single step ahead&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([],</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Datetime&quot;</span><span class="p">,</span><span class="s2">&quot;Operation&quot;</span><span class="p">,</span><span class="s2">&quot;Value&quot;</span><span class="p">])</span>
+        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="FTS.fuzzy"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.fuzzy">[docs]</a>    <span class="k">def</span> <span class="nf">fuzzy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -222,7 +224,7 @@
                 <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;distribution&#39;</span><span class="p">:</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_ahead_distribution</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="n">steps_ahead</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;multivariate&#39;</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_ahead_multivariate</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_ahead_multivariate</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span> <span class="n">steps_ahead</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">,</span> <span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="s1">&#39;distribution&#39;</span><span class="p">,</span> <span class="s1">&#39;multivariate&#39;</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The argument </span><span class="se">\&#39;</span><span class="s1">type</span><span class="se">\&#39;</span><span class="s1"> has an unknown value.&#39;</span><span class="p">)</span>
@@ -630,7 +632,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">flrg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="p">]</span><span class="o">.</span><span class="n">reset_calculated_values</span><span class="p">()</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">flrg</span><span class="p">]</span><span class="o">.</span><span class="n">reset_calculated_values</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FTS.append_log"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.fts.FTS.append_log">[docs]</a>    <span class="k">def</span> <span class="nf">append_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">operation</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
 
 
 

@@ -126,6 +126,9 @@ class HighOrderFTS(fts.FTS):
         nsample = [self.partitioner.fuzzyfy(k, mode="sets", alpha_cut=self.alpha_cut)
                    for k in sample]
 
+        if explain:
+            self.append_log("Fuzzyfication","{} -> {}".format(sample, nsample))
+
         return self.generate_lhs_flrg_fuzzyfied(nsample, explain)
 
     def generate_lhs_flrg_fuzzyfied(self, sample, explain=False):
@@ -137,7 +140,7 @@ class HighOrderFTS(fts.FTS):
             lags.append(lhs)
 
             if explain:
-                print("\t (Lag {}) {} -> {} \n".format(o, sample[o-1], lhs))
+                self.append_log("Ordering Lags", "Lag {} Value {}".format(o, lhs))
 
         # Trace the possible paths
         for path in product(*lags):
@@ -217,16 +220,10 @@ class HighOrderFTS(fts.FTS):
 
             sample = ndata[k - self.max_lag: k]
 
-            if explain:
-                print("Fuzzyfication \n")
-
             if not fuzzyfied:
                 flrgs = self.generate_lhs_flrg(sample, explain)
             else:
                 flrgs = self.generate_lhs_flrg_fuzzyfied(sample, explain)
-
-            if explain:
-                print("Rules:\n")
 
             midpoints = []
             memberships = []
@@ -240,7 +237,7 @@ class HighOrderFTS(fts.FTS):
                         memberships.append(mv)
 
                         if explain:
-                            print("\t {} -> {} (Naïve)\t Midpoint: {}\n".format(str(flrg.LHS), flrg.LHS[-1],
+                            self.append_log("Rule Matching", "{} -> {} (Naïve) Midpoint: {}".format(str(flrg.LHS), flrg.LHS[-1],
                                                                                             mp))
                 else:
                     flrg = self.flrgs[flrg.get_key()]
@@ -250,18 +247,16 @@ class HighOrderFTS(fts.FTS):
                     memberships.append(mv)
 
                     if explain:
-                        print("\t {} \t Midpoint: {}\n".format(str(flrg), mp))
-                        print("\t {} \t Membership: {}\n".format(str(flrg), mv))
+                        self.append_log("Rule Matching", "{}, Midpoint: {} Membership: {}".format(flrg.get_key(), mp, mv))
 
             if mode == "mean" or fuzzyfied:
                 final = np.nanmean(midpoints)
+                if explain: self.append_log("Deffuzyfication", "By Mean: {}".format(final))
             else:
                 final = np.dot(midpoints, memberships)
+                if explain: self.append_log("Deffuzyfication", "By Memberships: {}".format(final))
 
             ret.append(final)
-
-            if explain:
-                print("Deffuzyfied value: {} \n".format(final))
 
         return ret
 

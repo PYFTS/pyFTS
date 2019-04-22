@@ -45,6 +45,22 @@ pyFTS.models.multivariate.flrg module
     :undoc-members:
     :show-inheritance:
 
+pyFTS.models.multivariate.partitioner module
+---------------------------------------------
+
+.. automodule:: pyFTS.models.multivariate.partitioner
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+ pyFTS.models.multivariate.grid module
+------------------------------------------
+
+.. automodule:: pyFTS.models.multivariate.grid
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
 pyFTS.models.multivariate.mvfts module
 --------------------------------------
 
@@ -68,4 +84,12 @@ pyFTS.models.multivariate.cmvfts module
     :members:
     :undoc-members:
     :show-inheritance:
+    
+pyFTS.models.multivariate.granular module
+---------------------------------------------
 
+.. automodule:: pyFTS.models.multivariate.granular
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    

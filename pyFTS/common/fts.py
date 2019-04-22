@@ -71,6 +71,8 @@ class FTS(object):
         self.max_lag = self.order
         """A integer indicating the largest lag used by the model. This value also indicates the minimum number of past lags 
         needed to forecast a single step ahead"""
+        self.log = pd.DataFrame([],columns=["Datetime","Operation","Value"])
+        """"""
 
     def fuzzy(self, data):
         """
@@ -557,6 +559,9 @@ class FTS(object):
 
         for flrg in self.flrgs.keys():
             self.flrgs[flrg].reset_calculated_values()
+
+    def append_log(self,operation, value):
+        pass
 
 
 

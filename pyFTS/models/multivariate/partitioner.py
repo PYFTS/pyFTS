@@ -53,14 +53,15 @@ class MultivariatePartitioner(partitioner.Partitioner):
         self.build_index()
 
     def search(self, data, **kwargs):
-        '''
+        """
         Perform a search for the nearest fuzzy sets of the point 'data'. This function were designed to work with several
         overlapped fuzzy sets.
 
         :param data: the value to search for the nearest fuzzy sets
         :param type: the return type: 'index' for the fuzzy set indexes or 'name' for fuzzy set names.
         :return: a list with the nearest fuzzy sets
-        '''
+        """
+
         if self.kdtree is None:
             self.build_index()
 
@@ -82,9 +83,6 @@ class MultivariatePartitioner(partitioner.Partitioner):
             return [self.index[k] for k in ix]
         elif type == 'index':
             return sorted(ix)
-
-
-
 
     def fuzzyfy(self, data, **kwargs):
         return fuzzyfy_instance_clustered(data, self, **kwargs)

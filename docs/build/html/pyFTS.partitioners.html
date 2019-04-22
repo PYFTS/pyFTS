@@ -144,6 +144,29 @@
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.build_index">
+<code class="descname">build_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.build_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.build_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.check_bounds">
+<code class="descname">check_bounds</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.check_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.check_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the input data is outside the known Universe of Discourse and, if it is, round it to the closest
+fuzzy set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – input data to be verified</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the index of the closest fuzzy set when data is outside de universe of discourse or None if</td>
+</tr>
+</tbody>
+</table>
+<p>the data is inside the UoD.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="pyFTS.partitioners.partitioner.Partitioner.extractor">
 <code class="descname">extractor</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.extractor" title="Permalink to this definition">¶</a></dt>
@@ -153,7 +176,24 @@
 <dl class="method">
 <dt id="pyFTS.partitioners.partitioner.Partitioner.fuzzyfy">
 <code class="descname">fuzzyfy</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.fuzzyfy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.fuzzyfy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Fuzzyfy the input data according to this partitioner fuzzy sets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – input value to be fuzzyfied</li>
+<li><strong>alpha_cut</strong> – the minimal membership value to be considered on fuzzyfication (only for mode=’sets’)</li>
+<li><strong>method</strong> – the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)</li>
+<li><strong>mode</strong> – the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )</p>
+<p>:returns a list with the fuzzyfied values, depending on the mode</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.partitioners.partitioner.Partitioner.get_name">
@@ -169,6 +209,12 @@
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.kdtree">
+<code class="descname">kdtree</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.kdtree" title="Permalink to this definition">¶</a></dt>
+<dd><p>A spatial index to help in fuzzyfication</p>
 </dd></dl>
 
 <dl class="method">
@@ -245,6 +291,29 @@
 <dt id="pyFTS.partitioners.partitioner.Partitioner.prefix">
 <code class="descname">prefix</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.prefix" title="Permalink to this definition">¶</a></dt>
 <dd><p>prefix of auto generated partition names</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.partitioners.partitioner.Partitioner.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a search for the nearest fuzzy sets of the point ‘data’. This function were designed to work with several
+overlapped fuzzy sets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – the value to search for the nearest fuzzy sets</li>
+<li><strong>type</strong> – the return type: ‘index’ for the fuzzy set indexes or ‘name’ for fuzzy set names.</li>
+<li><strong>results</strong> – the number of nearest fuzzy sets to return</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the nearest fuzzy sets</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
