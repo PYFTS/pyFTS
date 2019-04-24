@@ -253,7 +253,7 @@ class HighOrderFTS(fts.FTS):
                 final = np.nanmean(midpoints)
                 if explain: self.append_log("Deffuzyfication", "By Mean: {}".format(final))
             else:
-                final = np.dot(midpoints, memberships)
+                final = np.dot(midpoints, memberships)/np.nansum(memberships)
                 if explain: self.append_log("Deffuzyfication", "By Memberships: {}".format(final))
 
             ret.append(final)
