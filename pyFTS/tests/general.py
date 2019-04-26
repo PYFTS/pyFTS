@@ -14,6 +14,39 @@ from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei
 from pyFTS.common import Transformations, Membership
 
+from pyFTS.fcm import fts, common, GA
+
+from pyFTS.data import Enrollments, TAIEX
+
+import pandas as pd
+df = pd.read_csv('https://query.data.world/s/7zfy4d5uep7wbgf56k4uu5g52dmvap', sep=';')
+
+data = df['glo_avg'].values[:12000]
+
+fs = Grid.GridPartitioner(data=data, npart=35, func=Membership.trimf)
+
+
+GA.parameters['num_concepts'] = 35
+GA.parameters['order'] = 2
+GA.parameters['partitioner'] = fs
+
+GA.execute('TAIEX', data)
+
+
+'''
+model = fts.FCM_FTS(partitioner=fs, order=1)
+
+model.fcm.weights = np.array([
+    [1, 1, 0, -1, -1],
+    [1, 1, 1, 0, -1],
+    [0, 1, 1, 1, 0],
+    [-1, 0, 1, 1, 1],
+    [-1, -1, 0, 1, 1]
+])
+
+print(data)
+print(model.forecast(data))
+'''
 '''
 dataset = pd.read_csv('https://query.data.world/s/2bgegjggydd3venttp3zlosh3wpjqj', sep=';')
 
@@ -80,7 +113,7 @@ forecasts = model.predict(test_mv, type='multivariate', generators={'data': time
 print(forecasts)
 
 '''
-
+'''
 from pyFTS.data import lorentz
 df = lorentz.get_dataframe(iterations=5000)
 
@@ -104,3 +137,4 @@ model.fit(train)
 forecasts = model.predict(test, type='multivariate', steps_ahead=20)
 
 print(forecasts)
+'''
