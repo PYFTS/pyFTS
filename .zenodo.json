@@ -1,0 +1,115 @@
+{
+    "license": "other-open", 
+    "contributors": [
+        {
+            "affiliation": "MINDS - Machine Learning and Data Science", 
+            "type": "Researcher", 
+            "name": "Marco Ant\u00f4nio Alves"
+        }, 
+        {
+            "affiliation": "Federal Institute of Minas Gerais (IFMG), Brazil", 
+            "type": "Researcher", 
+            "name": "Carlos Alberto Severiano Junior"
+        }, 
+        {
+            "affiliation": "MINDS - Machine Learning and Data Science", 
+            "type": "Researcher", 
+            "name": "Gustavo Linhares Vieira"
+        }, 
+        {
+            "orcid": "0000-0001-9238-8839", 
+            "affiliation": "Electrical Engineering Dept, Federal University of Minas Gerais (UFMG), Brazil", 
+            "type": "Researcher", 
+            "name": "Frederico Gadelha Guimar\u00e3es"
+        }, 
+        {
+            "orcid": "0000-0003-2547-3835", 
+            "affiliation": "Federal University of Ouro Preto (UFOP), Brazil", 
+            "type": "Researcher", 
+            "name": "Rodrigo C\u00e9sar Pedrosa Silva"
+        }, 
+        {
+            "orcid": "0000-0002-0848-9280", 
+            "affiliation": "MINDS - Machine Learning and Data Science", 
+            "type": "Researcher", 
+            "name": "Hossein Javedani Sadaei"
+        }
+    ], 
+    "language": "eng", 
+    "title": "PYFTS/pyFTS: Stable version 1.6", 
+    "related_identifiers": [
+        {
+            "scheme": "url", 
+            "identifier": "https://github.com/PYFTS/pyFTS/tree/pkg1.6", 
+            "relation": "isSupplementTo"
+        }, 
+        {
+            "scheme": "doi", 
+            "identifier": "10.5281/zenodo.597359", 
+            "relation": "isVersionOf"
+        }
+    ], 
+    "thesis_university": "Federal University of Minas Gerais (UFMG), Brazil", 
+    "thesis_supervisors": [
+        {
+            "orcid": "0000-0001-9238-8839", 
+            "affiliation": "Electrical Engineering Dept, Federal University of Minas Gerais (UFMG), Brazil", 
+            "name": "Frederico Gadelha Guimar\u00e3es"
+        }, 
+        {
+            "orcid": "0000-0002-0848-9280", 
+            "affiliation": "MINDS - Machine Learning and Data Science", 
+            "name": "Hossein Javedani Sadaei"
+        }
+    ], 
+    "version": "pkg1.6", 
+    "upload_type": "software", 
+    "keywords": [
+        "data science", 
+        "time series", 
+        "forecasting", 
+        "fuzzy systems"
+    ], 
+    "publication_date": "2019-05-06", 
+    "creators": [
+        {
+            "orcid": "0000-0002-1202-2552", 
+            "affiliation": "IFNMG - Instituto Federal do Norte de Minas Gerais", 
+            "name": "Petr\u00f4nio C\u00e2ndido de Lima e Silva"
+        }, 
+        {
+            "orcid": "0000-0002-9100-9013", 
+            "affiliation": "IFMG - Instituto Federal de Minas Gerais", 
+            "name": "Carlos Alberto Severiano J\u00fanior"
+        }, 
+        {
+            "affiliation": "MINDS - Machine Learning and Data Science", 
+            "name": "Marcos Ant\u00f4nio Alves"
+        }, 
+        {
+            "affiliation": "MINDS - Machine Learning and Data Science", 
+            "name": "Gustavo Linhares Vieira"
+        }, 
+        {
+            "orcid": "0000-0003-2547-3835", 
+            "affiliation": "UFOP - Universidade Federal de Ouro Preto", 
+            "name": "Rodrigo C\u00e9sar Pedrosa Silva"
+        }, 
+        {
+            "affiliation": "MINDS - Machine Learning and Data Science", 
+            "name": "Patr\u00edcia Oliveira e Lucas"
+        }, 
+        {
+            "orcid": "0000-0002-0848-9280", 
+            "affiliation": "MINDS - Machine Learning and Data Science", 
+            "name": "Hossein Javedani Sadaei"
+        }, 
+        {
+            "orcid": "0000-0001-9238-8839", 
+            "affiliation": "UFMG - Universidade Federal de Minas Gerais", 
+            "name": "Frederico Gadelha Guimar\u00e3es"
+        }
+    ], 
+    "access_right": "open", 
+    "description": "<p><em><strong>A open source library for Fuzzy Time Series in Python</strong></em>.</p>\n\n<p>For more information:</p>\n\n<ul>\n\t<li>Official site and documentation:<a href=\"https://pyfts.github.io/pyFTS/\"> https://pyfts.github.io/pyFTS/</a></li>\n\t<li>Code repository and issue tracking: <a href=\"https://github.com/PYFTS/pyFTS\">https://github.com/PYFTS/pyFTS</a></li>\n\t<li>A short tutorial on Fuzzy Time&nbsp;Series:\n\t<ul>\n\t\t<li><a href=\"https://towardsdatascience.com/a-short-tutorial-on-fuzzy-time-series-dcc6d4eb1b15\">Part I</a>: Introduction to the Fuzzy Logic, Fuzzy Time Series and the pyFTS library</li>\n\t\t<li><a href=\"https://towardsdatascience.com/a-short-tutorial-on-fuzzy-time-series-part-ii-with-an-case-study-on-solar-energy-bda362ecca6d\">Part II</a>: High order, weighted and multivariate methods and an case study of solar energy forecasting.</li>\n\t\t<li><a href=\"https://towardsdatascience.com/a-short-tutorial-on-fuzzy-time-series-part-iii-69445dff83fb\">Part III</a>: Interval and probabilistic forecasting, non-stationary time series, concept drifts and time variant models.</li>\n\t</ul>\n\t</li>\n\t<li>More example codes: <a href=\"https://github.com/PYFTS/notebooks\">https://github.com/PYFTS/notebooks</a></li>\n</ul>"
+}
