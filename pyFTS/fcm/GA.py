@@ -125,9 +125,10 @@ def evaluate(dataset, individual, **kwargs):
         errors.append(rmse)
 
     _rmse = np.nanmean(errors)
+    _std = np.nanstd(errors)
 
     #print("EVALUATION {}".format(individual))
-    return {'rmse': _rmse}
+    return {'rmse': .6 * _rmse + .4 * _std}
 
 
 

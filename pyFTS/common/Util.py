@@ -6,6 +6,7 @@ import time
 import matplotlib.pyplot as plt
 import dill
 import numpy as np
+import pandas as pd
 import matplotlib.cm as cmx
 import matplotlib.colors as pltcolors
 from pyFTS.probabilistic import ProbabilityDistribution
@@ -340,7 +341,10 @@ def sliding_window(data, windowsize, train=0.8, inc=0.1, **kwargs):
     :param inc: percentual of data used for slide the window
     :return: window count, training set, test set
     """
-    l = len(data)
+
+    multivariate = True if isinstance(data, pd.DataFrame) else False
+
+    l = len(data) if not multivariate else len(data.index)
     ttrain = int(round(windowsize * train, 0))
     ic = int(round(windowsize * inc, 0))
 
@@ -357,7 +361,10 @@ def sliding_window(data, windowsize, train=0.8, inc=0.1, **kwargs):
             _end = l
         else:
             _end = count + windowsize
-        yield (count,  data[count : count + ttrain], data[count + ttrain : _end]  )
+        if multivariate:
+            yield (count, data.iloc[count: count + ttrain], data.iloc[count + ttrain: _end])
+        else:
+            yield (count,  data[count : count + ttrain], data[count + ttrain : _end]  )
 
 
 def persist_obj(obj, file):
