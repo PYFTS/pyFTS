@@ -1,7 +1,7 @@
 import setuptools
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+#with open("README.md", "r") as fh:
+#    long_description = fh.read()
 
 setuptools.setup(
     name='pyFTS',
@@ -11,7 +11,7 @@ setuptools.setup(
               'pyFTS.models.incremental', 'pyFTS.hyperparam', 'pyFTS.distributed', 'pyFTS.fcm'],	
     version='1.6',
     description='Fuzzy Time Series for Python',
-    long_description=long_description,
+    long_description='Fuzzy Time Series for Python',
     long_description_content_type="text/markdown",
     author='Petronio Candido L. e Silva',
     author_email='petronio.candido@gmail.com',
