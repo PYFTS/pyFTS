@@ -66,12 +66,12 @@ A Google Colab example can also be found [here](https://drive.google.com/file/d/
 
 ## MINDS - Machine Intelligence And Data Science Lab
 
-This tool is result of collective effort of [MINDS Lab](http://www.minds.eng.ufmg.br/), headed by Prof. Frederico Gadelha Guimarães. Some of research on FTS which was developed under pyFTS:
+This tool is result of collective effort of [MINDS Lab](http://www.minds.eng.ufmg.br/), headed by Prof. Frederico Gadelha Guimaraes. Some of research on FTS which was developed under pyFTS:
 
-1. Alves, M. A.; Silva, P. C. L.; Severiano, C. A. J.; Vieira, G. L.; Guimaraes, F. G.; Sadaei, H. J. An extension of nonstationary fuzzy sets to heteroskedastic fuzzy time series. 26th European Symposium on Artificial Neural Networks, Computational Intelligence and Machine Learning, 2018.
-2. Silva, P. C. L., Alves, M. A., Alberto, C., Junior, S., Vieira, G. L., Guimaraes, F. G., & Sadaei, H. J. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series. XIII Brazilian Congress on Computational Intelligence, 2017.
-3. Severiano, S. A. Jr; Silva, P. C. L.; Sadaei, H. J.; Guimarães, F. G. Very Short-term Solar Forecasting using Fuzzy Time Series. 2017 IEEE International Conference on Fuzzy Systems. DOI10.1109/FUZZ-IEEE.2017.8015732
-4. SILVA, Petrônio CL; SADAEI, Hossein Javedani; GUIMARÃES, Frederico Gadelha. Interval Forecasting with Fuzzy Time Series. In: Computational Intelligence (SSCI), 2016 IEEE Symposium Series on. IEEE, 2016. p. 1-8.
+1. Alves, M. A., Silva, P. C. L., Severiano, C. A. J., Vieira, G. L., Guimaraes, F. G., Sadaei, H. J. An extension of nonstationary fuzzy sets to heteroskedastic fuzzy time series. 26th European Symposium on Artificial Neural Networks, Computational Intelligence and Machine Learning, 2018.
+2. Silva, P. C. L., Alves, M. A., Alberto, C., Junior, S., Vieira, G. L., Guimaraes, F. G.; Sadaei, H. J. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series. XIII Brazilian Congress on Computational Intelligence, 2017.
+3. Severiano, S. A. Jr, Silva, P. C. L., Sadaei, H. J., Guimaraes, F. G. Very Short-term Solar Forecasting using Fuzzy Time Series. 2017 IEEE International Conference on Fuzzy Systems. DOI10.1109/FUZZ-IEEE.2017.8015732
+4. Silva, P. C. L., Sadaei, H. J., Guimaraes, F. G. Interval Forecasting with Fuzzy Time Series. In: Computational Intelligence (SSCI), 2016 IEEE Symposium Series on. IEEE, 2016. p. 1-8.
  
 
 ## References
