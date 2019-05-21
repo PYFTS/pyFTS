@@ -67,6 +67,8 @@ class Partitioner(object):
 
             self.sets = self.build(ndata)
 
+            self.partitions = len(self.sets)
+
             if self.ordered_sets is None and self.setnames is not None:
                 self.ordered_sets = self.setnames[:len(self.sets)]
             else:

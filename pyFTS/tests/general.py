@@ -18,19 +18,27 @@ from pyFTS.fcm import fts, common, GA
 
 from pyFTS.data import Enrollments, TAIEX
 
-import pandas as pd
-df = pd.read_csv('https://query.data.world/s/7zfy4d5uep7wbgf56k4uu5g52dmvap', sep=';')
+x = [k for k in np.arange(-2*np.pi, 2*np.pi, 0.15)]
+y = [np.sin(k) for k in x]
 
-data = df['glo_avg'].values[:12000]
+from pyFTS.models import hofts
+from pyFTS.partitioners import Grid, FCM, CMeans, Entropy
+from pyFTS.benchmarks import Measures
 
-fs = Grid.GridPartitioner(data=data, npart=35, func=Membership.trimf)
+metodos = [FCM.FCMPartitioner]
 
+k = 35
 
-GA.parameters['num_concepts'] = 35
-GA.parameters['order'] = 2
-GA.parameters['partitioner'] = fs
+rows = []
 
-GA.execute('TAIEX', data)
+for contador, metodo in enumerate(metodos):
+    print(metodo)
+    part = metodo(data=y, npart=k)
+    model = hofts.HighOrderFTS(order=2, partitioner=part)
+    model.fit(y)
+    forecasts = model.predict(y)
+    for o in range(model.order):
+        forecasts.insert(0, None)
 
 
 '''
