@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from pyFTS.common import FuzzySet,SortedCollection,tree
+from pyFTS.common import FuzzySet
+from scipy.spatial import KDTree
 from pyFTS.probabilistic import kde
 
 
@@ -41,13 +42,13 @@ class ProbabilityDistribution(object):
         self.nbins = kwargs.get("num_bins", 100)
 
         if self.bins is None:
-            self.bins = np.linspace(int(self.uod[0]), int(self.uod[1]), int(self.nbins)).tolist()
+            self.bins = np.linspace(self.uod[0], self.uod[1], int(self.nbins)).tolist()
             self.labels = [str(k) for k in self.bins]
 
         if self.uod is not None:
             self.resolution = (self.uod[1] - self.uod[0]) / self.nbins
 
-        self.bin_index = SortedCollection.SortedCollection(iterable=sorted(self.bins))
+        self.bin_index = KDTree(self.bins)
         self.quantile_index = None
         self.distribution = {}
         self.cdf = None
@@ -67,7 +68,8 @@ class ProbabilityDistribution(object):
         :param value: A value in the universe of discourse from the distribution
         :param density: The probability density to assign to the value
         """
-        k = self.bin_index.find_ge(value)
+        _, ix = self.bin_index.query([value], 1)
+        k = self.labels[ix]
         self.distribution[k] = density
 
     def append(self, values):
@@ -78,7 +80,8 @@ class ProbabilityDistribution(object):
         """
         if self.type == "histogram":
             for k in values:
-                v = self.bin_index.find_ge(k)
+                _, ix = self.bin_index.query([k], 1)
+                v = self.labels[ix]
                 self.distribution[v] += 1
                 self.count += 1
         else:
@@ -96,8 +99,12 @@ class ProbabilityDistribution(object):
         """
         if self.type == "histogram":
             for interval in intervals:
-                for k in self.bin_index.inside(interval[0], interval[1]):
-                    self.distribution[k] += 1
+                _, ix1 = self.bin_index.query([interval[0]], 1)
+                _, ix2 = self.bin_index.query([interval[1]], 1)
+
+                for k in range(ix1, ix2):
+                    v = self.labels[k]
+                    self.distribution[v] += 1
                     self.count += 1
 
     def density(self, values):
@@ -116,13 +123,15 @@ class ProbabilityDistribution(object):
 
         for k in values:
             if self.type == "histogram":
-                v = self.bin_index.find_ge(k)
+                _, ix = self.bin_index.query([k], 1)
+                v = self.labels[ix]
                 ret.append(self.distribution[v] / (self.count + 1e-5))
             elif self.type == "KDE":
                 v = self.kde.probability(k, self.data)
                 ret.append(v)
             else:
-                v = self.bin_index.find_ge(k)
+                _, ix = self.bin_index.query([k], 1)
+                v = self.labels[ix]
                 ret.append(self.distribution[v])
 
         if scalar:
@@ -149,7 +158,7 @@ class ProbabilityDistribution(object):
         self.distribution = dist
         self.labels = [str(k) for k in self.bins]
 
-        self.bin_index = SortedCollection.SortedCollection(iterable=sorted(self.bins))
+        self.bin_index = KDTree(self.bins)
         self.quantile_index = None
         self.cdf = None
         self.qtl = None
@@ -178,7 +187,7 @@ class ProbabilityDistribution(object):
 
         _keys = [float(k) for k in sorted(self.qtl.keys())]
 
-        self.quantile_index = SortedCollection.SortedCollection(iterable=_keys)
+        self.quantile_index = KDTree(_keys)
 
     def cumulative(self, values):
         """
@@ -194,10 +203,12 @@ class ProbabilityDistribution(object):
         if isinstance(values, list):
             ret = []
             for val in values:
-                k = self.bin_index.find_ge(val)
+                _, ix = self.bin_index.query([val], 1)
+                k = self.labels[ix]
                 ret.append(self.cdf[k])
         else:
-            k = self.bin_index.find_ge(values)
+            _, ix = self.bin_index.query([values], 1)
+            k = self.labels[ix]
             return self.cdf[values]
 
     def quantile(self, values):
@@ -214,10 +225,12 @@ class ProbabilityDistribution(object):
         if isinstance(values, list):
             ret = []
             for val in values:
-                k = self.quantile_index.find_ge(val)
+                _, ix = self.quantile_index.query([val], 1)
+                k = self.labels[ix]
                 ret.append(self.qtl[str(k)][0])
         else:
-            k = self.quantile_index.find_ge(values)
+            _, ix = self.quantile_index.query([values], 1)
+            k = self.labels[ix]
             ret = self.qtl[str(k)]
 
         return ret
