@@ -13,6 +13,7 @@ from pyFTS.common import SortedCollection, fts, tree
 from pyFTS.models import chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu
 from pyFTS.probabilistic import ProbabilityDistribution
 import scipy.stats as st
+from itertools import product
 
 
 def sampler(data, quantiles):
@@ -68,6 +69,10 @@ class EnsembleFTS(fts.FTS):
             self.original_min = model.original_min
         elif model.original_max > self.original_max:
             self.original_max = model.original_max
+
+
+    def get_UoD(self):
+        return [self.original_min, self.original_max]
 
     def train(self, data, **kwargs):
         pass
@@ -252,10 +257,11 @@ class EnsembleFTS(fts.FTS):
 
         uod = self.get_UoD()
 
-        sample = data[start - self.order: start]
+        sample = [[k] for k in data[start - self.order: start]]
 
         for k in np.arange(self.order, steps+self.order):
             forecasts = []
+            '''
             lags = {}
             for i in np.arange(0, self.order): lags[i] = sample[k-self.order]
 
@@ -267,7 +273,13 @@ class EnsembleFTS(fts.FTS):
 
             for p in root.paths():
                 path = list(reversed(list(filter(None.__ne__, p))))
+'''
+            lags = []
+            for i in np.arange(0, self.order):
+                lags.append(sample[k - self.order])
 
+            # Trace the possible paths
+            for path in product(*lags):
                 forecasts.extend(self.get_models_forecasts(path))
 
             sample.append(sampler(forecasts, np.arange(0.1, 1, 0.1)))

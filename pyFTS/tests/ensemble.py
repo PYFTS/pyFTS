@@ -21,15 +21,15 @@ data = TAIEX.get_data()
 model = ensemble.EnsembleFTS()
 
 for k in [15, 25, 35]:
-    for order in [1, 2]:
+    for order in [1, 2, 3]:
         fs = Grid.GridPartitioner(data=data, npart=k)
-        tmp = hofts.WeightedHighOrderFTS(partitioner=fs)
+        tmp = hofts.WeightedHighOrderFTS(partitioner=fs, order=order)
 
         tmp.fit(data)
 
         model.append_model(tmp)
 
-forecasts = model.predict(data, type='interval', method='quantile', alpha=.05)
+forecasts = model.predict(data, type='distribution', smooth='histogram', steps_ahead=10)
 
 from pyFTS.benchmarks import benchmarks as bchmk
 
