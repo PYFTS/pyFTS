@@ -239,7 +239,6 @@ class EnsembleFTS(fts.FTS):
 
         return ret
 
-
     def forecast_ahead_distribution(self, data, steps, **kwargs):
         if 'method' in kwargs:
             self.point_method = kwargs.get('method','mean')

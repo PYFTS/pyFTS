@@ -21,25 +21,12 @@ from pyFTS.data import Enrollments, TAIEX
 x = [k for k in np.arange(-2*np.pi, 2*np.pi, 0.15)]
 y = [np.sin(k) for k in x]
 
-from pyFTS.models import hofts
-from pyFTS.partitioners import Grid, FCM, CMeans, Entropy
-from pyFTS.benchmarks import Measures
+from pyFTS.probabilistic import ProbabilityDistribution
 
-metodos = [FCM.FCMPartitioner]
+pd = ProbabilityDistribution.ProbabilityDistribution(type='histogram', data=y, num_bins=30)
 
-k = 35
-
-rows = []
-
-for contador, metodo in enumerate(metodos):
-    print(metodo)
-    part = metodo(data=y, npart=k)
-    model = hofts.HighOrderFTS(order=2, partitioner=part)
-    model.fit(y)
-    forecasts = model.predict(y)
-    for o in range(model.order):
-        forecasts.insert(0, None)
-
+print(pd.quantile([.5]))
+print(pd.cdf)
 
 '''
 model = fts.FCM_FTS(partitioner=fs, order=1)

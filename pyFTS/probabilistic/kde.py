@@ -10,12 +10,16 @@ import numpy as np
 
 class KernelSmoothing(object):
     """Kernel Density Estimation"""
-    def __init__(self,h, kernel="epanechnikov"):
-        self.h = h
+    def __init__(self, **kwargs):
+        self.h = kwargs.get('h',.5)
         """Width parameter"""
-        self.kernel = kernel
+        self.kernel = kwargs.get("kernel", "epanechnikov")
         """Kernel function"""
+        self.data = kwargs.get("data",None)
         self.transf = Transformations.Scale(min=0,max=1)
+
+        if self.data is not None:
+            self.data = self.transf.apply(self.data)
 
     def kernel_function(self, u):
         """
@@ -45,7 +49,7 @@ class KernelSmoothing(object):
         elif self.kernel == "exponential":
             return 0.5 * np.exp(-np.abs(u))
 
-    def probability(self, x, data):
+    def probability(self, x, **kwargs):
         """
         Probability of the point x on data
 
@@ -53,10 +57,14 @@ class KernelSmoothing(object):
         :param data:
         :return:
         """
-        l = len(data)
 
-        ndata = self.transf.apply(data)
+        if self.data is None:
+            self.data = kwargs.get('data',None)
+            self.data = self.transf.apply(self.data)
+
+        l = len(self.data)
+
         nx = self.transf.apply(x)
-        p = sum([self.kernel_function((nx - k)/self.h) for k in ndata]) / l*self.h
+        p = sum([self.kernel_function((nx - k)/self.h) for k in self.data]) / l*self.h
 
         return p
