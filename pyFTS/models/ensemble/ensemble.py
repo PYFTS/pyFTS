@@ -276,13 +276,15 @@ class EnsembleFTS(fts.FTS):
 '''
             lags = []
             for i in np.arange(0, self.order):
-                lags.append(sample[k - self.order])
+                lags.append(sample[i - self.order])
+
+            print(k, lags)
 
             # Trace the possible paths
             for path in product(*lags):
                 forecasts.extend(self.get_models_forecasts(path))
 
-            sample.append(sampler(forecasts, np.arange(0.1, 1, 0.1)))
+            sample.append(sampler(forecasts, np.arange(0.05, .99, 0.1)))
 
             if alpha is None:
                 forecasts = np.ravel(forecasts).tolist()

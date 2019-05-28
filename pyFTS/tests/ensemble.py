@@ -29,7 +29,7 @@ for k in [15, 25, 35]:
 
         model.append_model(tmp)
 
-forecasts = model.predict(data, type='distribution', smooth='histogram', steps_ahead=10)
+forecasts = model.predict(data, type='distribution', smooth='histogram', steps_ahead=5)
 
 from pyFTS.benchmarks import benchmarks as bchmk
 
