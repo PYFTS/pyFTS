@@ -189,7 +189,7 @@ def plot_distribution2(probabilitydist, data, **kwargs): #ax, cmap, probabilityd
     qt = kwargs.get('quantiles',None)
 
     if qt is None:
-        qt = [round(k, 2) for k in np.arange(.05, 1., .0)]
+        qt = [round(k, 2) for k in np.arange(.05, 1., .05)]
         qt.insert(0, .01)
         qt.append(.99)
 
