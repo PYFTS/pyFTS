@@ -162,6 +162,63 @@ def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=
     cb.set_label('Density')
 
 
+def plot_distribution2(probabilitydist, data, **kwargs): #ax, cmap, probabilitydist, time_from, data=None):
+    '''
+    Plot distributions over the time (x-axis)
+    :param probabilitydist:
+    :param data:
+    :param kwargs:
+    :return:
+    '''
+    import matplotlib.colorbar as cbar
+    import matplotlib.cm as cm
+
+    ax = kwargs.get('ax',None)
+    if ax is None:
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15, 5])
+
+    l = len(probabilitydist)
+
+    cmap = kwargs.get('cmap','Blues')
+    cmap = plt.get_cmap(cmap)
+
+    start_at = kwargs.get('start_at',0)
+
+    x = [k + start_at for k in range(l + 1)]
+
+    qt = kwargs.get('quantiles',None)
+
+    if qt is None:
+        qt = [round(k, 2) for k in np.arange(.05, 1., .0)]
+        qt.insert(0, .01)
+        qt.append(.99)
+
+    lq = len(qt)
+
+    normal = plt.Normalize(min(qt), max(qt))
+    scalarMap = cm.ScalarMappable(norm=normal, cmap=cmap)
+
+    for ct in np.arange(1, int(lq / 2) + 1):
+        y = [[data[start_at], data[start_at]]]
+        for pd in probabilitydist:
+            qts = pd.quantile([qt[ct - 1], qt[-ct]])
+            y.append(qts)
+
+        ax.fill_between(x, [k[0] for k in y], [k[1] for k in y],
+                        facecolor=scalarMap.to_rgba(ct / lq))
+
+    y = [data[start_at]]
+    for pd in probabilitydist:
+        qts = pd.quantile(.5)
+        y.append(qts[0])
+
+    ax.plot(x, y, color='red')
+
+    cax, _ = cbar.make_axes(ax)
+    cb = cbar.ColorbarBase(cax, cmap=cmap, norm=normal)
+    cb.set_label('Density')
+
+
 def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False, ls='-', linewidth=1):
     '''
     Plot forecasted intervals on matplotlib

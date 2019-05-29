@@ -261,30 +261,16 @@ class EnsembleFTS(fts.FTS):
 
         for k in np.arange(self.order, steps+self.order):
             forecasts = []
-            '''
-            lags = {}
-            for i in np.arange(0, self.order): lags[i] = sample[k-self.order]
 
-            # Build the tree with all possible paths
-
-            root = tree.FLRGTreeNode(None)
-
-            tree.build_tree_without_order(root, lags, 0)
-
-            for p in root.paths():
-                path = list(reversed(list(filter(None.__ne__, p))))
-'''
             lags = []
             for i in np.arange(0, self.order):
                 lags.append(sample[i - self.order])
-
-            print(k, lags)
 
             # Trace the possible paths
             for path in product(*lags):
                 forecasts.extend(self.get_models_forecasts(path))
 
-            sample.append(sampler(forecasts, np.arange(0.05, .99, 0.1)))
+            sample.append(forecasts)
 
             if alpha is None:
                 forecasts = np.ravel(forecasts).tolist()
