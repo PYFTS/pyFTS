@@ -5,6 +5,8 @@ import os
 import numpy as np
 
 import pandas as pd
+import matplotlib.pyplot as plt
+from pyFTS.common import Util
 from pyFTS.partitioners import Grid
 from pyFTS.common import Transformations
 from pyFTS.models import chen, hofts
@@ -17,27 +19,56 @@ from pyFTS.models import hofts
 from pyFTS.data import TAIEX
 
 data = TAIEX.get_data()
-
+train = data[:800]
+test = data[800:1000]
+'''
 model = ensemble.EnsembleFTS()
 
 for k in [15, 25, 35]:
     for order in [1, 2, 3]:
-        fs = Grid.GridPartitioner(data=data, npart=k)
+        fs = Grid.GridPartitioner(data=train, npart=k)
         tmp = hofts.WeightedHighOrderFTS(partitioner=fs, order=order)
 
-        tmp.fit(data)
+        tmp.fit(train)
 
         model.append_model(tmp)
+'''
+#fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15, 5])
 
-forecasts = model.predict(data, type='distribution', smooth='histogram', steps_ahead=5)
+#ax.plot(data[:28], label='Original', color='black')
 
-from pyFTS.benchmarks import benchmarks as bchmk
+from pyFTS.benchmarks import arima, quantreg, BSTS
+
+#model = arima.ARIMA(order=(2,0,0))
+#model = quantreg.QuantileRegression(order=1, dist=True)
+model = BSTS.ARIMA(order=(2,0,0))
+model.fit(train)
+
+horizon = 5
+
+intervals = model.predict(test[:10], type='interval', alpha=.25, steps_ahead=horizon)
+
+distributions = model.predict(test[:10], type='distribution', smooth='histogram', steps_ahead=horizon, num_bins=100)
+
+#Util.plot_distribution2(forecasts, data[:28], start_at=20, order=3, ax=ax, cmap="Blues")
+
+print('end')
+
+from pyFTS.benchmarks import Measures
+
+start = model.order+1
+end = start + horizon
+
+print(Measures.get_interval_ahead_statistics(test[start:end], intervals))
+print(Measures.get_distribution_ahead_statistics(test[start:end], distributions))
+
+
 
 #f, ax = plt.subplots(1, 1, figsize=[20, 5])
 
 #ax.plot(data)
 #bchmk.plot_interval(ax, forecasts, 3, "")
-print(forecasts)
+#print(forecasts)
 
 '''
 mu_local = 5

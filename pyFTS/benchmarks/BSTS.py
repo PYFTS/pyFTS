@@ -60,27 +60,48 @@ class ARIMA(fts.FTS):
             print(ex)
             self.model_fit = None
 
-    def forecast(self, ndata, **kwargs):
+    def inference(self, steps):
+        t_z = self.model.transform_z()
+        mu, Y = self.model._model(self.model.latent_variables.get_z_values())
+        date_index = self.model.shift_dates(steps)
+        sim_vector = self.model._sim_prediction(mu, Y, steps, t_z, 1000)
 
-        return ret
+        return sim_vector
+
+    def forecast(self, ndata, **kwargs):
+        raise NotImplementedError()
 
     def forecast_interval(self, data, **kwargs):
-
-
-
-        return ret
+        raise NotImplementedError()
 
     def forecast_ahead_interval(self, ndata, steps, **kwargs):
+        sim_vector = self.inference(steps)
+
+        if 'alpha' in kwargs:
+            alpha = kwargs.get('alpha')
+        else:
+            alpha = self.alpha
+
+        ret = []
+
+        for ct, sample in enumerate(sim_vector):
+            i = [np.percentile(sample, qt) for qt in [alpha, 1-alpha]]
+            ret.append(i)
 
         return ret
 
     def forecast_distribution(self, data, **kwargs):
-
-
-        return ret
+        raise NotImplementedError()
 
 
     def forecast_ahead_distribution(self, data, steps, **kwargs):
 
+        sim_vector = self.inference(steps)
+
+        ret = []
+
+        for ct, sample in enumerate(sim_vector):
+            pd = ProbabilityDistribution.ProbabilityDistribution(type='histogram', data=sample, nbins=500)
+            ret.append(pd)
 
         return ret

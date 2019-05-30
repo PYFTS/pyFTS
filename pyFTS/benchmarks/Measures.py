@@ -225,12 +225,12 @@ def pinball_mean(tau, targets, forecasts):
 def winkler_score(tau, target, forecast):
     '''R. L. Winkler, A Decision-Theoretic Approach to Interval Estimation, J. Am. Stat. Assoc. 67 (337) (1972) 187–191. doi:10.2307/2284720. '''
     delta = forecast[1] - forecast[0]
-    if forecast[0] < target and target < forecast[1]:
+    if forecast[0] <= target <= forecast[1]:
         return delta
     elif forecast[0] > target:
-        return delta + 2 * (forecast[0] - target) / tau
+        return delta + (2 * (forecast[0] - target)) / tau
     elif forecast[1] < target:
-        return delta + 2 * (target - forecast[1]) / tau
+        return delta + (2 * (target - forecast[1])) / tau
 
 
 def winkler_mean(tau, targets, forecasts):
@@ -248,44 +248,52 @@ def winkler_mean(tau, targets, forecasts):
 
 
 def brier_score(targets, densities):
-    '''Brier (1950). "Verification of Forecasts Expressed in Terms of Probability". Monthly Weather Review. 78: 1–3. '''
+    '''
+    Brier Score for probabilistic forecasts.
+    Brier (1950). "Verification of Forecasts Expressed in Terms of Probability". Monthly Weather Review. 78: 1–3.
+
+    :param targets: a list with the target values
+    :param densities: a list with pyFTS.probabil objectsistic.ProbabilityDistribution
+    :return: float
+    '''
+
+    if not isinstance(densities, list):
+        densities = [densities]
+        targets = [targets]
+
     ret = []
+
     for ct, d in enumerate(densities):
         try:
-            v = d.bin_index.find_ge(targets[ct])
+            v = d.bin_index.find_le(targets[ct])
 
-            score = sum([d.distribution[k] ** 2 for k in d.bins if k != v])
-            score += (d.distribution[v] - 1) ** 2
+            score = sum([d.density(k) ** 2 for k in d.bins if k != v])
+            score += (d.density(v) - 1) ** 2
             ret.append(score)
         except ValueError as ex:
-            ret.append(sum([d.distribution[k] ** 2 for k in d.bins]))
+            ret.append(sum([d.density(k) ** 2 for k in d.bins]))
     return sum(ret) / len(ret)
 
 
-def pmf_to_cdf(density):
-    ret = []
-    for row in density.index:
-        tmp = []
-        prev = 0
-        for col in density.columns:
-            prev += density[col][row] if not np.isnan(density[col][row]) else 0
-            tmp.append(prev)
-        ret.append(tmp)
-    df = pd.DataFrame(ret, columns=density.columns)
-    return df
+def logarithm_score(targets, densities):
+    '''
+    Logarithm Score for probabilistic forecasts.
+    Good IJ (1952).  “Rational Decisions.”Journal of the Royal Statistical Society B,14(1),107–114. URLhttps://www.jstor.org/stable/2984087.
 
+    :param targets: a list with the target values
+    :param densities: a list with pyFTS.probabil objectsistic.ProbabilityDistribution
+    :return: float
+    '''
+    _ls = float(0.0)
+    if isinstance(densities, ProbabilityDistribution.ProbabilityDistribution):
+        densities = [densities]
+        targets = [targets]
 
-def heavyside(bin, target):
-    return 1 if bin >= target else 0
+    n = len(densities)
+    for ct, df in enumerate(densities):
+        _ls += -np.log(df.density(targets[ct]))
 
-
-def heavyside_cdf(bins, targets):
-    ret = []
-    for t in targets:
-        result = [1 if b >= t else 0 for b in bins]
-        ret.append(result)
-    df = pd.DataFrame(ret, columns=bins)
-    return df
+    return _ls / n
 
 
 def crps(targets, densities):
@@ -299,13 +307,13 @@ def crps(targets, densities):
     _crps = float(0.0)
     if isinstance(densities, ProbabilityDistribution.ProbabilityDistribution):
         densities = [densities]
+        targets = [targets]
 
-    l = len(densities[0].bins)
     n = len(densities)
     for ct, df in enumerate(densities):
         _crps += sum([(df.cumulative(bin) - (1 if bin >= targets[ct] else 0)) ** 2 for bin in df.bins])
 
-    return _crps / float(l * n)
+    return _crps / n
 
 
 def get_point_statistics(data, model, **kwargs):
@@ -416,6 +424,41 @@ def get_interval_statistics(data, model, **kwargs):
     return ret
 
 
+def get_interval_ahead_statistics(data, intervals, **kwargs):
+    """
+    Condensate all measures for point interval forecasters
+
+    :param data: test data
+    :param model: FTS model with interval forecasting capability
+    :param kwargs:
+    :return: a list with the sharpness, resolution, coverage, .05 pinball mean,
+    .25 pinball mean, .75 pinball mean and .95 pinball mean.
+    """
+
+    l = len(intervals)
+
+    if len(data) != l:
+        raise Exception("Data and intervals have different lenghts!")
+
+    lags = {}
+
+    for lag in range(l):
+        ret = {}
+        datum = data[lag]
+        interval = intervals[lag]
+        ret['sharpness'] = round(interval[1] - interval[0], 2)
+        ret['coverage'] = 1 if interval[0] <= datum <= interval[1] else 0
+        ret['pinball05'] = round(pinball(0.05, datum, interval[0]), 2)
+        ret['pinball25'] = round(pinball(0.25, datum, interval[0]), 2)
+        ret['pinball75'] = round(pinball(0.75, datum, interval[1]), 2)
+        ret['pinball95'] = round(pinball(0.95, datum, interval[1]), 2)
+        ret['winkler05'] = round(winkler_score(0.05, datum, interval), 2)
+        ret['winkler25'] = round(winkler_score(0.25, datum, interval), 2)
+        lags[lag] = ret
+
+    return lags
+
+
 def get_distribution_statistics(data, model, **kwargs):
     """
     Get CRPS statistic and time for a forecasting model
@@ -452,3 +495,32 @@ def get_distribution_statistics(data, model, **kwargs):
         ret.append(round(_e1 - _s1, 3))
         ret.append(round(brier_score(data[start:-1:skip], forecasts), 3))
     return ret
+
+
+def get_distribution_ahead_statistics(data, distributions):
+    """
+    Get CRPS statistic and time for a forecasting model
+
+    :param data: test data
+    :param model: FTS model with probabilistic forecasting capability
+    :param kwargs:
+    :return: a list with the CRPS and execution time
+    """
+
+    l = len(distributions)
+
+    if len(data) != l:
+        raise Exception("Data and distributions have different lenghts!")
+
+    lags = {}
+
+    for lag in range(l):
+        ret = {}
+        datum = data[lag]
+        dist = distributions[lag]
+        ret['crps'] = round(crps(datum, dist), 3)
+        ret['brier'] = round(brier_score(datum, dist), 3)
+        ret['log'] = round(logarithm_score(datum, dist), 3)
+        lags[lag] = ret
+
+    return lags

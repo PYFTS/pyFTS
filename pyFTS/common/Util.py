@@ -162,16 +162,22 @@ def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=
     cb.set_label('Density')
 
 
-def plot_distribution2(probabilitydist, data, **kwargs): #ax, cmap, probabilitydist, time_from, data=None):
+def plot_distribution2(probabilitydist, data, **kwargs):
     '''
     Plot distributions over the time (x-axis)
-    :param probabilitydist:
-    :param data:
-    :param kwargs:
-    :return:
+
+    :param probabilitydist: the forecasted probability distributions to plot
+    :param data: the original test sample
+    :keyword start_at: the time index (inside of data) to start to plot the probability distributions
+    :keyword ax: a matplotlib axis. If no value was provided a new axis is created.
+    :keyword cmap: a matplotlib colormap name, the default value is 'Blues'
+    :keyword quantiles: the list of quantiles intervals to plot, e. g. [.05, .25, .75, .95]
+    :keyword median: a boolean value indicating if the median value will be plot.
     '''
     import matplotlib.colorbar as cbar
     import matplotlib.cm as cm
+
+    order = kwargs.get('order', 1)
 
     ax = kwargs.get('ax',None)
     if ax is None:
@@ -182,7 +188,7 @@ def plot_distribution2(probabilitydist, data, **kwargs): #ax, cmap, probabilityd
     cmap = kwargs.get('cmap','Blues')
     cmap = plt.get_cmap(cmap)
 
-    start_at = kwargs.get('start_at',0)
+    start_at = kwargs.get('start_at',0) + order - 1
 
     x = [k + start_at for k in range(l + 1)]
 
@@ -207,12 +213,13 @@ def plot_distribution2(probabilitydist, data, **kwargs): #ax, cmap, probabilityd
         ax.fill_between(x, [k[0] for k in y], [k[1] for k in y],
                         facecolor=scalarMap.to_rgba(ct / lq))
 
-    y = [data[start_at]]
-    for pd in probabilitydist:
-        qts = pd.quantile(.5)
-        y.append(qts[0])
+    if kwargs.get('median',True):
+        y = [data[start_at]]
+        for pd in probabilitydist:
+            qts = pd.quantile(.5)
+            y.append(qts[0])
 
-    ax.plot(x, y, color='red')
+        ax.plot(x, y, color='red', label='Median')
 
     cax, _ = cbar.make_axes(ax)
     cb = cbar.ColorbarBase(cax, cmap=cmap, norm=normal)

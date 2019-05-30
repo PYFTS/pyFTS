@@ -16,10 +16,13 @@ import scipy.stats as st
 from itertools import product
 
 
-def sampler(data, quantiles):
+def sampler(data, quantiles, bounds=False):
     ret = []
     for qt in quantiles:
         ret.append(np.nanpercentile(data, q=qt * 100))
+    if bounds:
+        ret.insert(0, min(data))
+        ret.append(max(data))
     return ret
 
 
@@ -190,25 +193,25 @@ class EnsembleFTS(fts.FTS):
 
         ret = []
 
-        samples = [[k] for k in data[-self.order:]]
+        start = kwargs.get('start', self.order)
+
+        uod = self.get_UoD()
+
+        sample = [[k] for k in data[start - self.order: start]]
 
         for k in np.arange(self.order, steps + self.order):
             forecasts = []
-            lags = {}
-            for i in np.arange(0, self.order): lags[i] = samples[k - self.order + i]
 
-            # Build the tree with all possible paths
+            lags = []
+            for i in np.arange(0, self.order):
+                lags.append(sample[i - self.order])
 
-            root = tree.FLRGTreeNode(None)
-
-            tree.build_tree_without_order(root, lags, 0)
-
-            for p in root.paths():
-                path = list(reversed(list(filter(None.__ne__, p))))
-
+            # Trace the possible paths
+            for path in product(*lags):
                 forecasts.extend(self.get_models_forecasts(path))
 
-            samples.append(sampler(forecasts, np.arange(0.1, 1, 0.2)))
+            sample.append(sampler(forecasts, np.arange(.1, 1, 0.1), bounds=True))
+
             interval = self.get_interval(forecasts)
 
             if len(interval) == 1:
@@ -248,7 +251,7 @@ class EnsembleFTS(fts.FTS):
         if 'method' in kwargs:
             self.point_method = kwargs.get('method','mean')
 
-        smooth = kwargs.get("smooth", "KDE")
+        smooth = kwargs.get("smooth", "histogram")
         alpha = kwargs.get("alpha", None)
 
         ret = []
@@ -270,7 +273,7 @@ class EnsembleFTS(fts.FTS):
             for path in product(*lags):
                 forecasts.extend(self.get_models_forecasts(path))
 
-            sample.append(forecasts)
+            sample.append(sampler(forecasts, np.arange(.1, 1, 0.1), bounds=True))
 
             if alpha is None:
                 forecasts = np.ravel(forecasts).tolist()

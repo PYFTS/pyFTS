@@ -232,7 +232,7 @@ class FTS(object):
 
         ret = []
         for k in np.arange(0, steps):
-            tmp = self.forecast(data[-self.max_lag:], **kwargs)
+            tmp = self.forecast(data[k:self.max_lag+k], **kwargs)
 
             if isinstance(tmp,(list, np.ndarray)):
                 tmp = tmp[-1]

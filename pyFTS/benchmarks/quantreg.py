@@ -13,7 +13,7 @@ class QuantileRegression(fts.FTS):
     """Façade for statsmodels.regression.quantile_regression"""
     def __init__(self, **kwargs):
         super(QuantileRegression, self).__init__(**kwargs)
-        self.name = "QR"
+        self.name = "QAR"
         self.detail = "Quantile Regression"
         self.is_high_order = True
         self.has_point_forecasting = True
@@ -105,7 +105,7 @@ class QuantileRegression(fts.FTS):
         nmeans = self.forecast_ahead(ndata, steps, **kwargs)
 
         for k in np.arange(0, self.order):
-            nmeans.insert(k,ndata[-(k+1)])
+            nmeans.insert(k,ndata[k])
 
         for k in np.arange(self.order, steps+self.order):
             intl = self.point_to_interval(nmeans[k - self.order: k], self.lower_qt, self.upper_qt)
@@ -136,18 +136,29 @@ class QuantileRegression(fts.FTS):
         return ret
 
     def forecast_ahead_distribution(self, ndata, steps, **kwargs):
+        smoothing = kwargs.get("smoothing", 0.9)
+
+        l = len(ndata)
 
         ret = []
+
+        nmeans = self.forecast_ahead(ndata, steps, **kwargs)
+
+        for k in np.arange(0, self.order):
+            nmeans.insert(k, ndata[k])
 
         for k in np.arange(self.order, steps + self.order):
             dist = ProbabilityDistribution.ProbabilityDistribution(type="histogram",
                                                                    uod=[self.original_min, self.original_max])
-            intervals = [[k, k] for k in ndata[-self.order:]]
+
+            intervals = [[nmeans[self.order], nmeans[self.order]]]
             for qt in self.dist_qt:
-                intl = self.interval_to_interval([intervals[x] for x in np.arange(k - self.order, k)], qt[0], qt[1])
-                intervals.append(intl)
+                intl1 = self.point_to_interval(nmeans[k - self.order: k], qt[0], qt[1])
+                intl2 = [intl1[0] * (1 + k * smoothing), intl1[1] * (1 + k * smoothing)]
+                intervals.append(intl2)
             dist.append_interval(intervals)
 
             ret.append(dist)
 
         return ret
+

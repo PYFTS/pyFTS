@@ -17,6 +17,8 @@ class ProbabilityDistribution(object):
 
         self.data = []
 
+        data = kwargs.get("data", None)
+
         self.type = type
         """
         If type is histogram, the PDF is discrete
@@ -28,12 +30,10 @@ class ProbabilityDistribution(object):
         self.labels = kwargs.get("bins_labels", None)
         """Bins labels on a discrete PDF"""
 
-        data = kwargs.get("data", None)
-
         if self.type == "KDE":
             self.kde = kde.KernelSmoothing(h=kwargs.get("h", 0.5), kernel=kwargs.get("kernel", "epanechnikov"))
 
-        if self.data is not None:
+        if data is not None and self.uod is None:
             _min = np.nanmin(data)
             _min = _min * .7 if _min > 0 else _min * 1.3
             _max = np.nanmax(data)
