@@ -39,7 +39,7 @@ distributions = model.predict(test[:10], type='distribution', steps_ahead=horizo
 fig, ax = plt.subplots(nrows=1, ncols=1,figsize=[15,5])
 
 ax.plot(test[:10], label='Original',color='black')
-cUtil.plot_interval(ax, intervals, model.order, label='ensemble')
+cUtil.plot_interval2(intervals, test[:10], start_at=3, ax=ax)
 cUtil.plot_distribution2(distributions, test[:10], start_at=2, ax=ax, cmap="Blues")
 
 '''

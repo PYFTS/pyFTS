@@ -265,7 +265,6 @@ def plot_interval2(intervals, data, **kwargs):
     :keyword typeonlegend:
     :keyword ls: matplotlib line style
     :keyword linewidth: matplotlib width
-    :return: a list [lower, upper] with the minimum and maximum bounds of the intervals
     '''
 
     l = len(intervals)
@@ -283,8 +282,6 @@ def plot_interval2(intervals, data, **kwargs):
 
     lower = [kk[0] for kk in intervals]
     upper = [kk[1] for kk in intervals]
-    mi = min(lower) * 0.95
-    ma = max(upper) * 1.05
 
     typeonlegend = kwargs.get('typeonlegend', False)
     color = kwargs.get('color', 'red')
@@ -296,8 +293,6 @@ def plot_interval2(intervals, data, **kwargs):
     if typeonlegend: label += " (Interval)"
     ax.plot(lower, color=color, label=label, ls=ls,linewidth=linewidth)
     ax.plot(upper, color=color, ls=ls,linewidth=linewidth)
-    return [mi, ma]
-
 
 
 def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
