@@ -14,7 +14,7 @@ from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei
 from pyFTS.models.ensemble import ensemble
 from pyFTS.common import Transformations, Membership
-from pyFTS.benchmarks import arima, quantreg, BSTS
+from pyFTS.benchmarks import arima, quantreg, BSTS, gaussianproc
 from pyFTS.fcm import fts, common, GA
 
 from pyFTS.data import Enrollments, TAIEX
@@ -24,9 +24,11 @@ data = TAIEX.get_data()
 train = data[:800]
 test = data[800:1000]
 
-model = ensemble.SimpleEnsembleFTS(fts_method=hofts.HighOrderFTS)
+#model = ensemble.SimpleEnsembleFTS(fts_method=hofts.HighOrderFTS)
 #model = quantreg.QuantileRegression(order=2, dist=True)
 #model = arima.ARIMA(order = (2,0,0))
+#model = BSTS.ARIMA(order=(2,0,0))
+model = gaussianproc.GPR(order=2)
 model.fit(train)
 
 horizon=5

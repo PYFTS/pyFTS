@@ -86,7 +86,7 @@ class ARIMA(fts.FTS):
         ret = []
 
         for ct, sample in enumerate(sim_vector):
-            i = [np.percentile(sample, qt) for qt in [alpha, 1-alpha]]
+            i = np.percentile(sample, [alpha*100, (1-alpha)*100]).tolist()
             ret.append(i)
 
         return ret
