@@ -21,6 +21,7 @@ class ARIMA(fts.FTS):
         self.has_point_forecasting = True
         self.has_interval_forecasting = True
         self.has_probability_forecasting = True
+        self.uod_clip = False
         self.model = None
         self.model_fit = None
         self.trained_data = None

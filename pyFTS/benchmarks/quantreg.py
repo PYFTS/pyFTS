@@ -19,6 +19,7 @@ class QuantileRegression(fts.FTS):
         self.has_point_forecasting = True
         self.has_interval_forecasting = True
         self.has_probability_forecasting = True
+        self.uod_clip = False
         self.benchmark_only = True
         self.min_order = 1
         self.alpha = kwargs.get("alpha", 0.05)
@@ -96,7 +97,7 @@ class QuantileRegression(fts.FTS):
 
     def forecast_ahead_interval(self, ndata, steps, **kwargs):
 
-        smoothing = kwargs.get("smoothing", 0.9)
+        smoothing = kwargs.get("smoothing", 0.1)
 
         l = len(ndata)
 
@@ -110,7 +111,9 @@ class QuantileRegression(fts.FTS):
         for k in np.arange(self.order, steps+self.order):
             intl = self.point_to_interval(nmeans[k - self.order: k], self.lower_qt, self.upper_qt)
 
-            ret.append([intl[0]*(1 + k*smoothing), intl[1]*(1 + k*smoothing)])
+            tmpk = k-self.order
+
+            ret.append([intl[0]*(1 + (tmpk*smoothing)), intl[1]*(1 + (tmpk*smoothing))])
 
         return ret[-steps:]
 
@@ -136,7 +139,7 @@ class QuantileRegression(fts.FTS):
         return ret
 
     def forecast_ahead_distribution(self, ndata, steps, **kwargs):
-        smoothing = kwargs.get("smoothing", 0.9)
+        smoothing = kwargs.get("smoothing", 0.1)
 
         l = len(ndata)
 
@@ -154,7 +157,8 @@ class QuantileRegression(fts.FTS):
             intervals = [[nmeans[self.order], nmeans[self.order]]]
             for qt in self.dist_qt:
                 intl1 = self.point_to_interval(nmeans[k - self.order: k], qt[0], qt[1])
-                intl2 = [intl1[0] * (1 + k * smoothing), intl1[1] * (1 + k * smoothing)]
+                tmpk = k - self.order
+                intl2 = [intl1[0] * (1 + (tmpk * smoothing)), intl1[1] * (1 + (tmpk * smoothing))]
                 intervals.append(intl2)
             dist.append_interval(intervals)
 

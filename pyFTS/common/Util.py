@@ -244,13 +244,60 @@ def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False
     upper = [kk[1] for kk in intervals]
     mi = min(lower) * 0.95
     ma = max(upper) * 1.05
-    for k in np.arange(0, order):
+    for k in np.arange(0, order+1):
         lower.insert(0, None)
         upper.insert(0, None)
     if typeonlegend: label += " (Interval)"
     axis.plot(lower, color=color, label=label, ls=ls,linewidth=linewidth)
     axis.plot(upper, color=color, ls=ls,linewidth=linewidth)
     return [mi, ma]
+
+
+def plot_interval2(intervals, data, **kwargs):
+    '''
+    Plot forecasted intervals on matplotlib
+
+    :param intervals: list of forecasted intervals
+    :param data: the original test sample
+    :keyword start_at: the time index (inside of data) to start to plot the intervals
+    :keyword label: figure label
+    :keyword color: matplotlib color name
+    :keyword typeonlegend:
+    :keyword ls: matplotlib line style
+    :keyword linewidth: matplotlib width
+    :return: a list [lower, upper] with the minimum and maximum bounds of the intervals
+    '''
+
+    l = len(intervals)
+
+    start_at = kwargs.get('start_at', 1)
+
+    ax = kwargs.get('ax', None)
+    if ax is None:
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15, 5])
+
+    for k in np.arange(0, start_at-1):
+        intervals.insert(0, [None,None])
+
+    intervals.insert(start_at, [data[start_at], data[start_at]])
+
+    lower = [kk[0] for kk in intervals]
+    upper = [kk[1] for kk in intervals]
+    mi = min(lower) * 0.95
+    ma = max(upper) * 1.05
+
+    typeonlegend = kwargs.get('typeonlegend', False)
+    color = kwargs.get('color', 'red')
+    label = kwargs.get('label','')
+    linewidth = kwargs.get('linewidth', 1)
+
+    ls = kwargs.get('ls','-')
+
+    if typeonlegend: label += " (Interval)"
+    ax.plot(lower, color=color, label=label, ls=ls,linewidth=linewidth)
+    ax.plot(upper, color=color, ls=ls,linewidth=linewidth)
+    return [mi, ma]
+
 
 
 def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):

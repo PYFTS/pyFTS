@@ -21,6 +21,7 @@ class ARIMA(fts.FTS):
         self.has_point_forecasting = True
         self.has_interval_forecasting = True
         self.has_probability_forecasting = True
+        self.uod_clip = False
         self.model = None
         self.model_fit = None
         self.trained_data = None
@@ -96,6 +97,11 @@ class ARIMA(fts.FTS):
         if self.model_fit is None:
             return np.nan
 
+        if 'alpha' in kwargs:
+            alpha = kwargs.get('alpha',0.05)
+        else:
+            alpha = self.alpha
+
         sigma = np.sqrt(self.model_fit.sigma2)
 
         l = len(data)
@@ -112,8 +118,8 @@ class ARIMA(fts.FTS):
             if isinstance(mean,(list, np.ndarray)):
                 mean = mean[0]
 
-            tmp.append(mean + st.norm.ppf(self.alpha) * sigma)
-            tmp.append(mean + st.norm.ppf(1 - self.alpha) * sigma)
+            tmp.append(mean + st.norm.ppf(alpha) * sigma)
+            tmp.append(mean + st.norm.ppf(1 - alpha) * sigma)
 
             ret.append(tmp)
 
@@ -122,6 +128,11 @@ class ARIMA(fts.FTS):
     def forecast_ahead_interval(self, ndata, steps, **kwargs):
         if self.model_fit is None:
             return np.nan
+
+        if 'alpha' in kwargs:
+            alpha = kwargs.get('alpha',0.05)
+        else:
+            alpha = self.alpha
 
         smoothing = kwargs.get("smoothing",0.5)
 
@@ -138,8 +149,8 @@ class ARIMA(fts.FTS):
 
             hsigma = (1 + k*smoothing)*sigma
 
-            tmp.append(nmeans[k] + st.norm.ppf(self.alpha) * hsigma)
-            tmp.append(nmeans[k] + st.norm.ppf(1 - self.alpha) * hsigma)
+            tmp.append(nmeans[k] + st.norm.ppf(alpha) * hsigma)
+            tmp.append(nmeans[k] + st.norm.ppf(1 - alpha) * hsigma)
 
             ret.append(tmp)
 
@@ -207,3 +218,4 @@ class ARIMA(fts.FTS):
             ret.append(dist)
 
         return ret
+

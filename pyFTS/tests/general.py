@@ -13,20 +13,34 @@ from pyFTS.partitioners import Grid, Entropy, Util as pUtil, Simple
 from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei
 from pyFTS.common import Transformations, Membership
-
+from pyFTS.benchmarks import arima, quantreg, BSTS
 from pyFTS.fcm import fts, common, GA
 
 from pyFTS.data import Enrollments, TAIEX
 
-x = [k for k in np.arange(-2*np.pi, 2*np.pi, 0.15)]
-y = [np.sin(k) for k in x]
+data = TAIEX.get_data()
 
-from pyFTS.probabilistic import ProbabilityDistribution
+train = data[:500]
+test = data[500:1000]
 
-pd = ProbabilityDistribution.ProbabilityDistribution(type='histogram', data=y, num_bins=30)
+model = quantreg.QuantileRegression(order=1, dist=True)
+model.fit(train)
 
-print(pd.quantile([.5]))
-print(pd.cdf)
+horizon=5
+
+#points  = model.predict(test[:10], type='point', steps_ahead=horizon)
+
+intervals = model.predict(test[:10], type='interval', alpha=.05, smoothing=0.01, steps_ahead=horizon)
+print(test[:10])
+print(intervals)
+distributions = model.predict(test[:10], type='distribution', steps_ahead=horizon, num_bins=100)
+
+
+fig, ax = plt.subplots(nrows=1, ncols=1,figsize=[15,5])
+
+ax.plot(test[:10], label='Original',color='black')
+cUtil.plot_interval(ax, intervals, model.order, label='ensemble')
+cUtil.plot_distribution2(distributions, test[:10], start_at=2, ax=ax, cmap="Blues")
 
 '''
 model = fts.FCM_FTS(partitioner=fs, order=1)
