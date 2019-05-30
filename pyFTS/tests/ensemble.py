@@ -19,48 +19,38 @@ from pyFTS.models import hofts
 from pyFTS.data import TAIEX
 
 data = TAIEX.get_data()
-train = data[:800]
-test = data[800:1000]
-'''
-model = ensemble.EnsembleFTS()
 
-for k in [15, 25, 35]:
-    for order in [1, 2, 3]:
-        fs = Grid.GridPartitioner(data=train, npart=k)
-        tmp = hofts.WeightedHighOrderFTS(partitioner=fs, order=order)
 
-        tmp.fit(train)
 
-        model.append_model(tmp)
-'''
-#fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15, 5])
-
-#ax.plot(data[:28], label='Original', color='black')
+model1 = ensemble.SimpleEnsembleFTS()
 
 from pyFTS.benchmarks import arima, quantreg, BSTS
 
-#model = arima.ARIMA(order=(2,0,0))
-#model = quantreg.QuantileRegression(order=1, dist=True)
-model = BSTS.ARIMA(order=(2,0,0))
-model.fit(train)
+methods = [ensemble.SimpleEnsembleFTS, arima.ARIMA, quantreg.QuantileRegression, BSTS.ARIMA]
+parameters = [{},{'order': (2,0,0)}, {'order': 1, 'dist': True}, {'order': (2,0,0)}]
 
-horizon = 5
-
-intervals = model.predict(test[:10], type='interval', alpha=.25, steps_ahead=horizon)
-
-distributions = model.predict(test[:10], type='distribution', smooth='histogram', steps_ahead=horizon, num_bins=100)
-
-#Util.plot_distribution2(forecasts, data[:28], start_at=20, order=3, ax=ax, cmap="Blues")
-
-print('end')
 
 from pyFTS.benchmarks import Measures
 
-start = model.order+1
-end = start + horizon
+horizon = 5
 
-print(Measures.get_interval_ahead_statistics(test[start:end], intervals))
-print(Measures.get_distribution_ahead_statistics(test[start:end], distributions))
+for ct, train, test, in Util.sliding_window(data,1000,0.8,.5):
+    print('data window {}'.format(ct))
+    for ct, method in enumerate(methods):
+        model = method(**parameters[ct])
+        model.fit(train)
+        start = model.order + 1
+        end = start + horizon
+        intervals = model.predict(test[:10], type='interval', alpha=.25, steps_ahead=horizon)
+        distributions = model.predict(test[:10], type='distribution', smooth='histogram', steps_ahead=horizon, num_bins=100)
+        print(model.name, Measures.get_interval_ahead_statistics(test[start:end], intervals))
+        print(model.name, Measures.get_distribution_ahead_statistics(test[start:end], distributions))
+
+print('end')
+
+
+
+
 
 
 

@@ -12,6 +12,7 @@ import pandas as pd
 from pyFTS.common import SortedCollection, fts, tree
 from pyFTS.models import chen, cheng, hofts, hwang, ismailefendi, sadaei, song, yu
 from pyFTS.probabilistic import ProbabilityDistribution
+from pyFTS.partitioners import Grid
 import scipy.stats as st
 from itertools import product
 
@@ -286,6 +287,33 @@ class EnsembleFTS(fts.FTS):
             ret.append(dist)
 
         return ret
+
+
+class SimpleEnsembleFTS(EnsembleFTS):
+    '''
+    An homogeneous FTS method ensemble with variations on partitionings and orders.
+    '''
+    def __init__(self, **kwargs):
+        super(SimpleEnsembleFTS, self).__init__(**kwargs)
+        self.method = kwargs.get('fts_method', hofts.WeightedHighOrderFTS)
+        """FTS method class that will be used on internal models"""
+        self.partitioner_method = kwargs.get('partitioner_method', Grid.GridPartitioner)
+        """UoD partitioner class that will be used on internal methods"""
+        self.partitions = kwargs.get('partitions', np.arange(15,35,10))
+        """Possible variations of number of partitions on internal models"""
+        self.orders = kwargs.get('orders', [1,2,3])
+        """Possible variations of order on internal models"""
+
+    def train(self, data, **kwargs):
+        for k in self.partitions:
+            fs = self.partitioner_method(data=data, npart=k)
+
+            for order in self.orders:
+                tmp = self.method(partitioner=fs, order=order)
+
+                tmp.fit(data)
+
+                self.append_model(tmp)
 
 
 class AllMethodEnsembleFTS(EnsembleFTS):
