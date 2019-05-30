@@ -177,8 +177,6 @@ def plot_distribution2(probabilitydist, data, **kwargs):
     import matplotlib.colorbar as cbar
     import matplotlib.cm as cm
 
-    order = kwargs.get('order', 1)
-
     ax = kwargs.get('ax',None)
     if ax is None:
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15, 5])
@@ -188,7 +186,7 @@ def plot_distribution2(probabilitydist, data, **kwargs):
     cmap = kwargs.get('cmap','Blues')
     cmap = plt.get_cmap(cmap)
 
-    start_at = kwargs.get('start_at',0) + order - 1
+    start_at = kwargs.get('start_at',0)
 
     x = [k + start_at for k in range(l + 1)]
 
@@ -275,7 +273,7 @@ def plot_interval2(intervals, data, **kwargs):
     if ax is None:
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15, 5])
 
-    for k in np.arange(0, start_at-1):
+    for k in np.arange(0, start_at):
         intervals.insert(0, [None,None])
 
     intervals.insert(start_at, [data[start_at], data[start_at]])

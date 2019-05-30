@@ -303,6 +303,7 @@ class SimpleEnsembleFTS(EnsembleFTS):
         """Possible variations of number of partitions on internal models"""
         self.orders = kwargs.get('orders', [1,2,3])
         """Possible variations of order on internal models"""
+        self.uod_clip = False
 
     def train(self, data, **kwargs):
         for k in self.partitions:

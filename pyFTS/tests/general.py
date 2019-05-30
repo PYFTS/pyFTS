@@ -12,6 +12,7 @@ from pyFTS.common import Util as cUtil, FuzzySet
 from pyFTS.partitioners import Grid, Entropy, Util as pUtil, Simple
 from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei
+from pyFTS.models.ensemble import ensemble
 from pyFTS.common import Transformations, Membership
 from pyFTS.benchmarks import arima, quantreg, BSTS
 from pyFTS.fcm import fts, common, GA
@@ -20,17 +21,19 @@ from pyFTS.data import Enrollments, TAIEX
 
 data = TAIEX.get_data()
 
-train = data[:500]
-test = data[500:1000]
+train = data[:800]
+test = data[800:1000]
 
-model = quantreg.QuantileRegression(order=1, dist=True)
+model = ensemble.SimpleEnsembleFTS(fts_method=hofts.HighOrderFTS)
+#model = quantreg.QuantileRegression(order=2, dist=True)
+#model = arima.ARIMA(order = (2,0,0))
 model.fit(train)
 
 horizon=5
 
 #points  = model.predict(test[:10], type='point', steps_ahead=horizon)
 
-intervals = model.predict(test[:10], type='interval', alpha=.05, smoothing=0.01, steps_ahead=horizon)
+intervals = model.predict(test[:10], type='interval', alpha=.05,  steps_ahead=horizon)
 print(test[:10])
 print(intervals)
 distributions = model.predict(test[:10], type='distribution', steps_ahead=horizon, num_bins=100)
@@ -39,8 +42,10 @@ distributions = model.predict(test[:10], type='distribution', steps_ahead=horizo
 fig, ax = plt.subplots(nrows=1, ncols=1,figsize=[15,5])
 
 ax.plot(test[:10], label='Original',color='black')
-cUtil.plot_interval2(intervals, test[:10], start_at=3, ax=ax)
-cUtil.plot_distribution2(distributions, test[:10], start_at=2, ax=ax, cmap="Blues")
+cUtil.plot_interval2(intervals, test[:10], start_at=model.order, ax=ax)
+cUtil.plot_distribution2(distributions, test[:10], start_at=model.order, ax=ax, cmap="Blues")
+
+print("")
 
 '''
 model = fts.FCM_FTS(partitioner=fs, order=1)
