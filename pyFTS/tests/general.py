@@ -35,17 +35,17 @@ horizon=5
 
 #points  = model.predict(test[:10], type='point', steps_ahead=horizon)
 
-intervals = model.predict(test[:10], type='interval', alpha=.05,  steps_ahead=horizon)
+intervals = model.predict(test[:10], type='point', alpha=.05,  steps_ahead=horizon)
 print(test[:10])
 print(intervals)
-distributions = model.predict(test[:10], type='distribution', steps_ahead=horizon, num_bins=100)
+#distributions = model.predict(test[:10], type='distribution', steps_ahead=horizon, num_bins=100)
 
 
 fig, ax = plt.subplots(nrows=1, ncols=1,figsize=[15,5])
 
 ax.plot(test[:10], label='Original',color='black')
 cUtil.plot_interval2(intervals, test[:10], start_at=model.order, ax=ax)
-cUtil.plot_distribution2(distributions, test[:10], start_at=model.order, ax=ax, cmap="Blues")
+#cUtil.plot_distribution2(distributions, test[:10], start_at=model.order, ax=ax, cmap="Blues")
 
 print("")
 

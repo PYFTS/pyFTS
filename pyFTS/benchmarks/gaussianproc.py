@@ -27,6 +27,7 @@ class GPR(fts.FTS):
         self.benchmark_only = True
         self.min_order = 1
         self.alpha = kwargs.get("alpha", 0.05)
+        self.data = None
 
         self.lscale = kwargs.get('length_scale', 1)
 
@@ -34,10 +35,18 @@ class GPR(fts.FTS):
         self.model = GaussianProcessRegressor(kernel=self.kernel, alpha=.05,
                                       n_restarts_optimizer=10,
                                       normalize_y=False)
-        self.model_fit = None
+        #self.model_fit = None
 
+    def _prepare_x(self, data):
+        l = len(data)
+        X = []
 
-    def train(self, data, **kwargs):
+        for t in np.arange(self.order, l):
+            X.append([data[t - k - 1] for k in np.arange(self.order)])
+
+        return X
+
+    def _prepare_xy(self, data):
         l = len(data)
         X = []
         Y = []
@@ -46,16 +55,37 @@ class GPR(fts.FTS):
             X.append([data[t - k - 1] for k in np.arange(self.order)])
             Y.append(data[t])
 
-        self.model_fit = self.model.fit(X, Y)
+        return (X,Y)
 
+    def _extend(self, data):
+        if not isinstance(data, list):
+            data = data.tolist()
+        tmp = self.data
+        tmp.extend(data)
+        return tmp
+
+    def train(self, data, **kwargs):
+        if not isinstance(data, list):
+            data = data.tolist()
+        X,Y = self._prepare_xy(data)
+        self.data = data
+        self.model.fit(X, Y)
 
     def forecast(self, data, **kwargs):
-        X = []
-        l = len(data)
-        for t in np.arange(self.order, l):
-            X.append([data[t - k - 1] for k in np.arange(self.order)])
+        data = self._extend(data)
+        X = self._prepare_x(data)
+        return self.model.predict(X)
 
-        return self.model_fit.predict(X)
+    def forecast_ahead(self, data, steps, **kwargs):
+
+        data = self._extend(data)
+
+        for k in np.arange(steps):
+            X = self._prepare_x(data)
+            Y, sigma = self.model.predict(X, return_std=True)
+            data.append(Y[-1])
+
+        return data[-steps:]
 
     def forecast_interval(self, data, **kwargs):
 
@@ -64,12 +94,9 @@ class GPR(fts.FTS):
         else:
             alpha = self.alpha
 
-        X = []
-        l = len(data)
-        for t in np.arange(self.order, l):
-            X.append([data[t - k - 1] for k in np.arange(self.order)])
+        X = self._prepare_x(data)
 
-        Y, sigma = self.model_fit.predict(X, return_cov=True)
+        Y, sigma = self.model.predict(X, return_cov=True)
 
         uncertainty = st.norm.ppf(alpha) * np.sqrt(np.diag(sigma))
 
@@ -87,16 +114,18 @@ class GPR(fts.FTS):
 
         smoothing = kwargs.get("smoothing", 0.5)
 
-        X = [data[t] for t in np.arange(self.order+10)]
+        if not isinstance(data, list):
+            data = data.tolist()
+
         S = []
 
         for k in np.arange(self.order, steps+self.order):
-            sample = [[X[k-t-1] for t in np.arange(self.order)] for p in range(5)]
-            Y, sigma = self.model_fit.predict([sample], return_std=True)
-            X.append(Y[0])
-            S.append(sigma[0])
+            X = self._prepare_x(data)
+            Y, sigma = self.model.predict(X, return_std=True)
+            data.append(Y[-1])
+            S.append(sigma[-1])
 
-        X = X[-steps:]
+        X = data[-steps:]
 
         intervals = []
         for k in range(steps):
@@ -116,7 +145,7 @@ class GPR(fts.FTS):
         for t in np.arange(self.order, l):
             X.append([data[t - k - 1] for k in np.arange(self.order)])
 
-        Y, sigma = self.model_fit.predict(X, return_std=True)
+        Y, sigma = self.model.predict(X, return_std=True)
 
         for k in len(Y):
 
@@ -144,9 +173,9 @@ class GPR(fts.FTS):
 
         for k in np.arange(self.order, steps+self.order):
             sample = [X[k-t-1] for t in np.arange(self.order)]
-            Y, sigma = self.model_fit.predict([sample], return_std=True)
+            Y, sigma = self.model.predict([sample], return_std=True)
             X.append(Y[0])
-            S.append(S[0])
+            S.append(sigma[0])
 
         X = X[-steps:]
         #uncertainty = st.norm.ppf(alpha) * np.sqrt(np.diag(sigma))
@@ -166,11 +195,4 @@ class GPR(fts.FTS):
             ret.append(dist)
 
         return ret
-
-
-
-
-
-
-
 
