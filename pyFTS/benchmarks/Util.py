@@ -108,6 +108,30 @@ def process_common_data(dataset, tag, type, job):
     return data
 
 
+def process_common_data2(dataset, tag, type, job):
+    """
+    Wraps benchmark information on a tuple for sqlite database
+
+    :param dataset: benchmark dataset
+    :param tag: benchmark set alias
+    :param type: forecasting type
+    :param job: a dictionary with benchmark data
+    :return: tuple for sqlite database
+    """
+    data = [dataset, tag, type,
+            job['model'],
+            job['transformation'],
+            job['order'],
+            job['partitioner'],
+            job['partitions'],
+            job['size'],
+            job['steps'],
+            job['method']
+            ]
+
+    return data
+
+
 def get_dataframe_from_bd(file, filter):
     """
     Query the sqlite benchmark database and return a pandas dataframe with the results

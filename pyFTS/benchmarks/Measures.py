@@ -397,7 +397,7 @@ def get_interval_statistics(data, model, **kwargs):
         forecasts = model.predict(data, **kwargs)
         ret.append(round(sharpness(forecasts), 2))
         ret.append(round(resolution(forecasts), 2))
-        ret.append(round(coverage(data[model.order:], forecasts[:-1]), 2))
+        ret.append(round(coverage(data[model.max_lag:], forecasts[:-1]), 2))
         ret.append(round(pinball_mean(0.05, data[model.max_lag:], forecasts[:-1]), 2))
         ret.append(round(pinball_mean(0.25, data[model.max_lag:], forecasts[:-1]), 2))
         ret.append(round(pinball_mean(0.75, data[model.max_lag:], forecasts[:-1]), 2))

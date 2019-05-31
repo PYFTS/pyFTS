@@ -15,6 +15,7 @@ class Transformation(object):
     def __init__(self, **kwargs):
         self.is_invertible = True
         self.minimal_length = 1
+        self.name = ''
 
     def apply(self, data, param, **kwargs):
         """
@@ -38,7 +39,7 @@ class Transformation(object):
         pass
 
     def __str__(self):
-        return self.__class__.__name__ + '(' + str(self.parameters) + ')'
+        return self.name
 
 
 class Differential(Transformation):
@@ -49,6 +50,7 @@ class Differential(Transformation):
         super(Differential, self).__init__()
         self.lag = lag
         self.minimal_length = 2
+        self.name = 'Diff'
 
     @property
     def parameters(self):
@@ -128,6 +130,7 @@ class Scale(Transformation):
         self.data_min = None
         self.transf_max = max
         self.transf_min = min
+        self.name = 'Scale'
 
     @property
     def parameters(self):
@@ -167,6 +170,7 @@ class AdaptiveExpectation(Transformation):
     def __init__(self, parameters):
         super(AdaptiveExpectation, self).__init__(parameters)
         self.h = parameters
+        self.name = 'AdaptExpect'
 
     @property
     def parameters(self):
@@ -193,6 +197,7 @@ class BoxCox(Transformation):
     def __init__(self, plambda):
         super(BoxCox, self).__init__()
         self.plambda = plambda
+        self.name = 'BoxCox'
 
     @property
     def parameters(self):

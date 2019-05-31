@@ -305,6 +305,8 @@ class SimpleEnsembleFTS(EnsembleFTS):
         """Possible variations of order on internal models"""
         self.uod_clip = False
 
+        self.shortname = kwargs.get('name', 'EnsembleFTS-' + str(self.method.__module__).split('.')[-1])
+
     def train(self, data, **kwargs):
         for k in self.partitions:
             fs = self.partitioner_method(data=data, npart=k)

@@ -14,6 +14,7 @@ import matplotlib as plt
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
+from itertools import product
 
 from pyFTS.common import Transformations
 from pyFTS.models import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, hwang
@@ -67,7 +68,7 @@ def get_benchmark_interval_methods():
 
 def get_interval_methods():
     """Return all FTS methods for point_to_interval forecasting"""
-    return [ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS]
+    return [ifts.IntervalFTS, ifts.WeightedIntervalFTS, pwfts.ProbabilisticWeightedFTS]
 
 
 def get_probabilistic_methods():
@@ -78,6 +79,126 @@ def get_probabilistic_methods():
 def get_benchmark_probabilistic_methods():
     """Return all FTS methods for probabilistic forecasting"""
     return [arima.ARIMA, quantreg.QuantileRegression, knn.KNearestNeighbors]
+
+
+def sliding_window_benchmarks2(data, windowsize, train=0.8, **kwargs):
+    tag = __pop('tag', None, kwargs)
+    dataset = __pop('dataset', None, kwargs)
+
+    distributed = __pop('distributed', False, kwargs)
+
+    transformations = kwargs.get('transformations', [None])
+
+    type = kwargs.get("type", 'point')
+
+    orders = __pop("orders", [1, 2, 3], kwargs)
+
+    partitioners_methods = __pop("partitioners_methods", [Grid.GridPartitioner], kwargs)
+    partitions = __pop("partitions", [10], kwargs)
+
+    partitions = [k for k in partitions]
+
+    steps_ahead = __pop('steps_ahead', [1], kwargs)
+
+    steps_ahead = [k for k in steps_ahead]
+
+    fts_methods = __pop('methods', None, kwargs)
+
+    methods_parameters = __pop('methods_parameters', None, kwargs)
+
+    if fts_methods is None:
+        if type  == 'point':
+            fts_methods = get_point_methods()
+        elif type == 'interval':
+            fts_methods = get_interval_methods()
+        elif type == 'distribution':
+            fts_methods = get_probabilistic_methods()
+
+    ix_methods = [k for k in np.arange(len(fts_methods))]
+
+    benchmark_models = __pop("benchmark_models", False, kwargs)
+    benchmark_methods = __pop("benchmark_methods", None, kwargs)
+    benchmark_methods_parameters = __pop("benchmark_methods_parameters", None, kwargs)
+
+    if type == 'point':
+        experiment_method = run_point2
+        synthesis_method = process_point_jobs2
+    elif type == 'interval':
+        experiment_method = run_interval2
+        synthesis_method = process_interval_jobs2
+    elif type == 'distribution':
+        experiment_method = run_probabilistic2
+        synthesis_method = process_probabilistic_jobs2
+    else:
+        raise ValueError("Type parameter has a unkown value!")
+
+    if distributed:
+        import pyFTS.distributed.dispy as dispy
+
+        nodes = kwargs.get("nodes", ['127.0.0.1'])
+        cluster, http_server = dispy.start_dispy_cluster(experiment_method, nodes)
+
+    inc = __pop("inc", 0.1, kwargs)
+
+    file = kwargs.get('file', "benchmarks.db")
+
+    conn = bUtil.open_benchmark_db(file)
+
+    jobs = []
+    for ct, train, test in cUtil.sliding_window(data, windowsize, train, inc=inc, **kwargs):
+
+        if benchmark_models:
+            for bm, method in enumerate(benchmark_methods):
+                for step in steps_ahead:
+
+                    kwargs['steps_ahead'] = step
+                    kwargs['parameters'] = benchmark_methods_parameters[bm]
+
+                    if not distributed:
+                        try:
+                            job = experiment_method(method, None, None, None, train, test, ct, **kwargs)
+                            synthesis_method(dataset, tag, job, conn)
+                        except Exception as ex:
+                            print('EXCEPTION! ', method, benchmark_methods_parameters[bm])
+                            traceback.print_exc()
+                    else:
+                        job = cluster.submit(method, None, None, None, train, test, ct, **kwargs)
+                        jobs.append(job)
+        else:
+            params = [ix_methods, orders, partitioners_methods, partitions, transformations, steps_ahead]
+            for id, instance in enumerate(product(*params)):
+                fts_method = fts_methods[instance[0]]
+                kwargs['steps_ahead'] = instance[5]
+                if methods_parameters is not None:
+                    kwargs['parameters'] = methods_parameters[instance[0]]
+                if not distributed:
+                    try:
+                        job = experiment_method(fts_method, instance[1], instance[2], instance[3], instance[4], train, test, ct, **kwargs)
+                        synthesis_method(dataset, tag, job, conn)
+                    except Exception as ex:
+                        print('EXCEPTION! ', instance)
+                        traceback.print_exc()
+                else:
+                    job = cluster.submit(fts_method, instance[1], instance[2], instance[3], instance[4], train, test, ct, **kwargs)
+                    job.id = id
+                    jobs.append(job)
+
+    if distributed:
+        for job in jobs:
+            job()
+            if job.status == dispy.dispy.DispyJob.Finished and job is not None:
+                tmp = job.result
+                synthesis_method(dataset, tag, tmp, conn)
+            else:
+                print("status", job.status)
+                print("result", job.result)
+                print("stdout", job.stdout)
+                print("stderr", job.exception)
+
+        cluster.wait()  # wait for all jobs to finish
+        dispy.stop_dispy_cluster(cluster, http_server)
+
+    conn.close()
 
 
 def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
@@ -314,8 +435,6 @@ def sliding_window_benchmarks(data, windowsize, train=0.8, **kwargs):
     conn.close()
 
 
-
-
 def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwargs):
     """
     Run the point forecasting benchmarks
@@ -502,6 +621,159 @@ def run_probabilistic(mfts, partitioner, train_data, test_data, window_key=None,
     return ret
 
 
+def __build_model(fts_method, order, parameters, partitioner_method, partitions, train_data, transformation):
+    mfts = fts_method(**parameters)
+    if mfts.benchmark_only or mfts.is_wrapper:
+        pttr = ''
+    else:
+        fs = partitioner_method(npart=partitions, data=train_data, transformation=transformation)
+        pttr = str(fs.__module__).split('.')[-1]
+        if order > 1:
+            mfts = fts_method(partitioner=fs, order=order, **parameters)
+        else:
+            mfts.partitioner = fs
+
+        if transformation is not None:
+            mfts.append_transformation(transformation)
+    return mfts, pttr
+
+
+def run_point2(fts_method, order, partitioner_method, partitions, transformation, train_data, test_data, window_key=None, **kwargs):
+
+    import time
+    from pyFTS.models import yu, chen, hofts, pwfts,ismailefendi,sadaei, song, cheng, hwang
+    from pyFTS.partitioners import Grid, Entropy, FCM
+    from pyFTS.benchmarks import Measures, naive, arima, quantreg
+    from pyFTS.common import Transformations
+
+    tmp = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
+           cheng.TrendWeightedFTS, sadaei.ExponentialyWeightedFTS, hofts.HighOrderFTS, hwang.HighOrderFTS,
+           pwfts.ProbabilisticWeightedFTS]
+
+    tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
+
+    tmp4 = [naive.Naive, arima.ARIMA, quantreg.QuantileRegression]
+
+    tmp3 = [Measures.get_point_statistics]
+
+    tmp5 = [Transformations.Differential]
+
+    indexer = kwargs.get('indexer', None)
+
+    steps_ahead = kwargs.get('steps_ahead', 1)
+    method = kwargs.get('method', None)
+    parameters = kwargs.get('parameters', {})
+
+    mfts, pttr = __build_model(fts_method, order, parameters, partitioner_method, partitions, train_data,
+                               transformation)
+
+    _start = time.time()
+    mfts.fit(train_data, **kwargs)
+    _end = time.time()
+    times = _end - _start
+
+
+    _start = time.time()
+    _rmse, _smape, _u = Measures.get_point_statistics(test_data, mfts, **kwargs)
+    _end = time.time()
+    times += _end - _start
+
+    ret = {'model': mfts.shortname, 'partitioner': pttr, 'order': order, 'partitions': partitions,
+           'transformation': '' if transformation is None else transformation.name,
+           'size': len(mfts), 'time': times,
+           'rmse': _rmse, 'smape': _smape, 'u': _u, 'window': window_key,
+           'steps': steps_ahead, 'method': method}
+
+    return ret
+
+
+def run_interval2(fts_method, order, partitioner_method, partitions, transformation, train_data, test_data, window_key=None, **kwargs):
+    import time
+    from pyFTS.models import hofts,ifts,pwfts
+    from pyFTS.partitioners import Grid, Entropy, FCM
+    from pyFTS.benchmarks import Measures, arima, quantreg, BSTS
+
+    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, ifts.WeightedIntervalFTS,  pwfts.ProbabilisticWeightedFTS]
+
+    tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
+
+    tmp4 = [arima.ARIMA, quantreg.QuantileRegression, BSTS.ARIMA]
+
+    tmp3 = [Measures.get_interval_statistics]
+
+    steps_ahead = kwargs.get('steps_ahead', 1)
+    method = kwargs.get('method', None)
+    parameters = kwargs.get('parameters',{})
+
+    mfts, pttr = __build_model(fts_method, order, parameters, partitioner_method, partitions, train_data,
+                               transformation)
+    _start = time.time()
+    mfts.fit(train_data, **kwargs)
+    _end = time.time()
+    times = _end - _start
+
+    _start = time.time()
+    #_sharp, _res, _cov, _q05, _q25, _q75, _q95, _w05, _w25
+    metrics = Measures.get_interval_statistics(test_data, mfts, **kwargs)
+    _end = time.time()
+    times += _end - _start
+
+    ret = {'model': mfts.shortname, 'partitioner': pttr, 'order': order, 'partitions': partitions,
+           'transformation': '' if transformation is None else transformation.name,
+           'size': len(mfts), 'time': times,
+           'sharpness': metrics[0], 'resolution': metrics[1], 'coverage': metrics[2],
+           'time': times,'Q05': metrics[3], 'Q25': metrics[4], 'Q75': metrics[5], 'Q95': metrics[6],
+           'winkler05': metrics[7], 'winkler25': metrics[8],
+           'window': window_key,'steps': steps_ahead, 'method': method}
+
+    return ret
+
+
+def run_probabilistic2(fts_method, order, partitioner_method, partitions, transformation, train_data, test_data, window_key=None, **kwargs):
+    import time
+    import numpy as np
+    from pyFTS.models import hofts, ifts, pwfts
+    from pyFTS.models.ensemble import ensemble
+    from pyFTS.partitioners import Grid, Entropy, FCM
+    from pyFTS.benchmarks import Measures, arima, quantreg, knn
+    from pyFTS.models.seasonal import SeasonalIndexer
+
+    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA,
+           ensemble.AllMethodEnsembleFTS, knn.KNearestNeighbors]
+
+    tmp2 = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitioner]
+
+    tmp3 = [Measures.get_distribution_statistics, SeasonalIndexer.SeasonalIndexer, SeasonalIndexer.LinearSeasonalIndexer]
+
+    indexer = kwargs.get('indexer', None)
+
+    steps_ahead = kwargs.get('steps_ahead', 1)
+    method = kwargs.get('method', None)
+    parameters = kwargs.get('parameters', {})
+
+    mfts, pttr = __build_model(fts_method, order, parameters, partitioner_method, partitions, train_data,
+                               transformation)
+
+    if mfts.has_seasonality:
+        mfts.indexer = indexer
+
+    _start = time.time()
+    mfts.fit(train_data, **kwargs)
+    _end = time.time()
+    times = _end - _start
+
+    _crps1, _t1, _brier = Measures.get_distribution_statistics(test_data, mfts, **kwargs)
+    _t1 += times
+
+    ret = {'model': mfts.shortname, 'partitioner': pttr, 'order': order, 'partitions': partitions,
+           'transformation': '' if transformation is None else transformation.name,
+           'size': len(mfts), 'time': times,
+           'CRPS': _crps1, 'brier': _brier, 'window': window_key,
+           'steps': steps_ahead, 'method': method}
+
+    return ret
+
+
 def process_point_jobs(dataset, tag,  job, conn):
     """
     Extract information from a dictionary with point benchmark results and save it on a database
@@ -514,6 +786,32 @@ def process_point_jobs(dataset, tag,  job, conn):
     """
 
     data = bUtil.process_common_data(dataset, tag, 'point',job)
+
+    rmse = deepcopy(data)
+    rmse.extend(["rmse", job["rmse"]])
+    bUtil.insert_benchmark(rmse, conn)
+    smape = deepcopy(data)
+    smape.extend(["smape", job["smape"]])
+    bUtil.insert_benchmark(smape, conn)
+    u = deepcopy(data)
+    u.extend(["u", job["u"]])
+    bUtil.insert_benchmark(u, conn)
+    time = deepcopy(data)
+    time.extend(["time", job["time"]])
+    bUtil.insert_benchmark(time, conn)
+
+def process_point_jobs2(dataset, tag,  job, conn):
+    """
+    Extract information from a dictionary with point benchmark results and save it on a database
+
+    :param dataset: the benchmark dataset name
+    :param tag: alias for the benchmark group being executed
+    :param job: a dictionary with the benchmark results
+    :param conn: a connection to a Sqlite database
+    :return:
+    """
+
+    data = bUtil.process_common_data2(dataset, tag, 'point',job)
 
     rmse = deepcopy(data)
     rmse.extend(["rmse", job["rmse"]])
@@ -574,6 +872,42 @@ def process_interval_jobs(dataset, tag, job, conn):
     bUtil.insert_benchmark(W25, conn)
 
 
+def process_interval_jobs2(dataset, tag, job, conn):
+
+    data = bUtil.process_common_data2(dataset, tag, 'interval', job)
+
+    sharpness = deepcopy(data)
+    sharpness.extend(["sharpness", job["sharpness"]])
+    bUtil.insert_benchmark(sharpness, conn)
+    resolution = deepcopy(data)
+    resolution.extend(["resolution", job["resolution"]])
+    bUtil.insert_benchmark(resolution, conn)
+    coverage = deepcopy(data)
+    coverage.extend(["coverage", job["coverage"]])
+    bUtil.insert_benchmark(coverage, conn)
+    time = deepcopy(data)
+    time.extend(["time", job["time"]])
+    bUtil.insert_benchmark(time, conn)
+    Q05 = deepcopy(data)
+    Q05.extend(["Q05", job["Q05"]])
+    bUtil.insert_benchmark(Q05, conn)
+    Q25 = deepcopy(data)
+    Q25.extend(["Q25", job["Q25"]])
+    bUtil.insert_benchmark(Q25, conn)
+    Q75 = deepcopy(data)
+    Q75.extend(["Q75", job["Q75"]])
+    bUtil.insert_benchmark(Q75, conn)
+    Q95 = deepcopy(data)
+    Q95.extend(["Q95", job["Q95"]])
+    bUtil.insert_benchmark(Q95, conn)
+    W05 = deepcopy(data)
+    W05.extend(["winkler05", job["winkler05"]])
+    bUtil.insert_benchmark(W05, conn)
+    W25 = deepcopy(data)
+    W25.extend(["winkler25", job["winkler25"]])
+    bUtil.insert_benchmark(W25, conn)
+
+
 def process_probabilistic_jobs(dataset, tag,  job, conn):
     """
     Extract information from an dictionary with probabilistic benchmark results and save it on a database
@@ -586,6 +920,30 @@ def process_probabilistic_jobs(dataset, tag,  job, conn):
     """
 
     data = bUtil.process_common_data(dataset, tag,  'density', job)
+
+    crps = deepcopy(data)
+    crps.extend(["crps",job["CRPS"]])
+    bUtil.insert_benchmark(crps, conn)
+    time = deepcopy(data)
+    time.extend(["time", job["time"]])
+    bUtil.insert_benchmark(time, conn)
+    brier = deepcopy(data)
+    brier.extend(["brier", job["brier"]])
+    bUtil.insert_benchmark(brier, conn)
+
+
+def process_probabilistic_jobs2(dataset, tag,  job, conn):
+    """
+    Extract information from an dictionary with probabilistic benchmark results and save it on a database
+
+    :param dataset: the benchmark dataset name
+    :param tag: alias for the benchmark group being executed
+    :param job: a dictionary with the benchmark results
+    :param conn: a connection to a Sqlite database
+    :return:
+    """
+
+    data = bUtil.process_common_data2(dataset, tag,  'density', job)
 
     crps = deepcopy(data)
     crps.extend(["crps",job["CRPS"]])
@@ -672,13 +1030,6 @@ def print_distribution_statistics(original, models, steps, resolution):
     print(ret)
 
 
-
-
-
-
-
-
-
 def plot_point(axis, points, order, label, color='red', ls='-', linewidth=1):
     mi = min(points) * 0.95
     ma = max(points) * 1.05
@@ -756,10 +1107,6 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
     ax.set_xlim([0, len(original)])
 
     #Util.show_and_save_image(fig, file, save, lgd=legends)
-
-
-
-
 
 
 def plotCompared(original, forecasts, labels, title):

@@ -11,146 +11,41 @@ import pandas as pd
 from pyFTS.common import Util as cUtil, FuzzySet
 from pyFTS.partitioners import Grid, Entropy, Util as pUtil, Simple
 from pyFTS.benchmarks import benchmarks as bchmk, Measures
-from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei
+from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei, ifts
 from pyFTS.models.ensemble import ensemble
 from pyFTS.common import Transformations, Membership
 from pyFTS.benchmarks import arima, quantreg, BSTS, gaussianproc
 from pyFTS.fcm import fts, common, GA
 
-from pyFTS.data import Enrollments, TAIEX
+from pyFTS.data import TAIEX, NASDAQ, SP500
 
-data = TAIEX.get_data()
+datasets = {}
 
-train = data[:800]
-test = data[800:1000]
+datasets['TAIEX'] = TAIEX.get_data()[:5000]
+datasets['NASDAQ'] = NASDAQ.get_data()[:5000]
+datasets['SP500'] = SP500.get_data()[10000:15000]
 
-#model = ensemble.SimpleEnsembleFTS(fts_method=hofts.HighOrderFTS)
-#model = quantreg.QuantileRegression(order=2, dist=True)
-#model = arima.ARIMA(order = (2,0,0))
-#model = BSTS.ARIMA(order=(2,0,0))
-model = gaussianproc.GPR(order=2)
-model.fit(train)
+methods = [ensemble.SimpleEnsembleFTS]*8
 
-horizon=5
-
-#points  = model.predict(test[:10], type='point', steps_ahead=horizon)
-
-intervals = model.predict(test[:10], type='point', alpha=.05,  steps_ahead=horizon)
-print(test[:10])
-print(intervals)
-#distributions = model.predict(test[:10], type='distribution', steps_ahead=horizon, num_bins=100)
-
-
-fig, ax = plt.subplots(nrows=1, ncols=1,figsize=[15,5])
-
-ax.plot(test[:10], label='Original',color='black')
-cUtil.plot_interval2(intervals, test[:10], start_at=model.order, ax=ax)
-#cUtil.plot_distribution2(distributions, test[:10], start_at=model.order, ax=ax, cmap="Blues")
-
-print("")
-
-'''
-model = fts.FCM_FTS(partitioner=fs, order=1)
-
-model.fcm.weights = np.array([
-    [1, 1, 0, -1, -1],
-    [1, 1, 1, 0, -1],
-    [0, 1, 1, 1, 0],
-    [-1, 0, 1, 1, 1],
-    [-1, -1, 0, 1, 1]
-])
-
-print(data)
-print(model.forecast(data))
-'''
-'''
-dataset = pd.read_csv('https://query.data.world/s/2bgegjggydd3venttp3zlosh3wpjqj', sep=';')
-
-dataset['data'] = pd.to_datetime(dataset["data"], format='%Y-%m-%d %H:%M:%S')
-
-train_mv = dataset.iloc[:24505]
-test_mv = dataset.iloc[24505:24605]
-
-from itertools import product
-
-levels = ['VL', 'L', 'M', 'H', 'VH']
-sublevels = [str(k) for k in np.arange(0, 7)]
-names = []
-for combination in product(*[levels, sublevels]):
-    names.append(combination[0] + combination[1])
-
-print(names)
-
-from pyFTS.models.multivariate import common, variable, mvfts
-from pyFTS.models.seasonal import partitioner as seasonal
-from pyFTS.models.seasonal.common import DateTime
-
-
-
-sp = {'seasonality': DateTime.day_of_year , 'names': ['Jan','Feb','Mar','Apr','May',
-                                                      'Jun','Jul', 'Aug','Sep','Oct',
-                                                      'Nov','Dec']}
-
-vmonth = variable.Variable("Month", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=12,
-                           data=train_mv, partitioner_specific=sp)
-
-
-
-sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
-
-vhour = variable.Variable("Hour", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=24,
-                          data=train_mv, partitioner_specific=sp)
-
-
-vavg = variable.Variable("Radiation", data_label="glo_avg", alias='rad',
-                         partitioner=Grid.GridPartitioner, npart=35, partitioner_specific={'names': names},
-                         data=train_mv)
-
-from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid
-
-parameters = [
-    {}, {},
-    {'order': 2, 'knn': 1},
-    {'order': 2, 'knn': 2},
-    {'order': 2, 'knn': 3},
+methods_parameters = [
+    {'name': 'EnsembleFTS-HOFTS-10-.05', 'fts_method': hofts.HighOrderFTS, 'partitions': np.arange(20,50,10), 'alpha': .05},
+    {'name': 'EnsembleFTS-HOFTS-5-.05', 'fts_method': hofts.HighOrderFTS, 'partitions': np.arange(20,50,5), 'alpha': .05},
+    {'name': 'EnsembleFTS-HOFTS-10-.25', 'fts_method': hofts.HighOrderFTS, 'partitions': np.arange(20,50,10), 'alpha': .25},
+    {'name': 'EnsembleFTS-HOFTS-5-.25', 'fts_method': hofts.HighOrderFTS, 'partitions': np.arange(20,50,5), 'alpha': .25},
+    {'name': 'EnsembleFTS-WHOFTS-10-.05', 'fts_method': hofts.WeightedHighOrderFTS, 'partitions': np.arange(20,50,10), 'alpha': .05},
+    {'name': 'EnsembleFTS-WHOFTS-5-.05', 'fts_method': hofts.WeightedHighOrderFTS, 'partitions': np.arange(20,50,5), 'alpha': .05},
+    {'name': 'EnsembleFTS-WHOFTS-10-.25', 'fts_method': hofts.WeightedHighOrderFTS, 'partitions': np.arange(20,50,10), 'alpha': .25},
+    {'name': 'EnsembleFTS-WHOFTS-5-.25', 'fts_method': hofts.WeightedHighOrderFTS, 'partitions': np.arange(20,50,5), 'alpha': .25},
 ]
 
-from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid, granular
-from pyFTS.benchmarks import Measures
-
-time_generator = lambda x : pd.to_datetime(x) + pd.to_timedelta(1, unit='h')
-
-model = granular.GranularWMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg, order=2, knn=2)
-
-model.fit(train_mv)
-
-forecasts = model.predict(test_mv, type='multivariate', generators={'data': time_generator}, steps_ahead=24 )
-
-print(forecasts)
-
-'''
-'''
-from pyFTS.data import lorentz
-df = lorentz.get_dataframe(iterations=5000)
-
-train = df.iloc[:4000]
-test = df.iloc[4000:]
-
-from pyFTS.models.multivariate import common, variable, mvfts
-from pyFTS.partitioners import Grid
-
-vx = variable.Variable("x", data_label="x", alias='x', partitioner=Grid.GridPartitioner, npart=45, data=train)
-vy = variable.Variable("y", data_label="y", alias='y', partitioner=Grid.GridPartitioner, npart=45, data=train)
-vz = variable.Variable("z", data_label="z", alias='z', partitioner=Grid.GridPartitioner, npart=45, data=train)
-
-from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid, granular
-from pyFTS.benchmarks import Measures
-
-model = granular.GranularWMVFTS(explanatory_variables=[vx, vy, vz], target_variable=vx, order=5, knn=2)
-
-model.fit(train)
-
-forecasts = model.predict(test, type='multivariate', steps_ahead=20)
-
-print(forecasts)
-'''
+for dataset_name, dataset in datasets.items():
+    bchmk.sliding_window_benchmarks2(dataset, 1000, train=0.8, inc=0.2,
+                                    methods=methods,
+                                    methods_parameters=methods_parameters,
+                                    benchmark_models=False,
+                                    transformations=[None],
+                                    orders=[3],
+                                    partitions=[None],
+                                    type='interval',
+                                    #distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                    file="tmp.db", dataset=dataset_name, tag="gridsearch")

@@ -62,7 +62,7 @@ class IntervalFTS(hofts.HighOrderFTS):
         if l <= self.order:
             return ndata
 
-        for k in np.arange(self.max_lag, l+1):
+        for k in np.arange(self.max_lag, l):
 
             sample = ndata[k - self.max_lag: k]
 
@@ -94,9 +94,9 @@ class WeightedIntervalFTS(hofts.WeightedHighOrderFTS):
     Weighted High Order Interval Fuzzy Time Series
     """
     def __init__(self, **kwargs):
-        super(IntervalFTS, self).__init__(**kwargs)
-        self.shortname = "IFTS"
-        self.name = "Interval FTS"
+        super(WeightedIntervalFTS, self).__init__(**kwargs)
+        self.shortname = "WIFTS"
+        self.name = "Weighted Interval FTS"
         self.detail = "Silva, P.; Guimarães, F.; Sadaei, H. (2016)"
         self.flrgs = {}
         self.has_point_forecasting = False
@@ -138,7 +138,7 @@ class WeightedIntervalFTS(hofts.WeightedHighOrderFTS):
         if l <= self.order:
             return ndata
 
-        for k in np.arange(self.max_lag, l+1):
+        for k in np.arange(self.max_lag, l):
 
             sample = ndata[k - self.max_lag: k]
 
