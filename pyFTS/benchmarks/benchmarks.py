@@ -643,7 +643,7 @@ def run_point2(fts_method, order, partitioner_method, partitions, transformation
     import time
     from pyFTS.models import yu, chen, hofts, pwfts,ismailefendi,sadaei, song, cheng, hwang
     from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures, naive, arima, quantreg
+    from pyFTS.benchmarks import Measures, naive, arima, quantreg, benchmarks
     from pyFTS.common import Transformations
 
     tmp = [song.ConventionalFTS, chen.ConventionalFTS, yu.WeightedFTS, ismailefendi.ImprovedWeightedFTS,
@@ -664,7 +664,7 @@ def run_point2(fts_method, order, partitioner_method, partitions, transformation
     method = kwargs.get('method', None)
     parameters = kwargs.get('parameters', {})
 
-    mfts, pttr = __build_model(fts_method, order, parameters, partitioner_method, partitions, train_data,
+    mfts, pttr = benchmarks.__build_model(fts_method, order, parameters, partitioner_method, partitions, train_data,
                                transformation)
 
     _start = time.time()
@@ -691,7 +691,7 @@ def run_interval2(fts_method, order, partitioner_method, partitions, transformat
     import time
     from pyFTS.models import hofts,ifts,pwfts
     from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures, arima, quantreg, BSTS
+    from pyFTS.benchmarks import Measures, arima, quantreg, BSTS, benchmarks
 
     tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, ifts.WeightedIntervalFTS,  pwfts.ProbabilisticWeightedFTS]
 
@@ -705,7 +705,7 @@ def run_interval2(fts_method, order, partitioner_method, partitions, transformat
     method = kwargs.get('method', None)
     parameters = kwargs.get('parameters',{})
 
-    mfts, pttr = __build_model(fts_method, order, parameters, partitioner_method, partitions, train_data,
+    mfts, pttr = benchmarks.__build_model(fts_method, order, parameters, partitioner_method, partitions, train_data,
                                transformation)
     _start = time.time()
     mfts.fit(train_data, **kwargs)
@@ -735,7 +735,7 @@ def run_probabilistic2(fts_method, order, partitioner_method, partitions, transf
     from pyFTS.models import hofts, ifts, pwfts
     from pyFTS.models.ensemble import ensemble
     from pyFTS.partitioners import Grid, Entropy, FCM
-    from pyFTS.benchmarks import Measures, arima, quantreg, knn
+    from pyFTS.benchmarks import Measures, arima, quantreg, knn, benchmarks
     from pyFTS.models.seasonal import SeasonalIndexer
 
     tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, pwfts.ProbabilisticWeightedFTS, arima.ARIMA,
@@ -751,9 +751,8 @@ def run_probabilistic2(fts_method, order, partitioner_method, partitions, transf
     method = kwargs.get('method', None)
     parameters = kwargs.get('parameters', {})
 
-    mfts, pttr = __build_model(fts_method, order, parameters, partitioner_method, partitions, train_data,
+    mfts, pttr = benchmarks.__build_model(fts_method, order, parameters, partitioner_method, partitions, train_data,
                                transformation)
-
     if mfts.has_seasonality:
         mfts.indexer = indexer
 

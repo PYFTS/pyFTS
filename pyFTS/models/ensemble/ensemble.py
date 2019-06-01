@@ -167,8 +167,7 @@ class EnsembleFTS(fts.FTS):
         if "method" in kwargs:
             self.interval_method = kwargs.get('method','quantile')
 
-        if 'alpha' in kwargs:
-            self.alpha = kwargs.get('alpha',0.05)
+        self.alpha = kwargs.get('alpha', self.alpha)
 
         l = len(data)
 
@@ -189,14 +188,11 @@ class EnsembleFTS(fts.FTS):
         if 'method' in kwargs:
             self.interval_method = kwargs.get('method','quantile')
 
-        if 'alpha' in kwargs:
-            self.alpha = kwargs.get('alpha', self.alpha)
+        self.alpha = kwargs.get('alpha', self.alpha)
 
         ret = []
 
         start = kwargs.get('start', self.order)
-
-        uod = self.get_UoD()
 
         sample = [[k] for k in data[start - self.order: start]]
 

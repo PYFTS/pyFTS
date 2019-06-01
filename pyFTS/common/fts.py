@@ -519,8 +519,10 @@ class FTS(object):
             return data
 
     def get_UoD(self):
-        #return [self.original_min, self.original_max]
-        return [self.partitioner.min, self.partitioner.max]
+        if self.partitioner is not None:
+            return [self.partitioner.min, self.partitioner.max]
+        else:
+            return [self.original_min, self.original_max]
 
     def __str__(self):
         """String representation of the model"""
