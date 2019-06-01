@@ -267,6 +267,8 @@ def plot_interval2(intervals, data, **kwargs):
 
     l = len(intervals)
 
+    nintervals = intervals
+
     start_at = kwargs.get('start_at', 1)
 
     ax = kwargs.get('ax', None)
@@ -274,12 +276,12 @@ def plot_interval2(intervals, data, **kwargs):
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15, 5])
 
     for k in np.arange(0, start_at):
-        intervals.insert(0, [None,None])
+        nintervals.insert(0, [None,None])
 
-    intervals.insert(start_at, [data[start_at], data[start_at]])
+    nintervals.insert(start_at, [data[start_at], data[start_at]])
 
-    lower = [kk[0] for kk in intervals]
-    upper = [kk[1] for kk in intervals]
+    lower = [kk[0] for kk in nintervals]
+    upper = [kk[1] for kk in nintervals]
 
     typeonlegend = kwargs.get('typeonlegend', False)
     color = kwargs.get('color', 'red')
