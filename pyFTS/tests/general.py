@@ -61,18 +61,19 @@ methods_parameters = [
     {'order':2 }
 ]
 
-for dataset_name, dataset in datasets.items():
-    bchmk.sliding_window_benchmarks2(dataset, 1000, train=0.8, inc=0.2,
-                                     benchmark_models=True,
-                                     benchmark_methods=methods,
-                                     benchmark_methods_parameters=methods_parameters,
-                                     methods=[],
-                                     methods_parameters=[],
-                                     transformations=[None],
-                                     orders=[3],
-                                     steps_ahead=[10],
-                                     partitions=[None],
-                                     type='interval',
-                                     #distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
-                                     file="tmp.db", dataset=dataset_name, tag="experiments")
+#for dataset_name, dataset in datasets.items():
+bchmk.sliding_window_benchmarks2(TAIEX.get_data()[:5000], 1000, train=0.8, inc=0.2,
+                                 benchmark_models=False,
+                                 benchmark_methods=methods,
+                                 benchmark_methods_parameters=methods_parameters,
+                                 methods=[ifts.IntervalFTS, ifts.WeightedIntervalFTS],
+                                 methods_parameters=[{},{}],
+                                 transformations=[None],
+                                 orders=[1,2,3],
+                                 steps_ahead=[10],
+                                 partitions=[33],
+                                 type='interval',
+                                 #distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                 #file="tmp.db", dataset=dataset_name, tag="experiments")
+                                file="tmp.db", dataset='TAIEX', tag="experiments")
 #'''

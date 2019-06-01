@@ -91,6 +91,12 @@ class FTS(object):
 
         return best
 
+    def clip_uod(self, ndata):
+        if self.uod_clip:
+            ndata = np.clip(ndata, self.original_min, self.original_max)
+        return ndata
+
+
     def predict(self, data, **kwargs):
         """
         Forecast using trained model
@@ -116,8 +122,7 @@ class FTS(object):
         else:
             ndata = self.apply_transformations(data)
 
-            if self.uod_clip:
-                ndata = np.clip(ndata, self.original_min, self.original_max)
+        ndata = self.clip_uod(ndata)
 
         if 'distributed' in kwargs:
             distributed = kwargs.pop('distributed')

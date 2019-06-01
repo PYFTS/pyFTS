@@ -52,17 +52,16 @@ class IntervalFTS(hofts.HighOrderFTS):
         mb = [fuzzySets[k].membership(data[k]) for k in np.arange(0, len(data))]
         return mb
 
-
     def forecast_interval(self, ndata, **kwargs):
 
         ret = []
 
         l = len(ndata)
 
-        if l <= self.order:
+        if l < self.order:
             return ndata
 
-        for k in np.arange(self.max_lag, l):
+        for k in np.arange(self.max_lag, l+1):
 
             sample = ndata[k - self.max_lag: k]
 
@@ -87,6 +86,16 @@ class IntervalFTS(hofts.HighOrderFTS):
             ret.append([lo_, up_])
 
         return ret
+
+    def forecast_ahead_interval(self, data, steps, **kwargs):
+        ret = [[x, x] for x in data[:self.max_lag]]
+        for k in np.arange(self.max_lag, self.max_lag + steps):
+            interval_lower = self.clip_uod(self.forecast_interval([x[0] for x in ret[k - self.max_lag: k]])[0])
+            interval_upper = self.clip_uod(self.forecast_interval([x[1] for x in ret[k - self.max_lag: k]])[0])
+            interval = [np.nanmin(interval_lower), np.nanmax(interval_upper)]
+            ret.append(interval)
+
+        return ret[-steps:]
 
 
 class WeightedIntervalFTS(hofts.WeightedHighOrderFTS):
@@ -128,17 +137,15 @@ class WeightedIntervalFTS(hofts.WeightedHighOrderFTS):
         mb = [fuzzySets[k].membership(data[k]) for k in np.arange(0, len(data))]
         return mb
 
-
     def forecast_interval(self, ndata, **kwargs):
-
         ret = []
 
         l = len(ndata)
 
-        if l <= self.order:
+        if l < self.order:
             return ndata
 
-        for k in np.arange(self.max_lag, l):
+        for k in np.arange(self.max_lag, l+1):
 
             sample = ndata[k - self.max_lag: k]
 
@@ -163,3 +170,15 @@ class WeightedIntervalFTS(hofts.WeightedHighOrderFTS):
             ret.append([lo_, up_])
 
         return ret
+
+    def forecast_ahead_interval(self, data, steps, **kwargs):
+        ret = [[x, x] for x in data[:self.max_lag]]
+        for k in np.arange(self.max_lag, self.max_lag + steps):
+            interval_lower = self.clip_uod(self.forecast_interval([x[0] for x in ret[k - self.max_lag: k]])[0])
+            interval_upper = self.clip_uod(self.forecast_interval([x[1] for x in ret[k - self.max_lag: k]])[0])
+            interval = [np.nanmin(interval_lower), np.nanmax(interval_upper)]
+            ret.append(interval)
+
+        return ret[-steps:]
+
+
