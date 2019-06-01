@@ -19,6 +19,7 @@ from pyFTS.fcm import fts, common, GA
 
 from pyFTS.data import TAIEX, NASDAQ, SP500
 
+'''
 train = TAIEX.get_data()[:800]
 test = TAIEX.get_data()[800:1000]
 
@@ -51,24 +52,27 @@ datasets['TAIEX'] = TAIEX.get_data()[:5000]
 datasets['NASDAQ'] = NASDAQ.get_data()[:5000]
 datasets['SP500'] = SP500.get_data()[10000:15000]
 
-methods = [ensemble.SimpleEnsembleFTS]*4
+methods = [arima.ARIMA, quantreg.QuantileRegression, BSTS.ARIMA, knn.KNearestNeighbors]
 
 methods_parameters = [
-    {'name': 'EnsembleFTS-HOFTS-10', 'fts_method': hofts.HighOrderFTS, 'partitions': np.arange(20,50,10)},
-    {'name': 'EnsembleFTS-HOFTS-5', 'fts_method': hofts.HighOrderFTS, 'partitions': np.arange(20,50,5)},
-    {'name': 'EnsembleFTS-WHOFTS-10', 'fts_method': hofts.WeightedHighOrderFTS, 'partitions': np.arange(20,50,10)},
-    {'name': 'EnsembleFTS-WHOFTS-5', 'fts_method': hofts.WeightedHighOrderFTS, 'partitions': np.arange(20,50,5)}
+    {'order':(2,0,0)},
+    {'order':2, 'dist': True},
+    {'order':(2,0,0)},
+    {'order':2 }
 ]
 
 for dataset_name, dataset in datasets.items():
     bchmk.sliding_window_benchmarks2(dataset, 1000, train=0.8, inc=0.2,
-                                    methods=methods,
-                                    methods_parameters=methods_parameters,
-                                    benchmark_models=False,
-                                    transformations=[None],
-                                    orders=[3],
-                                    partitions=[None],
-                                    type='distribution',
-                                    distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
-                                    file="experiments.db", dataset=dataset_name, tag="gridsearch")
-'''
+                                     benchmark_models=True,
+                                     benchmark_methods=methods,
+                                     benchmark_methods_parameters=methods_parameters,
+                                     methods=[],
+                                     methods_parameters=[],
+                                     transformations=[None],
+                                     orders=[3],
+                                     steps_ahead=[10],
+                                     partitions=[None],
+                                     type='interval',
+                                     #distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                     file="tmp.db", dataset=dataset_name, tag="experiments")
+#'''

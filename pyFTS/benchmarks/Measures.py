@@ -446,6 +446,8 @@ def get_interval_ahead_statistics(data, intervals, **kwargs):
         ret = {}
         datum = data[lag]
         interval = intervals[lag]
+        ret['steps'] = lag
+        ret['method'] = ''
         ret['sharpness'] = round(interval[1] - interval[0], 2)
         ret['coverage'] = 1 if interval[0] <= datum <= interval[1] else 0
         ret['pinball05'] = round(pinball(0.05, datum, interval[0]), 2)
@@ -518,6 +520,8 @@ def get_distribution_ahead_statistics(data, distributions):
         ret = {}
         datum = data[lag]
         dist = distributions[lag]
+        ret['steps'] = lag
+        ret['method'] = ''
         ret['crps'] = round(crps(datum, dist), 3)
         ret['brier'] = round(brier_score(datum, dist), 3)
         ret['log'] = round(logarithm_score(datum, dist), 3)

@@ -98,12 +98,12 @@ def process_common_data(dataset, tag, type, job):
         data = [dataset, tag, type, model.shortname,
                 str(model.transformations[0]) if len(model.transformations) > 0 else None,
                 model.order, None, None,
-                None, job['steps'], job['method']]
+                None]
     else:
         data = [dataset, tag, type, model.shortname,
                 str(model.partitioner.transformation) if model.partitioner.transformation is not None else None,
                 model.order, model.partitioner.name, str(model.partitioner.partitions),
-                len(model), job['steps'], job['method']]
+                len(model)]
 
     return data
 
@@ -124,9 +124,7 @@ def process_common_data2(dataset, tag, type, job):
             job['order'],
             job['partitioner'],
             job['partitions'],
-            job['size'],
-            job['steps'],
-            job['method']
+            job['size']
             ]
 
     return data
