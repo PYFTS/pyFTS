@@ -58,12 +58,12 @@ class KNearestNeighbors(fts.FTS):
     def train(self, data, **kwargs):
         X,Y = self._prepare_xy(data)
 
-        self.kdtree = KDTree(X)
+        self.kdtree = KDTree(np.array(X))
         self.values = Y
 
     def knn(self, sample):
         X = self._prepare_x(sample)
-        _, ix = self.kdtree.query(X, self.k)
+        _, ix = self.kdtree.query(np.array(X), self.k)
 
         return [self.values[k] for k in ix.flatten() ]
 
