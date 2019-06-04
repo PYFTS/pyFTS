@@ -19,7 +19,7 @@ from pyFTS.fcm import fts, common, GA
 
 from pyFTS.data import TAIEX, NASDAQ, SP500
 
-#'''
+'''
 train = TAIEX.get_data()[:800]
 test = TAIEX.get_data()[800:1000]
 
@@ -52,13 +52,22 @@ datasets['TAIEX'] = TAIEX.get_data()[:5000]
 datasets['NASDAQ'] = NASDAQ.get_data()[:5000]
 datasets['SP500'] = SP500.get_data()[10000:15000]
 
-methods = [arima.ARIMA, quantreg.QuantileRegression, BSTS.ARIMA, knn.KNearestNeighbors]
+methods = [
+    arima.ARIMA,arima.ARIMA,
+    quantreg.QuantileRegression,quantreg.QuantileRegression,
+    BSTS.ARIMA,BSTS.ARIMA,
+    knn.KNearestNeighbors,knn.KNearestNeighbors
+     ]
 
 methods_parameters = [
-    {'order':(2,0,0)},
-    {'order':2, 'dist': True},
-    {'order':(2,0,0)},
-    {'order':2 }
+    {'order':(2,0,0), 'alpha':.05},
+    {'order':(2,0,0), 'alpha':.25},
+    {'order':2, 'alpha':.05},
+    {'order':2, 'alpha':.25},
+    {'order': (2, 0, 0), 'alpha': .05},
+    {'order': (2, 0, 0), 'alpha': .25},
+    {'order': 2, 'alpha': .05},
+    {'order': 2, 'alpha': .25}
 ]
 
 for dataset_name, dataset in datasets.items():
@@ -72,8 +81,8 @@ for dataset_name, dataset in datasets.items():
                                      orders=[],
                                      steps_ahead=[10],
                                      partitions=[],
-                                     type='distribution',
+                                     type='interval',
                                      distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
                                      file="experiments.db", dataset=dataset_name, tag="experiments")
 #                                file="tmp.db", dataset='TAIEX', tag="experiments")
-'''
+#'''

@@ -54,7 +54,7 @@ class QuantileRegression(fts.FTS):
                 up_qt = [k for k in uqt.params]
                 self.dist_qt.append([lo_qt, up_qt])
 
-        self.shortname = "QAR(" + str(self.order) + ") - " + str(self.alpha)
+        self.shortname = "QAR({})-{}".format(self.order,self.alpha)
 
     def linearmodel(self,data,params):
         #return params[0] + sum([ data[k] * params[k+1] for k in np.arange(0, self.order) ])

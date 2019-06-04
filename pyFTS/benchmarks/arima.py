@@ -42,7 +42,7 @@ class ARIMA(fts.FTS):
             self.order = self.p + self.q + (self.q - 1 if self.q > 0 else 0)
             self.max_lag = self.order
             self.d = len(self.transformations)
-            self.shortname = "ARIMA(" + str(self.p) + "," + str(self.d) + "," + str(self.q) + ") - " + str(self.alpha)
+            self.shortname = "ARIMA({},{},{})-{}".format(self.p, self.d, self.q, self.alpha)
 
     def train(self, data, **kwargs):
 

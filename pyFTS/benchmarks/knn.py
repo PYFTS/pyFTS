@@ -61,6 +61,8 @@ class KNearestNeighbors(fts.FTS):
         self.kdtree = KDTree(np.array(X))
         self.values = Y
 
+        self.shortname = "kNN({})-{}".format(self.order, self.alpha)
+
     def knn(self, sample):
         X = self._prepare_x(sample)
         _, ix = self.kdtree.query(np.array(X), self.k)
