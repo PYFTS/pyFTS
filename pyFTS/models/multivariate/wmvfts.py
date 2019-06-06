@@ -51,7 +51,6 @@ class WeightedFLRG(mvflrg.FLRG):
             self.upper = up.dot(self.weights())
         return self.upper
 
-
     def __str__(self):
         _str = ""
         for k in self.RHS.keys():

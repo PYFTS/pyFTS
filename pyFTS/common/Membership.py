@@ -15,6 +15,7 @@ def trimf(x, parameters):
     :param parameters: a list with 3 real values
     :return: the membership value of x given the parameters
     """
+
     xx = np.round(x, 3)
     if xx < parameters[0]:
         return 0
@@ -34,6 +35,7 @@ def trapmf(x, parameters):
     :param parameters: a list with 4 real values
     :return: the membership value of x given the parameters
     """
+
     if x < parameters[0]:
         return 0
     elif parameters[0] <= x < parameters[1]:
@@ -54,6 +56,7 @@ def gaussmf(x, parameters):
     :param parameters: a list with 2 real values (mean and variance)
     :return: the membership value of x given the parameters
     """
+
     return math.exp((-(x - parameters[0])**2)/(2 * parameters[1]**2))
 
 
@@ -65,6 +68,7 @@ def bellmf(x, parameters):
     :param parameters:
     :return:
     """
+
     return 1 / (1 + abs((x - parameters[2]) / parameters[0]) ** (2 * parameters[1]))
 
 

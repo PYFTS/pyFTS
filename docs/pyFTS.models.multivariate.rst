@@ -52,9 +52,9 @@ pyFTS.models.multivariate.partitioner module
     :members:
     :undoc-members:
     :show-inheritance:
-    
- pyFTS.models.multivariate.grid module
-------------------------------------------
+
+pyFTS.models.multivariate.grid module
+--------------------------------------
 
 .. automodule:: pyFTS.models.multivariate.grid
     :members:
@@ -86,7 +86,7 @@ pyFTS.models.multivariate.cmvfts module
     :show-inheritance:
     
 pyFTS.models.multivariate.granular module
----------------------------------------------
+-----------------------------------------
 
 .. automodule:: pyFTS.models.multivariate.granular
     :members:

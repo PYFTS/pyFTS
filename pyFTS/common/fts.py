@@ -104,11 +104,11 @@ class FTS(object):
         :param data: time series with minimal length to the order of the model
 
         :keyword type: the forecasting type, one of these values: point(default), interval, distribution or multivariate.
-        :keyword steps_ahead: The forecasting horizon, i. e., the number of steps ahead to forecast
-        :keyword start: in the multi step forecasting, the index of the data where to start forecasting
-        :keyword distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster
+        :keyword steps_ahead: The forecasting horizon, i. e., the number of steps ahead to forecast (default value: 1)
+        :keyword start_at: in the multi step forecasting, the index of the data where to start forecasting (default value: 0)
+        :keyword distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster (default value: False)
         :keyword nodes: a list with the dispy cluster nodes addresses
-        :keyword explain: try to explain, step by step, the one-step-ahead point forecasting result given the input data.
+        :keyword explain: try to explain, step by step, the one-step-ahead point forecasting result given the input data. (default value: False)
         :keyword generators: for multivariate methods on multi step ahead forecasting, generators is a dict where the keys
                             are the dataframe columun names (except the target_variable) and the values are lambda functions that
                             accept one value (the actual value of the variable) and return the next value or trained FTS
@@ -227,17 +227,22 @@ class FTS(object):
         Point forecast n steps ahead
 
         :param data: time series data with the minimal length equal to the max_lag of the model
-        :param steps: the number of steps ahead to forecast
-        :keyword start: in the multi step forecasting, the index of the data where to start forecasting
+        :param steps: the number of steps ahead to forecast (default: 1)
+        :keyword start_at: in the multi step forecasting, the index of the data where to start forecasting (default: 0)
         :return: a list with the forecasted values
         """
+
+        if len(data) < self.max_lag:
+            return data
 
         if isinstance(data, np.ndarray):
             data = data.tolist()
 
+        start = kwargs.get('start_at',0)
+
         ret = []
-        for k in np.arange(0, steps):
-            tmp = self.forecast(data[k:self.max_lag+k], **kwargs)
+        for k in np.arange(start+self.max_lag, steps):
+            tmp = self.forecast(data[k-self.max_lag:k], **kwargs)
 
             if isinstance(tmp,(list, np.ndarray)):
                 tmp = tmp[-1]
@@ -245,7 +250,7 @@ class FTS(object):
             ret.append(tmp)
             data.append(tmp)
 
-        return ret
+        return ret[-steps:]
 
     def forecast_ahead_interval(self, data, steps, **kwargs):
         """
@@ -253,7 +258,7 @@ class FTS(object):
 
         :param data: time series data with the minimal length equal to the max_lag of the model
         :param steps: the number of steps ahead to forecast
-        :param kwargs: model specific parameters
+        :keyword start_at: in the multi step forecasting, the index of the data where to start forecasting (default: 0)
         :return: a list with the forecasted intervals
         """
         raise NotImplementedError('This model do not perform multi step ahead interval forecasts!')
@@ -264,7 +269,7 @@ class FTS(object):
 
         :param data: time series data with the minimal length equal to the max_lag of the model
         :param steps: the number of steps ahead to forecast
-        :param kwargs: model specific parameters
+        :keyword start_at: in the multi step forecasting, the index of the data where to start forecasting (default: 0)
         :return: a list with the forecasted Probability Distributions
         """
         raise NotImplementedError('This model do not perform multi step ahead distribution forecasts!')
@@ -275,7 +280,7 @@ class FTS(object):
 
         :param data: Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model
         :param steps: the number of steps ahead to forecast
-        :param kwargs: model specific parameters
+        :keyword start_at: in the multi step forecasting, the index of the data where to start forecasting (default: 0)
         :return: a Pandas Dataframe object representing the forecasted values for each variable
         """
         raise NotImplementedError('This model do not perform one step ahead multivariate forecasts!')

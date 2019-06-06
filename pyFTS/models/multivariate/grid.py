@@ -37,6 +37,7 @@ class IncrementalGridCluster(partitioner.MultivariatePartitioner):
     Create combinations of fuzzy sets of the variables on demand, incrementally increasing the
     multivariate fuzzy set base.
     """
+
     def __init__(self, **kwargs):
         super(IncrementalGridCluster, self).__init__(**kwargs)
         self.name="IncrementalGridCluster"

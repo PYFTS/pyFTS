@@ -111,7 +111,9 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         ndata = self.apply_transformations(data)
 
-        ret = ndata.iloc[:self.order]
+        start = kwargs.get('start_at', 0)
+
+        ret = ndata.iloc[start:self.order+start]
 
         for k in np.arange(0, steps):
             sample = ret.iloc[k:self.order+k]

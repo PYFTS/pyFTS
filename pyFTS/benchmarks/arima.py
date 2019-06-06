@@ -154,7 +154,7 @@ class ARIMA(fts.FTS):
 
             ret.append(tmp)
 
-        return ret
+        return ret[-steps:]
 
     def forecast_distribution(self, data, **kwargs):
 
@@ -217,5 +217,5 @@ class ARIMA(fts.FTS):
 
             ret.append(dist)
 
-        return ret
+        return ret[-steps:]
 

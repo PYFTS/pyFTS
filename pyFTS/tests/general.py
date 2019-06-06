@@ -54,20 +54,18 @@ datasets['SP500'] = SP500.get_data()[10000:15000]
 
 methods = [
     arima.ARIMA,arima.ARIMA,
-    quantreg.QuantileRegression,quantreg.QuantileRegression,
+    quantreg.QuantileRegression,
     BSTS.ARIMA,BSTS.ARIMA,
-    knn.KNearestNeighbors,knn.KNearestNeighbors
+    knn.KNearestNeighbors
      ]
 
 methods_parameters = [
-    {'order':(2,0,0), 'alpha':.05},
-    {'order':(2,0,0), 'alpha':.25},
-    {'order':2, 'alpha':.05},
-    {'order':2, 'alpha':.25},
-    {'order': (2, 0, 0), 'alpha': .05},
-    {'order': (2, 0, 0), 'alpha': .25},
-    {'order': 2, 'alpha': .05},
-    {'order': 2, 'alpha': .25}
+    {'order':(1,0,0), 'alpha':.05},
+    {'order':(1,0,1), 'alpha':.05},
+    {'order':1, 'dist': True},
+    {'order': (1, 0, 0), 'alpha': .05},
+    {'order': (1, 0, 1), 'alpha': .05},
+    {'order': 1}
 ]
 
 for dataset_name, dataset in datasets.items():
@@ -81,8 +79,7 @@ for dataset_name, dataset in datasets.items():
                                      orders=[],
                                      steps_ahead=[10],
                                      partitions=[],
-                                     type='interval',
+                                     type='distribution',
                                      distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
                                      file="experiments.db", dataset=dataset_name, tag="experiments")
-#                                file="tmp.db", dataset='TAIEX', tag="experiments")
 #'''

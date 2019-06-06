@@ -180,21 +180,22 @@ class Partitioner(object):
             return sets
 
     def check_bounds(self, data):
-        '''
+        """
         Check if the input data is outside the known Universe of Discourse and, if it is, round it to the closest
         fuzzy set.
 
         :param data: input data to be verified
         :return: the index of the closest fuzzy set when data is outside de universe of discourse or None if
         the data is inside the UoD.
-        '''
+        """
+
         if data < self.min:
             return 0
         elif data > self.max:
             return self.partitions-1
 
     def search(self, data, **kwargs):
-        '''
+        """
         Perform a search for the nearest fuzzy sets of the point 'data'. This function were designed to work with several
         overlapped fuzzy sets.
 
@@ -202,7 +203,8 @@ class Partitioner(object):
         :param type: the return type: 'index' for the fuzzy set indexes or 'name' for fuzzy set names.
         :param results: the number of nearest fuzzy sets to return
         :return: a list with the nearest fuzzy sets
-        '''
+        """
+
         if self.kdtree is None:
             self.build_index()
 

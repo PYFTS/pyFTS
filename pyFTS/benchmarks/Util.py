@@ -177,6 +177,46 @@ def find_best(dataframe, criteria, ascending):
     return ret
 
 
+def simple_synthetic_dataframe(file, tag, measure, sql=None):
+    '''
+    Read experiments results from sqlite3 database in 'file', make a synthesis of the results
+    of the metric 'measure' with the same 'tag', returning a Pandas DataFrame with the mean results.
+
+    :param file: sqlite3 database file name
+    :param tag: common tag of the experiments
+    :param measure: metric to synthetize
+    :return: Pandas DataFrame with the mean results
+    '''
+    df = get_dataframe_from_bd(file,"tag = '{}' and measure = '{}' {}"
+                              .format(tag, measure,
+                                      '' if sql is None else 'and {}'.format(sql)))
+    data = []
+
+    models = df.Model.unique()
+    datasets = df.Dataset.unique()
+    for dataset in datasets:
+        for model in models:
+            _filter = (df.Dataset == dataset) & (df.Model == model)
+            avg = np.nanmean(df[_filter].Value)
+            std = np.nanstd(df[_filter].Value)
+            data.append([dataset, model, avg, std])
+
+    dat = pd.DataFrame(data, columns=['Dataset', 'Model', 'AVG', 'STD'])
+    dat = dat.sort_values(['AVG', 'STD'])
+
+    best = []
+
+    for dataset in datasets:
+        for model in models:
+            ix = dat[(dat.Dataset == dataset) & (dat.Model == model)].index[0]
+            best.append(ix)
+
+    ret = dat.loc[best].sort_values(['AVG', 'STD'])
+    ret.groupby('Dataset')
+
+    return ret
+
+
 def analytic_tabular_dataframe(dataframe):
     experiments = len(dataframe.columns) - len(base_dataframe_columns()) - 1
     models = dataframe.Model.unique()

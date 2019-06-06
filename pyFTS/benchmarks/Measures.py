@@ -135,38 +135,6 @@ def TheilsInequality(targets, forecasts):
     return us / (ys + fs)
 
 
-def BoxPierceStatistic(data, h):
-    """
-    Q Statistic for Box-Pierce test
-
-    :param data: 
-    :param h: 
-    :return: 
-    """
-    n = len(data)
-    s = 0
-    for k in np.arange(1, h + 1):
-        r = acf(data, k)
-        s += r ** 2
-    return n * s
-
-
-def BoxLjungStatistic(data, h):
-    """
-    Q Statistic for Ljung–Box test
-
-    :param data: 
-    :param h: 
-    :return: 
-    """
-    n = len(data)
-    s = 0
-    for k in np.arange(1, h + 1):
-        r = acf(data, k)
-        s += r ** 2 / (n - k)
-    return n * (n - 2) * s
-
-
 def sharpness(forecasts):
     """Sharpness - Mean size of the intervals"""
     tmp = [i[1] - i[0] for i in forecasts]
@@ -182,6 +150,7 @@ def resolution(forecasts):
 
 def coverage(targets, forecasts):
     """Percent of target values that fall inside forecasted interval"""
+
     preds = []
     for i in np.arange(0, len(forecasts)):
         if targets[i] >= forecasts[i][0] and targets[i] <= forecasts[i][1]:
@@ -200,6 +169,7 @@ def pinball(tau, target, forecast):
     :param forecast: 
     :return: float, distance of forecast to the tau-quantile of the target
     """
+
     if target >= forecast:
         return np.subtract(target, forecast) * tau
     else:
@@ -215,6 +185,7 @@ def pinball_mean(tau, targets, forecasts):
     :param forecasts: list of prediction intervals
     :return: float, the pinball loss mean for tau quantile
     """
+
     if tau <= 0.5:
         preds = [pinball(tau, targets[i], forecasts[i][0]) for i in np.arange(0, len(forecasts))]
     else:
@@ -223,7 +194,15 @@ def pinball_mean(tau, targets, forecasts):
 
 
 def winkler_score(tau, target, forecast):
-    '''R. L. Winkler, A Decision-Theoretic Approach to Interval Estimation, J. Am. Stat. Assoc. 67 (337) (1972) 187–191. doi:10.2307/2284720. '''
+    """
+    R. L. Winkler, A Decision-Theoretic Approach to Interval Estimation, J. Am. Stat. Assoc. 67 (337) (1972) 187–191. doi:10.2307/2284720.
+
+    :param tau:
+    :param target:
+    :param forecast:
+    :return:
+    """
+
     delta = forecast[1] - forecast[0]
     if forecast[0] <= target <= forecast[1]:
         return delta
@@ -242,20 +221,21 @@ def winkler_mean(tau, targets, forecasts):
     :param forecasts: list of prediction intervals
     :return: float, the Winkler score mean for tau quantile
     """
+
     preds = [winkler_score(tau, targets[i], forecasts[i]) for i in np.arange(0, len(forecasts))]
 
     return np.nanmean(preds)
 
 
 def brier_score(targets, densities):
-    '''
+    """
     Brier Score for probabilistic forecasts.
     Brier (1950). "Verification of Forecasts Expressed in Terms of Probability". Monthly Weather Review. 78: 1–3.
 
     :param targets: a list with the target values
     :param densities: a list with pyFTS.probabil objectsistic.ProbabilityDistribution
     :return: float
-    '''
+    """
 
     if not isinstance(densities, list):
         densities = [densities]
@@ -276,14 +256,15 @@ def brier_score(targets, densities):
 
 
 def logarithm_score(targets, densities):
-    '''
+    """
     Logarithm Score for probabilistic forecasts.
     Good IJ (1952).  “Rational Decisions.”Journal of the Royal Statistical Society B,14(1),107–114. URLhttps://www.jstor.org/stable/2984087.
 
     :param targets: a list with the target values
     :param densities: a list with pyFTS.probabil objectsistic.ProbabilityDistribution
     :return: float
-    '''
+    """
+
     _ls = float(0.0)
     if isinstance(densities, ProbabilityDistribution.ProbabilityDistribution):
         densities = [densities]
@@ -297,13 +278,14 @@ def logarithm_score(targets, densities):
 
 
 def crps(targets, densities):
-    '''
+    """
     Continuous Ranked Probability Score
 
     :param targets: a list with the target values
     :param densities: a list with pyFTS.probabil objectsistic.ProbabilityDistribution
     :return: float
-    '''
+    """
+
     _crps = float(0.0)
     if isinstance(densities, ProbabilityDistribution.ProbabilityDistribution):
         densities = [densities]
@@ -317,14 +299,14 @@ def crps(targets, densities):
 
 
 def get_point_statistics(data, model, **kwargs):
-    '''
+    """
     Condensate all measures for point forecasters
 
     :param data: test data
     :param model: FTS model with point forecasting capability
     :param kwargs:
     :return: a list with the RMSE, SMAPE and U Statistic
-    '''
+    """
 
     steps_ahead = kwargs.get('steps_ahead', 1)
     kwargs['type'] = 'point'
@@ -385,7 +367,7 @@ def get_interval_statistics(data, model, **kwargs):
     :param model: FTS model with interval forecasting capability
     :param kwargs:
     :return: a list with the sharpness, resolution, coverage, .05 pinball mean,
-    .25 pinball mean, .75 pinball mean and .95 pinball mean.
+            .25 pinball mean, .75 pinball mean and .95 pinball mean.
     """
 
     steps_ahead = kwargs.get('steps_ahead', 1)
@@ -432,7 +414,7 @@ def get_interval_ahead_statistics(data, intervals, **kwargs):
     :param model: FTS model with interval forecasting capability
     :param kwargs:
     :return: a list with the sharpness, resolution, coverage, .05 pinball mean,
-    .25 pinball mean, .75 pinball mean and .95 pinball mean.
+            .25 pinball mean, .75 pinball mean and .95 pinball mean.
     """
 
     l = len(intervals)
@@ -470,6 +452,7 @@ def get_distribution_statistics(data, model, **kwargs):
     :param kwargs:
     :return: a list with the CRPS and execution time
     """
+
     steps_ahead = kwargs.get('steps_ahead', 1)
     kwargs['type'] = 'distribution'
 

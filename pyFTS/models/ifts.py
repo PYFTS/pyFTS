@@ -88,7 +88,8 @@ class IntervalFTS(hofts.HighOrderFTS):
         return ret
 
     def forecast_ahead_interval(self, data, steps, **kwargs):
-        ret = [[x, x] for x in data[:self.max_lag]]
+        start = kwargs.get('start_at', 0)
+        ret = [[x, x] for x in data[start:start+self.max_lag]]
         for k in np.arange(self.max_lag, self.max_lag + steps):
             interval_lower = self.clip_uod(self.forecast_interval([x[0] for x in ret[k - self.max_lag: k]])[0])
             interval_upper = self.clip_uod(self.forecast_interval([x[1] for x in ret[k - self.max_lag: k]])[0])
@@ -172,7 +173,8 @@ class WeightedIntervalFTS(hofts.WeightedHighOrderFTS):
         return ret
 
     def forecast_ahead_interval(self, data, steps, **kwargs):
-        ret = [[x, x] for x in data[:self.max_lag]]
+        start = kwargs.get('start_at', 0)
+        ret = [[x, x] for x in data[start:start + self.max_lag]]
         for k in np.arange(self.max_lag, self.max_lag + steps):
             interval_lower = self.clip_uod(self.forecast_interval([x[0] for x in ret[k - self.max_lag: k]])[0])
             interval_upper = self.clip_uod(self.forecast_interval([x[1] for x in ret[k - self.max_lag: k]])[0])

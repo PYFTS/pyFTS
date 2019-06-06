@@ -37,6 +37,14 @@ pyFTS.benchmarks.ResidualAnalysis module
     :undoc-members:
     :show-inheritance:
 
+pyFTS.benchmarks.Tests module
+-----------------------------
+
+.. automodule:: pyFTS.benchmarks.Tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyFTS.benchmarks.Util module
 ----------------------------
 
@@ -73,6 +81,22 @@ pyFTS.benchmarks.quantreg module
 --------------------------------
 
 .. automodule:: pyFTS.benchmarks.quantreg
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyFTS.benchmarks.gaussianproc module
+------------------------------------
+
+.. automodule:: pyFTS.benchmarks.gaussianproc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyFTS.benchmarks.BSTS module
+----------------------------
+
+.. automodule:: pyFTS.benchmarks.BSTS
     :members:
     :undoc-members:
     :show-inheritance:

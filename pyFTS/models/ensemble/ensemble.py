@@ -192,9 +192,9 @@ class EnsembleFTS(fts.FTS):
 
         ret = []
 
-        start = kwargs.get('start', self.order)
+        start = kwargs.get('start_at', self.order)
 
-        sample = [[k] for k in data[start - self.order: start]]
+        sample = [[k] for k in data[start: start+self.order]]
 
         for k in np.arange(self.order, steps + self.order):
             forecasts = []
@@ -216,7 +216,7 @@ class EnsembleFTS(fts.FTS):
 
             ret.append(interval)
 
-        return ret
+        return ret[-steps:]
 
     def forecast_distribution(self, data, **kwargs):
         ret = []
@@ -253,11 +253,11 @@ class EnsembleFTS(fts.FTS):
 
         ret = []
 
-        start = kwargs.get('start', self.order)
+        start = kwargs.get('start_at', self.order)
 
         uod = self.get_UoD()
 
-        sample = [[k] for k in data[start - self.order: start]]
+        sample = [[k] for k in data[start: start+self.order]]
 
         for k in np.arange(self.order, steps+self.order):
             forecasts = []
@@ -282,7 +282,7 @@ class EnsembleFTS(fts.FTS):
 
             ret.append(dist)
 
-        return ret
+        return ret[-steps:]
 
 
 class SimpleEnsembleFTS(EnsembleFTS):

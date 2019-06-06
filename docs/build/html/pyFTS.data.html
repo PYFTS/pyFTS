@@ -140,7 +140,7 @@
 <span id="pyfts-data-common-module"></span><h2>pyFTS.data.common module<a class="headerlink" href="#module-pyFTS.data.common" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="pyFTS.data.common.get_dataframe">
-<code class="descclassname">pyFTS.data.common.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>filename</em>, <em>url</em>, <em>sep=';'</em>, <em>compression='infer'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/common.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.common.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.common.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>filename</em>, <em>url</em>, <em>sep=';'</em>, <em>compression='infer'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.common.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method check if filename already exists, read the file and return its data.
 If the file don’t already exists, it will be downloaded and decompressed.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -171,12 +171,12 @@ If the file don’t already exists, it will be downloaded and decompressed.</p>
 <p>Facilities to generate synthetic stochastic processes</p>
 <dl class="class">
 <dt id="pyFTS.data.artificial.SignalEmulator">
-<em class="property">class </em><code class="descclassname">pyFTS.data.artificial.</code><code class="descname">SignalEmulator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyFTS.data.artificial.</code><code class="descname">SignalEmulator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Emulate a complex signal built from several additive and non-additive components</p>
 <dl class="method">
 <dt id="pyFTS.data.artificial.SignalEmulator.blip">
-<code class="descname">blip</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.blip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.blip" title="Permalink to this definition">¶</a></dt>
+<code class="descname">blip</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.blip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an outlier greater than the maximum or lower then the minimum previous values of the signal,
 and insert it on a random location of the signal.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -189,15 +189,9 @@ and insert it on a random location of the signal.</p>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="pyFTS.data.artificial.SignalEmulator.components">
-<code class="descname">components</code><em class="property"> = None</em><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.components" title="Permalink to this definition">¶</a></dt>
-<dd><p>Components of the signal</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="pyFTS.data.artificial.SignalEmulator.incremental_gaussian">
-<code class="descname">incremental_gaussian</code><span class="sig-paren">(</span><em>mu</em>, <em>sigma</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.incremental_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.incremental_gaussian" title="Permalink to this definition">¶</a></dt>
+<code class="descname">incremental_gaussian</code><span class="sig-paren">(</span><em>mu</em>, <em>sigma</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.incremental_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an additive gaussian interference on a previous signal</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -223,7 +217,7 @@ and insert it on a random location of the signal.</p>
 
 <dl class="method">
 <dt id="pyFTS.data.artificial.SignalEmulator.periodic_gaussian">
-<code class="descname">periodic_gaussian</code><span class="sig-paren">(</span><em>type</em>, <em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<code class="descname">periodic_gaussian</code><span class="sig-paren">(</span><em>type</em>, <em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.periodic_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an additive periodic gaussian interference on a previous signal</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -251,7 +245,7 @@ and insert it on a random location of the signal.</p>
 
 <dl class="method">
 <dt id="pyFTS.data.artificial.SignalEmulator.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render the signal</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -265,7 +259,7 @@ and insert it on a random location of the signal.</p>
 
 <dl class="method">
 <dt id="pyFTS.data.artificial.SignalEmulator.stationary_gaussian">
-<code class="descname">stationary_gaussian</code><span class="sig-paren">(</span><em>mu</em>, <em>sigma</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.stationary_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.stationary_gaussian" title="Permalink to this definition">¶</a></dt>
+<code class="descname">stationary_gaussian</code><span class="sig-paren">(</span><em>mu</em>, <em>sigma</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.stationary_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a continuous Gaussian signal with mean mu and variance sigma.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -295,7 +289,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.artificial.generate_gaussian_linear">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_gaussian_linear</code><span class="sig-paren">(</span><em>mu_ini</em>, <em>sigma_ini</em>, <em>mu_inc</em>, <em>sigma_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_gaussian_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_gaussian_linear" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_gaussian_linear</code><span class="sig-paren">(</span><em>mu_ini</em>, <em>sigma_ini</em>, <em>mu_inc</em>, <em>sigma_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.generate_gaussian_linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate data sampled from Gaussian distribution, with constant or linear changing parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -322,7 +316,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.artificial.generate_linear_periodic_gaussian">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_linear_periodic_gaussian</code><span class="sig-paren">(</span><em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_linear_periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_linear_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_linear_periodic_gaussian</code><span class="sig-paren">(</span><em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.generate_linear_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a periodic linear variation on mean and variance</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -350,7 +344,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.artificial.generate_sinoidal_periodic_gaussian">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_sinoidal_periodic_gaussian</code><span class="sig-paren">(</span><em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_sinoidal_periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_sinoidal_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_sinoidal_periodic_gaussian</code><span class="sig-paren">(</span><em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.generate_sinoidal_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a periodic sinoidal variation on mean and variance</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -378,7 +372,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.artificial.generate_uniform_linear">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_uniform_linear</code><span class="sig-paren">(</span><em>min_ini</em>, <em>max_ini</em>, <em>min_inc</em>, <em>max_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_uniform_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_uniform_linear" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_uniform_linear</code><span class="sig-paren">(</span><em>min_ini</em>, <em>max_ini</em>, <em>min_inc</em>, <em>max_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.generate_uniform_linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate data sampled from Uniform distribution, with constant or  linear changing bounds</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -405,7 +399,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.artificial.random_walk">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">random_walk</code><span class="sig-paren">(</span><em>n=500</em>, <em>type='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#random_walk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.random_walk" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">random_walk</code><span class="sig-paren">(</span><em>n=500</em>, <em>type='gaussian'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.random_walk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple random walk</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -426,7 +420,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.artificial.white_noise">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">white_noise</code><span class="sig-paren">(</span><em>n=500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#white_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.white_noise" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">white_noise</code><span class="sig-paren">(</span><em>n=500</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.white_noise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple Gaussian noise signal
 :param n: number of samples
 :return:</p>
@@ -439,7 +433,7 @@ this signal is added to the previous one</li>
 <p>Source: Hyndman, R.J., Time Series Data Library, <a class="reference external" href="http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/">http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/</a>.</p>
 <dl class="function">
 <dt id="pyFTS.data.AirPassengers.get_data">
-<code class="descclassname">pyFTS.data.AirPassengers.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/AirPassengers.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.AirPassengers.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.AirPassengers.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.AirPassengers.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -453,7 +447,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.AirPassengers.get_dataframe">
-<code class="descclassname">pyFTS.data.AirPassengers.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/AirPassengers.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.AirPassengers.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.AirPassengers.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.AirPassengers.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -473,7 +467,7 @@ this signal is added to the previous one</li>
 <p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD">https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD</a></p>
 <dl class="function">
 <dt id="pyFTS.data.Bitcoin.get_data">
-<code class="descclassname">pyFTS.data.Bitcoin.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='AVG'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.Bitcoin.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='AVG'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Bitcoin.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -489,7 +483,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.Bitcoin.get_dataframe">
-<code class="descclassname">pyFTS.data.Bitcoin.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.Bitcoin.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Bitcoin.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -509,7 +503,7 @@ this signal is added to the previous one</li>
 <p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
 <dl class="function">
 <dt id="pyFTS.data.DowJones.get_data">
-<code class="descclassname">pyFTS.data.DowJones.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='AVG'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.DowJones.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='AVG'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.DowJones.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -525,7 +519,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.DowJones.get_dataframe">
-<code class="descclassname">pyFTS.data.DowJones.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.DowJones.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.DowJones.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -543,7 +537,7 @@ this signal is added to the previous one</li>
 <p>Yearly University of Alabama enrollments from 1971 to 1992.</p>
 <dl class="function">
 <dt id="pyFTS.data.Enrollments.get_data">
-<code class="descclassname">pyFTS.data.Enrollments.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Enrollments.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Enrollments.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.Enrollments.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Enrollments.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -557,7 +551,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.Enrollments.get_dataframe">
-<code class="descclassname">pyFTS.data.Enrollments.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Enrollments.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Enrollments.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.Enrollments.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Enrollments.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -568,7 +562,7 @@ this signal is added to the previous one</li>
 <p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD">https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD</a></p>
 <dl class="function">
 <dt id="pyFTS.data.Ethereum.get_data">
-<code class="descclassname">pyFTS.data.Ethereum.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='AVG'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.Ethereum.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='AVG'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Ethereum.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -584,7 +578,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.Ethereum.get_dataframe">
-<code class="descclassname">pyFTS.data.Ethereum.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.Ethereum.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Ethereum.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -603,7 +597,7 @@ this signal is added to the previous one</li>
 <p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
 <dl class="function">
 <dt id="pyFTS.data.EURGBP.get_data">
-<code class="descclassname">pyFTS.data.EURGBP.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.EURGBP.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.EURGBP.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -619,7 +613,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.EURGBP.get_dataframe">
-<code class="descclassname">pyFTS.data.EURGBP.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.EURGBP.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.EURGBP.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -638,7 +632,7 @@ this signal is added to the previous one</li>
 <p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
 <dl class="function">
 <dt id="pyFTS.data.EURUSD.get_data">
-<code class="descclassname">pyFTS.data.EURUSD.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.EURUSD.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.EURUSD.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -654,7 +648,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.EURUSD.get_dataframe">
-<code class="descclassname">pyFTS.data.EURUSD.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.EURUSD.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.EURUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -673,7 +667,7 @@ this signal is added to the previous one</li>
 <p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
 <dl class="function">
 <dt id="pyFTS.data.GBPUSD.get_data">
-<code class="descclassname">pyFTS.data.GBPUSD.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.GBPUSD.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.GBPUSD.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -689,7 +683,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.GBPUSD.get_dataframe">
-<code class="descclassname">pyFTS.data.GBPUSD.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.GBPUSD.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.GBPUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -709,7 +703,7 @@ this signal is added to the previous one</li>
 <p>Source: <a class="reference external" href="http://www.inmet.gov.br">http://www.inmet.gov.br</a></p>
 <dl class="function">
 <dt id="pyFTS.data.INMET.get_dataframe">
-<code class="descclassname">pyFTS.data.INMET.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/INMET.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.INMET.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.INMET.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.INMET.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -727,7 +721,7 @@ this signal is added to the previous one</li>
 <p>Hourly Malaysia eletric load and tempeature</p>
 <dl class="function">
 <dt id="pyFTS.data.Malaysia.get_data">
-<code class="descclassname">pyFTS.data.Malaysia.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='load'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.Malaysia.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='load'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Malaysia.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -743,7 +737,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.Malaysia.get_dataframe">
-<code class="descclassname">pyFTS.data.Malaysia.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.Malaysia.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Malaysia.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -763,7 +757,7 @@ this signal is added to the previous one</li>
 <p>Source: <a class="reference external" href="http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC">http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC</a></p>
 <dl class="function">
 <dt id="pyFTS.data.NASDAQ.get_data">
-<code class="descclassname">pyFTS.data.NASDAQ.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/NASDAQ.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.NASDAQ.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.NASDAQ.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.NASDAQ.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -779,7 +773,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.NASDAQ.get_dataframe">
-<code class="descclassname">pyFTS.data.NASDAQ.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/NASDAQ.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.NASDAQ.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.NASDAQ.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.NASDAQ.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -799,7 +793,7 @@ this signal is added to the previous one</li>
 <p>Source: <a class="reference external" href="http://sonda.ccst.inpe.br/">http://sonda.ccst.inpe.br/</a></p>
 <dl class="function">
 <dt id="pyFTS.data.SONDA.get_data">
-<code class="descclassname">pyFTS.data.SONDA.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SONDA.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SONDA.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.SONDA.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.SONDA.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -815,7 +809,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.SONDA.get_dataframe">
-<code class="descclassname">pyFTS.data.SONDA.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SONDA.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SONDA.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.SONDA.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.SONDA.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -835,7 +829,7 @@ this signal is added to the previous one</li>
 <p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
 <dl class="function">
 <dt id="pyFTS.data.SP500.get_data">
-<code class="descclassname">pyFTS.data.SP500.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SP500.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SP500.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.SP500.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.SP500.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -849,7 +843,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.SP500.get_dataframe">
-<code class="descclassname">pyFTS.data.SP500.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SP500.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SP500.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.SP500.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.SP500.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -869,7 +863,7 @@ this signal is added to the previous one</li>
 <p>Source: <a class="reference external" href="http://www.twse.com.tw/en/products/indices/Index_Series.php">http://www.twse.com.tw/en/products/indices/Index_Series.php</a></p>
 <dl class="function">
 <dt id="pyFTS.data.TAIEX.get_data">
-<code class="descclassname">pyFTS.data.TAIEX.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/TAIEX.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.TAIEX.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.TAIEX.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.TAIEX.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -883,7 +877,7 @@ this signal is added to the previous one</li>
 
 <dl class="function">
 <dt id="pyFTS.data.TAIEX.get_dataframe">
-<code class="descclassname">pyFTS.data.TAIEX.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/TAIEX.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.TAIEX.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.TAIEX.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.TAIEX.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -905,7 +899,7 @@ this signal is added to the previous one</li>
 dy/dt = x</p>
 <dl class="function">
 <dt id="pyFTS.data.henon.get_data">
-<code class="descclassname">pyFTS.data.henon.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>var, a=1.4, b=0.3, initial_values=[1, 1], iterations=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/henon.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.henon.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.henon.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>var, a=1.4, b=0.3, initial_values=[1, 1], iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.henon.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -921,7 +915,7 @@ dy/dt = x</p>
 
 <dl class="function">
 <dt id="pyFTS.data.henon.get_dataframe">
-<code class="descclassname">pyFTS.data.henon.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>a=1.4, b=0.3, initial_values=[1, 1], iterations=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/henon.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.henon.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.henon.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>a=1.4, b=0.3, initial_values=[1, 1], iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.henon.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dataframe with the bivariate Henon Map time series (x, y).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -950,7 +944,7 @@ Nature. 261 (5560): 459–467. doi:10.1038/261459a0.</p>
 <p>x(t) = r * x(t-1) * (1 - x(t -1) )</p>
 <dl class="function">
 <dt id="pyFTS.data.logistic_map.get_data">
-<code class="descclassname">pyFTS.data.logistic_map.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>r=4</em>, <em>initial_value=0.3</em>, <em>iterations=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/logistic_map.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.logistic_map.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.logistic_map.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>r=4</em>, <em>initial_value=0.3</em>, <em>iterations=100</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.logistic_map.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with the logistic map chaotic time series.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -980,7 +974,7 @@ dy/dt = x(b - z) - y
 dz/dt = xy - cz</p>
 <dl class="function">
 <dt id="pyFTS.data.lorentz.get_data">
-<code class="descclassname">pyFTS.data.lorentz.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>var, a=10.0, b=28.0, c=2.6666666666666665, dt=0.01, initial_values=[0.1, 0, 0], iterations=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/lorentz.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.lorentz.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.lorentz.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>var, a=10.0, b=28.0, c=2.6666666666666665, dt=0.01, initial_values=[0.1, 0, 0], iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.lorentz.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -996,7 +990,7 @@ dz/dt = xy - cz</p>
 
 <dl class="function">
 <dt id="pyFTS.data.lorentz.get_dataframe">
-<code class="descclassname">pyFTS.data.lorentz.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>a=10.0, b=28.0, c=2.6666666666666665, dt=0.01, initial_values=[0.1, 0, 0], iterations=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/lorentz.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.lorentz.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.lorentz.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>a=10.0, b=28.0, c=2.6666666666666665, dt=0.01, initial_values=[0.1, 0, 0], iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.lorentz.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dataframe with the multivariate Lorenz Map time series (x, y, z).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1027,7 +1021,7 @@ Science, 197(4300):287-289.</p>
 <p>dy/dt = -by(t)+ cy(t - tau) / 1+y(t-tau)^10</p>
 <dl class="function">
 <dt id="pyFTS.data.mackey_glass.get_data">
-<code class="descclassname">pyFTS.data.mackey_glass.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>b=0.1</em>, <em>c=0.2</em>, <em>tau=17</em>, <em>initial_values=array([0.5</em>, <em>0.55882353</em>, <em>0.61764706</em>, <em>0.67647059</em>, <em>0.73529412</em>, <em>0.79411765</em>, <em>0.85294118</em>, <em>0.91176471</em>, <em>0.97058824</em>, <em>1.02941176</em>, <em>1.08823529</em>, <em>1.14705882</em>, <em>1.20588235</em>, <em>1.26470588</em>, <em>1.32352941</em>, <em>1.38235294</em>, <em>1.44117647</em>, <em>1.5       ])</em>, <em>iterations=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/mackey_glass.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.mackey_glass.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.mackey_glass.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>b=0.1</em>, <em>c=0.2</em>, <em>tau=17</em>, <em>initial_values=array([0.5</em>, <em>0.55882353</em>, <em>0.61764706</em>, <em>0.67647059</em>, <em>0.73529412</em>, <em>0.79411765</em>, <em>0.85294118</em>, <em>0.91176471</em>, <em>0.97058824</em>, <em>1.02941176</em>, <em>1.08823529</em>, <em>1.14705882</em>, <em>1.20588235</em>, <em>1.26470588</em>, <em>1.32352941</em>, <em>1.38235294</em>, <em>1.44117647</em>, <em>1.5       ])</em>, <em>iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.mackey_glass.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with the Mackey-Glass chaotic time series.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1063,7 +1057,7 @@ dy/dt = x + ay
 dz/dt = b + z( x - c )</p>
 <dl class="function">
 <dt id="pyFTS.data.rossler.get_data">
-<code class="descclassname">pyFTS.data.rossler.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>var, a=0.2, b=0.2, c=5.7, dt=0.01, initial_values=[0.001, 0.001, 0.001], iterations=5000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/rossler.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.rossler.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.rossler.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>var, a=0.2, b=0.2, c=5.7, dt=0.01, initial_values=[0.001, 0.001, 0.001], iterations=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.rossler.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1079,7 +1073,7 @@ dz/dt = b + z( x - c )</p>
 
 <dl class="function">
 <dt id="pyFTS.data.rossler.get_dataframe">
-<code class="descclassname">pyFTS.data.rossler.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>a=0.2, b=0.2, c=5.7, dt=0.01, initial_values=[0.001, 0.001, 0.001], iterations=5000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/rossler.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.rossler.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.rossler.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>a=0.2, b=0.2, c=5.7, dt=0.01, initial_values=[0.001, 0.001, 0.001], iterations=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.rossler.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dataframe with the multivariate Rössler Map time series (x, y, z).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1109,7 +1103,7 @@ dz/dt = b + z( x - c )</p>
 <p>Source: <a class="reference external" href="https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/">https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/</a></p>
 <dl class="function">
 <dt id="pyFTS.data.sunspots.get_data">
-<code class="descclassname">pyFTS.data.sunspots.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/sunspots.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.sunspots.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.sunspots.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.sunspots.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1123,7 +1117,7 @@ dz/dt = b + z( x - c )</p>
 
 <dl class="function">
 <dt id="pyFTS.data.sunspots.get_dataframe">
-<code class="descclassname">pyFTS.data.sunspots.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/sunspots.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.sunspots.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.data.sunspots.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.sunspots.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

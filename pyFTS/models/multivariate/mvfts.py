@@ -169,9 +169,11 @@ class MVFTS(fts.FTS):
 
         ndata = self.apply_transformations(data)
 
+        start = kwargs.get('start_at', self.order)
+
         ret = []
         for k in np.arange(0, steps):
-            ix = ndata.index[-self.max_lag:]
+            ix = ndata.index[start-self.max_lag+k:k+start]
             sample = ndata.loc[ix]
             tmp = self.forecast(sample, **kwargs)
 
@@ -199,7 +201,7 @@ class MVFTS(fts.FTS):
 
             ndata = ndata.append(new_data_point, ignore_index=True)
 
-        return ret
+        return ret[-steps]
 
     def forecast_interval(self, data, **kwargs):
         ret = []
@@ -243,6 +245,61 @@ class MVFTS(fts.FTS):
         ret = self.target_variable.apply_inverse_transformations(ret,
                                                            params=data[self.target_variable.data_label].values)
         return ret
+
+    def forecast_ahead_interval(self, data, steps, **kwargs):
+        generators = kwargs.get('generators', None)
+
+        if generators is None:
+            raise Exception('You must provide parameter \'generators\'! generators is a dict where the keys' +
+                            ' are the dataframe column names (except the target_variable) and the values are ' +
+                            'lambda functions that accept one value (the actual value of the variable) '
+                            ' and return the next value or trained FTS models that accept the actual values and '
+                            'forecast new ones.')
+
+        ndata = self.apply_transformations(data)
+
+        start = kwargs.get('start_at', self.order)
+
+        ret = []
+        ix = ndata.index[start - self.max_lag:]
+        lo = [ndata.loc[k] for k in ix]
+        up = [ndata.loc[k] for k in ix]
+        for k in np.arange(0, steps):
+            tmp_lo = self.forecast_interval(lo[-self.max_lag:], **kwargs)
+            tmp_up = self.forecast_interval(up[-self.max_lag:], **kwargs)
+
+            ret.append([min(tmp_lo), max(tmp_up)])
+
+            new_data_point_lo = {}
+            new_data_point_up = {}
+
+            for data_label in generators.keys():
+                if data_label != self.target_variable.data_label:
+                    if isinstance(generators[data_label], LambdaType):
+                        last_data_point_lo = lo.loc[lo.index[-1]]
+                        new_data_point_lo[data_label] = generators[data_label](last_data_point_lo[data_label])
+                        last_data_point_up = up.loc[up.index[-1]]
+                        new_data_point_up[data_label] = generators[data_label](last_data_point_up[data_label])
+                    elif isinstance(generators[data_label], fts.FTS):
+                        model = generators[data_label]
+                        last_data_point_lo = lo.loc[lo.index[-model.order]]
+                        last_data_point_up = up.loc[up.index[-model.order]]
+
+                        if not model.is_multivariate:
+                            last_data_point_lo = last_data_point_lo[data_label].values
+                            last_data_point_up = last_data_point_up[data_label].values
+
+                        new_data_point_lo[data_label] = model.forecast(last_data_point_lo)[0]
+                        new_data_point_up[data_label] = model.forecast(last_data_point_up)[0]
+
+            new_data_point_lo[self.target_variable.data_label] = min(tmp_lo)
+            new_data_point_up[self.target_variable.data_label] = max(tmp_up)
+
+            lo = lo.append(new_data_point_lo, ignore_index=True)
+            up = up.append(new_data_point_up, ignore_index=True)
+
+        return ret[-steps]
+
 
     def clone_parameters(self, model):
         super(MVFTS, self).clone_parameters(model)
