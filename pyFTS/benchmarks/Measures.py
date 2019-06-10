@@ -105,11 +105,19 @@ def UStatistic(targets, forecasts):
     :param forecasts: 
     :return: 
     """
-    l = len(targets)
-    if isinstance(targets, list):
-        targets = np.array(targets)
-    if isinstance(forecasts, list):
+
+    if not isinstance(forecasts, (list, np.ndarray)):
+        forecasts = np.array([forecasts])
+    else:
         forecasts = np.array(forecasts)
+
+    if not isinstance(targets, (list, np.ndarray)):
+        targets = np.array([targets])
+    else:
+        targets = np.array(targets)
+
+    l = forecasts.size
+    l = 2 if l == 1 else l
 
     naive = []
     y = []
@@ -359,6 +367,38 @@ def get_point_statistics(data, model, **kwargs):
     return ret
 
 
+def get_point_ahead_statistics(data, forecasts, **kwargs):
+    """
+    Condensate all measures for point forecasters
+
+    :param data: test data
+    :param model: FTS model with point forecasting capability
+    :param kwargs:
+    :return: a list with the RMSE, SMAPE and U Statistic
+    """
+
+    l = len(forecasts)
+
+    if len(data) != l:
+        raise Exception("Data and intervals have different lenghts!")
+
+    lags = {}
+
+    for lag in range(l):
+        ret = {}
+        datum = data[lag]
+        forecast = forecasts[lag]
+        ret['steps'] = lag
+        ret['method'] = ''
+        ret['rmse'] = rmse(datum, forecast)
+        ret['mape'] = mape(datum, forecast)
+        sample = data[lag-1:lag+1] if lag > 0 else [datum, datum]
+        ret['u'] = UStatistic(sample, forecast)
+        lags[lag] = ret
+
+    return lags
+
+
 def get_interval_statistics(data, model, **kwargs):
     """
     Condensate all measures for point interval forecasters
@@ -411,7 +451,7 @@ def get_interval_ahead_statistics(data, intervals, **kwargs):
     Condensate all measures for point interval forecasters
 
     :param data: test data
-    :param model: FTS model with interval forecasting capability
+    :param intervals: predicted intervals for each datapoint
     :param kwargs:
     :return: a list with the sharpness, resolution, coverage, .05 pinball mean,
             .25 pinball mean, .75 pinball mean and .95 pinball mean.

@@ -422,9 +422,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         l = len(data)
 
-        start = kwargs.get('start', self.max_lag)
+        start = kwargs.get('start_at', 0)
 
-        ret = data[start - self.max_lag: start].tolist()
+        ret = data[start: start+self.max_lag].tolist()
 
         for k in np.arange(self.max_lag, steps+self.max_lag):
 
@@ -434,7 +434,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 mp = self.forecast(ret[k - self.max_lag: k], **kwargs)
                 ret.append(mp[0])
 
-        return ret[self.max_lag:]
+        return ret[-steps:]
 
     def __check_interval_bounds(self, interval):
         if len(self.transformations) > 0:
@@ -446,11 +446,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def forecast_ahead_interval(self, data, steps, **kwargs):
 
-        l = len(data)
+        start = kwargs.get('start_at', 0)
 
-        start = kwargs.get('start', self.max_lag)
-
-        sample = data[start - self.max_lag: start]
+        sample = data[start: start + self.max_lag]
 
         ret = [[k, k] for k in sample]
         
@@ -466,7 +464,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
                 ret.append([np.min(lower), np.max(upper)])
 
-        return ret[self.order:]
+        return ret[-steps:]
 
     def forecast_ahead_distribution(self, ndata, steps, **kwargs):
 
@@ -483,9 +481,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             nbins = kwargs.get("num_bins", 100)
             _bins = np.linspace(uod[0], uod[1], nbins)
 
-        start = kwargs.get('start', self.max_lag)
+        start = kwargs.get('start_at', 0)
 
-        sample = ndata[start - self.max_lag: start]
+        sample = ndata[start: start + self.max_lag]
 
         for dat in sample:
             if 'type' in kwargs:
@@ -527,7 +525,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
             ret.append(dist)
 
-        return ret[self.order:]
+        return ret[-steps:]
 
     def __str__(self):
         tmp = self.name + ":\n"

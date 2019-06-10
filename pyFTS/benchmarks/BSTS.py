@@ -72,6 +72,9 @@ class ARIMA(fts.FTS):
     def forecast(self, ndata, **kwargs):
         raise NotImplementedError()
 
+    def forecast_ahead(self, data, steps, **kwargs):
+        return self.model.predict(steps, intervals=False).values.flatten().tolist()
+
     def forecast_interval(self, data, **kwargs):
         raise NotImplementedError()
 
@@ -92,7 +95,16 @@ class ARIMA(fts.FTS):
         return ret
 
     def forecast_distribution(self, data, **kwargs):
-        raise NotImplementedError()
+
+        sim_vector = self.inference(steps)
+
+        ret = []
+
+        for ct, sample in enumerate(sim_vector):
+            pd = ProbabilityDistribution.ProbabilityDistribution(type='histogram', data=sample, nbins=500)
+            ret.append(pd)
+
+        return ret
 
 
     def forecast_ahead_distribution(self, data, steps, **kwargs):

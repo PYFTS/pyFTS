@@ -102,17 +102,10 @@ def sliding_window_benchmarks2(data, windowsize, train=0.8, **kwargs):
 
     steps_ahead = [k for k in steps_ahead]
 
-    fts_methods = __pop('methods', None, kwargs)
+    fts_methods = __pop('methods', [], kwargs)
 
-    methods_parameters = __pop('methods_parameters', None, kwargs)
-
-    if fts_methods is None:
-        if type  == 'point':
-            fts_methods = get_point_methods()
-        elif type == 'interval':
-            fts_methods = get_interval_methods()
-        elif type == 'distribution':
-            fts_methods = get_probabilistic_methods()
+    if fts_methods is not None:
+        methods_parameters = __pop('methods_parameters', None, kwargs)
 
     ix_methods = [k for k in np.arange(len(fts_methods))]
 
@@ -162,7 +155,8 @@ def sliding_window_benchmarks2(data, windowsize, train=0.8, **kwargs):
                 else:
                     job = cluster.submit(method, None, None, None, None, train, test, ct, **kwargs)
                     jobs.append(job)
-        else:
+
+        if fts_methods is not None:
             params = [ix_methods, orders, partitioners_methods, partitions, transformations]
             for id, instance in enumerate(product(*params)):
                 fts_method = fts_methods[instance[0]]
@@ -670,17 +664,36 @@ def run_point2(fts_method, order, partitioner_method, partitions, transformation
     _end = time.time()
     times = _end - _start
 
+    if steps_ahead == 1:
 
-    _start = time.time()
-    _rmse, _smape, _u = Measures.get_point_statistics(test_data, mfts, **kwargs)
-    _end = time.time()
-    times += _end - _start
+        _start = time.time()
+        _rmse, _smape, _u = Measures.get_point_statistics(test_data, mfts, **kwargs)
+        _end = time.time()
+        times += _end - _start
 
-    ret = {'model': mfts.shortname, 'partitioner': pttr, 'order': order, 'partitions': partitions,
-           'transformation': '' if transformation is None else transformation.name,
-           'size': len(mfts), 'time': times,
-           'rmse': _rmse, 'smape': _smape, 'u': _u, 'window': window_key,
-           'steps': steps_ahead, 'method': method}
+        ret = {'model': mfts.shortname, 'partitioner': pttr, 'order': order, 'partitions': partitions,
+               'transformation': '' if transformation is None else transformation.name,
+               'size': len(mfts), 'time': times,
+               'rmse': _rmse, 'smape': _smape, 'u': _u, 'window': window_key,
+               'steps': steps_ahead, 'method': method}
+    else:
+        _start = time.time()
+        forecasts = mfts.predict(test_data, **kwargs)
+        _end = time.time()
+        times += _end - _start
+
+        eval = Measures.get_point_ahead_statistics(test_data[mfts.order:mfts.order+steps_ahead], forecasts)
+
+        for key in eval.keys():
+            eval[key]["time"] = times
+            eval[key]["method"] = method
+
+        ret = {'model': mfts.shortname, 'partitioner': pttr, 'order': order, 'partitions': partitions,
+               'transformation': '' if transformation is None else transformation.name,
+               'size': len(mfts), 'time': times,
+               'window': window_key, 'steps': steps_ahead, 'method': method,
+               'ahead_results': eval
+               }
 
     return ret
 
@@ -812,20 +825,14 @@ def run_probabilistic2(fts_method, order, partitioner_method, partitions, transf
 
 
 def common_process_point_jobs(conn, data, job):
-    data.append(job['steps'])
-    data.append(job['method'])
-    rmse = deepcopy(data)
-    rmse.extend(["rmse", job["rmse"]])
-    bUtil.insert_benchmark(rmse, conn)
-    smape = deepcopy(data)
-    smape.extend(["smape", job["smape"]])
-    bUtil.insert_benchmark(smape, conn)
-    u = deepcopy(data)
-    u.extend(["u", job["u"]])
-    bUtil.insert_benchmark(u, conn)
-    time = deepcopy(data)
-    time.extend(["time", job["time"]])
-    bUtil.insert_benchmark(time, conn)
+    dta = deepcopy(data)
+    dta.append(job['steps'])
+    dta.append(job['method'])
+    for key in ["rmse", "mape", "u", "time"]:
+        if key in job:
+            data2 = deepcopy(dta)
+            data2.extend([key, job[key]])
+            bUtil.insert_benchmark(data2, conn)
 
 
 def process_point_jobs(dataset, tag,  job, conn):

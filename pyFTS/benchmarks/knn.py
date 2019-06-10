@@ -26,6 +26,7 @@ class KNearestNeighbors(fts.FTS):
         self.benchmark_only = True
         self.min_order = 1
         self.alpha = kwargs.get("alpha", 0.05)
+        self.max_lag = self.order
         self.lag = None
         self.k = kwargs.get("k", 30)
         self.uod = None
@@ -70,8 +71,9 @@ class KNearestNeighbors(fts.FTS):
         return [self.values[k] for k in ix.flatten() ]
 
     def forecast(self, data, **kwargs):
+        l = len(data)
         ret = []
-        for k in np.arange(self.order, len(data)):
+        for k in np.arange(self.order, l+(1 if self.order == l else 0)):
 
             sample = data[k-self.order : k]
 
@@ -80,17 +82,6 @@ class KNearestNeighbors(fts.FTS):
             ret.append(np.nanmean(forecasts))
 
         return ret
-
-    def forecast_ahead(self, data, steps, **kwargs):
-        start = kwargs.get('start', self.order)
-
-        sample = [k for k in data[start - self.order: start]]
-
-        for k in np.arange(self.order, steps + self.order):
-            tmp = self.forecast(sample[k-self.order:k])
-            sample.append(tmp)
-
-        return sample[-steps]
 
     def forecast_interval(self, data, **kwargs):
 

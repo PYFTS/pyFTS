@@ -52,34 +52,46 @@ datasets['TAIEX'] = TAIEX.get_data()[:5000]
 datasets['NASDAQ'] = NASDAQ.get_data()[:5000]
 datasets['SP500'] = SP500.get_data()[10000:15000]
 
-methods = [
-    arima.ARIMA,arima.ARIMA,
-    quantreg.QuantileRegression,
-    BSTS.ARIMA,BSTS.ARIMA,
-    knn.KNearestNeighbors
-     ]
+competitor_methods = []
+competitor_methods.extend([arima.ARIMA]*3)
+competitor_methods.extend([quantreg.QuantileRegression]*2)
+competitor_methods.extend([BSTS.ARIMA]*3)
+competitor_methods.extend([knn.KNearestNeighbors]*2)
 
-methods_parameters = [
-    {'order':(1,0,0), 'alpha':.05},
-    {'order':(1,0,1), 'alpha':.05},
-    {'order':1, 'dist': True},
-    {'order': (1, 0, 0), 'alpha': .05},
-    {'order': (1, 0, 1), 'alpha': .05},
-    {'order': 1}
+competitor_methods_parameters = [
+    {'order': (1, 0, 0)},
+    {'order': (1, 0, 1)},
+    {'order': (2, 0, 0)},
+    {'order': 1, 'alpha': .5},
+    {'order': 2, 'alpha': .5},
+    {'order': (1, 0, 0)},
+    {'order': (1, 0, 1)},
+    {'order': (2, 0, 0)},
+    {'order': 1},
+    {'order': 2}
+]
+
+proposed_methods = [
+    hofts.HighOrderFTS, hofts.WeightedHighOrderFTS, pwfts.ProbabilisticWeightedFTS
+]
+proposed_methods_parameters=[
+    {},{},{}
 ]
 
 for dataset_name, dataset in datasets.items():
     bchmk.sliding_window_benchmarks2(dataset, 1000, train=0.8, inc=0.2,
                                      benchmark_models=True,
-                                     benchmark_methods=methods,
-                                     benchmark_methods_parameters=methods_parameters,
-                                     methods=[],
-                                     methods_parameters=[{},{}],
-                                     transformations=[None],
-                                     orders=[],
-                                     steps_ahead=[10],
-                                     partitions=[],
-                                     type='distribution',
-                                     distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
-                                     file="experiments.db", dataset=dataset_name, tag="experiments")
+                                     benchmark_methods=competitor_methods,
+                                     benchmark_methods_parameters=competitor_methods_parameters,
+                                     methods=proposed_methods,
+                                     methods_parameters=proposed_methods_parameters,
+                                    orders=[1],
+                                    partitions=[35],
+                                    steps_ahead=[10],
+                                    progress=False, type='point',
+                                    distributed=False, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                    file="tmp.db", dataset=dataset_name,
+                                    tag="experiments")
+
+
 #'''
