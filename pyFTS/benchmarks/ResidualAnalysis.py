@@ -97,7 +97,7 @@ def plot_residuals_by_model(targets, models, tam=[8, 8], save=False, file=None):
     Util.show_and_save_image(fig, file, save)
 
 
- def single_plot_residuals(res, order, tam=[10, 7], save=False, file=None):
+def single_plot_residuals(res, order, tam=[10, 7], save=False, file=None):
     import scipy as sp
     
     fig, ax = plt.subplots(nrows=2, ncols=2, figsize=tam)
