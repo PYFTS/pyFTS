@@ -17,17 +17,22 @@ def residuals(targets, forecasts, order=1):
     return np.array(targets[order:]) - np.array(forecasts[:-1])
 
 
-def chi_squared(q, h):
-    """
-    Chi-Squared value
+def ljung_box_test(residuals, lags=[1,2,3], alpha=0.5):
+    from statsmodels.stats.diagnostic import acorr_ljungbox
+    from scipy.stats import chi2
+    
+    stat, pval = acorr_ljungbox(residuals, lags=lags)
+    
+    rows = []
 
-    :param q: 
-    :param h: 
-    :return: 
-    """
-    p = stats.chi2.sf(q, h)
-    return p
-
+    for ct, Q in enumerate(stat):
+      lag = ct+1
+      p_value = 1 - chi2.cdf(Q, df=lag)
+      critical_value = chi2.ppf(1 - alpha, df=lag)
+      rows.append([lag, Q, p_value, critical_value, 'H0 accepted' if Q > critical_value else 'H0 rejected'])
+        
+    return pd.DataFrame(rows, columns=['Lag','Statistic','p-Value','Critical Value', 'Result'])
+ 
 
 def compare_residuals(data, models, alpha=.05):
     """
@@ -51,50 +56,6 @@ def compare_residuals(data, models, alpha=.05):
         row.extend([stat, pval, test])
         rows.append(row)
     return pd.DataFrame(rows, columns=columns)
-
-
-def plotResiduals(targets, models, tam=[8, 8], save=False, file=None):
-    """
-    Plot residuals and statistics
-
-    :param targets: 
-    :param models: 
-    :param tam: 
-    :param save: 
-    :param file: 
-    :return: 
-    """
-    fig, axes = plt.subplots(nrows=len(models), ncols=3, figsize=tam)
-    for c, mfts in enumerate(models):
-        if len(models) > 1:
-            ax = axes[c]
-        else:
-            ax = axes
-        forecasts = mfts.forecast(targets)
-        res = residuals(targets,forecasts,mfts.order)
-        mu = np.mean(res)
-        sig = np.std(res)
-
-        ax[0].set_title("Residuals Mean=" + str(mu) + " STD = " + str(sig))
-        ax[0].set_ylabel('E')
-        ax[0].set_xlabel('T')
-        ax[0].plot(res)
-
-        ax[1].set_title("Residuals Autocorrelation")
-        ax[1].set_ylabel('ACS')
-        ax[1].set_xlabel('Lag')
-        ax[1].acorr(res)
-
-        ax[2].set_title("Residuals Histogram")
-        ax[2].set_ylabel('Freq')
-        ax[2].set_xlabel('Bins')
-        ax[2].hist(res)
-
-        c += 1
-
-    plt.tight_layout()
-
-    Util.show_and_save_image(fig, file, save)
 
 
 def plot_residuals(targets, models, tam=[8, 8], save=False, file=None):
