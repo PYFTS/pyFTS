@@ -58,7 +58,7 @@ def compare_residuals(data, models, alpha=.05):
     return pd.DataFrame(rows, columns=columns)
 
 
-def plot_residuals(targets, models, tam=[8, 8], save=False, file=None):
+def plot_residuals_by_model(targets, models, tam=[8, 8], save=False, file=None):
     import scipy as sp
     
     fig, axes = plt.subplots(nrows=len(models), ncols=4, figsize=tam)
@@ -97,12 +97,10 @@ def plot_residuals(targets, models, tam=[8, 8], save=False, file=None):
     Util.show_and_save_image(fig, file, save)
 
 
-def single_plot_residuals(targets, forecasts, order, tam=[10, 7], save=False, file=None):
+ def single_plot_residuals(res, order, tam=[10, 7], save=False, file=None):
     import scipy as sp
     
     fig, ax = plt.subplots(nrows=2, ncols=2, figsize=tam)
-
-    res = residuals(targets, forecasts, order)
 
     ax[0][0].set_title("Residuals", size='large')
     ax[0][0].plot(res)
