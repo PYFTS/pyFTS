@@ -29,7 +29,7 @@ def chi_squared(q, h):
     return p
 
 
-def compare_residuals(data, models):
+def compare_residuals(data, models, alpha=.05):
     """
     Compare residual's statistics of several models
 
@@ -39,15 +39,16 @@ def compare_residuals(data, models):
     """
     from statsmodels.stats.diagnostic import acorr_ljungbox
     rows = []
-    columns = ["Model","Order","AVG","STD","Box-Ljung","p-value"]
+    columns = ["Model","Order","AVG","STD","Box-Ljung","p-value","Result"]
     for mfts in models:
-        forecasts = mfts.forecast(data)
-        res = residuals(data, forecasts, mfts.order)
+        forecasts = mfts.predict(data)
+        res = residuals(data, forecasts, mfts.order+1)
         mu = np.mean(res)
         sig = np.std(res)
         row = [mfts.shortname, mfts.order, mu, sig]
         stat, pval = acorr_ljungbox(res)
-        row.extend([stat, pval])
+        test = 'H0 Accepted' if pval > alpha else 'H0 Rejected'
+        row.extend([stat, pval, test])
         rows.append(row)
     return pd.DataFrame(rows, columns=columns)
 
