@@ -52,6 +52,21 @@ datasets['TAIEX'] = TAIEX.get_data()[:5000]
 datasets['NASDAQ'] = NASDAQ.get_data()[:5000]
 datasets['SP500'] = SP500.get_data()[10000:15000]
 
+#'''
+for dataset_name, dataset in datasets.items():
+    bchmk.sliding_window_benchmarks2(dataset, 1000, train=0.8, inc=0.2,
+                                     methods=[pwfts.ProbabilisticWeightedFTS],
+                                     benchmark_models=False,
+                                     transformations=[None],
+                                     orders=[1, 2, 3],
+                                     partitions=np.arange(10, 100, 5),
+                                     progress=False, type='point',
+                                     distributed=True, nodes=['192.168.254.113'],
+                                     file="experiments.db", dataset=dataset_name,
+                                     tag="gridsearch")
+
+'''
+
 competitor_methods = []
 competitor_methods.extend([arima.ARIMA]*3)
 competitor_methods.extend([quantreg.QuantileRegression]*2)
@@ -89,9 +104,9 @@ for dataset_name, dataset in datasets.items():
                                     partitions=[35],
                                     steps_ahead=[10],
                                     progress=False, type='point',
-                                    distributed=False, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
-                                    file="tmp.db", dataset=dataset_name,
+                                    distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                    file="experiments.db", dataset=dataset_name,
                                     tag="experiments")
 
 
-#'''
+'''

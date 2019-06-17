@@ -21,6 +21,55 @@ from pyFTS.common import Membership
 
 import os
 
+
+dataset = pd.read_csv('https://query.data.world/s/2bgegjggydd3venttp3zlosh3wpjqj', sep=';')
+
+dataset['data'] = pd.to_datetime(dataset["data"], format='%Y-%m-%d %H:%M:%S')
+
+train_uv = dataset['glo_avg'].values[:24505]
+test_uv = dataset['glo_avg'].values[24505:]
+
+train_mv = dataset.iloc[:24505]
+test_mv = dataset.iloc[24505:]
+
+from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.models.seasonal import partitioner as seasonal
+from pyFTS.models.seasonal.common import DateTime
+
+from itertools import product
+
+levels = ['VL', 'L', 'M', 'H', 'VH']
+sublevels = [str(k) for k in np.arange(0, 7)]
+names = []
+for combination in product(*[levels, sublevels]):
+    names.append(combination[0] + combination[1])
+
+sp = {'seasonality': DateTime.day_of_year , 'names': ['Jan','Feb','Mar','Apr','May',
+                                                      'Jun','Jul', 'Aug','Sep','Oct',
+                                                      'Nov','Dec']}
+
+vmonth = variable.Variable("Month", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=12,
+                           data=train_mv, partitioner_specific=sp)
+
+
+sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
+
+vhour = variable.Variable("Hour", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                          data=train_mv, partitioner_specific=sp)
+
+vavg = variable.Variable("Radiation", data_label="glo_avg", alias='rad',
+                         partitioner=Grid.GridPartitioner, npart=35, partitioner_specific={'names': names},
+                         data=train_mv)
+fs = grid.GridCluster(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
+model = cmvfts.ClusteredMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg, partitioner=fs,
+                              order=2, knn=1)
+
+model.fit(train_mv)
+forecasts = model.predict(test_mv.iloc[:100])
+
+print(forecasts)
+
+
 '''
 from pyFTS.data import lorentz
 df = lorentz.get_dataframe(iterations=5000)
@@ -76,7 +125,7 @@ for horizon in [1, 25, 50, 75, 100]:
 final = pd.DataFrame(rows, columns=columns)
 
 final.to_csv('gmvfts_lorentz1.csv',sep=';',index=False)
-'''
+
 
 import pandas as pd
 df = pd.read_csv('https://query.data.world/s/ftb7bzgobr6bsg6bsuxuqowja6ew4r')
@@ -147,3 +196,4 @@ for horizon in [1, 25, 50, 75, 100]:
 final = pd.DataFrame(rows, columns=columns)
 
 final.to_csv('gmvfts_gefcom12.csv', sep=';', index=False)
+'''

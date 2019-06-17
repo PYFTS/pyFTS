@@ -17,7 +17,7 @@ from pyFTS.distributed import dispy as dUtil
 
 __measures = ['f1', 'f2', 'rmse', 'size']
 
-#
+
 def genotype(mf, npart, partitioner, order, alpha, lags, f1, f2):
     '''
     Create the individual genotype

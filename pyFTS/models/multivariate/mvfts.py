@@ -32,6 +32,7 @@ class MVFTS(fts.FTS):
         self.is_multivariate = True
         self.shortname = "MVFTS"
         self.name = "Multivariate FTS"
+        self.uod_clip = False
 
     def append_variable(self, var):
         """
