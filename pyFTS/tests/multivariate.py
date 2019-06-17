@@ -63,9 +63,11 @@ vavg = variable.Variable("Radiation", data_label="glo_avg", alias='rad',
 fs = grid.GridCluster(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
 model = cmvfts.ClusteredMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg, partitioner=fs,
                               order=2, knn=1)
+#model = wmvfts.WeightedMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
 
 model.fit(train_mv)
-forecasts = model.predict(test_mv.iloc[:100])
+generator = lambda x : x + pd.to_timedelta(1, unit='h')
+forecasts = model.predict(test_mv.iloc[:3], steps_ahead=48, generators={'data': generator} )
 
 print(forecasts)
 

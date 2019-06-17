@@ -67,7 +67,9 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         ndata = self.check_data(ndata)
 
-        return self.model.forecast(ndata, fuzzyfied=self.pre_fuzzyfy, **kwargs)
+        pre_fuzz = kwargs.get('pre_fuzzyfy', self.pre_fuzzyfy)
+
+        return self.model.forecast(ndata, fuzzyfied=pre_fuzz, **kwargs)
 
     def forecast_multivariate(self, data, **kwargs):
 
