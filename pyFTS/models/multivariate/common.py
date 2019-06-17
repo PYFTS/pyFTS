@@ -55,7 +55,7 @@ def fuzzyfy_instance_clustered(data_point, cluster, **kwargs):
     mode = kwargs.get('mode', 'sets')
     fsets = []
     for fset in cluster.search(data_point, type='name'):
-        if cluster.sets[fset].membership(data_point) > alpha_cut:
+        if cluster.sets[fset].membership(data_point) >= alpha_cut:
             if mode == 'sets':
                 fsets.append(fset)
             elif mode =='both':

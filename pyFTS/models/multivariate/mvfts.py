@@ -172,6 +172,7 @@ class MVFTS(fts.FTS):
 
         start = kwargs.get('start_at', self.max_lag)
 
+        ndata = ndata.loc[ndata.index[start-self.max_lag:start]]
         ret = []
         for k in np.arange(start, start+steps):
             ix = ndata.index[k-self.max_lag:k]
@@ -188,20 +189,17 @@ class MVFTS(fts.FTS):
             for data_label in generators.keys():
                 if data_label != self.target_variable.data_label:
                     if isinstance(generators[data_label], LambdaType):
-                        last_data_point = ndata.loc[sample.index[-1]]
+                        last_data_point = ndata.loc[ndata.index[-1]]
                         new_data_point[data_label] = generators[data_label](last_data_point[data_label])
                     elif isinstance(generators[data_label], fts.FTS):
                         model = generators[data_label]
-                        last_data_point = ndata.loc[[sample.index[-model.order]]]
+                        last_data_point = ndata.loc[[ndata.index[-model.order]]]
                         if not model.is_multivariate:
                             last_data_point = last_data_point[data_label].values
 
                         new_data_point[data_label] = model.forecast(last_data_point)[0]
 
             new_data_point[self.target_variable.data_label] = tmp
-
-            print(k)
-            print(new_data_point)
 
             ndata = ndata.append(new_data_point, ignore_index=True)
 
