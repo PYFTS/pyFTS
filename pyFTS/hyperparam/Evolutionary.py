@@ -19,7 +19,7 @@ __measures = ['f1', 'f2', 'rmse', 'size']
 
 
 def genotype(mf, npart, partitioner, order, alpha, lags, f1, f2):
-    '''
+    """
     Create the individual genotype
 
     :param mf: membership function
@@ -31,18 +31,18 @@ def genotype(mf, npart, partitioner, order, alpha, lags, f1, f2):
     :param f1: accuracy fitness value
     :param f2: parsimony fitness value
     :return: the genotype, a dictionary with all hyperparameters
-    '''
+    """
     ind = dict(mf=mf, npart=npart, partitioner=partitioner, order=order,
                alpha=alpha, lags=lags, f1=f1, f2=f2)
     return ind
 
 
 def random_genotype():
-    '''
+    """
     Create random genotype
 
     :return: the genotype, a dictionary with all hyperparameters
-    '''
+    """
     order = random.randint(1, 3)
     lags = [k for k in np.arange(1, order+1)]
     return genotype(
@@ -59,58 +59,54 @@ def random_genotype():
 
 #
 def initial_population(n):
-    '''
+    """
     Create a random population of size n
 
     :param n: the size of the population
     :return: a list with n random individuals
-    '''
+    """
     pop = []
     for i in range(n):
         pop.append(random_genotype())
     return pop
 
 
-def phenotype(individual, train, parameters={}):
-    '''
+def phenotype(individual, train, fts_method=hofts.WeightedHighOrderFTS, parameters={}):
+    """
     Instantiate the genotype, creating a fitted model with the genotype hyperparameters
 
     :param individual: a genotype
     :param train: the training dataset
+    :param fts_method: the FTS method 
     :param parameters: dict with model specific arguments for fit method.
     :return: a fitted FTS model
-    '''
-    try:
-        if individual['mf'] == 1:
-            mf = Membership.trimf
-        elif individual['mf'] == 2:
-            mf = Membership.trapmf
-        elif individual['mf'] == 3 and individual['partitioner'] != 2:
-            mf = Membership.gaussmf
-        else:
-            mf = Membership.trimf
+    """
+    if individual['mf'] == 1:
+        mf = Membership.trimf
+    elif individual['mf'] == 2:
+        mf = Membership.trapmf
+    elif individual['mf'] == 3 and individual['partitioner'] != 2:
+        mf = Membership.gaussmf
+    else:
+        mf = Membership.trimf
 
-        #if individual['partitioner'] == 1:
-        partitioner = Grid.GridPartitioner(data=train, npart=individual['npart'], func=mf)
-        #elif individual['partitioner'] == 2:
-        #    partitioner = Entropy.EntropyPartitioner(data=train, npart=individual['npart'], func=mf)
+    #if individual['partitioner'] == 1:
+    partitioner = Grid.GridPartitioner(data=train, npart=individual['npart'], func=mf)
+    #elif individual['partitioner'] == 2:
+    #    partitioner = Entropy.EntropyPartitioner(data=train, npart=individual['npart'], func=mf)
 
-        model = hofts.WeightedHighOrderFTS(partitioner=partitioner,
-                                           lags=individual['lags'],
-                                           alpha_cut=individual['alpha'],
-                                           order=individual['order'])
+    model = fts_method(partitioner=partitioner,
+                                       lags=individual['lags'],
+                                       alpha_cut=individual['alpha'],
+                                       order=individual['order'])
 
-        model.fit(train, **parameters)
+    model.fit(train, **parameters)
 
-        return model
-
-    except Exception as ex:
-        print("PHENOTYPE EXCEPTION!", str(ex), str(individual))
-        return None
+    return model
 
 
 def evaluate(dataset, individual, **kwargs):
-    '''
+    """
     Evaluate an individual using a sliding window cross validation over the dataset.
 
     :param dataset: Evaluation dataset
@@ -120,7 +116,7 @@ def evaluate(dataset, individual, **kwargs):
     :param increment_rate: The increment of the scrolling window, relative to the window_size ([0,1])
     :param parameters: dict with model specific arguments for fit method.
     :return: a tuple (len_lags, rmse) with the parsimony fitness value and the accuracy fitness value
-    '''
+    """
     from pyFTS.common import Util
     from pyFTS.benchmarks import Measures
     from pyFTS.hyperparam.Evolutionary import phenotype, __measures
@@ -129,73 +125,60 @@ def evaluate(dataset, individual, **kwargs):
     window_size = kwargs.get('window_size', 800)
     train_rate = kwargs.get('train_rate', .8)
     increment_rate = kwargs.get('increment_rate', .2)
+    fts_method = kwargs.get('fts_method', hofts.WeightedHighOrderFTS)
     parameters = kwargs.get('parameters',{})
 
     if individual['f1'] is not None and individual['f2'] is not None:
         return { key: individual[key] for key in __measures }
 
-    try:
-        errors = []
-        lengths = []
+    errors = []
+    lengths = []
 
-        for count, train, test in Util.sliding_window(dataset, window_size, train=train_rate, inc=increment_rate):
+    for count, train, test in Util.sliding_window(dataset, window_size, train=train_rate, inc=increment_rate):
 
-            model = phenotype(individual, train, parameters=parameters)
+        model = phenotype(individual, train, fts_method=fts_method, parameters=parameters)
 
-            if model is None:
-                raise Exception("Phenotype returned None")
+        forecasts = model.predict(test)
 
-            forecasts = model.predict(test)
+        rmse = Measures.rmse(test[model.max_lag:], forecasts[:-1])
+        lengths.append(len(model))
 
-            rmse = Measures.rmse(test[model.max_lag:], forecasts) #.get_point_statistics(test, model)
-            lengths.append(len(model))
+        errors.append(rmse)
 
-            errors.append(rmse)
+    _lags = sum(model.lags) * 100
 
-        _lags = sum(model.lags) * 100
+    _rmse = np.nanmean(errors)
+    _len = np.nanmean(lengths)
 
-        _rmse = np.nanmean(errors)
-        _len = np.nanmean(lengths)
+    f1 = np.nansum([.6 * _rmse, .4 * np.nanstd(errors)])
+    f2 = np.nansum([.4 * _len, .6 * _lags])
 
-        f1 = np.nansum([.6 * _rmse, .4 * np.nanstd(errors)])
-        f2 = np.nansum([.4 * _len, .6 * _lags])
-
-        #print("EVALUATION {}".format(individual))
-        return {'f1': f1, 'f2': f2, 'rmse': _rmse, 'size': _len }
-
-    except Exception as ex:
-        #print("EVALUATION EXCEPTION!", str(ex), str(individual))
-        return {'f1': np.inf, 'f2': np.inf, 'rmse': np.inf, 'size': np.inf }
+    return {'f1': f1, 'f2': f2, 'rmse': _rmse, 'size': _len }
 
 
-def tournament(population, objective):
-    '''
+def tournament(population, objective, **kwargs):
+    """
     Simple tournament selection strategy.
 
     :param population: the population
     :param objective: the objective to be considered on tournament
     :return:
-    '''
+    """
     n = len(population) - 1
 
-    try:
-        r1 = random.randint(0, n) if n > 2 else 0
-        r2 = random.randint(0, n) if n > 2 else 1
-        ix = r1 if population[r1][objective] < population[r2][objective] else r2
-        return population[ix]
-    except Exception as ex:
-        print(r1, population[r1])
-        print(r2, population[r2])
-        raise ex
+    r1 = random.randint(0, n) if n > 2 else 0
+    r2 = random.randint(0, n) if n > 2 else 1
+    ix = r1 if population[r1][objective] < population[r2][objective] else r2
+    return population[ix]
 
 
-def double_tournament(population):
-    '''
+def double_tournament(population, **kwargs):
+    """
     Double tournament selection strategy.
 
     :param population:
     :return:
-    '''
+    """
 
     ancestor1 = tournament(population, 'f1')
     ancestor2 = tournament(population, 'f1')
@@ -206,13 +189,13 @@ def double_tournament(population):
 
 
 def lag_crossover2(best, worst):
-    '''
+    """
     Cross over two lag genes
 
     :param best: best genotype
     :param worst: worst genotype
     :return: a tuple (order, lags)
-    '''
+    """
     order = int(round(.7 * best['order'] + .3 * worst['order']))
     lags = []
 
@@ -233,27 +216,26 @@ def lag_crossover2(best, worst):
     return order, lags
 
 
-# Cruzamento
-def crossover(parents):
-    '''
+def crossover(population, **kwargs):
+    """
     Crossover operation between two parents
 
-    :param parents: a list with two genotypes
+    :param population: the original population
     :return: a genotype
-    '''
+    """
     import random
 
-    n = len(parents) - 1
+    n = len(population) - 1
 
     r1 = random.randint(0, n)
     r2 = random.randint(0, n)
 
-    if parents[r1]['f1'] < parents[r2]['f1']:
-        best = parents[r1]
-        worst = parents[r2]
+    if population[r1]['f1'] < population[r2]['f1']:
+        best = population[r1]
+        worst = population[r2]
     else:
-        best = parents[r2]
-        worst = parents[r1]
+        best = population[r2]
+        worst = population[r1]
 
     npart = int(round(.7 * best['npart'] + .3 * worst['npart']))
     alpha = float(.7 * best['alpha'] + .3 * worst['alpha'])
@@ -272,13 +254,13 @@ def crossover(parents):
 
 
 def mutation_lags(lags, order):
-    '''
+    """
     Mutation operation for lags gene
 
     :param lags:
     :param order:
     :return:
-    '''
+    """
     try:
         l = len(lags)
         new = []
@@ -298,43 +280,40 @@ def mutation_lags(lags, order):
         print(lags, order, new, lag)
 
 
-def mutation(individual, pmut):
-    '''
+def mutation(individual, **kwargs):
+    """
     Mutation operator
 
-    :param population:
+    :param individual: an individual genotype
+    :param pmut: individual probability o
     :return:
-    '''
+    """
     import numpy.random
 
-    rnd = random.uniform(0, 1)
+    print('mutation')
 
-    if rnd < pmut:
+    individual['npart'] = min(50, max(3, int(individual['npart'] + np.random.normal(0, 4))))
+    individual['alpha'] = min(.5, max(0, individual['alpha'] + np.random.normal(0, .5)))
+    individual['mf'] = random.randint(1, 2)
+    individual['partitioner'] = random.randint(1, 2)
+    individual['order'] = min(5, max(1, int(individual['order'] + np.random.normal(0, 1))))
+    # Chama a função mutation_lags
+    individual['lags'] = mutation_lags( individual['lags'],  individual['order'])
 
-        print('mutation')
-
-        individual['npart'] = min(50, max(3, int(individual['npart'] + np.random.normal(0, 4))))
-        individual['alpha'] = min(.5, max(0, individual['alpha'] + np.random.normal(0, .5)))
-        individual['mf'] = random.randint(1, 2)
-        individual['partitioner'] = random.randint(1, 2)
-        individual['order'] = min(5, max(1, int(individual['order'] + np.random.normal(0, 1))))
-        # Chama a função mutation_lags
-        individual['lags'] = mutation_lags( individual['lags'],  individual['order'])
-
-        individual['f1'] = None
-        individual['f2'] = None
+    individual['f1'] = None
+    individual['f2'] = None
 
     return individual
 
 
 def elitism(population, new_population):
-    '''
+    """
     Elitism operation, always select the best individual of the population and discard the worst
 
     :param population:
     :param new_population:
     :return:
-    '''
+    """
     population = sorted(population, key=itemgetter('f1'))
     best = population[0]
 
@@ -348,30 +327,54 @@ def elitism(population, new_population):
 
 
 def GeneticAlgorithm(dataset, **kwargs):
-    '''
+    """
     Genetic algoritm for hyperparameter optimization
 
-    :param dataset:
-    :param ngen: Max number of generations
-    :param mgen: Max number of generations without improvement
-    :param npop: Population size
-    :param pcruz: Probability of crossover
-    :param pmut: Probability of mutation
-    :param window_size: The length of scrolling window for train/test on dataset
-    :param train_rate: The train/test split ([0,1])
-    :param increment_rate: The increment of the scrolling window, relative to the window_size ([0,1])
-    :param parameters: dict with model specific arguments for fit method.
+    :param dataset: The time series to optimize the FTS
+    :keyword ngen: An integer value with the maximum number of generations, default value: 30
+    :keyword mgen: An integer value with the maximum number of generations without improvement to stop, default value 7
+    :keyword npop: An integer value with the population size, default value: 20
+    :keyword pcross: A float value between 0 and 1 with the probability of crossover, default: .5
+    :keyword psel: A float value between 0 and 1 with the probability of selection, default: .5
+    :keyword pmut: A float value between 0 and 1 with the probability of mutation, default: .3
+    :keyword fts_method: The FTS method to optimize
+    :keyword parameters: dict with model specific arguments for fts_method
+    :keyword elitism: A boolean value indicating if the best individual must always survive to next population
+    :keyword initial_operator: a function that receives npop and return a random population with size npop
+    :keyword evalutation_operator: a function that receives a dataset and an individual and return its fitness
+    :keyword selection_operator: a function that receives the whole population and return a selected individual
+    :keyword crossover_operator: a function that receives the whole population and return a descendent individual
+    :keyword mutation_operator: a function that receives one individual and return a changed individual
+    :keyword window_size: An integer value with the the length of scrolling window for train/test on dataset
+    :keyword train_rate: A float value between 0 and 1 with the train/test split ([0,1])
+    :keyword increment_rate: A float value between 0 and 1 with the the increment of the scrolling window,
+             relative to the window_size ([0,1])
+    :keyword collect_statistics: A boolean value indicating to collect statistics for each generation
+    :keyword distributed: A value indicating it the execution will be local and sequential (distributed=False),
+             or parallel and distributed (distributed='dispy' or distributed='spark')
+    :keyword cluster: If distributed='dispy' the list of cluster nodes, else if distributed='spark' it is the master node
     :return: the best genotype
-    '''
+    """
 
     statistics = []
 
     ngen = kwargs.get('ngen',30)
     mgen = kwargs.get('mgen', 7)
     npop = kwargs.get('npop',20)
-    pcruz = kwargs.get('pcruz',.5)
+    psel = kwargs.get('psel', .5)
+    pcross = kwargs.get('pcross',.5)
     pmut = kwargs.get('pmut',.3)
     distributed = kwargs.get('distributed', False)
+
+    initial_operator = kwargs.get('initial_operator', initial_population)
+    evaluation_operator = kwargs.get('evaluation_operator', evaluate)
+    selection_operator = kwargs.get('selection_operator', double_tournament)
+    crossover_operator = kwargs.get('crossover_operator', crossover)
+    mutation_operator = kwargs.get('mutation_operator', mutation)
+
+    _elitism = kwargs.get('elitism', True)
+
+    elitism_operator = kwargs.get('elitism_operator', elitism)
 
     if distributed == 'dispy':
         cluster = kwargs.pop('cluster', None)
@@ -382,7 +385,7 @@ def GeneticAlgorithm(dataset, **kwargs):
 
     new_population = []
 
-    population = initial_population(npop)
+    population = initial_operator(npop)
 
     last_best = population[0]
     best = population[1]
@@ -390,7 +393,7 @@ def GeneticAlgorithm(dataset, **kwargs):
     print("Evaluating initial population {}".format(time.time()))
     if not distributed:
         for individual in population:
-            ret = evaluate(dataset, individual, **kwargs)
+            ret = evaluation_operator(dataset, individual, **kwargs)
             for key in __measures:
                 individual[key] = ret[key]
     elif distributed=='dispy':
@@ -414,19 +417,21 @@ def GeneticAlgorithm(dataset, **kwargs):
         generation_statistics = {}
 
         # Selection
-        for j in range(int(npop / 2)):
-            new_population.append(double_tournament(population))
-            new_population.append(double_tournament(population))
+        for j in range(int(npop * psel)):
+            new_population.append(selection_operator(population))
 
         # Crossover
         new = []
-        for j in range(int(npop * pcruz)):
-            new.append(crossover(new_population))
+        for j in range(int(npop * pcross)):
+            new.append(crossover_operator(new_population))
+
         new_population.extend(new)
 
         # Mutation
         for ct, individual in enumerate(new_population):
-            new_population[ct] = mutation(individual, pmut)
+            rnd = random.uniform(0, 1)
+            if rnd < pmut:
+                new_population[ct] = mutation_operator(individual)
 
         # Evaluation
         if collect_statistics:
@@ -436,7 +441,7 @@ def GeneticAlgorithm(dataset, **kwargs):
 
         if not distributed:
             for individual in new_population:
-                ret = evaluate(dataset, individual, **kwargs)
+                ret = evaluation_operator(dataset, individual, **kwargs)
                 for key in __measures:
                     individual[key] = ret[key]
                     if collect_statistics: stats[key].append(ret[key])
@@ -466,7 +471,8 @@ def GeneticAlgorithm(dataset, **kwargs):
             generation_statistics['population'] = mean_stats
 
         # Elitism
-        population = elitism(population, new_population)
+        if _elitism:
+            population = elitism_operator(population, new_population)
 
         population = population[:npop]
 
@@ -487,13 +493,12 @@ def GeneticAlgorithm(dataset, **kwargs):
             pmut += .05
         else:
             no_improvement_count = 0
-            pcruz = kwargs.get('pcruz', .5)
+            pcross = kwargs.get('pcross', .5)
             pmut = kwargs.get('pmut', .3)
             print(best)
 
         if no_improvement_count == mgen:
             break
-
 
     return best, statistics
 
@@ -506,7 +511,7 @@ def process_experiment(result, datasetname, conn):
 
 def persist_statistics(statistics):
     import json
-    with open('statistics{}.txt'.format(time.time()), 'w') as file:
+    with open('statistics{}.json'.format(time.time()), 'w') as file:
         file.write(json.dumps(statistics))
 
 
@@ -523,7 +528,41 @@ def log_result(conn, datasetname, result):
 
 
 def execute(datasetname, dataset, **kwargs):
-    conn = hUtil.open_hyperparam_db('hyperparam.db')
+    """
+
+    :param datasetname:
+    :param dataset: The time series to optimize the FTS
+    :keyword database_file:
+    :keyword experiments:
+    :keyword distributed:
+    :keyword ngen: An integer value with the maximum number of generations, default value: 30
+    :keyword mgen: An integer value with the maximum number of generations without improvement to stop, default value 7
+    :keyword npop: An integer value with the population size, default value: 20
+    :keyword pcross: A float value between 0 and 1 with the probability of crossover, default: .5
+    :keyword psel: A float value between 0 and 1 with the probability of selection, default: .5
+    :keyword pmut: A float value between 0 and 1 with the probability of mutation, default: .3
+    :keyword fts_method: The FTS method to optimize
+    :keyword parameters: dict with model specific arguments for fts_method
+    :keyword elitism: A boolean value indicating if the best individual must always survive to next population
+    :keyword initial_operator: a function that receives npop and return a random population with size npop
+    :keyword evalutation_operator: a function that receives a dataset and an individual and return its fitness
+    :keyword selection_operator: a function that receives the whole population and return a selected individual
+    :keyword crossover_operator: a function that receives the whole population and return a descendent individual
+    :keyword mutation_operator: a function that receives one individual and return a changed individual
+    :keyword window_size: An integer value with the the length of scrolling window for train/test on dataset
+    :keyword train_rate: A float value between 0 and 1 with the train/test split ([0,1])
+    :keyword increment_rate: A float value between 0 and 1 with the the increment of the scrolling window,
+             relative to the window_size ([0,1])
+    :keyword collect_statistics: A boolean value indicating to collect statistics for each generation
+    :keyword distributed: A value indicating it the execution will be local and sequential (distributed=False),
+             or parallel and distributed (distributed='dispy' or distributed='spark')
+    :keyword cluster: If distributed='dispy' the list of cluster nodes, else if distributed='spark' it is the master node
+    :return: the best genotype
+    """
+
+    file = kwargs.get('database_file', 'hyperparam.db')
+
+    conn = hUtil.open_hyperparam_db(file)
 
     experiments = kwargs.get('experiments', 30)
 
@@ -550,4 +589,3 @@ def execute(datasetname, dataset, **kwargs):
         dUtil.stop_dispy_cluster(cluster, http_server)
 
     return ret
-

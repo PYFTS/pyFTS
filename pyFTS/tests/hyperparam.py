@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from pyFTS.hyperparam import GridSearch, Evolutionary
+from pyFTS.models import pwfts
 
 def get_dataset():
     from pyFTS.data import SONDA
@@ -41,10 +42,12 @@ datsetname, dataset  = get_dataset()
 #                   window_size=10000, train_rate=.9, increment_rate=1,)
 
 ret = Evolutionary.execute(datsetname, dataset,
-                            ngen=30, npop=20, pcruz=.5, pmut=.3,
-                            window_size=10000, train_rate=.9, increment_rate=1,
-                            experiments=1,
-                            distributed='dispy', nodes=nodes)
+                           ngen=30, npop=20,psel=0.6, pcross=.5, pmut=.3,
+                           window_size=10000, train_rate=.9, increment_rate=1,
+                           experiments=1,
+                           fts_method=pwfts.ProbabilisticWeightedFTS,
+                           database_file='experiments.db',
+                           distributed=False, nodes=nodes)
 
 #res = GridSearch.cluster_method({'mf':1, 'partitioner': 1, 'npart': 10, 'lags':[1], 'alpha': 0.0, 'order': 1},
 #                          dataset, window_size = 10000, train_rate = .9, increment_rate = 1)
