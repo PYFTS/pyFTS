@@ -824,6 +824,17 @@ def run_probabilistic2(fts_method, order, partitioner_method, partitions, transf
     return ret
 
 
+def common_process_time_jobs(conn, data, job):
+    dta = deepcopy(data)
+    dta.append(job['steps'])
+    dta.append(job['method'])
+    for key in ["time"]:
+        if key in job:
+            data2 = deepcopy(dta)
+            data2.extend([key, job[key]])
+            bUtil.insert_benchmark(data2, conn)
+
+
 def common_process_point_jobs(conn, data, job):
     dta = deepcopy(data)
     dta.append(job['steps'])
@@ -1415,4 +1426,51 @@ def pftsExploreOrderAndPartitions(data,save=False, file=None):
     plt.tight_layout()
 
     cUtil.show_and_save_image(fig, file, save)
+
+
+def train_test_time(data, windowsize, train=0.8, **kwargs):
+    import time
+
+    tag = __pop('tag', None, kwargs)
+    steps = __pop('steps', 0, kwargs)
+    dataset = __pop('dataset', None, kwargs)
+
+    partitions = __pop('partitions', 10, kwargs)
+
+    fts_methods = __pop('methods', [], kwargs)
+
+    file = kwargs.get('file', "benchmarks.db")
+
+    inc = __pop("inc", 0.1, kwargs)
+
+    conn = bUtil.open_benchmark_db(file)
+
+    for ct, train, test in cUtil.sliding_window(data, windowsize, train, inc=inc, **kwargs):
+        partitioner = Grid.GridPartitioner(data=train, npart=partitions)
+        for id, fts_method in enumerate(fts_methods):
+            print(dataset, fts_method, ct)
+            times = []
+            model = fts_method(partitioner = partitioner, **kwargs)
+            _start = time.time()
+            model.fit(train, **kwargs)
+            _end = time.time()
+            times.append( _end - _start )
+            _start = time.time()
+            model.predict(train, **kwargs)
+            _end = time.time()
+            times.append(_end - _start)
+            for ct, method in enumerate(['train','test']):
+                job = {
+                    'steps': steps, 'method': method, 'time': times[ct],
+                    'model': model.shortname, 'transformation': None,
+                    'order': model.order, 'partitioner': partitioner.name,
+                    'partitions': partitions, 'size': len(model)
+                }
+
+                data = bUtil.process_common_data2(dataset, tag, 'train', job)
+                common_process_time_jobs(conn, data, job)
+
+
+    conn.close()
+
 

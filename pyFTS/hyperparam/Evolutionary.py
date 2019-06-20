@@ -10,8 +10,8 @@ import random
 from pyFTS.common import Util
 from pyFTS.benchmarks import Measures
 from pyFTS.partitioners import Grid, Entropy  # , Huarng
-from pyFTS.models import hofts
 from pyFTS.common import Membership
+from pyFTS.models import hofts, ifts, pwfts
 from pyFTS.hyperparam import Util as hUtil
 from pyFTS.distributed import dispy as dUtil
 
@@ -71,7 +71,7 @@ def initial_population(n):
     return pop
 
 
-def phenotype(individual, train, fts_method=hofts.WeightedHighOrderFTS, parameters={}):
+def phenotype(individual, train, fts_method, parameters={}):
     """
     Instantiate the genotype, creating a fitted model with the genotype hyperparameters
 
@@ -81,6 +81,8 @@ def phenotype(individual, train, fts_method=hofts.WeightedHighOrderFTS, paramete
     :param parameters: dict with model specific arguments for fit method.
     :return: a fitted FTS model
     """
+    from pyFTS.models import hofts, ifts, pwfts
+
     if individual['mf'] == 1:
         mf = Membership.trimf
     elif individual['mf'] == 2:
@@ -117,6 +119,7 @@ def evaluate(dataset, individual, **kwargs):
     :param parameters: dict with model specific arguments for fit method.
     :return: a tuple (len_lags, rmse) with the parsimony fitness value and the accuracy fitness value
     """
+    from pyFTS.models import hofts, ifts, pwfts
     from pyFTS.common import Util
     from pyFTS.benchmarks import Measures
     from pyFTS.hyperparam.Evolutionary import phenotype, __measures
@@ -306,7 +309,7 @@ def mutation(individual, **kwargs):
     return individual
 
 
-def elitism(population, new_population):
+def elitism(population, new_population, **kwargs):
     """
     Elitism operation, always select the best individual of the population and discard the worst
 
@@ -418,12 +421,12 @@ def GeneticAlgorithm(dataset, **kwargs):
 
         # Selection
         for j in range(int(npop * psel)):
-            new_population.append(selection_operator(population))
+            new_population.append(selection_operator(population, **kwargs))
 
         # Crossover
         new = []
         for j in range(int(npop * pcross)):
-            new.append(crossover_operator(new_population))
+            new.append(crossover_operator(new_population, **kwargs))
 
         new_population.extend(new)
 
@@ -431,7 +434,7 @@ def GeneticAlgorithm(dataset, **kwargs):
         for ct, individual in enumerate(new_population):
             rnd = random.uniform(0, 1)
             if rnd < pmut:
-                new_population[ct] = mutation_operator(individual)
+                new_population[ct] = mutation_operator(individual, **kwargs)
 
         # Evaluation
         if collect_statistics:
@@ -472,7 +475,7 @@ def GeneticAlgorithm(dataset, **kwargs):
 
         # Elitism
         if _elitism:
-            population = elitism_operator(population, new_population)
+            population = elitism_operator(population, new_population, **kwargs)
 
         population = population[:npop]
 
@@ -503,22 +506,22 @@ def GeneticAlgorithm(dataset, **kwargs):
     return best, statistics
 
 
-def process_experiment(result, datasetname, conn):
-    log_result(conn, datasetname, result['individual'])
-    persist_statistics(result['statistics'])
+def process_experiment(fts_method, result, datasetname, conn):
+    log_result(conn, datasetname, fts_method, result['individual'])
+    persist_statistics(datasetname, result['statistics'])
     return result['individual']
 
 
-def persist_statistics(statistics):
+def persist_statistics(datasetname, statistics):
     import json
-    with open('statistics{}.json'.format(time.time()), 'w') as file:
+    with open('statistics_{}.json'.format(datasetname), 'w') as file:
         file.write(json.dumps(statistics))
 
 
-def log_result(conn, datasetname, result):
+def log_result(conn, datasetname, fts_method, result):
     metrics = ['rmse', 'size', 'time']
     for metric in metrics:
-        record = (datasetname, 'Evolutive', 'WHOFTS', None, result['mf'],
+        record = (datasetname, 'Evolutive', fts_method, None, result['mf'],
                   result['order'], result['partitioner'], result['npart'],
                   result['alpha'], str(result['lags']), metric, result[metric])
 
@@ -568,6 +571,9 @@ def execute(datasetname, dataset, **kwargs):
 
     distributed = kwargs.get('distributed', False)
 
+    fts_method = kwargs.get('fts_method', hofts.WeightedHighOrderFTS)
+    shortname = str(fts_method.__module__).split('.')[-1]
+
     if distributed == 'dispy':
         nodes = kwargs.get('nodes', ['127.0.0.1'])
         cluster, http_server = dUtil.start_dispy_cluster(evaluate, nodes=nodes)
@@ -583,7 +589,7 @@ def execute(datasetname, dataset, **kwargs):
         ret['time'] = end - start
         experiment = {'individual': ret, 'statistics': statistics}
 
-        ret = process_experiment(experiment, datasetname, conn)
+        ret = process_experiment(shortname, experiment, datasetname, conn)
 
     if distributed == 'dispy':
         dUtil.stop_dispy_cluster(cluster, http_server)

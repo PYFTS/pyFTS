@@ -4,6 +4,13 @@ import numpy as np
 
 
 def start_dispy_cluster(method, nodes):
+    """
+    Start a new Dispy cluster on 'nodes' to execute the method 'method'
+
+    :param method: function to be executed on each cluster node
+    :param nodes: list of node names or IP's.
+    :return: the dispy cluster instance and the http_server for monitoring
+    """
 
     cluster = dispy.JobCluster(method, nodes=nodes, loglevel=logging.DEBUG, ping_interval=1000)
 
@@ -13,6 +20,13 @@ def start_dispy_cluster(method, nodes):
 
 
 def stop_dispy_cluster(cluster, http_server):
+    """
+    Stop a dispy cluster and http_server
+
+    :param cluster:
+    :param http_server:
+    :return:
+    """
     cluster.wait()  # wait for all jobs to finish
 
     cluster.print_status()
@@ -21,7 +35,23 @@ def stop_dispy_cluster(cluster, http_server):
     cluster.close()
 
 
+def get_number_of_cpus(cluster):
+    cpus = 0
+    for dispy_node in cluster.status().nodes:
+        cpus += dispy_node.cpus
+
+    return cpus
+
+
 def simple_model_train(model, data, parameters):
+    """
+    Cluster function that receives a FTS instance 'model' and train using the 'data' and 'parameters'
+
+    :param model: a FTS instance
+    :param data: training dataset
+    :param parameters: parameters for the training process
+    :return: the trained model
+    """
     model.train(data, **parameters)
     return model
 
@@ -38,7 +68,8 @@ def distributed_train(model, train_method, nodes, fts_method, data, num_batches=
 
     cluster, http_server = start_dispy_cluster(train_method, nodes)
 
-    print("[{0: %H:%M:%S}] Distrituted Train Started".format(datetime.datetime.now()))
+    print("[{0: %H:%M:%S}] Distrituted Train Started with {1} CPU's"
+          .format(datetime.datetime.now(), get_number_of_cpus(cluster)))
 
     jobs = []
     n = len(data)

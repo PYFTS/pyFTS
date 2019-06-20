@@ -70,7 +70,7 @@ class WeightedFTS(fts.FTS):
         if self.partitioner is not None:
             ordered_sets = self.partitioner.ordered_sets
         else:
-            ordered_sets = FuzzySet.set_ordered(self.sets)
+            ordered_sets = FuzzySet.set_ordered(self.partitioner.sets)
 
         ndata = np.array(ndata)
 
@@ -80,7 +80,7 @@ class WeightedFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
-            actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets, ordered_sets)
+            actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.partitioner.sets, ordered_sets)
 
             if explain:
                 print("Fuzzyfication:\n\n {} -> {} \n\n".format(ndata[k], actual.name))
@@ -93,9 +93,9 @@ class WeightedFTS(fts.FTS):
 
             else:
                 flrg = self.flrgs[actual.name]
-                mp = flrg.get_midpoints(self.sets)
+                mp = flrg.get_midpoints(self.partitioner.sets)
 
-                final = mp.dot(flrg.weights(self.sets))
+                final = mp.dot(flrg.weights(self.partitioner.sets))
 
                 ret.append(final)
 

@@ -33,9 +33,9 @@ class IntervalFTS(hofts.HighOrderFTS):
         if len(flrg.LHS) > 0:
             if flrg.get_key() in self.flrgs:
                 tmp = self.flrgs[flrg.get_key()]
-                ret = tmp.get_upper(self.sets)
+                ret = tmp.get_upper(self.partitioner.sets)
             else:
-                ret = self.sets[flrg.LHS[-1]].upper
+                ret = self.partitioner.sets[flrg.LHS[-1]].upper
         return ret
 
     def get_lower(self, flrg):
@@ -74,7 +74,7 @@ class IntervalFTS(hofts.HighOrderFTS):
             for flrg in flrgs:
                 if len(flrg.LHS) > 0:
 
-                    mv = flrg.get_membership(sample, self.sets)
+                    mv = flrg.get_membership(sample, self.partitioner.sets)
                     up.append(mv * self.get_upper(flrg))
                     lo.append(mv * self.get_lower(flrg))
                     affected_flrgs_memberships.append(mv)
@@ -119,9 +119,9 @@ class WeightedIntervalFTS(hofts.WeightedHighOrderFTS):
         if len(flrg.LHS) > 0:
             if flrg.get_key() in self.flrgs:
                 tmp = self.flrgs[flrg.get_key()]
-                ret = tmp.get_upper(self.sets)
+                ret = tmp.get_upper(self.partitioner.sets)
             else:
-                ret = self.sets[flrg.LHS[-1]].upper
+                ret = self.partitioner.sets[flrg.LHS[-1]].upper
         return ret
 
     def get_lower(self, flrg):
@@ -159,7 +159,7 @@ class WeightedIntervalFTS(hofts.WeightedHighOrderFTS):
             for flrg in flrgs:
                 if len(flrg.LHS) > 0:
 
-                    mv = flrg.get_membership(sample, self.sets)
+                    mv = flrg.get_membership(sample, self.partitioner.sets)
                     up.append(mv * self.get_upper(flrg))
                     lo.append(mv * self.get_lower(flrg))
                     affected_flrgs_memberships.append(mv)

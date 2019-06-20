@@ -46,24 +46,71 @@ Util.plot_distribution2(distributions, test[:10], start_at=model.order, ax=ax, c
 print("")
 '''
 
+from pyFTS.data import SONDA, Malaysia
+
+
+def sample_by_hour(data):
+  return [np.nanmean(data[k:k+60]) for k in np.arange(0,len(data),60)]
+
+
 datasets = {}
 
-datasets['TAIEX'] = TAIEX.get_data()[:5000]
-datasets['NASDAQ'] = NASDAQ.get_data()[:5000]
-datasets['SP500'] = SP500.get_data()[10000:15000]
+
+sonda = SONDA.get_dataframe()[['datahora','glo_avg','ws_10m']]
+
+sonda = sonda.drop(sonda.index[np.where(sonda["ws_10m"] <= 0.01)])
+sonda = sonda.drop(sonda.index[np.where(sonda["glo_avg"] <= 0.01)])
+sonda = sonda.dropna()
+
+
+malaysia = Malaysia.get_dataframe()
+
+datasets['SONDA.ws_10m'] = sample_by_hour(sonda["ws_10m"].values)
+datasets['SONDA.glo_avg'] = sample_by_hour(sonda["glo_avg"].values)
+datasets['Malaysia.temperature'] = malaysia["temperature"].values
+datasets['Malaysia.load'] = malaysia["load"].values
+
 
 #'''
 for dataset_name, dataset in datasets.items():
-    bchmk.sliding_window_benchmarks2(dataset, 1000, train=0.8, inc=0.2,
-                                     methods=[pwfts.ProbabilisticWeightedFTS],
+    bchmk.sliding_window_benchmarks2(dataset, 10000, train=0.9, inc=0.25,
+                                     methods=[hofts.HighOrderFTS, hofts.WeightedHighOrderFTS, pwfts.ProbabilisticWeightedFTS],
                                      benchmark_models=False,
                                      transformations=[None],
-                                     orders=[1, 2, 3],
-                                     partitions=np.arange(10, 100, 5),
+                                     orders=[2],
+                                     partitions=[50],
                                      progress=False, type='point',
-                                     distributed=True, nodes=['192.168.254.113'],
+                                     distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
                                      file="experiments.db", dataset=dataset_name,
-                                     tag="gridsearch")
+                                     tag="experiments")
+
+for dataset_name, dataset in datasets.items():
+    bchmk.sliding_window_benchmarks2(dataset, 10000, train=0.9, inc=0.25,
+                                     methods=[ensemble.SimpleEnsembleFTS, ifts.IntervalFTS,
+                                              ifts.WeightedIntervalFTS, pwfts.ProbabilisticWeightedFTS],
+                                     methods_parameters=[{'partitions': [45, 50, 55], 'alpha':.05},
+                                                         {},{},{}],
+                                     benchmark_models=False,
+                                     transformations=[None],
+                                     orders=[2],
+                                     partitions=[50],
+                                     progress=False, type='interval',
+                                     distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                     file="experiments.db", dataset=dataset_name,
+                                     tag="experiments")
+
+for dataset_name, dataset in datasets.items():
+    bchmk.sliding_window_benchmarks2(dataset, 10000, train=0.9, inc=0.25,
+                                     methods=[ensemble.SimpleEnsembleFTS, pwfts.ProbabilisticWeightedFTS],
+                                     methods_parameters=[{'partitions':[45,50,55]}, {}],
+                                     benchmark_models=False,
+                                     transformations=[None],
+                                     orders=[2],
+                                     partitions=[50],
+                                     progress=False, type='distribution',
+                                     distributed=True, nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
+                                     file="experiments.db", dataset=dataset_name,
+                                     tag="experiments")
 
 '''
 

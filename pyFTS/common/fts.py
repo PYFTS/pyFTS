@@ -11,9 +11,6 @@ class FTS(object):
         """
         Create a Fuzzy Time Series model
         """
-
-        self.sets = {}
-        """The list of fuzzy sets used on this model"""
         self.flrgs = {}
         """The list of Fuzzy Logical Relationship Groups - FLRG"""
         self.order = kwargs.get('order',1)
@@ -83,8 +80,8 @@ class FTS(object):
         """
         best = {"fuzzyset": "", "membership": 0.0}
 
-        for f in self.sets:
-            fset = self.sets[f]
+        for f in self.partitioner.sets:
+            fset = self.partitioner.sets[f]
             if best["membership"] <= fset.membership(data):
                 best["fuzzyset"] = fset.name
                 best["membership"] = fset.membership(data)
@@ -129,12 +126,12 @@ class FTS(object):
         else:
             distributed = False
 
-        if distributed is None or distributed == False:
+        if 'type' in kwargs:
+            type = kwargs.pop("type")
+        else:
+            type = 'point'
 
-            if 'type' in kwargs:
-                type = kwargs.pop("type")
-            else:
-                type = 'point'
+        if distributed is None or distributed == False:
 
             steps_ahead = kwargs.get("steps_ahead", None)
 
@@ -321,25 +318,19 @@ class FTS(object):
             self.original_min = np.nanmin(data)
             self.original_max = np.nanmax(data)
 
-        if 'sets' in kwargs:
-            self.sets = kwargs.pop('sets')
-
         if 'partitioner' in kwargs:
             self.partitioner = kwargs.pop('partitioner')
 
-        if not self.is_wrapper:
-            if (self.sets is None or len(self.sets) == 0) and not self.benchmark_only and not self.is_multivariate:
-                if self.partitioner is not None:
-                    self.sets = self.partitioner.sets
-                else:
-                    raise Exception("Fuzzy sets were not provided for the model. Use 'sets' parameter or 'partitioner'. ")
+        if not self.is_wrapper and not self.benchmark_only:
+            if self.partitioner is None:
+                raise Exception("Fuzzy sets were not provided for the model. Use 'partitioner' parameter. ")
 
         if 'order' in kwargs:
             self.order = kwargs.pop('order')
 
         dump = kwargs.get('dump', None)
 
-        num_batches = kwargs.get('num_batches', 1)
+        num_batches = kwargs.get('num_batches', 10)
 
         save = kwargs.get('save_model', False)  # save model on disk
 
@@ -419,6 +410,8 @@ class FTS(object):
         """
 
         self.order = model.order
+        self.partitioner = model.partitioner
+        self.lags = model.lags
         self.shortname = model.shortname
         self.name = model.name
         self.detail = model.detail
@@ -434,8 +427,6 @@ class FTS(object):
         self.transformations_param = model.transformations_param
         self.original_max = model.original_max
         self.original_min = model.original_min
-        self.partitioner = model.partitioner
-        self.sets = model.sets
         self.auto_update = model.auto_update
         self.benchmark_only = model.benchmark_only
         self.indexer = model.indexer

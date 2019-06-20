@@ -3,18 +3,21 @@ import pandas as pd
 from pyFTS.hyperparam import GridSearch, Evolutionary
 from pyFTS.models import pwfts
 
+
 def get_dataset():
     from pyFTS.data import SONDA
     #from pyFTS.data import Malaysia
 
-    #data = SONDA.get_data('temperature')[:3000]
-    data = pd.read_csv('https://query.data.world/s/6xfb5useuotbbgpsnm5b2l3wzhvw2i', sep=';')
-    #data = Malaysia.get_data('temperature')[:1000]
+    data = [k for k in SONDA.get_data('ws_10m') if k > 0.1 and k != np.nan and k is not None]
+    data = [np.nanmean(data[k:k+60]) for k in np.arange(0,len(data),60)]
+    #data = pd.read_csv('https://query.data.world/s/6xfb5useuotbbgpsnm5b2l3wzhvw2i', sep=';')
+    #data = Malaysia.get_data('temperature')
 
-    return 'SONDA.glo_avg', data['glo_avg'].values #train, test
+    return 'SONDA.ws_10m', data
     #return 'Malaysia.temperature', data #train, test
+    #return 'Malaysia.temperature', data  # train, test
 
-
+'''
 hyperparams = {
     'order':[3],
     'partitions': np.arange(10,100,3),
@@ -24,7 +27,6 @@ hyperparams = {
     'alpha': np.arange(.0, .5, .05)
 }
 
-'''
 hyperparams = {
     'order':[3], #[1, 2],
     'partitions': np.arange(10,100,10),
@@ -43,11 +45,11 @@ datsetname, dataset  = get_dataset()
 
 ret = Evolutionary.execute(datsetname, dataset,
                            ngen=30, npop=20,psel=0.6, pcross=.5, pmut=.3,
-                           window_size=10000, train_rate=.9, increment_rate=1,
-                           experiments=1,
+                           window_size=10000, train_rate=.9, increment_rate=.3,
+                           experiments=2,
                            fts_method=pwfts.ProbabilisticWeightedFTS,
                            database_file='experiments.db',
-                           distributed=False, nodes=nodes)
+                           distributed='dispy', nodes=nodes)
 
 #res = GridSearch.cluster_method({'mf':1, 'partitioner': 1, 'npart': 10, 'lags':[1], 'alpha': 0.0, 'order': 1},
 #                          dataset, window_size = 10000, train_rate = .9, increment_rate = 1)

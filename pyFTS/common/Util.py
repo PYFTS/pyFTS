@@ -13,8 +13,6 @@ from pyFTS.probabilistic import ProbabilityDistribution
 from pyFTS.common import Transformations
 
 
-
-
 def plot_compared_intervals_ahead(original, models, colors, distributions, time_from, time_to, intervals = True,
                                save=False, file=None, tam=[20, 5], resolution=None,
                                cmap='Blues', linewidth=1.5):
@@ -126,8 +124,9 @@ def plot_probability_distributions(pmfs, lcolors, tam=[15, 7]):
     handles0, labels0 = ax.get_legend_handles_labels()
     ax.legend(handles0, labels0)
 
+
 def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=None):
-    '''
+    """
     Plot forecasted ProbabilityDistribution objects on a matplotlib axis
 
     :param ax: matplotlib axis
@@ -137,7 +136,7 @@ def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=
     :param time_from: starting time (on x axis) to begin the plots
     :param reference_data:
     :return:
-    '''
+    """
     from matplotlib.patches import Rectangle
     from matplotlib.collections import PatchCollection
     patches = []
@@ -163,7 +162,7 @@ def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=
 
 
 def plot_distribution2(probabilitydist, data, **kwargs):
-    '''
+    """
     Plot distributions over the time (x-axis)
 
     :param probabilitydist: the forecasted probability distributions to plot
@@ -173,7 +172,7 @@ def plot_distribution2(probabilitydist, data, **kwargs):
     :keyword cmap: a matplotlib colormap name, the default value is 'Blues'
     :keyword quantiles: the list of quantiles intervals to plot, e. g. [.05, .25, .75, .95]
     :keyword median: a boolean value indicating if the median value will be plot.
-    '''
+    """
     import matplotlib.colorbar as cbar
     import matplotlib.cm as cm
 
@@ -225,7 +224,7 @@ def plot_distribution2(probabilitydist, data, **kwargs):
 
 
 def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False, ls='-', linewidth=1):
-    '''
+    """
     Plot forecasted intervals on matplotlib
 
     :param axis: matplotlib axis
@@ -237,7 +236,7 @@ def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False
     :param ls: matplotlib line style
     :param linewidth: matplotlib width
     :return:
-    '''
+    """
     lower = [kk[0] for kk in intervals]
     upper = [kk[1] for kk in intervals]
     mi = min(lower) * 0.95
@@ -252,7 +251,7 @@ def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False
 
 
 def plot_interval2(intervals, data, **kwargs):
-    '''
+    """
     Plot forecasted intervals on matplotlib
 
     :param intervals: list of forecasted intervals
@@ -263,7 +262,7 @@ def plot_interval2(intervals, data, **kwargs):
     :keyword typeonlegend:
     :keyword ls: matplotlib line style
     :keyword linewidth: matplotlib width
-    '''
+    """
 
     l = len(intervals)
 
@@ -296,7 +295,7 @@ def plot_interval2(intervals, data, **kwargs):
 
 
 def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
-    '''
+    """
     Plot the FLRG rules of a FTS model on a matplotlib axis
 
     :param model: FTS model
@@ -305,7 +304,7 @@ def plot_rules(model, size=[5, 5], axis=None, rules_by_axis=None, columns=1):
     :param rules_by_axis: number of rules plotted by column
     :param columns: number of columns
     :return:
-    '''
+    """
     if axis is None and rules_by_axis is None:
         rows = 1
     elif axis is None and rules_by_axis is not None:
@@ -410,7 +409,6 @@ def uniquefilename(name):
         return  tmp[0] + str(current_milli_time()) + '.' + tmp[1]
     else:
         return name + str(current_milli_time())
-
 
 
 def show_and_save_image(fig, file, flag, lgd=None):

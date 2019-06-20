@@ -69,11 +69,11 @@ class NonStationaryFTS(fts.FTS):
 
         if self.method == 'unconditional':
             window_size = kwargs.get('parameters', 1)
-            tmpdata = common.fuzzySeries(data, self.sets,
+            tmpdata = common.fuzzySeries(data, self.partitioner.sets,
                                          self.partitioner.ordered_sets,
                                          window_size, method='fuzzy')
         else:
-            tmpdata = common.fuzzySeries(data, self.sets,
+            tmpdata = common.fuzzySeries(data, self.partitioner.sets,
                                  self.partitioner.ordered_sets,
                                  method='fuzzy', const_t=0)
 
@@ -190,9 +190,9 @@ class NonStationaryFTS(fts.FTS):
                 ix = affected_sets[0][0]
                 aset = self.partitioner.ordered_sets[ix]
                 if aset in self.flrgs:
-                    numerator.append(self.flrgs[aset].get_midpoint(self.sets, perturb[ix]))
+                    numerator.append(self.flrgs[aset].get_midpoint(self.partitioner.sets, perturb[ix]))
                 else:
-                    fuzzy_set = self.sets[aset]
+                    fuzzy_set = self.partitioner.sets[aset]
                     numerator.append(fuzzy_set.get_midpoint(perturb[ix]))
                 denominator.append(1)
             else:
@@ -201,9 +201,9 @@ class NonStationaryFTS(fts.FTS):
                     fs = self.partitioner.ordered_sets[ix]
                     tdisp = perturb[ix]
                     if fs in self.flrgs:
-                        numerator.append(self.flrgs[fs].get_midpoint(self.sets, tdisp) * aset[1])
+                        numerator.append(self.flrgs[fs].get_midpoint(self.partitioner.sets, tdisp) * aset[1])
                     else:
-                        fuzzy_set = self.sets[fs]
+                        fuzzy_set = self.partitioner.sets[fs]
                         numerator.append(fuzzy_set.get_midpoint(tdisp) * aset[1])
                     denominator.append(aset[1])
 
@@ -241,9 +241,9 @@ class NonStationaryFTS(fts.FTS):
 
             tdisp = common.window_index(k + time_displacement, window_size)
 
-            affected_sets = [[self.sets[key], self.sets[key].membership(ndata[k], tdisp)]
+            affected_sets = [[self.partitioner.sets[key], self.partitioner.sets[key].membership(ndata[k], tdisp)]
                              for key in self.partitioner.ordered_sets
-                             if self.sets[key].membership(ndata[k], tdisp) > 0.0]
+                             if self.partitioner.sets[key].membership(ndata[k], tdisp) > 0.0]
 
             if len(affected_sets) == 0:
                 affected_sets.append([common.check_bounds(ndata[k], self.partitioner, tdisp), 1.0])

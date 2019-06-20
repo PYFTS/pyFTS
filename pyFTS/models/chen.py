@@ -64,7 +64,7 @@ class ConventionalFTS(fts.FTS):
 
         for k in np.arange(0, l):
 
-            actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.sets)
+            actual = FuzzySet.get_maximum_membership_fuzzyset(ndata[k], self.partitioner.sets)
 
             if explain:
                 print("Fuzzyfication:\n\n {} -> {} \n".format(ndata[k], actual.name))
@@ -78,7 +78,7 @@ class ConventionalFTS(fts.FTS):
             else:
                 _flrg = self.flrgs[actual.name]
 
-                mp = _flrg.get_midpoint(self.sets)
+                mp = _flrg.get_midpoint(self.partitioner.sets)
 
                 ret.append(mp)
 

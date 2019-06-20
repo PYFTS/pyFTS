@@ -55,6 +55,7 @@ class ConditionalVarianceFTS(hofts.HighOrderFTS):
         self.variance_residual = 0.
         self.mean_residual = 0.
         self.memory_window = kwargs.get("memory_window",5)
+        self.sets = {}
 
     def train(self, ndata, **kwargs):
 
