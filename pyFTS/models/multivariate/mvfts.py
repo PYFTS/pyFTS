@@ -264,11 +264,11 @@ class MVFTS(fts.FTS):
 
         ret = []
         ix = ndata.index[start - self.max_lag:]
-        lo = [ndata.loc[k] for k in ix]
-        up = [ndata.loc[k] for k in ix]
+        lo = ndata.loc[ix] #[ndata.loc[k] for k in ix]
+        up = ndata.loc[ix] #[ndata.loc[k] for k in ix]
         for k in np.arange(0, steps):
-            tmp_lo = self.forecast_interval(lo[-self.max_lag:], **kwargs)
-            tmp_up = self.forecast_interval(up[-self.max_lag:], **kwargs)
+            tmp_lo = self.forecast_interval(lo[-self.max_lag:], **kwargs)[0]
+            tmp_up = self.forecast_interval(up[-self.max_lag:], **kwargs)[0]
 
             ret.append([min(tmp_lo), max(tmp_up)])
 
@@ -300,7 +300,7 @@ class MVFTS(fts.FTS):
             lo = lo.append(new_data_point_lo, ignore_index=True)
             up = up.append(new_data_point_up, ignore_index=True)
 
-        return ret[-steps]
+        return ret[-steps:]
 
     def clone_parameters(self, model):
         super(MVFTS, self).clone_parameters(model)

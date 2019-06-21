@@ -5,6 +5,19 @@ from pyFTS.common import FuzzySet,SortedCollection,tree
 from pyFTS.probabilistic import kde
 
 
+def from_point(x,**kwargs):
+    """
+    Create a probability distribution from a scalar value
+
+    :param x: scalar value
+    :param kwargs: common parameters of the distribution
+    :return: the ProbabilityDistribution object
+    """
+    tmp = ProbabilityDistribution(**kwargs)
+    tmp.set(x, 1.0)
+    return tmp
+
+
 class ProbabilityDistribution(object):
     """
     Represents a discrete or continous probability distribution

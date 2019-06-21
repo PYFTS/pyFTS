@@ -171,6 +171,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         return np.nanprod(vals)
 
     def generate_lhs_flrg(self, sample, explain=False):
+        if not isinstance(sample, (list, np.ndarray)):
+            sample = [sample]
+
         nsample = [self.partitioner.fuzzyfy(k, mode="sets", alpha_cut=self.alpha_cut)
                    for k in sample]
 
@@ -440,6 +443,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         smooth = kwargs.get("smooth", "none")
 
+        from_distribution = kwargs.get('from_distribution', False)
+
         fuzzyfied = kwargs.get('fuzzyfied', False)
 
         l = len(ndata)
@@ -457,39 +462,43 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         for k in np.arange(self.max_lag - 1, l):
             sample = ndata[k - (self.max_lag - 1): k + 1]
 
-            if not fuzzyfied:
-                flrgs = self.generate_lhs_flrg(sample)
+            if from_distribution:
+                dist = self.forecast_distribution_from_distribution(sample,smooth,uod,_bins)
             else:
-                fsets = self.get_sets_from_both_fuzzyfication(sample)
-                flrgs = self.generate_lhs_flrg_fuzzyfied(fsets)
 
-            if 'type' in kwargs:
-                kwargs.pop('type')
+                if not fuzzyfied:
+                    flrgs = self.generate_lhs_flrg(sample)
+                else:
+                    fsets = self.get_sets_from_both_fuzzyfication(sample)
+                    flrgs = self.generate_lhs_flrg_fuzzyfied(fsets)
 
-            dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
+                if 'type' in kwargs:
+                    kwargs.pop('type')
 
-            for bin in _bins:
-                num = []
-                den = []
-                for s in flrgs:
-                    if s.get_key() in self.flrgs:
-                        flrg = self.flrgs[s.get_key()]
-                        wi = flrg.rhs_conditional_probability(bin, self.partitioner.sets, uod, nbins)
-                        if not fuzzyfied:
-                            pk = flrg.lhs_conditional_probability(sample, self.partitioner.sets, self.global_frequency_count, uod, nbins)
+                dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
+
+                for bin in _bins:
+                    num = []
+                    den = []
+                    for s in flrgs:
+                        if s.get_key() in self.flrgs:
+                            flrg = self.flrgs[s.get_key()]
+                            wi = flrg.rhs_conditional_probability(bin, self.partitioner.sets, uod, nbins)
+                            if not fuzzyfied:
+                                pk = flrg.lhs_conditional_probability(sample, self.partitioner.sets, self.global_frequency_count, uod, nbins)
+                            else:
+                                lhs_mv = self.pwflrg_lhs_memberhip_fuzzyfied(flrg, sample)
+                                pk = flrg.lhs_conditional_probability_fuzzyfied(lhs_mv, self.partitioner.sets,
+                                                                      self.global_frequency_count, uod, nbins)
+
+                            num.append(wi * pk)
+                            den.append(pk)
                         else:
-                            lhs_mv = self.pwflrg_lhs_memberhip_fuzzyfied(flrg, sample)
-                            pk = flrg.lhs_conditional_probability_fuzzyfied(lhs_mv, self.partitioner.sets,
-                                                                  self.global_frequency_count, uod, nbins)
+                            num.append(0.0)
+                            den.append(0.000000001)
+                    pf = sum(num) / sum(den)
 
-                        num.append(wi * pk)
-                        den.append(pk)
-                    else:
-                        num.append(0.0)
-                        den.append(0.000000001)
-                pf = sum(num) / sum(den)
-
-                dist.set(bin, pf)
+                    dist.set(bin, pf)
 
             ret.append(dist)
 
@@ -532,7 +541,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         start = kwargs.get('start_at', 0)
 
-        fuzzyfied = kwargs.get('fuzzyfied', False)
+        fuzzyfied = kwargs.pop('fuzzyfied')
 
         sample = data[start: start + self.max_lag]
 
@@ -541,12 +550,12 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         else:
             ret = []
             for k in sample:
-                kv = self.partitioner.deffuzyfy(k,mode='both')
-                ret.append([kv,kv])
+                kv = self.partitioner.defuzzyfy(k, mode='both')
+                ret.append([kv, kv])
         
         ret.append(self.forecast_interval(sample, **kwargs)[0])
 
-        for k in np.arange(self.max_lag+1, steps+self.max_lag):
+        for k in np.arange(start + self.max_lag, steps + start + self.max_lag):
 
             if len(ret) > 0 and self.__check_interval_bounds(ret[-1]):
                 ret.append(ret[-1])
@@ -562,6 +571,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         ret = []
 
+        if 'type' in kwargs:
+            kwargs.pop('type')
+
         smooth = kwargs.get("smooth", "none")
 
         uod = self.get_UoD()
@@ -575,49 +587,60 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         start = kwargs.get('start_at', 0)
 
-        sample = ndata[start: start + self.max_lag]
+        fuzzyfied = kwargs.pop('fuzzyfied')
+
+        if not fuzzyfied:
+            sample = ndata[start: start + self.max_lag]
+        else:
+            sample = []
+            for k in ndata[start: start + self.max_lag]:
+                kv = self.partitioner.defuzzyfy(k, mode='both')
+                sample.append(kv)
 
         for dat in sample:
-            if 'type' in kwargs:
-                kwargs.pop('type')
-            tmp = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
-            tmp.set(dat, 1.0)
-            ret.append(tmp)
+            if not isinstance(dat, ProbabilityDistribution.ProbabilityDistribution):
+                tmp = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
+                tmp.set(dat, 1.0)
+                ret.append(tmp)
+            else:
+                ret.append(dat)
 
-        dist = self.forecast_distribution(sample, bins=_bins, **kwargs)[0]
+        dist = self.forecast_distribution_from_distribution(ret, smooth,uod,_bins,**kwargs)
 
         ret.append(dist)
 
-        for k in np.arange(self.max_lag+1, steps+self.max_lag+1):
-            dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=_bins, **kwargs)
-
-            lags = []
-
-            # Find all bins of past distributions with probability greater than zero
-
-            for ct, lag in enumerate(self.lags):
-                dd = ret[k - lag]
-                vals = [float(v) for v in dd.bins if np.round(dd.density(v), 4) > 0.0]
-                lags.append( sorted(vals) )
-
-
-            # Trace all possible combinations between the bins of past distributions
-
-            for path in product(*lags):
-
-                # get the combined probabilities for this path
-                pk = np.prod([ret[k - (self.max_lag + lag)].density(path[ct])
-                              for ct, lag in enumerate(self.lags)])
-
-
-                d = self.forecast_distribution(path)[0]
-
-                for bin in _bins:
-                    dist.set(bin, dist.density(bin) + pk * d.density(bin))
-
+        for k in np.arange(start + self.max_lag, steps + start + self.max_lag):
+            dist = self.forescast_distribution_from_distribution(ret[k-self.max_lag:], smooth, uod, _bins, **kwargs)
             ret.append(dist)
 
         return ret[-steps:]
+
+    def forecast_distribution_from_distribution(self, previous_dist, smooth, uod, bins, **kwargs):
+        dist = ProbabilityDistribution.ProbabilityDistribution(smooth, uod=uod, bins=bins, **kwargs)
+
+        lags = []
+
+        # Find all bins of past distributions with probability greater than zero
+
+        for ct, lag in enumerate(self.lags):
+            dd = previous_dist[-lag]
+            vals = [float(v) for v in dd.bins if np.round(dd.density(v), 4) > 0.0]
+            lags.append(sorted(vals))
+
+        # Trace all possible combinations between the bins of past distributions
+
+        for path in product(*lags):
+
+            # get the combined probabilities for this path
+            pk = np.prod([previous_dist[-lag].density(path[ct])
+                          for ct, lag in enumerate(self.lags)])
+
+            d = self.forecast_distribution(path)[0]
+
+            for bin in bins:
+                dist.set(bin, dist.density(bin) + pk * d.density(bin))
+
+        return dist
 
     def __str__(self):
         tmp = self.name + ":\n"

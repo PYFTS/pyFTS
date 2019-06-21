@@ -47,12 +47,28 @@ model = granular.GranularWMVFTS(explanatory_variables=[vhour, vtemp, vload], tar
 
 model.fit(train_mv)
 
-print(model)
+
+temp_generator = pwfts.ProbabilisticWeightedFTS(partitioner=vtemp.partitioner, order=2)
+temp_generator.fit(train_mv['temperature'].values)
+
+#print(model)
+
+time_generator = lambda x : pd.to_datetime(x) + pd.to_timedelta(1, unit='h')
+#temp_generator = lambda x : x
+
+generators = {'time': time_generator, 'temperature': temp_generator}
+
+#print(model.predict(test_mv.iloc[:10], type='point', steps_ahead=10, generators=generators))
+#print(model.predict(test_mv.iloc[:10], type='interval', steps_ahead=10, generators=generators))
+print(model.predict(test_mv.iloc[:10], type='distribution', steps_ahead=10, generators=generators))
 
 
-print(model.predict(test_mv.iloc[:10], type='point'))
-print(model.predict(test_mv.iloc[:10], type='interval'))
-print(model.predict(test_mv.iloc[:10], type='distribution'))
+#
+
+#forecasts1 = model.predict(test_mv, type='multivariate')
+#forecasts2 = model.predict(test, type='multivariate', generators={'date': time_generator},
+#                           steps_ahead=200)
+
 
 '''
 from pyFTS.data import Enrollments

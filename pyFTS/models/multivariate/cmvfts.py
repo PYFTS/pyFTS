@@ -38,7 +38,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
     def fuzzyfy(self,data):
         ndata = []
-        for index, row in data.iterrows():
+        for index, row in data.iterrows() if isinstance(data, pd.DataFrame) else enumerate(data):
             data_point = self.format_data(row)
             ndata.append(self.partitioner.fuzzyfy(data_point, mode=self.fuzzyfy_mode))
 
@@ -83,16 +83,7 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         return self.model.forecast_interval(data, fuzzyfied=pre_fuzz, **kwargs)
 
-    def forecast_ahead_interval(self, data, steps, **kwargs):
 
-        if not self.model.has_interval_forecasting:
-            raise Exception("The internal method does not support interval forecasting!")
-
-        data = self.check_data(data)
-
-        pre_fuzz = kwargs.get('pre_fuzzyfy', self.pre_fuzzyfy)
-
-        return self.model.forecast_ahead_interval(data, steps, fuzzyfied=pre_fuzz, **kwargs)
 
     def forecast_distribution(self, data, **kwargs):
 
@@ -107,14 +98,48 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
     def forecast_ahead_distribution(self, data, steps, **kwargs):
 
-        if not self.model.has_probability_forecasting:
-            raise Exception("The internal method does not support probabilistic forecasting!")
+        generators = kwargs.get('generators', None)
 
-        data = self.check_data(data)
+        if generators is None:
+            raise Exception('You must provide parameter \'generators\'! generators is a dict where the keys' +
+                            ' are the dataframe column names (except the target_variable) and the values are ' +
+                            'lambda functions that accept one value (the actual value of the variable) '
+                            ' and return the next value or trained FTS models that accept the actual values and '
+                            'forecast new ones.')
 
-        pre_fuzz = kwargs.get('pre_fuzzyfy', self.pre_fuzzyfy)
+        ndata = self.apply_transformations(data)
 
-        return self.model.forecast_ahead_distribution(data, steps, fuzzyfied=pre_fuzz, **kwargs)
+        start = kwargs.get('start_at', self.order)
+
+        ret = []
+        sample = ndata.iloc[start - self.max_lag:]
+        for k in np.arange(0, steps):
+            tmp = self.forecast_distribution(sample.iloc[-self.max_lag:], **kwargs)[0]
+
+            ret.append(tmp)
+
+            new_data_point = {}
+
+            for data_label in generators.keys():
+                if data_label != self.target_variable.data_label:
+                    if isinstance(generators[data_label], LambdaType):
+                        last_data_point = sample.iloc[-1]
+                        new_data_point[data_label] = generators[data_label](last_data_point[data_label])
+
+                    elif isinstance(generators[data_label], fts.FTS):
+                        gen_model = generators[data_label]
+                        last_data_point = sample.iloc[-gen_model.order:]
+
+                        if not gen_model.is_multivariate:
+                            last_data_point = last_data_point[data_label].values
+
+                        new_data_point[data_label] = gen_model.forecast(last_data_point)[0]
+
+            new_data_point[self.target_variable.data_label] = tmp.expected_value()
+
+            sample = sample.append(new_data_point, ignore_index=True)
+
+        return ret[-steps:]
 
     def forecast_multivariate(self, data, **kwargs):
 

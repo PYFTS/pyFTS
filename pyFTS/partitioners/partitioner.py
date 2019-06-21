@@ -185,29 +185,26 @@ class Partitioner(object):
         if not isinstance(values, list):
             values = [values]
 
-        ret = []
+        num = []
+        den = []
         for val in values:
+            fset = val[0]
+            mv = val[1]
             if mode == 'both':
-                num = []
-                den = []
-                for fset, mv in val:
-                    num.append( self.sets[fset].centroid * mv )
-                    den.append(mv)
-                ret.append(np.sum(num)/np.sum(den))
-            elif mode == 'both':
-                num = np.mean([self.sets[fset].centroid for fset in val ])
-                ret.append(num)
+                num.append( self.sets[fset].centroid * mv )
+                den.append(mv)
+            elif mode == 'sets':
+                num.append(self.sets[fset].centroid)
             elif mode == 'vector':
-                num = []
-                den = []
-                for fset, mv in enumerate(val):
-                    num.append(self.sets[self.ordered_sets[fset]].centroid * mv)
-                    den.append(mv)
-                ret.append(np.sum(num) / np.sum(den))
+                num.append(self.sets[self.ordered_sets[fset]].centroid * mv)
+                den.append(mv)
             else:
                 raise Exception('Unknown deffuzyfication mode')
 
-        return ret
+        if mode in ('both','vector'):
+            return np.sum(num) / np.sum(den)
+        else:
+            return np.mean(num)
 
     def check_bounds(self, data):
         """
