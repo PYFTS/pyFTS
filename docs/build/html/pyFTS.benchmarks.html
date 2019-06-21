@@ -146,6 +146,11 @@
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.common_process_time_jobs">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">common_process_time_jobs</code><span class="sig-paren">(</span><em>conn</em>, <em>data</em>, <em>job</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.common_process_time_jobs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="pyFTS.benchmarks.benchmarks.compareModelsPlot">
 <code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">compareModelsPlot</code><span class="sig-paren">(</span><em>original</em>, <em>models_fo</em>, <em>models_ho</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.compareModelsPlot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -581,6 +586,11 @@ informing the list of dispy nodes on ‘nodes’ parameter.</p>
 <code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">sliding_window_benchmarks2</code><span class="sig-paren">(</span><em>data</em>, <em>windowsize</em>, <em>train=0.8</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.sliding_window_benchmarks2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.train_test_time">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">train_test_time</code><span class="sig-paren">(</span><em>data</em>, <em>windowsize</em>, <em>train=0.8</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.train_test_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-pyFTS.benchmarks.Measures">
 <span id="pyfts-benchmarks-measures-module"></span><h2>pyFTS.benchmarks.Measures module<a class="headerlink" href="#module-pyFTS.benchmarks.Measures" title="Permalink to this headline">¶</a></h2>
@@ -751,7 +761,7 @@ Brier (1950). “Verification of Forecasts Expressed in Terms of Probability”.
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data</strong> – test data</li>
-<li><strong>model</strong> – FTS model with interval forecasting capability</li>
+<li><strong>intervals</strong> – predicted intervals for each datapoint</li>
 <li><strong>kwargs</strong> – </li>
 </ul>
 </td>
@@ -781,6 +791,28 @@ Brier (1950). “Verification of Forecasts Expressed in Terms of Probability”.
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the sharpness, resolution, coverage, .05 pinball mean,
 .25 pinball mean, .75 pinball mean and .95 pinball mean.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.benchmarks.Measures.get_point_ahead_statistics">
+<code class="descclassname">pyFTS.benchmarks.Measures.</code><code class="descname">get_point_ahead_statistics</code><span class="sig-paren">(</span><em>data</em>, <em>forecasts</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.Measures.get_point_ahead_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condensate all measures for point forecasters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – test data</li>
+<li><strong>model</strong> – FTS model with point forecasting capability</li>
+<li><strong>kwargs</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the RMSE, SMAPE and U Statistic</p>
 </td>
 </tr>
 </tbody>
@@ -1031,29 +1063,8 @@ Good IJ (1952).  “Rational Decisions.”Journal of the Royal Statistical Socie
 <span id="pyfts-benchmarks-residualanalysis-module"></span><h2>pyFTS.benchmarks.ResidualAnalysis module<a class="headerlink" href="#module-pyFTS.benchmarks.ResidualAnalysis" title="Permalink to this headline">¶</a></h2>
 <p>Residual Analysis methods</p>
 <dl class="function">
-<dt id="pyFTS.benchmarks.ResidualAnalysis.chi_squared">
-<code class="descclassname">pyFTS.benchmarks.ResidualAnalysis.</code><code class="descname">chi_squared</code><span class="sig-paren">(</span><em>q</em>, <em>h</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.ResidualAnalysis.chi_squared" title="Permalink to this definition">¶</a></dt>
-<dd><p>Chi-Squared value</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>q</strong> – </li>
-<li><strong>h</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="pyFTS.benchmarks.ResidualAnalysis.compare_residuals">
-<code class="descclassname">pyFTS.benchmarks.ResidualAnalysis.</code><code class="descname">compare_residuals</code><span class="sig-paren">(</span><em>data</em>, <em>models</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.ResidualAnalysis.compare_residuals" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.benchmarks.ResidualAnalysis.</code><code class="descname">compare_residuals</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>alpha=0.05</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.ResidualAnalysis.compare_residuals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare residual’s statistics of several models</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1073,32 +1084,13 @@ Good IJ (1952).  “Rational Decisions.”Journal of the Royal Statistical Socie
 </dd></dl>
 
 <dl class="function">
-<dt id="pyFTS.benchmarks.ResidualAnalysis.plotResiduals">
-<code class="descclassname">pyFTS.benchmarks.ResidualAnalysis.</code><code class="descname">plotResiduals</code><span class="sig-paren">(</span><em>targets, models, tam=[8, 8], save=False, file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.ResidualAnalysis.plotResiduals" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot residuals and statistics</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>targets</strong> – </li>
-<li><strong>models</strong> – </li>
-<li><strong>tam</strong> – </li>
-<li><strong>save</strong> – </li>
-<li><strong>file</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<dt id="pyFTS.benchmarks.ResidualAnalysis.ljung_box_test">
+<code class="descclassname">pyFTS.benchmarks.ResidualAnalysis.</code><code class="descname">ljung_box_test</code><span class="sig-paren">(</span><em>residuals, lags=[1, 2, 3], alpha=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.ResidualAnalysis.ljung_box_test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
-<dt id="pyFTS.benchmarks.ResidualAnalysis.plot_residuals">
-<code class="descclassname">pyFTS.benchmarks.ResidualAnalysis.</code><code class="descname">plot_residuals</code><span class="sig-paren">(</span><em>targets, models, tam=[8, 8], save=False, file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.ResidualAnalysis.plot_residuals" title="Permalink to this definition">¶</a></dt>
+<dt id="pyFTS.benchmarks.ResidualAnalysis.plot_residuals_by_model">
+<code class="descclassname">pyFTS.benchmarks.ResidualAnalysis.</code><code class="descname">plot_residuals_by_model</code><span class="sig-paren">(</span><em>targets, models, tam=[8, 8], save=False, file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.ResidualAnalysis.plot_residuals_by_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -1109,7 +1101,7 @@ Good IJ (1952).  “Rational Decisions.”Journal of the Royal Statistical Socie
 
 <dl class="function">
 <dt id="pyFTS.benchmarks.ResidualAnalysis.single_plot_residuals">
-<code class="descclassname">pyFTS.benchmarks.ResidualAnalysis.</code><code class="descname">single_plot_residuals</code><span class="sig-paren">(</span><em>targets, forecasts, order, tam=[8, 8], save=False, file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.ResidualAnalysis.single_plot_residuals" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyFTS.benchmarks.ResidualAnalysis.</code><code class="descname">single_plot_residuals</code><span class="sig-paren">(</span><em>res, order, tam=[10, 7], save=False, file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.ResidualAnalysis.single_plot_residuals" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -1742,28 +1734,6 @@ of the metric ‘measure’ with the same ‘tag’, returning a Pandas DataFram
 </dd></dl>
 
 <dl class="method">
-<dt id="pyFTS.benchmarks.knn.KNearestNeighbors.forecast_ahead">
-<code class="descname">forecast_ahead</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.knn.KNearestNeighbors.forecast_ahead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast n steps ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="pyFTS.benchmarks.knn.KNearestNeighbors.forecast_ahead_distribution">
 <code class="descname">forecast_ahead_distribution</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.knn.KNearestNeighbors.forecast_ahead_distribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Probabilistic forecast n steps ahead</p>
@@ -2231,6 +2201,28 @@ of the metric ‘measure’ with the same ‘tag’, returning a Pandas DataFram
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
 <li><strong>kwargs</strong> – model specific parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.benchmarks.BSTS.ARIMA.forecast_ahead">
+<code class="descname">forecast_ahead</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.BSTS.ARIMA.forecast_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast n steps ahead</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
+<li><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</li>
+<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
 </ul>
 </td>
 </tr>
