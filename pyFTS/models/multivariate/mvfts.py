@@ -170,13 +170,12 @@ class MVFTS(fts.FTS):
 
         ndata = self.apply_transformations(data)
 
-        start = kwargs.get('start_at', self.max_lag)
+        start = kwargs.get('start_at', 0)
 
-        ndata = ndata.loc[ndata.index[start-self.max_lag:start]]
+        ndata = ndata.iloc[start: start + self.max_lag]
         ret = []
-        for k in np.arange(start, start+steps):
-            ix = ndata.index[k-self.max_lag:k]
-            sample = ndata.loc[ix]
+        for k in np.arange(0, steps):
+            sample = ndata.iloc[-self.max_lag:]
             tmp = self.forecast(sample, **kwargs)
 
             if isinstance(tmp, (list, np.ndarray)):
@@ -192,12 +191,13 @@ class MVFTS(fts.FTS):
                         last_data_point = ndata.loc[ndata.index[-1]]
                         new_data_point[data_label] = generators[data_label](last_data_point[data_label])
                     elif isinstance(generators[data_label], fts.FTS):
-                        model = generators[data_label]
-                        last_data_point = ndata.loc[[ndata.index[-model.order]]]
-                        if not model.is_multivariate:
+                        gen_model = generators[data_label]
+                        last_data_point = sample.iloc[-gen_model.order:]
+
+                        if not gen_model.is_multivariate:
                             last_data_point = last_data_point[data_label].values
 
-                        new_data_point[data_label] = model.forecast(last_data_point)[0]
+                        new_data_point[data_label] = gen_model.forecast(last_data_point)[0]
 
             new_data_point[self.target_variable.data_label] = tmp
 
@@ -260,10 +260,10 @@ class MVFTS(fts.FTS):
 
         ndata = self.apply_transformations(data)
 
-        start = kwargs.get('start_at', self.order)
+        start = kwargs.get('start_at', 0)
 
         ret = []
-        ix = ndata.index[start - self.max_lag:]
+        ix = ndata.index[start: start + self.max_lag]
         lo = ndata.loc[ix] #[ndata.loc[k] for k in ix]
         up = ndata.loc[ix] #[ndata.loc[k] for k in ix]
         for k in np.arange(0, steps):
@@ -284,8 +284,8 @@ class MVFTS(fts.FTS):
                         new_data_point_up[data_label] = generators[data_label](last_data_point_up[data_label])
                     elif isinstance(generators[data_label], fts.FTS):
                         model = generators[data_label]
-                        last_data_point_lo = lo.loc[lo.index[-model.order]]
-                        last_data_point_up = up.loc[up.index[-model.order]]
+                        last_data_point_lo = lo.loc[lo.index[-model.order:]]
+                        last_data_point_up = up.loc[up.index[-model.order:]]
 
                         if not model.is_multivariate:
                             last_data_point_lo = last_data_point_lo[data_label].values

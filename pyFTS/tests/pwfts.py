@@ -48,7 +48,7 @@ model = granular.GranularWMVFTS(explanatory_variables=[vhour, vtemp, vload], tar
 model.fit(train_mv)
 
 
-temp_generator = pwfts.ProbabilisticWeightedFTS(partitioner=vtemp.partitioner, order=2)
+temp_generator = pwfts.ProbabilisticWeightedFTS(partitioner=vtemp.partitioner, order=1)
 temp_generator.fit(train_mv['temperature'].values)
 
 #print(model)

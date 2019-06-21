@@ -109,10 +109,10 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         ndata = self.apply_transformations(data)
 
-        start = kwargs.get('start_at', self.order)
+        start = kwargs.get('start_at', 0)
 
         ret = []
-        sample = ndata.iloc[start - self.max_lag:]
+        sample = ndata.iloc[start: start + self.max_lag]
         for k in np.arange(0, steps):
             tmp = self.forecast_distribution(sample.iloc[-self.max_lag:], **kwargs)[0]
 
