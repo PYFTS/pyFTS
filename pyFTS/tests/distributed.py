@@ -31,7 +31,7 @@ datasets['Malaysia.load'] = malaysia["load"].values
 
 windows = [600000, 600000, 10000, 10000]
 
-cpus = 3
+cpus = 7
 
 for ct, (dataset_name, dataset) in enumerate(datasets.items()):
     bchmk.train_test_time(dataset, windowsize=windows[ct], train=0.9, inc=.5,
@@ -40,6 +40,6 @@ for ct, (dataset_name, dataset) in enumerate(datasets.items()):
                      partitions=50,
                      steps=cpus,
                      num_batches=cpus,
-                     distributed='dispy', nodes=['192.168.0.110'], #, '192.168.0.107','192.168.0.106'],
+                     distributed='dispy', nodes=['192.168.0.110', '192.168.0.107','192.168.0.106'],
                      file="experiments.db", dataset=dataset_name,
                      tag="speedup")

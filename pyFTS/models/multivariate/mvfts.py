@@ -302,7 +302,6 @@ class MVFTS(fts.FTS):
 
         return ret[-steps]
 
-
     def clone_parameters(self, model):
         super(MVFTS, self).clone_parameters(model)
 

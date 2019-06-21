@@ -34,12 +34,13 @@ class ClusteredMVFTS(mvfts.MVFTS):
         self.name = "Clustered Multivariate FTS"
 
         self.pre_fuzzyfy = kwargs.get('pre_fuzzyfy', True)
+        self.fuzzyfy_mode = kwargs.get('fuzzyfy_mode', 'sets')
 
     def fuzzyfy(self,data):
         ndata = []
         for index, row in data.iterrows():
             data_point = self.format_data(row)
-            ndata.append(self.partitioner.fuzzyfy(data_point, mode='sets'))
+            ndata.append(self.partitioner.fuzzyfy(data_point, mode=self.fuzzyfy_mode))
 
         return ndata
 
@@ -70,6 +71,50 @@ class ClusteredMVFTS(mvfts.MVFTS):
         pre_fuzz = kwargs.get('pre_fuzzyfy', self.pre_fuzzyfy)
 
         return self.model.forecast(ndata, fuzzyfied=pre_fuzz, **kwargs)
+
+    def forecast_interval(self, data, **kwargs):
+
+        if not self.model.has_interval_forecasting:
+            raise Exception("The internal method does not support interval forecasting!")
+
+        data = self.check_data(data)
+
+        pre_fuzz = kwargs.get('pre_fuzzyfy', self.pre_fuzzyfy)
+
+        return self.model.forecast_interval(data, fuzzyfied=pre_fuzz, **kwargs)
+
+    def forecast_ahead_interval(self, data, steps, **kwargs):
+
+        if not self.model.has_interval_forecasting:
+            raise Exception("The internal method does not support interval forecasting!")
+
+        data = self.check_data(data)
+
+        pre_fuzz = kwargs.get('pre_fuzzyfy', self.pre_fuzzyfy)
+
+        return self.model.forecast_ahead_interval(data, steps, fuzzyfied=pre_fuzz, **kwargs)
+
+    def forecast_distribution(self, data, **kwargs):
+
+        if not self.model.has_probability_forecasting:
+            raise Exception("The internal method does not support probabilistic forecasting!")
+
+        data = self.check_data(data)
+
+        pre_fuzz = kwargs.get('pre_fuzzyfy', self.pre_fuzzyfy)
+
+        return self.model.forecast_distribution(data, fuzzyfied=pre_fuzz, **kwargs)
+
+    def forecast_ahead_distribution(self, data, steps, **kwargs):
+
+        if not self.model.has_probability_forecasting:
+            raise Exception("The internal method does not support probabilistic forecasting!")
+
+        data = self.check_data(data)
+
+        pre_fuzz = kwargs.get('pre_fuzzyfy', self.pre_fuzzyfy)
+
+        return self.model.forecast_ahead_distribution(data, steps, fuzzyfied=pre_fuzz, **kwargs)
 
     def forecast_multivariate(self, data, **kwargs):
 

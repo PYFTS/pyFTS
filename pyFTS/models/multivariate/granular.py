@@ -10,18 +10,19 @@ class GranularWMVFTS(cmvfts.ClusteredMVFTS):
     def __init__(self, **kwargs):
         super(GranularWMVFTS, self).__init__(**kwargs)
 
-        self.fts_method = hofts.WeightedHighOrderFTS
+        self.fts_method = kwargs.get('fts_method', hofts.WeightedHighOrderFTS)
         self.model = None
         """The most recent trained model"""
         self.knn = kwargs.get('knn', 2)
         self.order = kwargs.get("order", 2)
         self.shortname = "GranularWMVFTS"
         self.name = "Granular Weighted Multivariate FTS"
+        self.mode = kwargs.get('mode','sets')
 
     def train(self, data, **kwargs):
         self.partitioner = grid.IncrementalGridCluster(
             explanatory_variables=self.explanatory_variables,
             target_variable=self.target_variable,
             neighbors=self.knn)
-        super(GranularWMVFTS, self).train(data,**kwargs)
+        super(GranularWMVFTS, self).train(data, mode=self.mode, **kwargs)
 

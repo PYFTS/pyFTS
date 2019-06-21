@@ -27,18 +27,26 @@ class MultivariateFuzzySet(Composite.FuzzySet):
 
         if variable == self.target_variable.name:
             self.centroid = set.centroid
+            self.upper = set.upper
+            self.lower = set.lower
 
         self.name += set.name
 
     def set_target_variable(self, variable):
         self.target_variable = variable
         self.centroid = self.sets[variable.name].centroid
+        self.upper = self.sets[variable.name].upper
+        self.lower = self.sets[variable.name].lower
 
     def membership(self, x):
         mv = []
-        for var in self.sets.keys():
-            data = x[var]
-            mv.append(self.sets[var].membership(data))
+        if isinstance(x, (dict, pd.DataFrame)):
+            for var in self.sets.keys():
+                data = x[var]
+                mv.append(self.sets[var].membership(data))
+        else:
+            mv = [self.sets[self.target_variable.name].membership(x)]
+
         return np.nanmin(mv)
 
 

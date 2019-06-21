@@ -321,7 +321,7 @@ class FTS(object):
         if 'partitioner' in kwargs:
             self.partitioner = kwargs.pop('partitioner')
 
-        if not self.is_wrapper and not self.benchmark_only:
+        if not self.is_multivariate and not self.is_wrapper and not self.benchmark_only:
             if self.partitioner is None:
                 raise Exception("Fuzzy sets were not provided for the model. Use 'partitioner' parameter. ")
 

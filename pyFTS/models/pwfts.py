@@ -41,6 +41,13 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
 
         return tmp
 
+    def lhs_conditional_probability_fuzzyfied(self, lhs_mv, sets, norm, uod, nbins):
+        pk = self.frequency_count / norm
+
+        tmp = pk * (lhs_mv / self.partition_function(sets, uod, nbins=nbins))
+
+        return tmp
+
     def rhs_unconditional_probability(self, c):
         return self.RHS[c] / self.frequency_count
 
@@ -114,14 +121,54 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def train(self, data, **kwargs):
 
         self.configure_lags(**kwargs)
-        parameters = kwargs.get('parameters','fuzzy')
 
-        if parameters == 'monotonic':
-            tmpdata = self.partitioner.fuzzyfy(data, mode='sets', method='maximum')
-            flrs = FLR.generate_recurrent_flrs(tmpdata)
-            self.generate_flrg(flrs)
+        if not kwargs.get('fuzzyfied',False):
+            self.generate_flrg2(data)
         else:
-            self.generate_flrg(data)
+            self.generate_flrg_fuzzyfied(data)
+
+    def generate_flrg2(self, data):
+        fuzz = []
+        l = len(data)
+        for k in np.arange(0, l):
+            fuzz.append(self.partitioner.fuzzyfy(data[k], mode='both', method='fuzzy',
+                                                 alpha_cut=self.alpha_cut))
+
+        self.generate_flrg_fuzzyfied(fuzz)
+
+    def generate_flrg_fuzzyfied(self, data):
+        l = len(data)
+        for k in np.arange(self.max_lag, l):
+            sample = data[k - self.max_lag: k]
+            set_sample = []
+            for instance in sample:
+                set_sample.append([k for k, v in instance])
+
+            flrgs = self.generate_lhs_flrg_fuzzyfied(set_sample)
+
+            for flrg in flrgs:
+
+                if flrg.get_key() not in self.flrgs:
+                    self.flrgs[flrg.get_key()] = flrg;
+
+                lhs_mv = self.pwflrg_lhs_memberhip_fuzzyfied(flrg, sample)
+
+                mvs = []
+                inst = data[k]
+                for set, mv in inst:
+                    self.flrgs[flrg.get_key()].append_rhs(set, count=lhs_mv * mv)
+                    mvs.append(mv)
+
+                tmp_fq = sum([lhs_mv * kk for kk in mvs if kk > 0])
+
+                self.global_frequency_count += tmp_fq
+
+    def pwflrg_lhs_memberhip_fuzzyfied(self, flrg, sample):
+        vals = []
+        for ct, fuzz in enumerate(sample):
+            vals.append([mv for fset, mv in fuzz if fset == flrg.LHS[ct]])
+
+        return np.nanprod(vals)
 
     def generate_lhs_flrg(self, sample, explain=False):
         nsample = [self.partitioner.fuzzyfy(k, mode="sets", alpha_cut=self.alpha_cut)
@@ -206,6 +253,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         pb = self.flrg_lhs_unconditional_probability(flrg)
         return mv * pb
 
+    def flrg_lhs_conditional_probability_fuzzyfied(self, x, flrg):
+        mv = self.pwflrg_lhs_memberhip_fuzzyfied(flrg, x)
+        pb = self.flrg_lhs_unconditional_probability(flrg)
+        return mv * pb
+
     def get_midpoint(self, flrg):
         if flrg.get_key() in self.flrgs:
             tmp = self.flrgs[flrg.get_key()]
@@ -273,11 +325,16 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def point_heuristic(self, sample, **kwargs):
 
         explain = kwargs.get('explain', False)
+        fuzzyfied = kwargs.get('fuzzyfied', False)
 
         if explain:
             print("Fuzzyfication \n")
 
-        flrgs = self.generate_lhs_flrg(sample, explain)
+        if not fuzzyfied:
+            flrgs = self.generate_lhs_flrg(sample, explain)
+        else:
+            fsets = self.get_sets_from_both_fuzzyfication(sample)
+            flrgs = self.generate_lhs_flrg_fuzzyfied(fsets, explain)
 
         mp = []
         norms = []
@@ -286,16 +343,17 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             print("Rules:\n")
 
         for flrg in flrgs:
-            norm = self.flrg_lhs_conditional_probability(sample, flrg)
+            if not fuzzyfied:
+                norm = self.flrg_lhs_conditional_probability(sample, flrg)
+            else:
+                norm = self.flrg_lhs_conditional_probability_fuzzyfied(sample, flrg)
 
             if norm == 0:
                 norm = self.flrg_lhs_unconditional_probability(flrg)
 
-
             if explain:
                 print("\t {} \t Midpoint: {}\t Norm: {}\n".format(str(self.flrgs[flrg.get_key()]),
                                                                   self.get_midpoint(flrg), norm))
-
             mp.append(norm * self.get_midpoint(flrg))
             norms.append(norm)
 
@@ -307,10 +365,13 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             print("Deffuzyfied value: {} \n".format(final))
         return final
 
+    def get_sets_from_both_fuzzyfication(self, sample):
+        return [[k for k, v in inst] for inst in sample]
+
     def point_expected_value(self, sample, **kwargs):
         explain = kwargs.get('explain', False)
 
-        dist = self.forecast_distribution(sample)[0]
+        dist = self.forecast_distribution(sample, **kwargs)[0]
 
         final = dist.expected_value()
         return final
@@ -329,28 +390,37 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             sample = ndata[k - (self.max_lag - 1): k + 1]
 
             if method == 'heuristic':
-                ret.append(self.interval_heuristic(sample))
+                ret.append(self.interval_heuristic(sample, **kwargs))
             elif method == 'quantile':
-                ret.append(self.interval_quantile(sample, alpha))
+                ret.append(self.interval_quantile(sample, alpha, **kwargs))
             else:
                 raise ValueError("Unknown interval forecasting method!")
 
         return ret
 
-    def interval_quantile(self, ndata, alpha):
-        dist = self.forecast_distribution(ndata)
+    def interval_quantile(self, ndata, alpha, **kwargs):
+        dist = self.forecast_distribution(ndata, **kwargs)
         itvl = dist[0].quantile([alpha, 1.0 - alpha])
         return itvl
 
-    def interval_heuristic(self, sample):
+    def interval_heuristic(self, sample, **kwargs):
+        fuzzyfied = kwargs.get('fuzzyfied', False)
 
-        flrgs = self.generate_lhs_flrg(sample)
+        if not fuzzyfied:
+            flrgs = self.generate_lhs_flrg(sample)
+        else:
+            fsets = self.get_sets_from_both_fuzzyfication(sample)
+            flrgs = self.generate_lhs_flrg_fuzzyfied(fsets)
 
         up = []
         lo = []
         norms = []
         for flrg in flrgs:
-            norm = self.flrg_lhs_conditional_probability(sample, flrg)
+            if not fuzzyfied:
+                norm = self.flrg_lhs_conditional_probability(sample, flrg)
+            else:
+                norm = self.flrg_lhs_conditional_probability_fuzzyfied(sample, flrg)
+
             if norm == 0:
                 norm = self.flrg_lhs_unconditional_probability(flrg)
             up.append(norm * self.get_upper(flrg))
@@ -370,6 +440,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         smooth = kwargs.get("smooth", "none")
 
+        fuzzyfied = kwargs.get('fuzzyfied', False)
+
         l = len(ndata)
         uod = self.get_UoD()
 
@@ -385,7 +457,11 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         for k in np.arange(self.max_lag - 1, l):
             sample = ndata[k - (self.max_lag - 1): k + 1]
 
-            flrgs = self.generate_lhs_flrg(sample)
+            if not fuzzyfied:
+                flrgs = self.generate_lhs_flrg(sample)
+            else:
+                fsets = self.get_sets_from_both_fuzzyfication(sample)
+                flrgs = self.generate_lhs_flrg_fuzzyfied(fsets)
 
             if 'type' in kwargs:
                 kwargs.pop('type')
@@ -398,8 +474,14 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 for s in flrgs:
                     if s.get_key() in self.flrgs:
                         flrg = self.flrgs[s.get_key()]
-                        pk = flrg.lhs_conditional_probability(sample, self.partitioner.sets, self.global_frequency_count, uod, nbins)
                         wi = flrg.rhs_conditional_probability(bin, self.partitioner.sets, uod, nbins)
+                        if not fuzzyfied:
+                            pk = flrg.lhs_conditional_probability(sample, self.partitioner.sets, self.global_frequency_count, uod, nbins)
+                        else:
+                            lhs_mv = self.pwflrg_lhs_memberhip_fuzzyfied(flrg, sample)
+                            pk = flrg.lhs_conditional_probability_fuzzyfied(lhs_mv, self.partitioner.sets,
+                                                                  self.global_frequency_count, uod, nbins)
+
                         num.append(wi * pk)
                         den.append(pk)
                     else:
@@ -422,13 +504,15 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         l = len(data)
 
+        fuzzyfied = kwargs.get('fuzzyfied', False)
+
         start = kwargs.get('start_at', 0)
 
         ret = data[start: start+self.max_lag].tolist()
 
         for k in np.arange(self.max_lag, steps+self.max_lag):
 
-            if self.__check_point_bounds(ret[-1]) :
+            if self.__check_point_bounds(ret[-1]) and not fuzzyfied:
                 ret.append(ret[-1])
             else:
                 mp = self.forecast(ret[k - self.max_lag: k], **kwargs)
@@ -448,11 +532,19 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         start = kwargs.get('start_at', 0)
 
+        fuzzyfied = kwargs.get('fuzzyfied', False)
+
         sample = data[start: start + self.max_lag]
 
-        ret = [[k, k] for k in sample]
+        if not fuzzyfied:
+            ret = [[k, k] for k in sample]
+        else:
+            ret = []
+            for k in sample:
+                kv = self.partitioner.deffuzyfy(k,mode='both')
+                ret.append([kv,kv])
         
-        ret.append(self.forecast_interval(sample)[0])
+        ret.append(self.forecast_interval(sample, **kwargs)[0])
 
         for k in np.arange(self.max_lag+1, steps+self.max_lag):
 
@@ -492,7 +584,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             tmp.set(dat, 1.0)
             ret.append(tmp)
 
-        dist = self.forecast_distribution(sample, bins=_bins)[0]
+        dist = self.forecast_distribution(sample, bins=_bins, **kwargs)[0]
 
         ret.append(dist)
 

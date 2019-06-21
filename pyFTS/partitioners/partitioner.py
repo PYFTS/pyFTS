@@ -181,6 +181,34 @@ class Partitioner(object):
             sets = [(self.ordered_sets[i], mv[i]) for i in ix]
             return sets
 
+    def defuzzyfy(self, values, mode='both'):
+        if not isinstance(values, list):
+            values = [values]
+
+        ret = []
+        for val in values:
+            if mode == 'both':
+                num = []
+                den = []
+                for fset, mv in val:
+                    num.append( self.sets[fset].centroid * mv )
+                    den.append(mv)
+                ret.append(np.sum(num)/np.sum(den))
+            elif mode == 'both':
+                num = np.mean([self.sets[fset].centroid for fset in val ])
+                ret.append(num)
+            elif mode == 'vector':
+                num = []
+                den = []
+                for fset, mv in enumerate(val):
+                    num.append(self.sets[self.ordered_sets[fset]].centroid * mv)
+                    den.append(mv)
+                ret.append(np.sum(num) / np.sum(den))
+            else:
+                raise Exception('Unknown deffuzyfication mode')
+
+        return ret
+
     def check_bounds(self, data):
         """
         Check if the input data is outside the known Universe of Discourse and, if it is, round it to the closest

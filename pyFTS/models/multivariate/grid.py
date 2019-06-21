@@ -31,6 +31,34 @@ class GridCluster(partitioner.MultivariatePartitioner):
 
         self.build_index()
 
+    def defuzzyfy(self, values, mode='both'):
+        if not isinstance(values, list):
+            values = [values]
+
+        ret = []
+        for val in values:
+            if mode == 'both':
+                num = []
+                den = []
+                for fset, mv in val:
+                    num.append(self.sets[fset].centroid * mv)
+                    den.append(mv)
+                ret.append(np.sum(num) / np.sum(den))
+            elif mode == 'both':
+                num = np.mean([self.sets[fset].centroid for fset in val])
+                ret.append(num)
+            elif mode == 'vector':
+                num = []
+                den = []
+                for fset, mv in enumerate(val):
+                    num.append(self.sets[self.ordered_sets[fset]].centroid * mv)
+                    den.append(mv)
+                ret.append(np.sum(num) / np.sum(den))
+            else:
+                raise Exception('Unknown deffuzyfication mode')
+
+        return ret
+
 
 class IncrementalGridCluster(partitioner.MultivariatePartitioner):
     """
@@ -67,7 +95,8 @@ class IncrementalGridCluster(partitioner.MultivariatePartitioner):
             for key in fsets:
                 mvfset = self.sets[key]
                 ret.append((key, mvfset.membership(data)))
-            return ret
+
+        return ret
 
     def incremental_search(self, data, **kwargs):
         alpha_cut = kwargs.get('alpha_cut', 0.)
@@ -77,21 +106,30 @@ class IncrementalGridCluster(partitioner.MultivariatePartitioner):
         ret = []
         for var in self.explanatory_variables:
             ac = alpha_cut if alpha_cut > 0. else var.alpha_cut
-            fsets[var.name] = var.partitioner.fuzzyfy(data[var.name], mode='sets', alpha_cut=ac)
+            fsets[var.name] = var.partitioner.fuzzyfy(data[var.name], mode=mode, alpha_cut=ac)
 
-        fset = [val for key, val in fsets.items()]
+        fsets_by_var = [fsets for var, fsets in fsets.items()]
 
-        for p in product(*fset):
-            key = ''.join(p)
+        for p in product(*fsets_by_var):
+            if mode == 'both':
+                path = [fset for fset, mv in p]
+                mv = [mv for fset, mv in p]
+                key = ''.join(path)
+            elif mode == 'sets':
+                key = ''.join(p)
+                path = p
             if key not in self.sets:
                 mvfset = MultivariateFuzzySet(target_variable=self.target_variable)
-                for ct, fs in enumerate(p):
+                for ct, fs in enumerate(path):
                     mvfset.append_set(self.explanatory_variables[ct].name,
                                       self.explanatory_variables[ct].partitioner[fs])
                 mvfset.name = key
                 self.sets[key] = mvfset
-            ret.append(key)
 
+            if mode == 'sets':
+                ret.append(key)
+            elif mode == 'both':
+                ret.append( tuple(key,np.nanmin(mv)) )
 
         return ret
 

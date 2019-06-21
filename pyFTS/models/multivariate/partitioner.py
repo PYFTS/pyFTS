@@ -26,6 +26,11 @@ class MultivariatePartitioner(partitioner.Partitioner):
             self.count = {}
         data = kwargs.get('data', None)
         self.build(data)
+        self.uod = {}
+
+        self.min = self.target_variable.partitioner.min
+        self.max = self.target_variable.partitioner.max
+
 
     def format_data(self, data):
         ndata = {}
@@ -88,8 +93,11 @@ class MultivariatePartitioner(partitioner.Partitioner):
         return fuzzyfy_instance_clustered(data, self, **kwargs)
 
     def change_target_variable(self, variable):
+        self.target_variable = variable
         for fset in self.sets.values():
             fset.set_target_variable(variable)
+        self.min = variable.partitioner.min
+        self.max = variable.partitioner.max
 
     def build_index(self):
 
