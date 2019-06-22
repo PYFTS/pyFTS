@@ -165,8 +165,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
     def pwflrg_lhs_memberhip_fuzzyfied(self, flrg, sample):
         vals = []
-        for ct, fuzz in enumerate(sample):
-            vals.append([mv for fset, mv in fuzz if fset == flrg.LHS[ct]])
+        for ct in range(len(flrg.LHS)): # fuzz in enumerate(sample):
+            vals.append([mv for fset, mv in sample[ct] if fset == flrg.LHS[ct]])
 
         return np.nanprod(vals)
 

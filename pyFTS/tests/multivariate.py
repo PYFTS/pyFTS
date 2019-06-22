@@ -19,9 +19,33 @@ from pyFTS.common import Membership
 
 
 import os
+'''
+def sample_by_hour(data):
+    return [np.nanmean(data[k:k+60]) for k in np.arange(0,len(data),60)]
+
+def sample_date_by_hour(data):
+    return [data[k] for k in np.arange(0,len(data),60)]
+
+from pyFTS.data import SONDA
+
+sonda = SONDA.get_dataframe()[['datahora','glo_avg','ws_10m']]
+
+sonda = sonda.drop(sonda.index[np.where(sonda["ws_10m"] <= 0.01)])
+sonda = sonda.drop(sonda.index[np.where(sonda["glo_avg"] <= 0.01)])
+sonda = sonda.dropna()
+sonda['datahora'] = pd.to_datetime(sonda["datahora"], format='%Y-%m-%d %H:%M:%S')
 
 
-from pyFTS.data import SONDA, Malaysia
+var = {
+    'datahora': sample_date_by_hour(sonda['datahora'].values),
+    'glo_avg': sample_by_hour(sonda['glo_avg'].values),
+    'ws_10m': sample_by_hour(sonda['ws_10m'].values)
+}
+
+df = pd.DataFrame(var)
+'''
+
+from pyFTS.data import Malaysia
 
 df = Malaysia.get_dataframe()
 df['time'] = pd.to_datetime(df["time"], format='%m/%d/%y %I:%M %p')
@@ -39,11 +63,10 @@ variables = {
                          alpha_cut=.25)
 }
 
-methods = [mvfts.MVFTS, wmvfts.WeightedMVFTS, granular.GranularWMVFTS]
-#methods = [granular.GranularWMVFTS]
+
+methods = [granular.GranularWMVFTS]
 
 parameters = [
-    {},{},
     dict(fts_method=pwfts.ProbabilisticWeightedFTS, fuzzyfy_mode='both',
                 order=1, knn=1)
 ]
@@ -52,14 +75,14 @@ bchmk.multivariate_sliding_window_benchmarks2(df, 10000, train=0.9, inc=0.25,
                                               methods=methods,
                                               methods_parameters=parameters,
                                               variables=variables,
-                                              target_variable='Load',
-                                              type='interval',
+                                              target_variable='Temperature',
+                                              type='distribution',
                                               steps_ahead=[1],
-                                              distributed=False,
-                                              nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
-                                              file="experiments.db", dataset='Malaysia',
+                                              file="experiments.db", dataset='Malaysia.temperature',
                                               tag="experiments"
                                               )
+
+
 
 
 '''

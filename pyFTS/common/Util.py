@@ -216,7 +216,7 @@ def plot_distribution2(probabilitydist, data, **kwargs):
     if kwargs.get('median',True):
         y = [data[start_at]]
         for pd in probabilitydist:
-            qts = pd.quantile(.5)
+            qts = pd.quantile([.5])
             y.append(qts[0])
 
         ax.plot(x, y, color='red', label='Median')

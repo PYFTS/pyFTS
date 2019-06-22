@@ -139,24 +139,33 @@ def evaluate(dataset, individual, **kwargs):
 
     for count, train, test in Util.sliding_window(dataset, window_size, train=train_rate, inc=increment_rate):
 
-        model = phenotype(individual, train, fts_method=fts_method, parameters=parameters)
+        try:
 
-        forecasts = model.predict(test)
+            model = phenotype(individual, train, fts_method=fts_method, parameters=parameters)
 
-        rmse = Measures.rmse(test[model.max_lag:], forecasts[:-1])
-        lengths.append(len(model))
+            forecasts = model.predict(test)
 
-        errors.append(rmse)
+            rmse = Measures.rmse(test[model.max_lag:], forecasts[:-1])
+            lengths.append(len(model))
 
-    _lags = sum(model.lags) * 100
+            errors.append(rmse)
 
-    _rmse = np.nanmean(errors)
-    _len = np.nanmean(lengths)
+        except:
+            lengths.append(np.nan)
+            errors.append(np.nan)
 
-    f1 = np.nansum([.6 * _rmse, .4 * np.nanstd(errors)])
-    f2 = np.nansum([.4 * _len, .6 * _lags])
+    try:
+        _lags = sum(model.lags) * 100
 
-    return {'f1': f1, 'f2': f2, 'rmse': _rmse, 'size': _len }
+        _rmse = np.nanmean(errors)
+        _len = np.nanmean(lengths)
+
+        f1 = np.nansum([.6 * _rmse, .4 * np.nanstd(errors)])
+        f2 = np.nansum([.4 * _len, .6 * _lags])
+
+        return {'f1': f1, 'f2': f2, 'rmse': _rmse, 'size': _len }
+    except:
+        return {'f1': np.inf, 'f2': np.inf, 'rmse': np.inf, 'size': np.inf}
 
 
 def tournament(population, objective, **kwargs):

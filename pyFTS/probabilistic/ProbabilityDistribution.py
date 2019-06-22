@@ -217,7 +217,7 @@ class ProbabilityDistribution(object):
         else:
             try:
                 k = self.bin_index.find_ge(values)
-                return self.cdf[values]
+                return self.cdf[k]
             except:
                 return np.nan
 

@@ -15,8 +15,8 @@ class GranularWMVFTS(cmvfts.ClusteredMVFTS):
         """The most recent trained model"""
         self.knn = kwargs.get('knn', 2)
         self.order = kwargs.get("order", 2)
-        self.shortname = "GranularWMVFTS"
-        self.name = "Granular Weighted Multivariate FTS"
+        self.shortname = "FIG-FTS"
+        self.name = "Fuzzy Information Granular FTS"
         self.mode = kwargs.get('mode','sets')
 
     def train(self, data, **kwargs):

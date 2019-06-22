@@ -300,6 +300,9 @@ def crps(targets, densities):
         targets = [targets]
 
     n = len(densities)
+    if n == 0:
+        return np.nan
+
     for ct, df in enumerate(densities):
         _crps += np.nansum([(df.cumulative(bin) - (1 if bin >= targets[ct] else 0)) ** 2 for bin in df.bins])
 
