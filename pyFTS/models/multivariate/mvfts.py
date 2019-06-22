@@ -152,7 +152,7 @@ class MVFTS(fts.FTS):
             mv = np.array(mvs)
             mp = np.array(mps)
 
-            ret.append(np.dot(mv,mp.T)/np.sum(mv))
+            ret.append(np.dot(mv,mp.T)/np.nansum(mv))
 
         ret = self.target_variable.apply_inverse_transformations(ret,
                                                            params=data[self.target_variable.data_label].values)

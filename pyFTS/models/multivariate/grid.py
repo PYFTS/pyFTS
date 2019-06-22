@@ -43,7 +43,7 @@ class GridCluster(partitioner.MultivariatePartitioner):
                 for fset, mv in val:
                     num.append(self.sets[fset].centroid * mv)
                     den.append(mv)
-                ret.append(np.sum(num) / np.sum(den))
+                ret.append(np.nansum(num) / np.nansum(den))
             elif mode == 'both':
                 num = np.mean([self.sets[fset].centroid for fset in val])
                 ret.append(num)
@@ -53,7 +53,7 @@ class GridCluster(partitioner.MultivariatePartitioner):
                 for fset, mv in enumerate(val):
                     num.append(self.sets[self.ordered_sets[fset]].centroid * mv)
                     den.append(mv)
-                ret.append(np.sum(num) / np.sum(den))
+                ret.append(np.nansum(num) / np.nansum(den))
             else:
                 raise Exception('Unknown deffuzyfication mode')
 

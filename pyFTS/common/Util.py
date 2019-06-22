@@ -202,13 +202,16 @@ def plot_distribution2(probabilitydist, data, **kwargs):
     scalarMap = cm.ScalarMappable(norm=normal, cmap=cmap)
 
     for ct in np.arange(1, int(lq / 2) + 1):
-        y = [[data[start_at], data[start_at]]]
-        for pd in probabilitydist:
-            qts = pd.quantile([qt[ct - 1], qt[-ct]])
-            y.append(qts)
+        try:
+            y = [[data[start_at], data[start_at]]]
+            for pd in probabilitydist:
+                qts = pd.quantile([qt[ct - 1], qt[-ct]])
+                y.append(qts)
 
-        ax.fill_between(x, [k[0] for k in y], [k[1] for k in y],
-                        facecolor=scalarMap.to_rgba(ct / lq))
+            ax.fill_between(x, [k[0] for k in y], [k[1] for k in y],
+                            facecolor=scalarMap.to_rgba(ct / lq))
+        except:
+            pass
 
     if kwargs.get('median',True):
         y = [data[start_at]]

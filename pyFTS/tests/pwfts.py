@@ -14,71 +14,68 @@ from pyFTS.models import pwfts,hofts,ifts
 from pyFTS.models.multivariate import granular, grid
 from pyFTS.partitioners import Grid, Util as pUtil
 
-from pyFTS.models.multivariate import common, variable, mvfts
+from pyFTS.models.multivariate import common, variable, mvfts, wmvfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
 from pyFTS.common import Membership
 
-from pyFTS.data import SONDA, Malaysia
+def sample_by_hour(data):
+    return [np.nanmean(data[k:k+60]) for k in np.arange(0,len(data),60)]
 
-df = Malaysia.get_dataframe()
-df['time'] = pd.to_datetime(df["time"], format='%m/%d/%y %I:%M %p')
+def sample_date_by_hour(data):
+    return [data[k] for k in np.arange(0,len(data),60)]
 
-train_mv = df.iloc[:8000]
-test_mv = df.iloc[8000:10000]
+from pyFTS.data import SONDA
 
-sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
+sonda = SONDA.get_dataframe()[['datahora','glo_avg','ws_10m']]
 
-vhour = variable.Variable("Hour", data_label="time", partitioner=seasonal.TimeGridPartitioner, npart=24,
+sonda = sonda.drop(sonda.index[np.where(sonda["ws_10m"] <= 0.01)])
+sonda = sonda.drop(sonda.index[np.where(sonda["glo_avg"] <= 0.01)])
+sonda = sonda.dropna()
+sonda['datahora'] = pd.to_datetime(sonda["datahora"], format='%Y-%m-%d %H:%M:%S')
+
+
+var = {
+    'datahora': sample_date_by_hour(sonda['datahora'].values),
+    'glo_avg': sample_by_hour(sonda['glo_avg'].values),
+    'ws_10m': sample_by_hour(sonda['ws_10m'].values),
+}
+
+df = pd.DataFrame(var)
+
+train_mv = df.iloc[:9000]
+test_mv = df.iloc[9000:10000]
+
+fig, ax = plt.subplots(nrows=2, ncols=1, figsize=[10,3])
+
+sp = {'seasonality': DateTime.month, 'names': ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']}
+
+vmonth = variable.Variable("Month", data_label="datahora", partitioner=seasonal.TimeGridPartitioner, npart=12,
                           data=train_mv, partitioner_specific=sp, alpha_cut=.3)
-vtemp = variable.Variable("Temperature", data_label="temperature", alias='temp',
-                         partitioner=Grid.GridPartitioner, npart=5, func=Membership.gaussmf,
-                         data=train_mv, alpha_cut=.3)
-vload = variable.Variable("Load", data_label="load", alias='load',
-                         partitioner=Grid.GridPartitioner, npart=5, func=Membership.gaussmf,
-                         data=train_mv, alpha_cut=.3)
 
-order = 1
-knn = 1
+vmonth.partitioner.plot(ax[0])
 
-model = granular.GranularWMVFTS(explanatory_variables=[vhour, vtemp, vload], target_variable=vload,
+vwin = variable.Variable("Wind", data_label="ws_10m", alias='wind',
+                         partitioner=Grid.GridPartitioner, npart=15, func=Membership.gaussmf,
+                         data=train_mv, alpha_cut=.25)
+
+vwin.partitioner.plot(ax[1])
+
+plt.tight_layout()
+
+order = 3
+knn = 2
+
+model = granular.GranularWMVFTS(explanatory_variables=[vmonth, vwin], target_variable=vwin,
                                 fts_method=pwfts.ProbabilisticWeightedFTS, fuzzyfy_mode='both',
                                 order=order, knn=knn)
 
 model.fit(train_mv)
 
+fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[15,3])
+ax.plot(test_mv['ws_10m'].values[:100], label='original')
 
-temp_generator = pwfts.ProbabilisticWeightedFTS(partitioner=vtemp.partitioner, order=1)
-temp_generator.fit(train_mv['temperature'].values)
+forecasts = model.predict(test_mv.iloc[:100], type='distribution')
 
-#print(model)
+Util.plot_distribution2(forecasts, test_mv['ws_10m'].values[:100], start_at=model.order-1, ax=ax)
 
-time_generator = lambda x : pd.to_datetime(x) + pd.to_timedelta(1, unit='h')
-#temp_generator = lambda x : x
-
-generators = {'time': time_generator, 'temperature': temp_generator}
-
-#print(model.predict(test_mv.iloc[:10], type='point', steps_ahead=10, generators=generators))
-#print(model.predict(test_mv.iloc[:10], type='interval', steps_ahead=10, generators=generators))
-print(model.predict(test_mv.iloc[:10], type='distribution', steps_ahead=10, generators=generators))
-
-
-#
-
-#forecasts1 = model.predict(test_mv, type='multivariate')
-#forecasts2 = model.predict(test, type='multivariate', generators={'date': time_generator},
-#                           steps_ahead=200)
-
-
-'''
-from pyFTS.data import Enrollments
-train = Enrollments.get_data()
-
-fs = Grid.GridPartitioner(data=train, npart=10) #, transformation=tdiff)
-
-model = pwfts.ProbabilisticWeightedFTS(partitioner=fs, order=2)
-model.fit(train)
-print(model)
-
-print(model.predict(train))
-'''

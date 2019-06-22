@@ -202,9 +202,9 @@ class Partitioner(object):
                 raise Exception('Unknown deffuzyfication mode')
 
         if mode in ('both','vector'):
-            return np.sum(num) / np.sum(den)
+            return np.nansum(num) / np.nansum(den)
         else:
-            return np.mean(num)
+            return np.nanmean(num)
 
     def check_bounds(self, data):
         """

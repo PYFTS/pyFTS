@@ -7,12 +7,11 @@ from pyFTS.partitioners import Grid, Simple, Entropy
 from pyFTS.common import Util
 
 from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts, grid, granular
-from pyFTS.benchmarks import Measures
+from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.common import Util as cUtil
-
+from pyFTS.models import pwfts
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
-
 
 from pyFTS.models.multivariate import common, variable, mvfts
 from pyFTS.partitioners import Grid
@@ -22,54 +21,45 @@ from pyFTS.common import Membership
 import os
 
 
-dataset = pd.read_csv('https://query.data.world/s/2bgegjggydd3venttp3zlosh3wpjqj', sep=';')
+from pyFTS.data import SONDA, Malaysia
 
-dataset['data'] = pd.to_datetime(dataset["data"], format='%Y-%m-%d %H:%M:%S')
-
-train_uv = dataset['glo_avg'].values[:24505]
-test_uv = dataset['glo_avg'].values[24505:]
-
-train_mv = dataset.iloc[:24505]
-test_mv = dataset.iloc[24505:]
-
-from pyFTS.models.multivariate import common, variable, mvfts
-from pyFTS.models.seasonal import partitioner as seasonal
-from pyFTS.models.seasonal.common import DateTime
-
-from itertools import product
-
-levels = ['VL', 'L', 'M', 'H', 'VH']
-sublevels = [str(k) for k in np.arange(0, 7)]
-names = []
-for combination in product(*[levels, sublevels]):
-    names.append(combination[0] + combination[1])
-
-sp = {'seasonality': DateTime.day_of_year , 'names': ['Jan','Feb','Mar','Apr','May',
-                                                      'Jun','Jul', 'Aug','Sep','Oct',
-                                                      'Nov','Dec']}
-
-vmonth = variable.Variable("Month", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=12,
-                           data=train_mv, partitioner_specific=sp)
-
+df = Malaysia.get_dataframe()
+df['time'] = pd.to_datetime(df["time"], format='%m/%d/%y %I:%M %p')
 
 sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
 
-vhour = variable.Variable("Hour", data_label="data", partitioner=seasonal.TimeGridPartitioner, npart=24,
-                          data=train_mv, partitioner_specific=sp)
+variables = {
+    "Hour": dict(data_label="time", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                          partitioner_specific=sp, alpha_cut=.3),
+    "Temperature": dict(data_label="temperature", alias='temp',
+                        partitioner=Grid.GridPartitioner, npart=10, func=Membership.gaussmf,
+                        alpha_cut=.25),
+    "Load": dict(data_label="load", alias='load',
+                         partitioner=Grid.GridPartitioner, npart=10, func=Membership.gaussmf,
+                         alpha_cut=.25)
+}
 
-vavg = variable.Variable("Radiation", data_label="glo_avg", alias='rad',
-                         partitioner=Grid.GridPartitioner, npart=35, partitioner_specific={'names': names},
-                         data=train_mv)
-fs = grid.GridCluster(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
-model = cmvfts.ClusteredMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg, partitioner=fs,
-                              order=2, knn=1)
-#model = wmvfts.WeightedMVFTS(explanatory_variables=[vmonth, vhour, vavg], target_variable=vavg)
+methods = [mvfts.MVFTS, wmvfts.WeightedMVFTS, granular.GranularWMVFTS]
+#methods = [granular.GranularWMVFTS]
 
-model.fit(train_mv)
-generator = lambda x : x + pd.to_timedelta(1, unit='h')
-forecasts = model.predict(test_mv.iloc[:3], steps_ahead=48, generators={'data': generator} )
+parameters = [
+    {},{},
+    dict(fts_method=pwfts.ProbabilisticWeightedFTS, fuzzyfy_mode='both',
+                order=1, knn=1)
+]
 
-print(forecasts)
+bchmk.multivariate_sliding_window_benchmarks2(df, 10000, train=0.9, inc=0.25,
+                                              methods=methods,
+                                              methods_parameters=parameters,
+                                              variables=variables,
+                                              target_variable='Load',
+                                              type='interval',
+                                              steps_ahead=[1],
+                                              distributed=False,
+                                              nodes=['192.168.0.110', '192.168.0.107', '192.168.0.106'],
+                                              file="experiments.db", dataset='Malaysia',
+                                              tag="experiments"
+                                              )
 
 
 '''

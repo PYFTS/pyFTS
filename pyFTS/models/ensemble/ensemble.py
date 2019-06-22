@@ -110,7 +110,7 @@ class EnsembleFTS(fts.FTS):
             ret = np.nanpercentile(forecasts, 50)
         elif self.point_method == 'quantile':
             alpha = kwargs.get("alpha",0.05)
-            ret = np.percentile(forecasts, alpha*100)
+            ret = np.nanpercentile(forecasts, alpha*100)
         elif self.point_method == 'exponential':
             l = len(self.models)
             if l == 1:

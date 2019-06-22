@@ -209,11 +209,17 @@ class ProbabilityDistribution(object):
         if isinstance(values, list):
             ret = []
             for val in values:
-                k = self.bin_index.find_ge(val)
-                ret.append(self.cdf[k])
+                try:
+                    k = self.bin_index.find_ge(val)
+                    ret.append(self.cdf[k])
+                except:
+                    ret.append(np.nan)
         else:
-            k = self.bin_index.find_ge(values)
-            return self.cdf[values]
+            try:
+                k = self.bin_index.find_ge(values)
+                return self.cdf[values]
+            except:
+                return np.nan
 
     def quantile(self, values):
         """
@@ -229,11 +235,17 @@ class ProbabilityDistribution(object):
         if isinstance(values, list):
             ret = []
             for val in values:
-                k = self.quantile_index.find_ge(val)
-                ret.append(self.qtl[str(k)][0])
+                try:
+                    k = self.quantile_index.find_ge(val)
+                    ret.append(self.qtl[str(k)][0])
+                except:
+                    ret.append(np.nan)
         else:
-            k = self.quantile_index.find_ge(values)
-            ret = self.qtl[str(k)]
+            try:
+                k = self.quantile_index.find_ge(values)
+                ret = self.qtl[str(k)]
+            except:
+                return np.nan
 
         return ret
 
@@ -243,7 +255,7 @@ class ProbabilityDistribution(object):
 
         :return:the entropy of the probability distribution
         """
-        h = -sum([self.distribution[k] * np.log(self.distribution[k]) if self.distribution[k] > 0 else 0
+        h = -np.nansum([self.distribution[k] * np.log(self.distribution[k]) if self.distribution[k] > 0 else 0
                   for k in self.bins])
         return h
 
@@ -255,7 +267,7 @@ class ProbabilityDistribution(object):
         :param q: a probabilistic.ProbabilityDistribution object
         :return: Cross entropy between this probability distribution and the given distribution
         """
-        h = -sum([self.distribution[k] * np.log(q.distribution[k]) if self.distribution[k] > 0 else 0
+        h = -np.nansum([self.distribution[k] * np.log(q.distribution[k]) if self.distribution[k] > 0 else 0
                   for k in self.bins])
         return h
 
@@ -267,7 +279,7 @@ class ProbabilityDistribution(object):
         :param q:  a probabilistic.ProbabilityDistribution object
         :return: Kullback-Leibler divergence
         """
-        h = sum([self.distribution[k] * np.log(self.distribution[k]/q.distribution[k]) if self.distribution[k] > 0 else 0
+        h = np.nansum([self.distribution[k] * np.log(self.distribution[k]/q.distribution[k]) if self.distribution[k] > 0 else 0
                   for k in self.bins])
         return h
 

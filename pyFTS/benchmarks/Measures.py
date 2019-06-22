@@ -89,7 +89,7 @@ def smape(targets, forecasts, type=2):
     elif type == 2:
         return np.nanmean(np.abs(forecasts - targets) / (np.abs(forecasts) + abs(targets))) * 100
     else:
-        return np.sum(np.abs(forecasts - targets)) / np.sum(forecasts + targets)
+        return np.nansum(np.abs(forecasts - targets)) / np.nansum(forecasts + targets)
 
 
 def mape_interval(targets, forecasts):
@@ -124,7 +124,7 @@ def UStatistic(targets, forecasts):
     for k in np.arange(0, l - 1):
         y.append(np.subtract(forecasts[k], targets[k]) ** 2)
         naive.append(np.subtract(targets[k + 1], targets[k]) ** 2)
-    return np.sqrt(np.divide(np.sum(y), np.sum(naive)))
+    return np.sqrt(np.divide(np.nansum(y), np.nansum(naive)))
 
 
 def TheilsInequality(targets, forecasts):
@@ -137,9 +137,9 @@ def TheilsInequality(targets, forecasts):
     """
     res = targets - forecasts
     t = len(res)
-    us = np.sqrt(sum([u ** 2 for u in res]))
-    ys = np.sqrt(sum([y ** 2 for y in targets]))
-    fs = np.sqrt(sum([f ** 2 for f in forecasts]))
+    us = np.sqrt(np.nansum([u ** 2 for u in res]))
+    ys = np.sqrt(np.nansum([y ** 2 for y in targets]))
+    fs = np.sqrt(np.nansum([f ** 2 for f in forecasts]))
     return us / (ys + fs)
 
 
@@ -255,12 +255,12 @@ def brier_score(targets, densities):
         try:
             v = d.bin_index.find_le(targets[ct])
 
-            score = sum([d.density(k) ** 2 for k in d.bins if k != v])
+            score = np.nansum([d.density(k) ** 2 for k in d.bins if k != v])
             score += (d.density(v) - 1) ** 2
             ret.append(score)
         except ValueError as ex:
-            ret.append(sum([d.density(k) ** 2 for k in d.bins]))
-    return sum(ret) / len(ret)
+            ret.append(np.nansum([d.density(k) ** 2 for k in d.bins]))
+    return np.nansum(ret) / len(ret)
 
 
 def logarithm_score(targets, densities):
@@ -301,7 +301,7 @@ def crps(targets, densities):
 
     n = len(densities)
     for ct, df in enumerate(densities):
-        _crps += sum([(df.cumulative(bin) - (1 if bin >= targets[ct] else 0)) ** 2 for bin in df.bins])
+        _crps += np.nansum([(df.cumulative(bin) - (1 if bin >= targets[ct] else 0)) ** 2 for bin in df.bins])
 
     return _crps / n
 
@@ -419,6 +419,8 @@ def get_interval_statistics(data, model, **kwargs):
         forecasts = model.predict(data, **kwargs)
         ret.append(round(sharpness(forecasts), 2))
         ret.append(round(resolution(forecasts), 2))
+        if model.is_multivariate:
+            data = data[model.target_variable.data_label].values
         ret.append(round(coverage(data[model.max_lag:], forecasts[:-1]), 2))
         ret.append(round(pinball_mean(0.05, data[model.max_lag:], forecasts[:-1]), 2))
         ret.append(round(pinball_mean(0.25, data[model.max_lag:], forecasts[:-1]), 2))
@@ -436,6 +438,8 @@ def get_interval_statistics(data, model, **kwargs):
         start = model.max_lag + steps_ahead - 1
         ret.append(round(sharpness(forecasts), 2))
         ret.append(round(resolution(forecasts), 2))
+        if model.is_multivariate:
+            data = data[model.target_variable.data_label].values
         ret.append(round(coverage(data[model.max_lag:], forecasts), 2))
         ret.append(round(pinball_mean(0.05, data[start:], forecasts), 2))
         ret.append(round(pinball_mean(0.25, data[start:], forecasts), 2))
@@ -502,6 +506,8 @@ def get_distribution_statistics(data, model, **kwargs):
         _s1 = time.time()
         forecasts = model.predict(data, **kwargs)
         _e1 = time.time()
+        if model.is_multivariate:
+            data = data[model.target_variable.data_label].values
         ret.append(round(crps(data[model.max_lag:], forecasts[:-1]), 3))
         ret.append(round(_e1 - _s1, 3))
         ret.append(round(brier_score(data[model.max_lag:], forecasts[:-1]), 3))
@@ -516,6 +522,8 @@ def get_distribution_statistics(data, model, **kwargs):
         _e1 = time.time()
 
         start = model.max_lag + steps_ahead
+        if model.is_multivariate:
+            data = data[model.target_variable.data_label].values
         ret.append(round(crps(data[start:-1:skip], forecasts), 3))
         ret.append(round(_e1 - _s1, 3))
         ret.append(round(brier_score(data[start:-1:skip], forecasts), 3))

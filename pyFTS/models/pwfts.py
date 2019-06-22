@@ -73,21 +73,21 @@ class ProbabilisticWeightedFLRG(hofts.HighOrderFLRG):
     def get_midpoint(self, sets):
         '''Return the expectation of the PWFLRG, the weighted sum'''
         if self.midpoint is None:
-            self.midpoint = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].centroid
+            self.midpoint = np.nansum(np.array([self.rhs_unconditional_probability(s) * sets[s].centroid
                                              for s in self.RHS.keys()]))
 
         return self.midpoint
 
     def get_upper(self, sets):
         if self.upper is None:
-            self.upper = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].upper
+            self.upper = np.nansum(np.array([self.rhs_unconditional_probability(s) * sets[s].upper
                                           for s in self.RHS.keys()]))
 
         return self.upper
 
     def get_lower(self, sets):
         if self.lower is None:
-            self.lower = np.sum(np.array([self.rhs_unconditional_probability(s) * sets[s].lower
+            self.lower = np.nansum(np.array([self.rhs_unconditional_probability(s) * sets[s].lower
                                           for s in self.RHS.keys()]))
 
         return self.lower
@@ -159,7 +159,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                     self.flrgs[flrg.get_key()].append_rhs(set, count=lhs_mv * mv)
                     mvs.append(mv)
 
-                tmp_fq = sum([lhs_mv * kk for kk in mvs if kk > 0])
+                tmp_fq = np.nansum([lhs_mv * kk for kk in mvs if kk > 0])
 
                 self.global_frequency_count += tmp_fq
 
@@ -226,7 +226,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                     self.flrgs[flrg.get_key()].append_rhs(set, count=lhs_mv * mv)
                     mvs.append(mv)
 
-                tmp_fq = sum([lhs_mv*kk for kk in mvs if kk > 0])
+                tmp_fq = np.nansum([lhs_mv*kk for kk in mvs if kk > 0])
 
                 self.global_frequency_count += tmp_fq
 
@@ -268,7 +268,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         else:
             if len(flrg.LHS) > 0:
                 pi = 1 / len(flrg.LHS)
-                ret = sum(np.array([pi * self.partitioner.sets[s].centroid for s in flrg.LHS]))
+                ret = np.nansum(np.array([pi * self.partitioner.sets[s].centroid for s in flrg.LHS]))
             else:
                 ret = np.nan
         return ret
@@ -282,10 +282,10 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 _set = self.partitioner.sets[s]
                 tmp = _flrg.rhs_unconditional_probability(s) * (_set.membership(x) / _set.partition_function(uod=self.get_UoD()))
                 cond.append(tmp)
-            ret = sum(np.array(cond))
+            ret = np.nansum(np.array(cond))
         else:
             pi = 1 / len(flrg.LHS)
-            ret = sum(np.array([pi * self.partitioner.sets[s].membership(x) for s in flrg.LHS]))
+            ret = np.nansum(np.array([pi * self.partitioner.sets[s].membership(x) for s in flrg.LHS]))
         return ret
 
     def get_upper(self, flrg):
@@ -307,12 +307,12 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
     def forecast(self, data, **kwargs):
         method = kwargs.get('method','heuristic')
 
-        l = len(data)
+        l = len(data)+1
 
         ret = []
 
-        for k in np.arange(self.max_lag - 1, l):
-            sample = data[k - (self.max_lag - 1): k + 1]
+        for k in np.arange(self.max_lag, l):
+            sample = data[k - self.max_lag: k]
 
             if method == 'heuristic':
                 ret.append(self.point_heuristic(sample, **kwargs))
@@ -360,9 +360,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             mp.append(norm * self.get_midpoint(flrg))
             norms.append(norm)
 
-        norm = sum(norms)
+        norm = np.nansum(norms)
 
-        final = sum(mp) / norm if norm != 0 else 0
+        final = np.nansum(mp) / norm if norm != 0 else 0
 
         if explain:
             print("Deffuzyfied value: {} \n".format(final))
@@ -431,12 +431,12 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
             norms.append(norm)
 
             # gerar o intervalo
-        norm = sum(norms)
+        norm = np.nansum(norms)
         if norm == 0:
             return [0, 0]
         else:
-            lo_ = sum(lo) / norm
-            up_ = sum(up) / norm
+            lo_ = np.nansum(lo) / norm
+            up_ = np.nansum(up) / norm
             return [lo_, up_]
 
     def forecast_distribution(self, ndata, **kwargs):
@@ -496,7 +496,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                         else:
                             num.append(0.0)
                             den.append(0.000000001)
-                    pf = sum(num) / sum(den)
+                    pf = np.nansum(num) / np.nansum(den)
 
                     dist.set(bin, pf)
 

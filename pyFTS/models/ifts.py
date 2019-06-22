@@ -80,9 +80,9 @@ class IntervalFTS(hofts.HighOrderFTS):
                     affected_flrgs_memberships.append(mv)
 
             # gerar o intervalo
-            norm = sum(affected_flrgs_memberships)
-            lo_ = sum(lo) / norm
-            up_ = sum(up) / norm
+            norm = np.nansum(affected_flrgs_memberships)
+            lo_ = np.nansum(lo) / norm
+            up_ = np.nansum(up) / norm
             ret.append([lo_, up_])
 
         return ret
@@ -165,9 +165,9 @@ class WeightedIntervalFTS(hofts.WeightedHighOrderFTS):
                     affected_flrgs_memberships.append(mv)
 
             # gerar o intervalo
-            norm = sum(affected_flrgs_memberships)
-            lo_ = sum(lo) / norm
-            up_ = sum(up) / norm
+            norm = np.nansum(affected_flrgs_memberships)
+            lo_ = np.nansum(lo) / norm
+            up_ = np.nansum(up) / norm
             ret.append([lo_, up_])
 
         return ret

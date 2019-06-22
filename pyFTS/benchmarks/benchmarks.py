@@ -81,6 +81,105 @@ def get_benchmark_probabilistic_methods():
     return [arima.ARIMA, quantreg.QuantileRegression, knn.KNearestNeighbors]
 
 
+def multivariate_sliding_window_benchmarks2(data, windowsize, train=0.8, **kwargs):
+    from pyFTS.models.multivariate import common, variable, mvfts
+
+    tag = __pop('tag', None, kwargs)
+    dataset = __pop('dataset', None, kwargs)
+
+    distributed = __pop('distributed', False, kwargs)
+
+    variables = __pop('variables', {}, kwargs)
+
+    target_variable = __pop('target_variable', '', kwargs)
+
+    type = kwargs.get("type", 'point')
+
+    steps_ahead = __pop('steps_ahead', [1], kwargs)
+
+    steps_ahead = [k for k in steps_ahead]
+
+    fts_methods = __pop('methods', [], kwargs)
+
+    if fts_methods is not None:
+        methods_parameters = __pop('methods_parameters', None, kwargs)
+
+    if type == 'point':
+        experiment_method = mv_run_point2
+        synthesis_method = process_point_jobs2
+    elif type == 'interval':
+        experiment_method = mv_run_interval2
+        synthesis_method = process_interval_jobs2
+    elif type == 'distribution':
+        experiment_method = mv_run_probabilistic2
+        synthesis_method = process_probabilistic_jobs2
+    else:
+        raise ValueError("Type parameter has a unkown value!")
+
+    if distributed:
+        import pyFTS.distributed.dispy as dispy
+
+        nodes = kwargs.get("nodes", ['127.0.0.1'])
+        cluster, http_server = dispy.start_dispy_cluster(experiment_method, nodes)
+
+    inc = __pop("inc", 0.1, kwargs)
+
+    file = kwargs.get('file', "benchmarks.db")
+
+    conn = bUtil.open_benchmark_db(file)
+
+    jobs = []
+    for ct, train, test in cUtil.sliding_window(data, windowsize, train, inc=inc, **kwargs):
+        for id, fts_method in enumerate(fts_methods):
+
+            kwargs['steps_ahead'] = max(steps_ahead)
+            parameters = {}
+            if methods_parameters is not None:
+                parameters = methods_parameters[id]
+
+            vars = []
+            tvar = None
+
+            for key, value in variables.items():
+                var = variable.Variable(key, data=train, **value)
+                vars.append(var)
+                if key == target_variable:
+                    tvar = var
+
+
+            model = fts_method(explanatory_variables=vars, target_variable=tvar,
+                               **parameters)
+
+            if not distributed:
+                try:
+                    job = experiment_method(model, train, test, ct, **kwargs)
+                    synthesis_method(dataset, tag, job, conn)
+                except Exception as ex:
+                    print('EXCEPTION! ', fts_method)
+                    traceback.print_exc()
+            else:
+                job = cluster.submit(model, train, test, ct, **kwargs)
+                job.id = id
+                jobs.append(job)
+
+    if distributed:
+        for job in jobs:
+            job()
+            if job.status == dispy.dispy.DispyJob.Finished and job is not None:
+                tmp = job.result
+                synthesis_method(dataset, tag, tmp, conn)
+            else:
+                print("status", job.status)
+                print("result", job.result)
+                print("stdout", job.stdout)
+                print("stderr", job.exception)
+
+        cluster.wait()  # wait for all jobs to finish
+        dispy.stop_dispy_cluster(cluster, http_server)
+
+    conn.close()
+
+
 def sliding_window_benchmarks2(data, windowsize, train=0.8, **kwargs):
     tag = __pop('tag', None, kwargs)
     dataset = __pop('dataset', None, kwargs)
@@ -630,6 +729,63 @@ def __build_model(fts_method, order, parameters, partitioner_method, partitions,
     return mfts, pttr
 
 
+def mv_run_point2(mfts, train_data, test_data, window_key=None, **kwargs):
+    import time
+    from pyFTS.models import hofts, ifts, pwfts
+    from pyFTS.models.multivariate import mvfts, wmvfts, granular
+    from pyFTS.partitioners import Grid, Entropy, FCM
+    from pyFTS.benchmarks import Measures, arima, quantreg, BSTS, benchmarks
+
+    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, ifts.WeightedIntervalFTS, pwfts.ProbabilisticWeightedFTS]
+
+    tmp2 = [Grid.GridPartitioner, mvfts.MVFTS, wmvfts.WeightedMVFTS, granular.GranularWMVFTS]
+
+    tmp4 = [arima.ARIMA, quantreg.QuantileRegression, BSTS.ARIMA]
+
+    tmp3 = [Measures.get_interval_statistics]
+
+    steps_ahead = kwargs.get('steps_ahead', 1)
+    method = kwargs.get('method', None)
+
+    _start = time.time()
+    mfts.fit(train_data, **kwargs)
+    _end = time.time()
+    times = _end - _start
+
+    if steps_ahead == 1:
+
+        _start = time.time()
+        _rmse, _smape, _u = Measures.get_point_statistics(test_data, mfts, **kwargs)
+        _end = time.time()
+        times += _end - _start
+
+        ret = {'model': mfts.shortname, 'partitioner': None, 'order': mfts.order, 'partitions': None,
+               'transformation': None,
+               'size': len(mfts), 'time': times,
+               'rmse': _rmse, 'smape': _smape, 'u': _u, 'window': window_key,
+               'steps': steps_ahead, 'method': method}
+    else:
+        _start = time.time()
+        forecasts = mfts.predict(test_data, **kwargs)
+        _end = time.time()
+        times += _end - _start
+
+        eval = Measures.get_point_ahead_statistics(test_data[mfts.order:mfts.order + steps_ahead], forecasts)
+
+        for key in eval.keys():
+            eval[key]["time"] = times
+            eval[key]["method"] = method
+
+        ret = {'model': mfts.shortname, 'partitioner': None, 'order': mfts.order, 'partitions': None,
+               'transformation': None,
+               'size': len(mfts), 'time': times,
+               'window': window_key, 'steps': steps_ahead, 'method': method,
+               'ahead_results': eval
+               }
+
+    return ret
+
+
 def run_point2(fts_method, order, partitioner_method, partitions, transformation, train_data, test_data, window_key=None, **kwargs):
 
     import time
@@ -698,6 +854,67 @@ def run_point2(fts_method, order, partitioner_method, partitions, transformation
     return ret
 
 
+def mv_run_interval2(mfts,train_data, test_data, window_key=None, **kwargs):
+    import time
+    from pyFTS.models import hofts,ifts,pwfts
+    from pyFTS.models.multivariate import mvfts, wmvfts, granular
+    from pyFTS.partitioners import Grid, Entropy, FCM
+    from pyFTS.benchmarks import Measures, arima, quantreg, BSTS, benchmarks
+
+    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, ifts.WeightedIntervalFTS,  pwfts.ProbabilisticWeightedFTS]
+
+    tmp2 = [Grid.GridPartitioner, mvfts.MVFTS, wmvfts.WeightedMVFTS, granular.GranularWMVFTS ]
+
+    tmp4 = [arima.ARIMA, quantreg.QuantileRegression, BSTS.ARIMA]
+
+    tmp3 = [Measures.get_interval_statistics]
+
+    steps_ahead = kwargs.get('steps_ahead', 1)
+    method = kwargs.get('method', None)
+    parameters = kwargs.get('parameters',{})
+
+    _start = time.time()
+    mfts.fit(train_data, **kwargs)
+    _end = time.time()
+    times = _end - _start
+
+    if steps_ahead == 1:
+
+        _start = time.time()
+        metrics = Measures.get_interval_statistics(test_data, mfts, **kwargs)
+        _end = time.time()
+        times += _end - _start
+
+        ret = {'model': mfts.shortname, 'partitioner': None, 'order': mfts.order, 'partitions': None,
+               'transformation': None,
+               'size': len(mfts), 'time': times,
+               'sharpness': metrics[0], 'resolution': metrics[1], 'coverage': metrics[2],
+               'time': times,'pinball05': metrics[3], 'pinball25': metrics[4], 'pinball75': metrics[5], 'pinball95': metrics[6],
+               'winkler05': metrics[7], 'winkler25': metrics[8],
+               'window': window_key,'steps': steps_ahead, 'method': method}
+    else:
+        _start = time.time()
+        intervals = mfts.predict(test_data, **kwargs)
+        _end = time.time()
+        times += _end - _start
+
+        eval = Measures.get_interval_ahead_statistics(test_data[mfts.order:mfts.order+steps_ahead], intervals)
+
+        for key in eval.keys():
+            eval[key]["time"] = times
+            eval[key]["method"] = method
+
+        ret = {'model': mfts.shortname, 'partitioner': None, 'order': mfts.order, 'partitions': None,
+               'transformation': None,
+               'size': len(mfts), 'time': times,
+               'window': window_key, 'steps': steps_ahead, 'method': method,
+               'ahead_results': eval
+               }
+
+
+    return ret
+
+
 def run_interval2(fts_method, order, partitioner_method, partitions, transformation, train_data, test_data, window_key=None, **kwargs):
     import time
     from pyFTS.models import hofts,ifts,pwfts
@@ -758,6 +975,63 @@ def run_interval2(fts_method, order, partitioner_method, partitions, transformat
 
 
     return ret
+
+
+def mv_run_probabilistic2(mfts, train_data, test_data, window_key=None, **kwargs):
+    import time
+    from pyFTS.models import hofts, ifts, pwfts
+    from pyFTS.models.multivariate import mvfts, wmvfts, granular
+    from pyFTS.partitioners import Grid, Entropy, FCM
+    from pyFTS.benchmarks import Measures, arima, quantreg, BSTS, benchmarks
+
+    tmp = [hofts.HighOrderFTS, ifts.IntervalFTS, ifts.WeightedIntervalFTS, pwfts.ProbabilisticWeightedFTS]
+
+    tmp2 = [Grid.GridPartitioner, mvfts.MVFTS, wmvfts.WeightedMVFTS, granular.GranularWMVFTS]
+
+    tmp4 = [arima.ARIMA, quantreg.QuantileRegression, BSTS.ARIMA]
+
+    tmp3 = [Measures.get_interval_statistics]
+
+    steps_ahead = kwargs.get('steps_ahead', 1)
+    method = kwargs.get('method', None)
+    parameters = kwargs.get('parameters', {})
+
+    _start = time.time()
+    mfts.fit(train_data, **kwargs)
+    _end = time.time()
+    times = _end - _start
+
+    if steps_ahead == 1:
+
+        _crps1, _t1, _brier = Measures.get_distribution_statistics(test_data, mfts, **kwargs)
+        times += _t1
+
+        ret = {'model': mfts.shortname, 'partitioner': None, 'order': mfts.order, 'partitions': None,
+               'transformation': None,
+               'size': len(mfts), 'time': times,
+               'crps': _crps1, 'brier': _brier, 'window': window_key,
+               'steps': steps_ahead, 'method': method}
+    else:
+        _start = time.time()
+        distributions = mfts.predict(test_data, **kwargs)
+        _end = time.time()
+        times += _end - _start
+
+        eval = Measures.get_distribution_ahead_statistics(test_data[mfts.order:mfts.order+steps_ahead], distributions)
+
+        for key in eval.keys():
+            eval[key]["time"] = times
+            eval[key]["method"] = method
+
+        ret = {'model': mfts.shortname, 'partitioner': None, 'order': mfts.order, 'partitions': None,
+               'transformation': None,
+               'size': len(mfts), 'time': times,
+               'window': window_key, 'steps': steps_ahead, 'method': method,
+               'ahead_results': eval
+               }
+
+    return ret
+
 
 
 def run_probabilistic2(fts_method, order, partitioner_method, partitions, transformation, train_data, test_data, window_key=None, **kwargs):
