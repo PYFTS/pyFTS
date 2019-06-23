@@ -211,7 +211,8 @@ class ProbabilityDistribution(object):
             for val in values:
                 try:
                     k = self.bin_index.find_ge(val)
-                    ret.append(self.cdf[k])
+                    #ret.append(self.cdf[k])
+                    ret.append(self.cdf[val])
                 except:
                     ret.append(np.nan)
         else:

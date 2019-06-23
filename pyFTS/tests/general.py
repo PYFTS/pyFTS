@@ -32,16 +32,15 @@ fs = Grid.GridPartitioner(data=train, npart=45)
 
 model = pwfts.ProbabilisticWeightedFTS(partitioner=fs, order=1)
 model.fit(train)
-
+horizon = 10
+'''
 forecasts = model.predict(test[9:20], type='point')
 intervals = model.predict(test[9:20], type='interval')
 distributions = model.predict(test[9:20], type='distribution')
 
-
-horizon = 10
-
 forecasts = model.predict(test[9:20], type='point', steps_ahead=horizon)
 intervals = model.predict(test[9:20], type='interval', steps_ahead=horizon)
+'''
 distributions = model.predict(test[9:20], type='distribution', steps_ahead=horizon)
 
 

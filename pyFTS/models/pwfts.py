@@ -171,7 +171,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         return np.nanprod(vals)
 
     def generate_lhs_flrg(self, sample, explain=False):
-        if not isinstance(sample, (list, np.ndarray)):
+        if not isinstance(sample, (tuple, list, np.ndarray)):
             sample = [sample]
 
         nsample = [self.partitioner.fuzzyfy(k, mode="sets", alpha_cut=self.alpha_cut)
