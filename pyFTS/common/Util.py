@@ -163,7 +163,7 @@ def plot_distribution(ax, cmap, probabilitydist, fig, time_from, reference_data=
 
 def plot_distribution2(probabilitydist, data, **kwargs):
     """
-    Plot distributions over the time (x-axis)
+    Plot distributions in y-axis over the time (x-axis)
 
     :param probabilitydist: the forecasted probability distributions to plot
     :param data: the original test sample
@@ -224,6 +224,40 @@ def plot_distribution2(probabilitydist, data, **kwargs):
     cax, _ = cbar.make_axes(ax)
     cb = cbar.ColorbarBase(cax, cmap=cmap, norm=normal)
     cb.set_label('Density')
+
+
+def plot_distribution_tiled(distributions,data=None,rows=5,cols=5,index=None,axis=None,size=[10,20]):
+    """
+    Plot one distribution individually in each axis, with probability in y-axis and UoD on x-axis
+
+    :param distributions:
+    :param data:
+    :param rows:
+    :param cols:
+    :param index:
+    :param axis:
+    :param size:
+    :return:
+    """
+
+    if axis is None:
+        fig, axis = plt.subplots(nrows=rows, ncols=cols, figsize=size)
+
+    for ct in range(rows*cols):
+        col = ct % cols
+        row = ct // cols
+        if index is None:
+            ix = ct
+        else:
+            ix =index[ct]
+        forecast = distributions[ix]
+        forecast.plot(axis=axis[row][col])
+        if data is not None:
+            axis[row][col].axvline(data[ix])
+        axis[row][col].set_title('t+{}'.format(ix))
+        axis[row][col].set_xlabel(None)
+
+    plt.tight_layout()
 
 
 def plot_interval(axis, intervals, order, label, color='red', typeonlegend=False, ls='-', linewidth=1):

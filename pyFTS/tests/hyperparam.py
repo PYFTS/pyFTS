@@ -46,7 +46,7 @@ datsetname, dataset  = get_dataset()
 ret = Evolutionary.execute(datsetname, dataset,
                            ngen=30, npop=20,psel=0.6, pcross=.5, pmut=.3,
                            window_size=10000, train_rate=.9, increment_rate=.3,
-                           experiments=2,
+                           experiments=1,
                            fts_method=pwfts.ProbabilisticWeightedFTS,
                            database_file='experiments.db',
                            distributed='dispy', nodes=nodes)
