@@ -541,7 +541,10 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         start = kwargs.get('start_at', 0)
 
-        fuzzyfied = kwargs.pop('fuzzyfied')
+        if 'fuzzyfied' in kwargs:
+            fuzzyfied = kwargs.pop('fuzzyfied')
+        else:
+            fuzzyfied = False
 
         sample = data[start: start + self.max_lag]
 

@@ -18,39 +18,31 @@ from pyFTS.models.ensemble import ensemble
 from pyFTS.models import hofts
 from pyFTS.data import TAIEX
 
-data = TAIEX.get_data()
+from pyFTS.data import TAIEX, NASDAQ, SP500
+from pyFTS.common import Util
 
+train = TAIEX.get_data()[1000:1800]
+test = TAIEX.get_data()[1800:2000]
 
+from pyFTS.models import hofts
 
-model1 = ensemble.SimpleEnsembleFTS()
+model = ensemble.SimpleEnsembleFTS(
+    fts_method=hofts.WeightedHighOrderFTS,
+    orders=[1, 2, 3],
+    partitions=np.arange(10,50,5)
+)
 
-from pyFTS.benchmarks import arima, quantreg, BSTS
+model.fit(train)
 
-methods = [ensemble.SimpleEnsembleFTS, arima.ARIMA, quantreg.QuantileRegression, BSTS.ARIMA]
-parameters = [{},{'order': (2,0,0)}, {'order': 1, 'dist': True}, {'order': (2,0,0)}]
+horizon=10
 
+intervals05 = model.predict(test[:horizon], type='interval', alpha=.05)
+print(intervals05)
 
-from pyFTS.benchmarks import Measures
+intervals25 = model.predict(test[:horizon], type='interval', alpha=.25)
+print(intervals25)
 
-horizon = 5
-
-for ct, train, test, in Util.sliding_window(data,1000,0.8,.5):
-    print('data window {}'.format(ct))
-    for ct, method in enumerate(methods):
-        model = method(**parameters[ct])
-        model.fit(train)
-        start = model.order + 1
-        end = start + horizon
-        intervals = model.predict(test[:10], type='interval', alpha=.25, steps_ahead=horizon)
-        distributions = model.predict(test[:10], type='distribution', smooth='histogram', steps_ahead=horizon, num_bins=100)
-        print(model.name, Measures.get_interval_ahead_statistics(test[start:end], intervals))
-        print(model.name, Measures.get_distribution_ahead_statistics(test[start:end], distributions))
-
-print('end')
-
-
-
-
+distributions = model.predict(test[:horizon], type='distribution', smooth='histogram', num_bins=100)
 
 
 
