@@ -23,7 +23,11 @@ class HighOrderFLRG(flrg.FLRG):
             self.RHS[c] = c
 
     def append_lhs(self, c):
-        self.LHS.append(c)
+        if isinstance(c,(tuple,list)):
+            for k in c:
+                self.LHS.append(k)
+        else:
+            self.LHS.append(c)
 
     def __str__(self):
         tmp = ""

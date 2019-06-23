@@ -616,7 +616,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         ret.append(dist)
 
         for k in np.arange(start + self.max_lag, steps + start + self.max_lag):
-            dist = self.forescast_distribution_from_distribution(ret[k-self.max_lag:], smooth, uod, _bins, **kwargs)
+            dist = self.forecast_distribution_from_distribution(ret[k-self.max_lag:], smooth, uod, _bins, **kwargs)
             ret.append(dist)
 
         return ret[-steps:]

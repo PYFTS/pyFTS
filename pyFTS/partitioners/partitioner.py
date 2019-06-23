@@ -142,7 +142,7 @@ class Partitioner(object):
         :returns a list with the fuzzyfied values, depending on the mode
         """
 
-        if isinstance(data, (list, np.ndarray)):
+        if isinstance(data, (tuple, list, np.ndarray)):
             ret = []
             for inst in data:
                 mv = self.fuzzyfy(inst, **kwargs)

@@ -37,9 +37,13 @@ class FLRG(object):
             self.key = ""
 
             for n in names:
-                if len(self.key) > 0:
-                    self.key += ","
-                self.key = self.key + n
+                try:
+                    if len(self.key) > 0:
+                        self.key += ","
+                    self.key += n
+                except Exception as ex:
+                    print(self.key, n)
+                    raise ex
         return self.key
 
     def get_membership(self, data, sets):
