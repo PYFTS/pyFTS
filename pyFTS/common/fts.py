@@ -89,7 +89,9 @@ class FTS(object):
         return best
 
     def clip_uod(self, ndata):
-        if self.uod_clip:
+        if self.uod_clip and self.partitioner is not None:
+            ndata = np.clip(ndata, self.partitioner.min, self.partitioner.max)
+        elif self.uod_clip:
             ndata = np.clip(ndata, self.original_min, self.original_max)
         return ndata
 

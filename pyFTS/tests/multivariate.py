@@ -19,6 +19,24 @@ from pyFTS.common import Membership
 
 
 import os
+
+from pyFTS.data import NASDAQ
+
+train_data = NASDAQ.get_data()[:2000]
+test_data = NASDAQ.get_data()[2000:3000]
+
+from pyFTS.partitioners import Grid
+
+partitioner = Grid.GridPartitioner(data=train_data, npart=35)
+
+from pyFTS.models import pwfts
+
+model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner, order=2)
+model.train(train_data)
+
+print(model.predict(test_data[:100]))
+
+
 '''
 def sample_by_hour(data):
     return [np.nanmean(data[k:k+60]) for k in np.arange(0,len(data),60)]
@@ -43,7 +61,7 @@ var = {
 }
 
 df = pd.DataFrame(var)
-'''
+
 
 from pyFTS.data import Malaysia
 
@@ -85,7 +103,7 @@ bchmk.multivariate_sliding_window_benchmarks2(df, 10000, train=0.9, inc=0.25,
 
 
 
-'''
+
 from pyFTS.data import lorentz
 df = lorentz.get_dataframe(iterations=5000)
 
