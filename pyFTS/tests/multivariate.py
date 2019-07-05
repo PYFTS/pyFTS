@@ -29,12 +29,19 @@ from pyFTS.partitioners import Grid
 
 partitioner = Grid.GridPartitioner(data=train_data, npart=35)
 
-from pyFTS.models import pwfts
+from pyFTS.models import pwfts, hofts
 
-model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner, order=2)
-model.train(train_data)
+#model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner, order=2)
+#from pyFTS.models.incremental import TimeVariant
 
-print(model.predict(test_data[:100]))
+#model = TimeVariant.Retrainer(partitioner_method=Grid.GridPartitioner, partitioner_params={'npart': 35},
+#                              fts_method=pwfts.ProbabilisticWeightedFTS, fts_params={}, order=2 ,
+#                              batch_size=100, window_length=500)
+
+model = hofts.HighOrderFTS(partitioner=partitioner, order=2)
+model.fit(train_data)
+
+print(model.predict(test_data, steps_ahead=10))
 
 
 '''

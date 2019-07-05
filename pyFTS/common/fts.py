@@ -239,9 +239,9 @@ class FTS(object):
 
         start = kwargs.get('start_at',0)
 
-        ret = []
+        ret = data[:start+self.max_lag]
         for k in np.arange(start+self.max_lag, steps+start+self.max_lag):
-            tmp = self.forecast(data[k-self.max_lag:k], **kwargs)
+            tmp = self.forecast(ret[k-self.max_lag:k], **kwargs)
 
             if isinstance(tmp,(list, np.ndarray)):
                 tmp = tmp[-1]
@@ -364,7 +364,7 @@ class FTS(object):
             if dump == 'time':
                 print("[{0: %H:%M:%S}] Start training".format(datetime.datetime.now()))
 
-            if num_batches is not None:
+            if num_batches is not None and not self.is_wrapper:
                 n = len(data)
                 batch_size = int(n / num_batches)
                 bcount = 1
