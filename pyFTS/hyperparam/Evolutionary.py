@@ -1,3 +1,7 @@
+"""
+Distributed Evolutionary Hyperparameter Optimization (DEHO) for MVFTS
+"""
+
 import numpy as np
 import pandas as pd
 import math
@@ -37,7 +41,7 @@ def genotype(mf, npart, partitioner, order, alpha, lags, f1, f2):
     return ind
 
 
-def random_genotype():
+def random_genotype(**kwargs):
     """
     Create random genotype
 
@@ -58,7 +62,7 @@ def random_genotype():
 
 
 #
-def initial_population(n):
+def initial_population(n, **kwargs):
     """
     Create a random population of size n
 
@@ -67,7 +71,7 @@ def initial_population(n):
     """
     pop = []
     for i in range(n):
-        pop.append(random_genotype())
+        pop.append(random_genotype(**kwargs))
     return pop
 
 
@@ -340,7 +344,7 @@ def elitism(population, new_population, **kwargs):
 
 def GeneticAlgorithm(dataset, **kwargs):
     """
-    Genetic algoritm for hyperparameter optimization
+    Genetic algoritm for Distributed Evolutionary Hyperparameter Optimization (DEHO)
 
     :param dataset: The time series to optimize the FTS
     :keyword ngen: An integer value with the maximum number of generations, default value: 30
@@ -397,7 +401,7 @@ def GeneticAlgorithm(dataset, **kwargs):
 
     new_population = []
 
-    population = initial_operator(npop)
+    population = initial_operator(npop, **kwargs)
 
     last_best = population[0]
     best = population[1]
@@ -516,6 +520,16 @@ def GeneticAlgorithm(dataset, **kwargs):
 
 
 def process_experiment(fts_method, result, datasetname, conn):
+    """
+    Persist the results of an DEHO execution in sqlite database (best hyperparameters) and json file (generation statistics)
+
+    :param fts_method:
+    :param result:
+    :param datasetname:
+    :param conn:
+    :return:
+    """
+
     log_result(conn, datasetname, fts_method, result['individual'])
     persist_statistics(datasetname, result['statistics'])
     return result['individual']
@@ -541,6 +555,7 @@ def log_result(conn, datasetname, fts_method, result):
 
 def execute(datasetname, dataset, **kwargs):
     """
+    Batch execution of Distributed Evolutionary Hyperparameter Optimization (DEHO) for monovariate methods
 
     :param datasetname:
     :param dataset: The time series to optimize the FTS
