@@ -169,9 +169,12 @@ class Partitioner(object):
         if method == 'fuzzy' and mode == 'vector':
             return mv
         elif method == 'fuzzy' and mode == 'sets':
-            ix = np.ravel(np.argwhere(mv > 0.))
-            sets = [self.ordered_sets[i] for i in ix]
-            return sets
+            try:
+                ix = np.ravel(np.argwhere(mv > 0.))
+                sets = [self.ordered_sets[i] for i in ix if i < self.partitions]
+                return sets
+            except Exception as ex:
+                return None
         elif method == 'maximum' and mode == 'sets':
             mx = max(mv)
             ix = np.ravel(np.argwhere(mv == mx))

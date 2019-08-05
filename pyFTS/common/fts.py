@@ -332,7 +332,7 @@ class FTS(object):
 
         dump = kwargs.get('dump', None)
 
-        num_batches = kwargs.get('num_batches', 10)
+        num_batches = kwargs.get('num_batches', None)
 
         save = kwargs.get('save_model', False)  # save model on disk
 
@@ -345,6 +345,8 @@ class FTS(object):
         batch_save_interval = kwargs.get('batch_save_interval', 10)
 
         if distributed is not None and distributed:
+            if num_batches is None:
+                num_batches = 10
 
             if distributed == 'dispy':
                 from pyFTS.distributed import dispy

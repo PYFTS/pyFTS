@@ -3,6 +3,7 @@ from pyFTS.partitioners import Grid
 from pyFTS.models.multivariate import FLR as MVFLR, common, flrg as mvflrg
 from itertools import product
 from types import LambdaType
+from copy import deepcopy
 
 import numpy as np
 import pandas as pd
@@ -75,19 +76,19 @@ class MVFTS(fts.FTS):
         for path in product_dict(**lags):
             flr = MVFLR.FLR()
 
-            for var, fset in path.items():
-                flr.set_lhs(var, fset)
+            flr.LHS = path
+
+            #for var, fset in path.items():
+            #    flr.set_lhs(var, fset)
 
             if len(flr.LHS.keys()) == len(self.explanatory_variables):
                 flrs.append(flr)
-            else:
-                print(flr)
 
         return flrs
 
     def generate_flrs(self, data):
         flrs = []
-        for ct in range(1, len(data.index)):
+        for ct in np.arange(1, len(data.index)):
             ix = data.index[ct-1]
             data_point = self.format_data( data.loc[ix] )
 
@@ -99,8 +100,9 @@ class MVFTS(fts.FTS):
 
             for flr in tmp_flrs:
                 for v, s in target:
-                    flr.set_rhs(s)
-                    flrs.append(flr)
+                    new_flr = deepcopy(flr)
+                    new_flr.set_rhs(s)
+                    flrs.append(new_flr)
 
         return flrs
 
@@ -112,7 +114,6 @@ class MVFTS(fts.FTS):
                 self.flrgs[flrg.get_key()] = flrg
 
             self.flrgs[flrg.get_key()].append_rhs(flr.RHS)
-
 
     def train(self, data, **kwargs):
 

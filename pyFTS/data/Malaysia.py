@@ -30,5 +30,4 @@ def get_dataframe():
 
     return df
 
-    return df
 

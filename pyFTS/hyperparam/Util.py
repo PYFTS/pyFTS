@@ -1,8 +1,9 @@
 """
-Common facilities for hyperparameter tunning
+Common facilities for hyperparameter optimization
 """
 
 import sqlite3
+
 
 def open_hyperparam_db(name):
     """

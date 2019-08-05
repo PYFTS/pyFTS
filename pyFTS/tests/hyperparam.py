@@ -1,20 +1,23 @@
 import numpy as np
 import pandas as pd
-from pyFTS.hyperparam import GridSearch, Evolutionary
+from pyFTS.hyperparam import GridSearch, Evolutionary, mvfts as deho_mv
 from pyFTS.models import pwfts
+from pyFTS.models.multivariate import mvfts, wmvfts
+from pyFTS.models.seasonal.common import DateTime
 
 
 def get_dataset():
-    from pyFTS.data import SONDA
-    #from pyFTS.data import Malaysia
+    #from pyFTS.data import SONDA
+    from pyFTS.data import Malaysia
 
-    data = [k for k in SONDA.get_data('ws_10m') if k > 0.1 and k != np.nan and k is not None]
-    data = [np.nanmean(data[k:k+60]) for k in np.arange(0,len(data),60)]
+    #data = [k for k in SONDA.get_data('ws_10m') if k > 0.1 and k != np.nan and k is not None]
+    #data = [np.nanmean(data[k:k+60]) for k in np.arange(0,len(data),60)]
     #data = pd.read_csv('https://query.data.world/s/6xfb5useuotbbgpsnm5b2l3wzhvw2i', sep=';')
-    #data = Malaysia.get_data('temperature')
+    data = Malaysia.get_dataframe()
+    data['time'] = pd.to_datetime(data["time"], format='%m/%d/%y %I:%M %p')
 
-    return 'SONDA.ws_10m', data
-    #return 'Malaysia.temperature', data #train, test
+    #return 'SONDA.ws_10m', data
+    return 'Malaysia', data.iloc[:5000] #train, test
     #return 'Malaysia.temperature', data  # train, test
 
 '''
@@ -43,6 +46,30 @@ datsetname, dataset  = get_dataset()
 #GridSearch.execute(hyperparams, datsetname, dataset, nodes=nodes,
 #                   window_size=10000, train_rate=.9, increment_rate=1,)
 
+explanatory_variables =[
+    {'name': 'Load', 'data_label': 'load', 'type': 'common'},
+    {'name': 'Temperature', 'data_label': 'temperature', 'type': 'common'},
+    {'name': 'Daily', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.minute_of_day, 'npart': 24 },
+    {'name': 'Weekly', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.day_of_week, 'npart': 7 },
+    #{'name': 'Monthly', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.day_of_month, 'npart': 4 },
+    {'name': 'Yearly', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.day_of_year, 'npart': 12 }
+]
+
+target_variable = {'name': 'Load', 'data_label': 'load', 'type': 'common'}
+nodes=['192.168.28.38']
+deho_mv.execute(datsetname, dataset,
+              ngen=10, npop=10,psel=0.6, pcross=.5, pmut=.3,
+              window_size=5000, train_rate=.9, increment_rate=1,
+              experiments=1,
+              fts_method=wmvfts.WeightedMVFTS,
+              variables=explanatory_variables,
+              target_variable=target_variable,
+              distributed='dispy', nodes=nodes,
+              #parameters=dict(num_batches=5)
+              #parameters=dict(distributed='dispy', nodes=nodes, num_batches=5)
+              )
+
+'''
 ret = Evolutionary.execute(datsetname, dataset,
                            ngen=30, npop=20,psel=0.6, pcross=.5, pmut=.3,
                            window_size=10000, train_rate=.9, increment_rate=.3,
@@ -50,7 +77,7 @@ ret = Evolutionary.execute(datsetname, dataset,
                            fts_method=pwfts.ProbabilisticWeightedFTS,
                            database_file='experiments.db',
                            distributed='dispy', nodes=nodes)
-
+'''
 #res = GridSearch.cluster_method({'mf':1, 'partitioner': 1, 'npart': 10, 'lags':[1], 'alpha': 0.0, 'order': 1},
 #                          dataset, window_size = 10000, train_rate = .9, increment_rate = 1)
 

@@ -72,55 +72,54 @@ class TimeGridPartitioner(partitioner.Partitioner):
             partlen = self.season.value / self.partitions
             pl2 = partlen / 2
 
-        count = 0
-        for c in np.arange(self.min, self.max, partlen):
+        for count, midpoint in enumerate(np.arange(self.min, self.max, partlen)):
             set_name = self.get_name(count)
             if self.membership_function == Membership.trimf:
-                if c == self.min:
+                if midpoint == self.min or count == 0:
                     tmp = Composite(set_name, superset=True, **kwargs)
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
                                             [self.season.value - pl2, self.season.value,
                                              self.season.value + pl2], self.season.value, alpha=1,
                                             **kwargs))
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
-                                            [c - partlen, c, c + partlen], c,
+                                            [midpoint - partlen, midpoint, midpoint + partlen], midpoint,
                                             **kwargs))
-                    tmp.centroid = c
+                    tmp.centroid = midpoint
                     sets[set_name] = tmp
-                elif c == self.max - partlen:
+                elif midpoint == self.max - partlen or count == self.partitions - 1:
                     tmp = Composite(set_name, superset=True, **kwargs)
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
                                             [-pl2, 0.0,
                                              pl2], 0.0, alpha=1,
                                             **kwargs))
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
-                                            [c - partlen, c, c + partlen], c,
+                                            [midpoint - partlen, midpoint, midpoint + partlen], midpoint,
                                             **kwargs))
-                    tmp.centroid = c
+                    tmp.centroid = midpoint
                     sets[set_name] = tmp
                 else:
                     sets[set_name] = FuzzySet(self.season, set_name, Membership.trimf,
-                                         [c - partlen, c, c + partlen], c,
+                                         [midpoint - partlen, midpoint, midpoint + partlen], midpoint,
                                          **kwargs)
             elif self.membership_function == Membership.gaussmf:
-                sets[set_name] = FuzzySet(self.season, set_name, Membership.gaussmf, [c, partlen / 3], c,
+                sets[set_name] = FuzzySet(self.season, set_name, Membership.gaussmf, [midpoint, partlen / 3], midpoint,
                                      **kwargs)
             elif self.membership_function == Membership.trapmf:
                 q = partlen / 4
-                if c == self.min:
+                if midpoint == self.min:
                     tmp = Composite(set_name, superset=True)
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trimf,
                                             [self.season.value - pl2, self.season.value,
                                              self.season.value + 0.0000001], 0,
                                             **kwargs))
                     tmp.append_set(FuzzySet(self.season, set_name, Membership.trapmf,
-                                            [c - partlen, c - q, c + q, c + partlen], c,
+                                            [midpoint - partlen, midpoint - q, midpoint + q, midpoint + partlen], midpoint,
                                             **kwargs))
-                    tmp.centroid = c
+                    tmp.centroid = midpoint
                     sets[set_name] = tmp
                 else:
                     sets[set_name] = FuzzySet(self.season, set_name, Membership.trapmf,
-                                         [c - partlen, c - q, c + q, c + partlen], c,
+                                         [midpoint - partlen, midpoint - q, midpoint + q, midpoint + partlen], midpoint,
                                          **kwargs)
             count += 1
 

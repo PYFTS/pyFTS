@@ -69,13 +69,16 @@ def initial_population(n, **kwargs):
     :param n: the size of the population
     :return: a list with n random individuals
     """
+
+    create_random_individual = kwargs.get('random_individual', random_genotype)
+
     pop = []
     for i in range(n):
-        pop.append(random_genotype(**kwargs))
+        pop.append(create_random_individual(**kwargs))
     return pop
 
 
-def phenotype(individual, train, fts_method, parameters={}):
+def phenotype(individual, train, fts_method, parameters={}, **kwargs):
     """
     Instantiate the genotype, creating a fitted model with the genotype hyperparameters
 
@@ -96,10 +99,10 @@ def phenotype(individual, train, fts_method, parameters={}):
     else:
         mf = Membership.trimf
 
-    #if individual['partitioner'] == 1:
-    partitioner = Grid.GridPartitioner(data=train, npart=individual['npart'], func=mf)
-    #elif individual['partitioner'] == 2:
-    #    partitioner = Entropy.EntropyPartitioner(data=train, npart=individual['npart'], func=mf)
+    if individual['partitioner'] == 1:
+        partitioner = Grid.GridPartitioner(data=train, npart=individual['npart'], func=mf)
+    elif individual['partitioner'] == 2:
+        partitioner = Entropy.EntropyPartitioner(data=train, npart=individual['npart'], func=mf)
 
     model = fts_method(partitioner=partitioner,
                                        lags=individual['lags'],
@@ -243,8 +246,10 @@ def crossover(population, **kwargs):
 
     n = len(population) - 1
 
-    r1 = random.randint(0, n)
-    r2 = random.randint(0, n)
+    r1, r2 = 0, 0
+    while r1 == r2:
+        r1 = random.randint(0, n)
+        r2 = random.randint(0, n)
 
     if population[r1]['f1'] < population[r2]['f1']:
         best = population[r1]
@@ -304,9 +309,6 @@ def mutation(individual, **kwargs):
     :param pmut: individual probability o
     :return:
     """
-    import numpy.random
-
-    print('mutation')
 
     individual['npart'] = min(50, max(3, int(individual['npart'] + np.random.normal(0, 4))))
     individual['alpha'] = min(.5, max(0, individual['alpha'] + np.random.normal(0, .5)))
@@ -572,6 +574,7 @@ def execute(datasetname, dataset, **kwargs):
     :keyword parameters: dict with model specific arguments for fts_method
     :keyword elitism: A boolean value indicating if the best individual must always survive to next population
     :keyword initial_operator: a function that receives npop and return a random population with size npop
+    :keyword random_individual: create an random genotype
     :keyword evalutation_operator: a function that receives a dataset and an individual and return its fitness
     :keyword selection_operator: a function that receives the whole population and return a selected individual
     :keyword crossover_operator: a function that receives the whole population and return a descendent individual

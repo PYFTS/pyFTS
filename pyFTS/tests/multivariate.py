@@ -16,33 +16,39 @@ from pyFTS.models.seasonal.common import DateTime
 from pyFTS.models.multivariate import common, variable, mvfts
 from pyFTS.partitioners import Grid
 from pyFTS.common import Membership
-
-
 import os
 
-from pyFTS.data import NASDAQ
+from pyFTS.data import Malaysia, Enrollments
 
-train_data = NASDAQ.get_data()[:2000]
-test_data = NASDAQ.get_data()[2000:3000]
+df = Malaysia.get_dataframe()
+df['time'] = pd.to_datetime(df["time"], format='%m/%d/%y %I:%M %p')
 
-from pyFTS.partitioners import Grid
+train_mv = df.iloc[:4500]
+test_mv = df.iloc[4500:5000]
 
-partitioner = Grid.GridPartitioner(data=train_data, npart=35)
+del(df)
 
-from pyFTS.models import pwfts, hofts
+sp = {'seasonality': DateTime.minute_of_day, 'names': [str(k)+'hs' for k in range(0,24)]}
 
-#model = pwfts.ProbabilisticWeightedFTS(partitioner=partitioner, order=2)
-#from pyFTS.models.incremental import TimeVariant
+vhour = variable.Variable("Hour", data_label="time", partitioner=seasonal.TimeGridPartitioner, npart=24,
+                          data=train_mv, partitioner_specific=sp, alpha_cut=.3)
 
-#model = TimeVariant.Retrainer(partitioner_method=Grid.GridPartitioner, partitioner_params={'npart': 35},
-#                              fts_method=pwfts.ProbabilisticWeightedFTS, fts_params={}, order=2 ,
-#                              batch_size=100, window_length=500)
+vtemp = variable.Variable("Temperature", data_label="temperature", alias='temp',
+                         partitioner=Grid.GridPartitioner, npart=15, func=Membership.gaussmf,
+                         data=train_mv, alpha_cut=.3)
 
-model = hofts.HighOrderFTS(partitioner=partitioner, order=2)
-model.fit(train_data)
+vload = variable.Variable("Load", data_label="load", alias='load',
+                         partitioner=Grid.GridPartitioner, npart=20, func=Membership.trimf,
+                         data=train_mv, alpha_cut=.3)
 
-print(model.predict(test_data, steps_ahead=10))
+model = mvfts.MVFTS(explanatory_variables=[vhour, vtemp, vload], target_variable=vload)
+#fs = Grid.GridPartitioner(data=Enrollments.get_data(), npart=10)
+#print(fs)
+#model = pwfts.ProbabilisticWeightedFTS(partitioner=vload.partitioner, order=2)
+model.fit(train_mv) #, num_batches=10) #, distributed='dispy',nodes=['192.168.0.110'])
+#model.fit(Enrollments.get_data()) #, num_batches=20) #, distributed='dispy',nodes=['192.168.0.110'])
 
+print(model)
 
 '''
 def sample_by_hour(data):

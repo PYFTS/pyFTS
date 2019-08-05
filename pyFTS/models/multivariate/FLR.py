@@ -19,7 +19,7 @@ class FLR(object):
         self.RHS = set
 
     def __str__(self):
-        return "{} -> {}".format([self.LHS[k] for k in self.LHS.keys()], self.RHS)
+        return "{} -> {}".format([k for k in self.LHS.values()], self.RHS)
 
 
 
