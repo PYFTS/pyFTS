@@ -75,9 +75,14 @@ def random_genotype(**kwargs):
     explanatory_params = []
 
     for v in explanatory_variables:
+        var = vars[v]
+        if var['type'] == 'common':
+            npart = random.randint(7, 50)
+        else:
+            npart = var['npart']
         param = {
             'mf': random.randint(1, 4),
-            'npart': random.randint(10, 50),
+            'npart': npart,
             'partitioner': 1, #random.randint(1, 2),
             'alpha': random.uniform(0, .5)
         }
@@ -85,7 +90,7 @@ def random_genotype(**kwargs):
 
     target_params = {
             'mf': random.randint(1, 4),
-            'npart': random.randint(10, 50),
+            'npart': random.randint(7, 50),
             'partitioner': 1, #random.randint(1, 2),
             'alpha': random.uniform(0, .5)
         }
@@ -133,6 +138,8 @@ def phenotype(individual, train, fts_method, parameters={}, **kwargs):
                                    partitioner_specific={'mf': mf}, npart=tparams['npart'], alpha_cut=tparams['alpha'],
                                     data=train)
 
+    explanatory_vars.append(target_var)
+
     model = fts_method(explanatory_variables=explanatory_vars, target_variable=target_var, **parameters)
     model.fit(train, **parameters)
 
@@ -171,6 +178,7 @@ def evaluate(dataset, individual, **kwargs):
     :param parameters: dict with model specific arguments for fit method.
     :return: a tuple (len_lags, rmse) with the parsimony fitness value and the accuracy fitness value
     """
+    import logging
     from pyFTS.models import hofts, ifts, pwfts
     from pyFTS.common import Util
     from pyFTS.benchmarks import Measures

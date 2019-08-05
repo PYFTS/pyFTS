@@ -23,8 +23,8 @@ from pyFTS.data import Malaysia, Enrollments
 df = Malaysia.get_dataframe()
 df['time'] = pd.to_datetime(df["time"], format='%m/%d/%y %I:%M %p')
 
-train_mv = df.iloc[:4500]
-test_mv = df.iloc[4500:5000]
+train_mv = df.iloc[:1800]
+test_mv = df.iloc[1800:2000]
 
 del(df)
 

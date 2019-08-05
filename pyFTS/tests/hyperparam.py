@@ -17,7 +17,7 @@ def get_dataset():
     data['time'] = pd.to_datetime(data["time"], format='%m/%d/%y %I:%M %p')
 
     #return 'SONDA.ws_10m', data
-    return 'Malaysia', data.iloc[:5000] #train, test
+    return 'Malaysia', data.iloc[:2000] #train, test
     #return 'Malaysia.temperature', data  # train, test
 
 '''
@@ -47,7 +47,6 @@ datsetname, dataset  = get_dataset()
 #                   window_size=10000, train_rate=.9, increment_rate=1,)
 
 explanatory_variables =[
-    {'name': 'Load', 'data_label': 'load', 'type': 'common'},
     {'name': 'Temperature', 'data_label': 'temperature', 'type': 'common'},
     {'name': 'Daily', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.minute_of_day, 'npart': 24 },
     {'name': 'Weekly', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.day_of_week, 'npart': 7 },
@@ -59,13 +58,13 @@ target_variable = {'name': 'Load', 'data_label': 'load', 'type': 'common'}
 nodes=['192.168.28.38']
 deho_mv.execute(datsetname, dataset,
               ngen=10, npop=10,psel=0.6, pcross=.5, pmut=.3,
-              window_size=5000, train_rate=.9, increment_rate=1,
+              window_size=2000, train_rate=.9, increment_rate=1,
               experiments=1,
               fts_method=wmvfts.WeightedMVFTS,
               variables=explanatory_variables,
               target_variable=target_variable,
-              distributed='dispy', nodes=nodes,
-              #parameters=dict(num_batches=5)
+              #distributed='dispy', nodes=nodes,
+              parameters=dict(num_batches=5)
               #parameters=dict(distributed='dispy', nodes=nodes, num_batches=5)
               )
 
