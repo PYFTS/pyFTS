@@ -156,9 +156,12 @@ class Partitioner(object):
         nearest = self.search(data, type='index')
         mv = np.zeros(self.partitions)
 
-        for ix in nearest:
-            tmp = self[ix].membership(data)
-            mv[ix] = tmp if tmp >= alpha_cut else 0.
+        try:
+            for ix in nearest:
+                tmp = self[ix].membership(data)
+                mv[ix] = tmp if tmp >= alpha_cut else 0.
+        except:
+            print(ix)
 
         ix = np.ravel(np.argwhere(mv > 0.))
 
@@ -316,19 +319,16 @@ class Partitioner(object):
         it represents the fuzzy set name.
         :return: the fuzzy set
         """
-        try:
-            if isinstance(item, (int, np.int, np.int8, np.int16, np.int32, np.int64)):
-                if item < 0 or item >= self.partitions:
-                    raise ValueError("The fuzzy set index must be between 0 and {}.".format(self.partitions))
-                return self.sets[self.ordered_sets[item]]
-            elif isinstance(item, str):
-                if item not in self.sets:
-                    raise ValueError("The fuzzy set with name {} does not exist.".format(item))
-                return self.sets[item]
-            else:
-                raise ValueError("The parameter 'item' must be an integer or a string and the value informed was {} of type {}!".format(item, type(item)))
-        except Exception as ex:
-            logging.exception("Error")
+        if isinstance(item, (int, np.int, np.int8, np.int16, np.int32, np.int64)):
+            if item < 0 or item >= self.partitions:
+                raise ValueError("The fuzzy set index must be between 0 and {}.".format(self.partitions))
+            return self.sets[self.ordered_sets[item]]
+        elif isinstance(item, str):
+            if item not in self.sets:
+                raise ValueError("The fuzzy set with name {} does not exist.".format(item))
+            return self.sets[item]
+        else:
+            raise ValueError("The parameter 'item' must be an integer or a string and the value informed was {} of type {}!".format(item, type(item)))
 
 
     def __iter__(self):

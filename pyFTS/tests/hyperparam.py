@@ -50,14 +50,14 @@ explanatory_variables =[
     {'name': 'Temperature', 'data_label': 'temperature', 'type': 'common'},
     {'name': 'Daily', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.minute_of_day, 'npart': 24 },
     {'name': 'Weekly', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.day_of_week, 'npart': 7 },
-    #{'name': 'Monthly', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.day_of_month, 'npart': 4 },
+    {'name': 'Monthly', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.day_of_month, 'npart': 4 },
     {'name': 'Yearly', 'data_label': 'time', 'type': 'seasonal', 'seasonality': DateTime.day_of_year, 'npart': 12 }
 ]
 
 target_variable = {'name': 'Load', 'data_label': 'load', 'type': 'common'}
 nodes=['192.168.28.38']
 deho_mv.execute(datsetname, dataset,
-              ngen=10, npop=10,psel=0.6, pcross=.5, pmut=.3,
+              ngen=20, npop=15,psel=0.6, pcross=.5, pmut=.3,
               window_size=2000, train_rate=.9, increment_rate=1,
               experiments=1,
               fts_method=wmvfts.WeightedMVFTS,

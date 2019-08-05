@@ -76,30 +76,30 @@ def random_genotype(**kwargs):
 
     for v in explanatory_variables:
         var = vars[v]
-        if var['type'] == 'common':
-            npart = random.randint(7, 50)
-        else:
-            npart = var['npart']
-        param = {
-            'mf': random.randint(1, 4),
-            'npart': npart,
-            'partitioner': 1, #random.randint(1, 2),
-            'alpha': random.uniform(0, .5)
-        }
+        param = random_param(var)
         explanatory_params.append(param)
 
-    target_params = {
-            'mf': random.randint(1, 4),
-            'npart': random.randint(7, 50),
-            'partitioner': 1, #random.randint(1, 2),
-            'alpha': random.uniform(0, .5)
-        }
+    target_params = random_param(tvar)
 
     return genotype(
         explanatory_variables,
         explanatory_params,
         target_params
     )
+
+
+def random_param(var):
+    if var['type'] == 'common':
+        npart = random.randint(7, 50)
+    else:
+        npart = var['npart']
+    param = {
+        'mf': random.randint(1, 4),
+        'npart': npart,
+        'partitioner': 1,  # random.randint(1, 2),
+        'alpha': random.uniform(0, .5)
+    }
+    return param
 
 
 def phenotype(individual, train, fts_method, parameters={}, **kwargs):
@@ -246,6 +246,10 @@ def crossover(population, **kwargs):
     """
     import random
 
+    vars = kwargs.get('variables', None)
+
+    tvar = kwargs.get('target_variable', None)
+
     n = len(population) - 1
 
     r1,r2 = 0,0
@@ -280,7 +284,7 @@ def crossover(population, **kwargs):
         if ix in best['explanatory_variables'] and ix in worst['explanatory_variables']:
             bix = best['explanatory_variables'].index(ix)
             wix = worst['explanatory_variables'].index(ix)
-            param = crossover_variable_params(best['explanatory_params'][bix], worst['explanatory_params'][wix])
+            param = crossover_variable_params(best['explanatory_params'][bix], worst['explanatory_params'][wix], vars[ix])
         elif ix in best['explanatory_variables']:
             bix = best['explanatory_variables'].index(ix)
             param = best['explanatory_params'][bix]
@@ -291,15 +295,18 @@ def crossover(population, **kwargs):
         explanatory_variables.append(ix)
         explanatory_params.append(param)
 
-    tparams = crossover_variable_params(best['target_params'], worst['target_params'])
+    tparams = crossover_variable_params(best['target_params'], worst['target_params'], tvar)
 
-    descendent = genotype(explanatory_variables, explanatory_params, tparams, None, None)
+    descendent = genotype(explanatory_variables, explanatory_params, tparams)
 
     return descendent
 
 
-def crossover_variable_params(best, worst):
-    npart = int(round(.7 * best['npart'] + .3 * worst['npart']))
+def crossover_variable_params(best, worst, var):
+    if var['type'] == 'common':
+        npart = int(round(.7 * best['npart'] + .3 * worst['npart']))
+    else:
+        npart = best['npart']
     alpha = float(.7 * best['alpha'] + .3 * worst['alpha'])
     rnd = random.uniform(0, 1)
     mf = best['mf'] if rnd < .7 else worst['mf']
@@ -317,14 +324,32 @@ def mutation(individual, **kwargs):
     :return:
     """
 
+    vars = kwargs.get('variables', None)
+    tvar = kwargs.get('target_variable', None)
+    l = len(vars)
+
+    il = len(individual['explanatory_variables'])
+    rnd = random.uniform(0, 1)
+    if rnd > .9 and il > 1:
+        rnd = random.randint(0, il-1)
+        val = individual['explanatory_variables'][rnd]
+        individual['explanatory_variables'].remove(val)
+        individual['explanatory_params'].pop(rnd)
+    elif rnd < .1 and il < l:
+        rnd = random.randint(0, l-1)
+        while rnd in individual['explanatory_variables']:
+            rnd = random.randint(0, l-1)
+        individual['explanatory_variables'].append(rnd)
+        individual['explanatory_params'].append(random_param(vars[rnd]))
+
     for ct in np.arange(len(individual['explanatory_variables'])):
         rnd = random.uniform(0, 1)
         if rnd > .5:
-            mutate_variable_params(individual['explanatory_params'][ct])
+            mutate_variable_params(individual['explanatory_params'][ct], vars[ct])
 
     rnd = random.uniform(0, 1)
     if rnd > .5:
-        mutate_variable_params(individual['target_params'])
+        mutate_variable_params(individual['target_params'], tvar)
 
     individual['f1'] = None
     individual['f2'] = None
@@ -332,8 +357,9 @@ def mutation(individual, **kwargs):
     return individual
 
 
-def mutate_variable_params(param):
-    param['npart'] = min(50, max(3, int(param['npart'] + np.random.normal(0, 4))))
+def mutate_variable_params(param, var):
+    if var['type']=='common':
+        param['npart'] = min(50, max(3, int(param['npart'] + np.random.normal(0, 4))))
     param['alpha'] = min(.5, max(0, param['alpha'] + np.random.normal(0, .5)))
     param['mf'] = random.randint(1, 4)
     param['partitioner'] = random.randint(1, 2)
@@ -428,7 +454,7 @@ def persist_statistics(datasetname, statistics):
 
 def log_result(datasetname, fts_method, result):
     import json
-    with open('result_{}{}.json'.format(fts_method,datasetname), 'w') as file:
+    with open('result_{}{}.json'.format(fts_method,datasetname), 'a+') as file:
         file.write(json.dumps(result))
 
         print(result)
