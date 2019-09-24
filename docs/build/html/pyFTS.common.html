@@ -1253,7 +1253,7 @@ bisect but with a simpler API and support for key functions.</p>
 <dl class="function">
 <dt id="pyFTS.common.Util.plot_distribution2">
 <code class="descclassname">pyFTS.common.Util.</code><code class="descname">plot_distribution2</code><span class="sig-paren">(</span><em>probabilitydist</em>, <em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Util.plot_distribution2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot distributions over the time (x-axis)</p>
+<dd><p>Plot distributions in y-axis over the time (x-axis)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1267,6 +1267,32 @@ bisect but with a simpler API and support for key functions.</p>
 <li><strong>quantiles</strong> – the list of quantiles intervals to plot, e. g. [.05, .25, .75, .95]</li>
 <li><strong>median</strong> – a boolean value indicating if the median value will be plot.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.common.Util.plot_distribution_tiled">
+<code class="descclassname">pyFTS.common.Util.</code><code class="descname">plot_distribution_tiled</code><span class="sig-paren">(</span><em>distributions, data=None, rows=5, cols=5, index=None, axis=None, size=[10, 20]</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Util.plot_distribution_tiled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot one distribution individually in each axis, with probability in y-axis and UoD on x-axis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>distributions</strong> – </li>
+<li><strong>data</strong> – </li>
+<li><strong>rows</strong> – </li>
+<li><strong>cols</strong> – </li>
+<li><strong>index</strong> – </li>
+<li><strong>axis</strong> – </li>
+<li><strong>size</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
 </tr>
 </tbody>

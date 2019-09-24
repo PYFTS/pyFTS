@@ -25,9 +25,9 @@ Fuzzy Time Series (FTS) are non parametric methods for time series forecasting b
 2. **Universe of Discourse Partitioning**: This is the most important step. Here, the range of values of the numerical time series *Y(t)* will be splited in overlapped intervals and for each interval will be created a Fuzzy Set. This step is performed by pyFTS.partition module and its classes (for instance GridPartitioner, EntropyPartitioner, etc). The main parameters are:
  - the number of intervals
  - which fuzzy membership function (on `pyFTS.common.Membership <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/common/Membership.py>`_)
- - partition scheme (`GridPartitioner <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Grid.py>`_, `EntropyPartitioner <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Entropy.py>`_, `FCMPartitioner <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/FCM.py>`_, `CMeansPartitioner <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/CMeans.py>`_, `HuarngPartitioner <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Huarng.py>`_)
+ - partition scheme (`GridPartitioner <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Grid.py>`_, `EntropyPartitioner <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Entropy.py>`_, `FCMPartitioner <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/FCM.py>`_, `HuarngPartitioner <https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Huarng.py>`_)
  
- Check out the jupyter notebook on `notebooks/Partitioners.ipynb <https://github.com/PYFTS/notebooks/Partitioners.ipynb>`_ for sample codes.
+ Check out the jupyter notebook on `notebooks/Partitioners.ipynb <https://github.com/PYFTS/notebooks/blob/master/Partitioners.ipynb>`_ for sample codes.
  
 3. **Data Fuzzyfication**: Each data point of the numerical time series *Y(t)* will be translated to a fuzzy representation (usually one or more fuzzy sets), and then a fuzzy time series *F(t)* is created.
 

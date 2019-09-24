@@ -807,28 +807,6 @@ multivariate fuzzy set base.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_interval">
-<code class="descname">forecast_ahead_interval</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast n steps ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted intervals</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_multivariate">
 <code class="descname">forecast_ahead_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_multivariate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multivariate forecast n step ahead</p>
