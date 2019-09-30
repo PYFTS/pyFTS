@@ -69,7 +69,7 @@ def plot_residuals_by_model(targets, models, tam=[8, 8], save=False, file=None):
         else:
             ax = axes
         forecasts = mfts.predict(targets)
-        res = residuals(targets, forecasts, mfts.order+1)
+        res = residuals(targets, forecasts, mfts.order)
         mu = np.mean(res)
         sig = np.std(res)
 

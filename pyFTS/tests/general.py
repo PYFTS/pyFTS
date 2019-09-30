@@ -17,7 +17,11 @@ from pyFTS.common import Transformations, Membership, Util
 from pyFTS.benchmarks import arima, quantreg, BSTS, gaussianproc, knn
 from pyFTS.fcm import fts, common, GA
 
-from pyFTS.data import TAIEX, NASDAQ, SP500
+from pyFTS.common import Transformations
+
+tdiff = Transformations.Differential(1)
+
+boxcox = Transformations.BoxCox(0)
 
 from pyFTS.data import TAIEX, NASDAQ, SP500
 from pyFTS.common import Util
@@ -28,10 +32,18 @@ test = TAIEX.get_data()[1800:2000]
 from pyFTS.models import pwfts
 from pyFTS.partitioners import Grid
 
-fs = Grid.GridPartitioner(data=train, npart=45)
+fs = Grid.GridPartitioner(data=train, npart=15, transformation=tdiff)
 
-model = pwfts.ProbabilisticWeightedFTS(partitioner=fs, order=1)
+#model = pwfts.ProbabilisticWeightedFTS(partitioner=fs, order=1)
+
+model = chen.ConventionalFTS(partitioner=fs)
+model.append_transformation(tdiff)
 model.fit(train)
+
+from pyFTS.benchmarks import ResidualAnalysis as ra
+
+ra.plot_residuals_by_model(test, [model])
+
 horizon = 10
 '''
 forecasts = model.predict(test[9:20], type='point')
@@ -41,7 +53,7 @@ distributions = model.predict(test[9:20], type='distribution')
 forecasts = model.predict(test[9:20], type='point', steps_ahead=horizon)
 intervals = model.predict(test[9:20], type='interval', steps_ahead=horizon)
 '''
-distributions = model.predict(test[9:20], type='distribution', steps_ahead=horizon)
+#distributions = model.predict(test[9:20], type='distribution', steps_ahead=horizon)
 
 
 '''
