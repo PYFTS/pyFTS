@@ -247,7 +247,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         if flrg.get_key() in self.flrgs:
             return self.flrgs[flrg.get_key()].frequency_count / self.global_frequency_count
         else:
-            return 0.0
+            return 1.0
             #self.add_new_PWFLGR(flrg)
             #return self.flrg_lhs_unconditional_probability(flrg)
 
