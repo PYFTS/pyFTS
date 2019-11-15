@@ -47,6 +47,9 @@ class IncrementalEnsembleFTS(ensemble.EnsembleFTS):
         self.uod_clip = False
         self.max_lag = self.window_length + self.order
 
+    def offset(self):
+        return self.max_lag
+
     def train(self, data, **kwargs):
 
         partitioner = self.partitioner_method(data=data, **self.partitioner_params)

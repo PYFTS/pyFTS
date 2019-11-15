@@ -60,7 +60,7 @@ def subclust(data, ra, rb, eps_sup, eps_inf):
 
 
 class SubClustPartitioner(partitioner.Partitioner):
-    """SubClust Partitioner"""
+    """Subtractive Clustering Partitioner"""
     def __init__(self, **kwargs):
         self.ra = kwargs.get('ra', 0.8)
         self.rb = kwargs.get('rb', self.ra * 1.5)

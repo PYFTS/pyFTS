@@ -76,6 +76,13 @@ pyFTS.partitioners.Simple module
     :undoc-members:
     :show-inheritance:
 
+pyFTS.partitioners.SubClust module
+----------------------------------
+
+.. automodule:: pyFTS.partitioners.SubClust
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 pyFTS.partitioners.Util module
 ------------------------------

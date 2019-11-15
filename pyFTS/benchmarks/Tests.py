@@ -91,7 +91,7 @@ def format_experiment_table(df, exclude=[], replace={}, csv=True, std=False):
 
 
 def test_mean_equality(tests, alpha=.05, method='friedman'):
-    '''
+    """
     Test for the equality of the means, with alpha confidence level.
 
     H_0: There's no significant difference between the means
@@ -101,7 +101,7 @@ def test_mean_equality(tests, alpha=.05, method='friedman'):
     :param alpha:
     :param method:
     :return:
-    '''
+    """
     from stac.stac import nonparametric_tests as npt
 
     methods = tests.columns[1:]
@@ -119,7 +119,10 @@ def test_mean_equality(tests, alpha=.05, method='friedman'):
 
     print("F-Value: {} \tp-Value: {}".format(f_value, p_value))
 
-    print("\nH0 is rejected!\n") if p_value < alpha else print("\nH0 is accepted!\n")
+    if p_value < alpha:
+        print("\nH0 is rejected!\n")
+    else:
+        print("\nH0 is accepted!\n")
 
     post_hoc = {}
     rows = []

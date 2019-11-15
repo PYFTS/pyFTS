@@ -70,6 +70,8 @@ class FTS(object):
         needed to forecast a single step ahead"""
         self.log = pd.DataFrame([],columns=["Datetime","Operation","Value"])
         """"""
+        self.is_time_variant = False
+        """A boolean value indicating if this model is time variant"""
 
     def fuzzy(self, data):
         """
@@ -410,7 +412,7 @@ class FTS(object):
         """
         Import the parameters values from other model
 
-        :param model:
+        :param model: a model to clone the parameters
         """
 
         self.order = model.order
@@ -524,13 +526,37 @@ class FTS(object):
             return data
 
     def get_UoD(self):
+        """
+        Returns the interval of the known bounds of the universe of discourse (UoD), i. e.,
+        the known minimum and maximum values of the time series.
+
+        :return: A set with the lower and the upper bounds of the UoD
+        """
         if self.partitioner is not None:
-            return [self.partitioner.min, self.partitioner.max]
+            return (self.partitioner.min, self.partitioner.max)
         else:
-            return [self.original_min, self.original_max]
+            return (self.original_min, self.original_max)
+        
+    def offset(self):
+        """
+        Returns the number of lags to skip in the input test data in order to synchronize it with
+        the forecasted values given by the predict function. This is necessary due to the order of the
+        model, among other parameters.
+
+        :return: An integer with the number of lags to skip
+        """
+        if self.is_high_order:
+            return self.max_lag
+        else:
+            return 1
 
     def __str__(self):
-        """String representation of the model"""
+        """
+        String representation of the model
+
+        :return: a string containing the name of the model and the learned rules
+        (if the model was already trained)
+        """
 
         tmp = self.name + ":\n"
         if self.partitioner.type == 'common':

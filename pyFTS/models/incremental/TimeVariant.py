@@ -1,5 +1,6 @@
 """
-Meta model that wraps another FTS method and continously retrain it using a data window with the most recent data
+Meta model that wraps another FTS method and continously retrain it using a data window with
+the most recent data
 """
 
 import numpy as np
@@ -9,7 +10,9 @@ from pyFTS.partitioners import Grid
 
 class Retrainer(fts.FTS):
     """
-    Meta model for incremental/online learning
+    Meta model for incremental/online learning that retrain its internal model after
+    data windows controlled by the parameter 'batch_size', using as the training data a
+    window of recent lags, whose size is controlled by the parameter 'window_length'.
     """
     def __init__(self, **kwargs):
         super(Retrainer, self).__init__(**kwargs)
@@ -35,6 +38,7 @@ class Retrainer(fts.FTS):
         self.batch_size = kwargs.get('batch_size', 10)
         """The batch interval between each retraining"""
         self.is_high_order = True
+        self.is_time_variant = True
         self.uod_clip = False
         self.max_lag = self.window_length + self.order
         self.is_wrapper = True
@@ -68,6 +72,9 @@ class Retrainer(fts.FTS):
             ret.extend(self.model.predict(_test, **kwargs))
 
         return ret
+
+    def offset(self):
+        return self.max_lag
 
     def __str__(self):
         """String representation of the model"""
