@@ -50,7 +50,7 @@ class Retrainer(fts.FTS):
             self.model.order = self.model = self.fts_method(partitioner=self.partitioner,
                                                             order=self.order, **self.fts_params)
         self.model.fit(data, **kwargs)
-        self.shortname = self.model.shortname
+        self.shortname = "TimeVariant - " + self.model.shortname
 
     def forecast(self, data, **kwargs):
         l = len(data)
@@ -79,7 +79,7 @@ class Retrainer(fts.FTS):
     def __str__(self):
         """String representation of the model"""
 
-        return str(self.model)
+        return str(this.model)
 
     def __len__(self):
         """
