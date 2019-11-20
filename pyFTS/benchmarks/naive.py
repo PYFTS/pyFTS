@@ -12,6 +12,7 @@ class Naive(fts.FTS):
         self.detail = "Naïve Model"
         self.benchmark_only = True
         self.is_high_order = False
+        self.uod_clip = False
 
     def forecast(self, data, **kwargs):
         return data
