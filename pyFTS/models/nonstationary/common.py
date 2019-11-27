@@ -55,7 +55,6 @@ class FuzzySet(FS.FuzzySet):
             inc = t
         else:
             l = len(self.location)
-
             inc = sum([self.location[k](t + self.location_roots[k], self.location_params[k]) for k in np.arange(0, l)])
 
         if self.mf == Membership.gaussmf:

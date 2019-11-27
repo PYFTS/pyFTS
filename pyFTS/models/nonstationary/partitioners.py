@@ -120,6 +120,7 @@ class SimpleNonStationaryPartitioner(partitioner.Partitioner):
                                                              func=part.membership_function, names=part.setnames,
                                                              prefix=part.prefix, transformation=part.transformation,
                                                              indexer=part.indexer)#, preprocess=False)
+        self.partitions = part.partitions
 
         for key in part.sets.keys():
             set = part.sets[key]
