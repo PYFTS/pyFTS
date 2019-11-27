@@ -55,6 +55,11 @@ class Retrainer(fts.FTS):
     def forecast(self, data, **kwargs):
         l = len(data)
 
+        no_update = kwargs.get('no_update',False)
+
+        if no_update:
+            return self.model.predict(data, **kwargs)
+
         horizon = self.window_length + self.order
 
         ret = []
@@ -73,13 +78,34 @@ class Retrainer(fts.FTS):
 
         return ret
 
+    def forecast_ahead(self, data, steps, **kwargs):
+        if len(data) < self.order:
+            return data
+
+        if isinstance(data, np.ndarray):
+            data = data.tolist()
+
+        start = kwargs.get('start_at',0)
+
+        ret = data[:start+self.order]
+        for k in np.arange(start+self.order, steps+start+self.order):
+            tmp = self.forecast(ret[k-self.order:k], no_update=True, **kwargs)
+
+            if isinstance(tmp,(list, np.ndarray)):
+                tmp = tmp[-1]
+
+            ret.append(tmp)
+            data.append(tmp)
+
+        return ret[-steps:]
+
     def offset(self):
         return self.max_lag
 
     def __str__(self):
         """String representation of the model"""
 
-        return str(this.model)
+        return str(self.model)
 
     def __len__(self):
         """

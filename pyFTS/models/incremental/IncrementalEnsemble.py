@@ -63,6 +63,15 @@ class IncrementalEnsembleFTS(ensemble.EnsembleFTS):
 
     def forecast(self, data, **kwargs):
         l = len(data)
+        no_update = kwargs.get('no_update', False)
+        if no_update:
+            ret = []
+            for k in np.arange(self.order, l+1):
+                sample = data[k-self.order: k]
+                tmp = self.get_models_forecasts(sample)
+                point = self.get_point(tmp)
+                ret.append(point)
+            return ret
 
         data_window = []
 
@@ -87,6 +96,27 @@ class IncrementalEnsembleFTS(ensemble.EnsembleFTS):
                 ret.append(point)
 
         return ret
+
+    def forecast_ahead(self, data, steps, **kwargs):
+        if len(data) < self.order:
+            return data
+
+        if isinstance(data, np.ndarray):
+            data = data.tolist()
+
+        start = kwargs.get('start_at',0)
+
+        ret = data[:start+self.order]
+        for k in np.arange(start+self.order, steps+start+self.order):
+            tmp = self.forecast(ret[k-self.order:k], no_update=True, **kwargs)
+
+            if isinstance(tmp,(list, np.ndarray)):
+                tmp = tmp[-1]
+
+            ret.append(tmp)
+            data.append(tmp)
+
+        return ret[-steps:]
 
 
 
