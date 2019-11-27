@@ -9,7 +9,6 @@ class HighOrderNonStationaryFLRG(flrg.NonStationaryFLRG):
     """First Order NonStationary Fuzzy Logical Relationship Group"""
     def __init__(self, order, **kwargs):
         super(HighOrderNonStationaryFLRG, self).__init__(order, **kwargs)
-
         self.LHS = []
         self.RHS = {}
         self.count = 0.0
@@ -101,10 +100,10 @@ class HighOrderNonStationaryFTS(nsfts.NonStationaryFTS):
 
     def generate_flrg(self, data, **kwargs):
         l = len(data)
-        for k in np.arange(self.order, l):
+        for k in np.arange(self.max_lag, l):
             if self.dump: print("FLR: " + str(k))
 
-            sample = data[k - self.order: k]
+            sample = data[k - self.max_lag: k]
 
             rhs = [key for key in self.partitioner.ordered_sets
                    if self.partitioner.sets[key].membership(data[k], [0,1]) > 0.0]
@@ -145,18 +144,17 @@ class HighOrderNonStationaryFTS(nsfts.NonStationaryFTS):
         lags = []
 
         for ct, dat in enumerate(sample):
-            affected_sets = [[ct, self.partitioner.sets[key].membership(dat, perturb[ct])]
-                             for ct, key in enumerate(self.partitioner.ordered_sets)
+            affected_sets = [key for ct, key in enumerate(self.partitioner.ordered_sets)
                              if self.partitioner.sets[key].membership(dat, perturb[ct]) > 0.0]
 
             if len(affected_sets) == 0:
 
                 if dat < self.partitioner.lower_set().get_lower(perturb[0]):
-                    affected_sets.append([0, 1])
+                    affected_sets.append(self.partitioner.lower_set().name)
                 elif dat > self.partitioner.upper_set().get_upper(perturb[-1]):
-                    affected_sets.append([self.partitioner.partitions - 1, 1])
+                    affected_sets.append(self.partitioner.upper_set().name)
 
-            lags.append([a[0] for a in affected_sets])
+            lags.append(affected_sets)
 
         # Build the tree with all possible paths
 
@@ -166,7 +164,7 @@ class HighOrderNonStationaryFTS(nsfts.NonStationaryFTS):
             flrg = HighOrderNonStationaryFLRG(self.order)
 
             for kk in path:
-                flrg.append_lhs(self.partitioner.ordered_sets[kk])
+                flrg.append_lhs(kk)
 
             affected_flrgs.append(flrg)
             mv = []
@@ -185,15 +183,11 @@ class HighOrderNonStationaryFTS(nsfts.NonStationaryFTS):
 
         explain = kwargs.get('explain', False)
 
-        fuzzyfied = kwargs.get('fuzzyfied', False)
-
         time_displacement = kwargs.get("time_displacement", 0)
 
         window_size = kwargs.get("window_size", 1)
 
         no_update = kwargs.get("no_update", False)
-
-        mode = kwargs.get('mode', 'mean')
 
         ret = []
 
@@ -214,8 +208,7 @@ class HighOrderNonStationaryFTS(nsfts.NonStationaryFTS):
                 if no_update:
                     perturb = [[0, 1] for k in np.arange(self.partitioner.partitions)]
                 else:
-                    perturb = self.conditional_perturbation_factors(sample[0])
-
+                    perturb = self.conditional_perturbation_factors(sample[-1])
 
             affected_flrgs, affected_flrgs_memberships = self._affected_flrgs(sample, perturb)
 
@@ -246,4 +239,20 @@ class HighOrderNonStationaryFTS(nsfts.NonStationaryFTS):
 
             ret.append(pto)
 
+            if self.method == 'conditional' and not no_update:
+                self.forecasts.append(pto)
+                self.residuals.append(self.inputs[-1] - self.forecasts[-1])
+                self.inputs.extend(sample)
+
+                for g in range(self.order):
+                    self.inputs.pop(0)
+                self.forecasts.pop(0)
+                self.residuals.pop(0)
+
         return ret
+
+    def __str__(self):
+        tmp = self.name + ":\n"
+        for r in self.flrgs:
+            tmp = "{0}{1}\n".format(tmp, str(self.flrgs[r]))
+        return tmp
