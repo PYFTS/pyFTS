@@ -27,6 +27,46 @@ class ConventionalNonStationaryFLRG(flrg.NonStationaryFLRG):
         return tmp + tmp2
 
 
+class WeightedNonStationaryFLRG(flrg.NonStationaryFLRG):
+    """First Order NonStationary Fuzzy Logical Relationship Group"""
+
+    def __init__(self, LHS, **kwargs):
+        super(WeightedNonStationaryFLRG, self).__init__(1, **kwargs)
+        self.LHS = LHS
+        self.RHS = {}
+        self.count = 0.0
+        self.strlhs = ""
+        self.w = None
+
+    def get_key(self):
+        return self.LHS
+
+    def append_rhs(self, c, **kwargs):
+        if c not in self.RHS:
+            self.RHS[c] = 1
+        else:
+            self.RHS[c] += 1
+        self.count += 1
+
+    def weights(self):
+        if self.w is None:
+            self.w = np.array([self.RHS[c] / self.count for c in self.RHS.keys()])
+        return self.w
+
+    def get_midpoint(self, sets, perturb):
+        mp = np.array([sets[c].get_midpoint(perturb) for c in self.RHS.keys()])
+        midpoint = mp.dot(self.weights())
+        return midpoint
+
+    def __str__(self):
+        _str = ""
+        for k in self.RHS.keys():
+            _str += ", " if len(_str) > 0 else ""
+            _str += k + " (" + str(round(self.RHS[k] / self.count, 3)) + ")"
+
+        return self.get_key() + " -> " + _str
+
+
 class NonStationaryFTS(fts.FTS):
     """NonStationaryFTS Fuzzy Time Series"""
     def __init__(self, **kwargs):
@@ -126,27 +166,24 @@ class NonStationaryFTS(fts.FTS):
 
         return perturb
 
-    def _fsset_key(self, ix):
-        return self.partitioner.ordered_sets[ix]
-
     def _affected_sets(self, sample, perturb):
 
         if self.method == 'conditional':
 
-            affected_sets = [[ct, self.sets[self._fsset_key(ct)].membership(sample, perturb[ct])]
-                             for ct in np.arange(len(self.partitioner.sets))
-                             if self.sets[self._fsset_key(ct)].membership(sample, perturb[ct]) > 0.0]
-            if len(affected_sets) == 0:
+            affected_sets = [[ct, self.partitioner.sets[key].membership(sample, perturb[ct])]
+                             for ct, key in enumerate(self.partitioner.ordered_sets)
+                             if self.partitioner.sets[key].membership(sample, perturb[ct]) > 0.0]
 
+            if len(affected_sets) == 0:
                 if sample < self.partitioner.lower_set().get_lower(perturb[0]):
                     affected_sets.append([0, 1])
                 elif sample > self.partitioner.upper_set().get_upper(perturb[-1]):
                     affected_sets.append([len(self.sets) - 1, 1])
 
         else:
-            affected_sets = [[ct, self.sets[self._fsset_key(ct)].membership(sample, perturb)]
-                             for ct in np.arange(len(self.partitioner.sets))
-                             if self.sets[self._fsset_key(ct)].membership(sample, perturb) > 0.0]
+            affected_sets = [[ct, self.partitioner.sets[key].membership(sample, perturb)]
+                             for ct, key in enumerate(self.partitioner.ordered_sets)
+                             if self.partitioner.sets[key].membership(sample, perturb) > 0.0]
 
             if len(affected_sets) == 0:
 
@@ -272,3 +309,51 @@ class NonStationaryFTS(fts.FTS):
             ret.append([sum(lower), sum(upper)])
 
         return ret
+
+    def __str__(self):
+        tmp = self.name + ":\n"
+        for r in self.flrgs:
+            tmp = "{0}{1}\n".format(tmp, str(self.flrgs[r]))
+        return tmp
+
+
+class WeightedNonStationaryFTS(NonStationaryFTS):
+    """Weighted NonStationaryFTS Fuzzy Time Series"""
+    def __init__(self, **kwargs):
+        super(WeightedNonStationaryFTS, self).__init__(**kwargs)
+        self.name = "Weighted Non Stationary FTS"
+        self.shortname = "WNSFTS"
+
+    def train(self, data, **kwargs):
+
+        if self.method == 'unconditional':
+            window_size = kwargs.get('parameters', 1)
+            tmpdata = common.fuzzySeries(data, self.partitioner.sets,
+                                         self.partitioner.ordered_sets,
+                                         window_size, method='fuzzy')
+        else:
+            tmpdata = common.fuzzySeries(data, self.partitioner.sets,
+                                 self.partitioner.ordered_sets,
+                                 method='fuzzy', const_t=0)
+
+        flrs = FLR.generate_recurrent_flrs(tmpdata)
+        self.generate_flrg(flrs)
+
+        if self.method == 'conditional':
+            self.forecasts = self.forecast(data, no_update=True)
+            self.residuals = np.array(data[1:]) - np.array(self.forecasts[:-1])
+
+            self.variance_residual = np.var(self.residuals)  # np.max(self.residuals
+            self.mean_residual = np.mean(self.residuals)
+
+            self.residuals = self.residuals[-self.memory_window:].tolist()
+            self.forecasts = self.forecasts[-self.memory_window:]
+            self.inputs = np.array(data[-self.memory_window:]).tolist()
+
+    def generate_flrg(self, flrs, **kwargs):
+        for flr in flrs:
+            if flr.LHS.name in self.flrgs:
+                self.flrgs[flr.LHS.name].append_rhs(flr.RHS.name)
+            else:
+                self.flrgs[flr.LHS.name] = WeightedNonStationaryFLRG(flr.LHS.name)
+                self.flrgs[flr.LHS.name].append_rhs(flr.RHS.name)

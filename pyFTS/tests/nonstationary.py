@@ -30,9 +30,9 @@ test = dataset[1000:]
 from pyFTS.models.nonstationary import partitioners as nspart, nsfts, honsfts
 fs = nspart.simplenonstationary_gridpartitioner_builder(data=train,npart=35,transformation=None)
 print(fs)
-model = honsfts.HighOrderNonStationaryFTS(partitioner=fs, order=2)
-#model = nsfts.NonStationaryFTS(partitioner=fs)
+#model = honsfts.HighOrderNonStationaryFTS(partitioner=fs, order=2)
+model = nsfts.WeightedNonStationaryFTS(partitioner=fs)
 model.fit(train)
-#print(model)
+print(model)
 forecasts = model.predict(test)
 #print(forecasts)

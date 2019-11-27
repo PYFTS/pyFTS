@@ -18,7 +18,6 @@ class NonStationaryFLRG(flrg.FLRG):
 
         return (sets, t, w)
 
-
     def __init__(self, LHS, **kwargs):
         super(NonStationaryFLRG, self).__init__(1, **kwargs)
         self.LHS = LHS
