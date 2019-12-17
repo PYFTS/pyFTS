@@ -1622,7 +1622,7 @@ when the LHS pattern is identified on time t.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – a model to clone the parameters</td>
 </tr>
 </tbody>
 </table>
@@ -1843,7 +1843,17 @@ when the LHS pattern is identified on time t.</p>
 <dl class="method">
 <dt id="pyFTS.common.fts.FTS.get_UoD">
 <code class="descname">get_UoD</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.fts.FTS.get_UoD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the interval of the known bounds of the universe of discourse (UoD), i. e.,
+the known minimum and maximum values of the time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A set with the lower and the upper bounds of the UoD</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyFTS.common.fts.FTS.len_total">
@@ -1870,6 +1880,22 @@ when the LHS pattern is identified on time t.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – source model</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.common.fts.FTS.offset">
+<code class="descname">offset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.fts.FTS.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of lags to skip in the input test data in order to synchronize it with
+the forecasted values given by the predict function. This is necessary due to the order of the
+model, among other parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An integer with the number of lags to skip</td>
 </tr>
 </tbody>
 </table>

@@ -426,16 +426,74 @@ IEEE Transactions on Fuzzy Systems, v. 16, n. 4, p. 1072-1086, 2008.</p>
 
 <dl class="method">
 <dt id="pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.append_rhs">
-<code class="descname">append_rhs</code><span class="sig-paren">(</span><em>c</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">append_rhs</code><span class="sig-paren">(</span><em>fset</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.get_lower">
+<code class="descname">get_lower</code><span class="sig-paren">(</span><em>sets</em>, <em>perturb</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.get_lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the lower bound value for the RHS fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">lower bound value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.get_midpoint">
+<code class="descname">get_midpoint</code><span class="sig-paren">(</span><em>sets</em>, <em>perturb</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.get_midpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the midpoint value for the RHS fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the midpoint value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.get_upper">
+<code class="descname">get_upper</code><span class="sig-paren">(</span><em>sets</em>, <em>perturb</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.get_upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the upper bound value for the RHS fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">upper bound value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.weights">
+<code class="descname">weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG.weights" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.nonstationary.honsfts.</code><code class="descname">HighOrderNonStationaryFTS</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyFTS.models.html#pyFTS.models.hofts.HighOrderFTS" title="pyFTS.models.hofts.HighOrderFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.hofts.HighOrderFTS</span></code></a></p>
+<em class="property">class </em><code class="descclassname">pyFTS.models.nonstationary.honsfts.</code><code class="descname">HighOrderNonStationaryFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.nonstationary.nsfts.NonStationaryFTS" title="pyFTS.models.nonstationary.nsfts.NonStationaryFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.nonstationary.nsfts.NonStationaryFTS</span></code></a></p>
 <p>NonStationaryFTS Fuzzy Time Series</p>
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS.configure_lags">
+<code class="descname">configure_lags</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS.configure_lags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS.forecast">
 <code class="descname">forecast</code><span class="sig-paren">(</span><em>ndata</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS.forecast" title="Permalink to this definition">¶</a></dt>
@@ -451,27 +509,6 @@ IEEE Transactions on Fuzzy Systems, v. 16, n. 4, p. 1072-1086, 2008.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS.forecast_interval">
-<code class="descname">forecast_interval</code><span class="sig-paren">(</span><em>ndata</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS.forecast_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the prediction intervals</p>
 </td>
 </tr>
 </tbody>
@@ -584,6 +621,75 @@ IEEE Transactions on Fuzzy Systems, v. 16, n. 4, p. 1072-1086, 2008.</p>
 <dl class="method">
 <dt id="pyFTS.models.nonstationary.nsfts.NonStationaryFTS.train">
 <code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.nsfts.NonStationaryFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – training time series data</li>
+<li><strong>kwargs</strong> – Method specific parameters</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG">
+<em class="property">class </em><code class="descclassname">pyFTS.models.nonstationary.nsfts.</code><code class="descname">WeightedNonStationaryFLRG</code><span class="sig-paren">(</span><em>LHS</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.nonstationary.flrg.NonStationaryFLRG" title="pyFTS.models.nonstationary.flrg.NonStationaryFLRG"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.nonstationary.flrg.NonStationaryFLRG</span></code></a></p>
+<p>First Order NonStationary Fuzzy Logical Relationship Group</p>
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG.append_rhs">
+<code class="descname">append_rhs</code><span class="sig-paren">(</span><em>c</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG.get_key">
+<code class="descname">get_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG.get_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a unique identifier for this FLRG</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG.get_midpoint">
+<code class="descname">get_midpoint</code><span class="sig-paren">(</span><em>sets</em>, <em>perturb</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG.get_midpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the midpoint value for the RHS fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the midpoint value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG.weights">
+<code class="descname">weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFLRG.weights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFTS">
+<em class="property">class </em><code class="descclassname">pyFTS.models.nonstationary.nsfts.</code><code class="descname">WeightedNonStationaryFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.nonstationary.nsfts.NonStationaryFTS" title="pyFTS.models.nonstationary.nsfts.NonStationaryFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.nonstationary.nsfts.NonStationaryFTS</span></code></a></p>
+<p>Weighted NonStationaryFTS Fuzzy Time Series</p>
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFTS.generate_flrg">
+<code class="descname">generate_flrg</code><span class="sig-paren">(</span><em>flrs</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFTS.generate_flrg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFTS.train">
+<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.nonstationary.nsfts.WeightedNonStationaryFTS.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method specific parameter fitting</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

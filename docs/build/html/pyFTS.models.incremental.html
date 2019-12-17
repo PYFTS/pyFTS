@@ -116,12 +116,15 @@
 </div>
 <div class="section" id="module-pyFTS.models.incremental.TimeVariant">
 <span id="pyfts-models-incremental-timevariant-module"></span><h2>pyFTS.models.incremental.TimeVariant module<a class="headerlink" href="#module-pyFTS.models.incremental.TimeVariant" title="Permalink to this headline">¶</a></h2>
-<p>Meta model that wraps another FTS method and continously retrain it using a data window with the most recent data</p>
+<p>Meta model that wraps another FTS method and continously retrain it using a data window with
+the most recent data</p>
 <dl class="class">
 <dt id="pyFTS.models.incremental.TimeVariant.Retrainer">
 <em class="property">class </em><code class="descclassname">pyFTS.models.incremental.TimeVariant.</code><code class="descname">Retrainer</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
-<p>Meta model for incremental/online learning</p>
+<p>Meta model for incremental/online learning that retrain its internal model after
+data windows controlled by the parameter ‘batch_size’, using as the training data a
+window of recent lags, whose size is controlled by the parameter ‘window_length’.</p>
 <dl class="method">
 <dt id="pyFTS.models.incremental.TimeVariant.Retrainer.forecast">
 <code class="descname">forecast</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.forecast" title="Permalink to this definition">¶</a></dt>
@@ -138,6 +141,44 @@
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.forecast_ahead">
+<code class="descname">forecast_ahead</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.forecast_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast n steps ahead</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
+<li><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</li>
+<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.offset">
+<code class="descname">offset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of lags to skip in the input test data in order to synchronize it with
+the forecasted values given by the predict function. This is necessary due to the order of the
+model, among other parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An integer with the number of lags to skip</td>
 </tr>
 </tbody>
 </table>
@@ -188,6 +229,44 @@
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast_ahead">
+<code class="descname">forecast_ahead</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast n steps ahead</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
+<li><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</li>
+<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.offset">
+<code class="descname">offset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of lags to skip in the input test data in order to synchronize it with
+the forecasted values given by the predict function. This is necessary due to the order of the
+model, among other parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An integer with the number of lags to skip</td>
 </tr>
 </tbody>
 </table>

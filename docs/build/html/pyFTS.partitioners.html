@@ -73,7 +73,7 @@
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Huarng">pyFTS.partitioners.Huarng module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Singleton">pyFTS.partitioners.Singleton module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Simple">pyFTS.partitioners.Simple module</a></li>
-<li><a class="reference internal" href="#pyfts-partitioners-subclust-module">pyFTS.partitioners.SubClust module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.partitioners.SubClust">pyFTS.partitioners.SubClust module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Util">pyFTS.partitioners.Util module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.parallel_util">pyFTS.partitioners.parallel_util module</a></li>
 </ul>
@@ -556,8 +556,42 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="pyfts-partitioners-subclust-module">
-<h2>pyFTS.partitioners.SubClust module<a class="headerlink" href="#pyfts-partitioners-subclust-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyFTS.partitioners.SubClust">
+<span id="pyfts-partitioners-subclust-module"></span><h2>pyFTS.partitioners.SubClust module<a class="headerlink" href="#module-pyFTS.partitioners.SubClust" title="Permalink to this headline">¶</a></h2>
+<p>Chiu, Stephen L. “Fuzzy model identification based on cluster estimation.” Journal of Intelligent &amp; fuzzy systems 2.3 (1994): 267-278.</p>
+<dl class="class">
+<dt id="pyFTS.partitioners.SubClust.SubClustPartitioner">
+<em class="property">class </em><code class="descclassname">pyFTS.partitioners.SubClust.</code><code class="descname">SubClustPartitioner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
+<p>Subtractive Clustering Partitioner</p>
+<dl class="method">
+<dt id="pyFTS.partitioners.SubClust.SubClustPartitioner.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – training data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.SubClust.imax">
+<code class="descclassname">pyFTS.partitioners.SubClust.</code><code class="descname">imax</code><span class="sig-paren">(</span><em>vec</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.partitioners.SubClust.imax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyFTS.partitioners.SubClust.subclust">
+<code class="descclassname">pyFTS.partitioners.SubClust.</code><code class="descname">subclust</code><span class="sig-paren">(</span><em>data</em>, <em>ra</em>, <em>rb</em>, <em>eps_sup</em>, <em>eps_inf</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.partitioners.SubClust.subclust" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-pyFTS.partitioners.Util">
 <span id="pyfts-partitioners-util-module"></span><h2>pyFTS.partitioners.Util module<a class="headerlink" href="#module-pyFTS.partitioners.Util" title="Permalink to this headline">¶</a></h2>
