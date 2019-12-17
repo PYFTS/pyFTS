@@ -35,6 +35,12 @@ class Partitioner(object):
         """A ordered list of the fuzzy sets names, sorted by their middle point"""
         self.kdtree = None
         """A spatial index to help in fuzzyfication"""
+        self.margin  = kwargs.get("margin", 0.1)
+        """The upper and lower exceeding margins for the known UoD. The default value is .1"""
+        self.lower_margin = kwargs.get("lower_margin", self.margin)
+        """Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter"""
+        self.upper_margin = kwargs.get("lower_margin", self.margin)
+        """Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter"""
 
         if kwargs.get('preprocess',True):
 
@@ -58,10 +64,10 @@ class Partitioner(object):
                 ndata[ndata == -np.inf] = 0
                 _min = np.nanmin(ndata)
 
-            self.min = float(_min * 1.1 if _min < 0 else _min * 0.9)
+            self.min = float(_min * (1 + self.lower_margin) if _min < 0 else _min * (1 - self.lower_margin))
 
             _max = np.nanmax(ndata)
-            self.max = float(_max * 1.1 if _max > 0 else _max * 0.9)
+            self.max = float(_max * (1 + self.upper_margin) if _max > 0 else _max * (1 - self.upper_margin))
 
             self.sets = self.build(ndata)
 

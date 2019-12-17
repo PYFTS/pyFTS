@@ -19,46 +19,37 @@ test_length = 200
 
 from pyFTS.common import Transformations
 
-
-from pyFTS.partitioners import Grid, Util as pUtil
-from pyFTS.benchmarks import benchmarks as bchmk
-from pyFTS.models import chen, hofts, pwfts, hwang
+from pyFTS.benchmarks import naive
 from pyFTS.models.incremental import TimeVariant, IncrementalEnsemble
+from pyFTS.models.nonstationary import common, perturbation, partitioners as nspart
+from pyFTS.models.nonstationary import nsfts, util as nsUtil
+from pyFTS.partitioners import Grid
+from pyFTS.models import hofts, pwfts
+from pyFTS.benchmarks import Measures
+from pyFTS.common import Transformations, Util as cUtil
+
+diff = Transformations.Differential(lag=1)
 
 train = dataset[:1000]
 test = dataset[1000:]
 
-window = 100
+#grid = Grid.GridPartitioner(data=train, transformation=diff)
+#model = pwfts.ProbabilisticWeightedFTS(partitioner=grid)
+#model.append_transformation(diff)
 
-batch = 10
+model = naive.Naive()
 
-num_models = 3
+model.fit(train)
 
-model1 = TimeVariant.Retrainer(partitioner_method=Grid.GridPartitioner, partitioner_params={'npart': 35},
-                               fts_method=pwfts.ProbabilisticWeightedFTS, fts_params={}, order=1,
-                               batch_size=batch, window_length=window * num_models)
+for ct, ttrain, ttest in cUtil.sliding_window(test, 1000, .95, inc=.5):
+  if model.shortname not in ('PWFTS','Naive'):
+    model.predict(ttrain)
+  print(ttest)
+  if len(ttest) > 0:
+    forecasts = model.predict(ttest, steps_ahead=10)
+    measures = Measures.get_point_ahead_statistics(ttest[1:11], forecasts)
 
-model2 = IncrementalEnsemble.IncrementalEnsembleFTS(partitioner_method=Grid.GridPartitioner,
-                                                    partitioner_params={'npart': 35},
-                                                    fts_method=pwfts.ProbabilisticWeightedFTS, fts_params={}, order=1,
-                                                    batch_size=int(batch / 3), window_length=window,
-                                                    num_models=num_models)
-
-model1.fit(train)
-model2.fit(train)
-
-print(len(test))
-'''
-forecasts1 = model1.predict(test[:-10])
-print(len(forecasts1))
-forecasts1 = model1.predict(test[-10:], steps_ahead=10)
-print(len(forecasts1))
-'''
-forecasts2 = model2.predict(test[:-10])
-print(len(forecasts2))
-forecasts2 = model2.predict(test[-10:], steps_ahead=10)
-print(len(forecasts2))
-
+  print(measures)
 
 '''
 from pyFTS.models.nonstationary import partitioners as nspart, nsfts, honsfts
