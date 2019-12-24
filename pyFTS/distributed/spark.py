@@ -16,7 +16,14 @@ SPARK_ADDR = 'spark://192.168.0.110:7077'
 os.environ['PYSPARK_PYTHON'] = '/usr/bin/python3'
 os.environ['PYSPARK_DRIVER_PYTHON'] = '/usr/bin/python3'
 
+
 def create_spark_conf(**kwargs):
+    """
+    Configure the Spark master node
+
+    :param kwargs:
+    :return:
+    """
     spark_executor_memory = kwargs.get("spark_executor_memory", "2g")
     spark_driver_memory = kwargs.get("spark_driver_memory", "2g")
     url = kwargs.get("url", SPARK_ADDR)
@@ -32,11 +39,15 @@ def create_spark_conf(**kwargs):
     
     return conf
 
+
 def get_partitioner(shared_partitioner, type='common', variables=[]):
     """
+    Return the UoD partitioner from the 'shared_partitioner' fuzzy sets
 
-    :param part:
-    :return:
+    :param shared_partitioner: the shared variable with the fuzzy sets
+    :param type: the type of the partitioner
+    :param variables: in case of a Multivariate FTS, the list of variables
+    :return: Partitioner object
     """
     if type=='common':
         fs_tmp = Simple.SimplePartitioner()
@@ -52,6 +63,14 @@ def get_partitioner(shared_partitioner, type='common', variables=[]):
 
 
 def get_clustered_partitioner(explanatory_variables, target_variable, **parameters):
+    """
+    Return the UoD partitioner from the 'shared_partitioner' fuzzy sets, special case for
+    clustered multivariate FTS.
+
+    :param explanatory_variables: the list with the names of the explanatory variables
+    :param target_variable: the name of the target variable
+    :return: Partitioner object
+    """
     from pyFTS.models.multivariate.common import MultivariateFuzzySet
     fs_tmp = mv_partitioner.MultivariatePartitioner(explanatory_variables=explanatory_variables,
                                            target_variable=target_variable)
@@ -67,6 +86,12 @@ def get_clustered_partitioner(explanatory_variables, target_variable, **paramete
 
 
 def get_variables(**parameters):
+    """
+    From the dictionary of parameters, return a tuple with the list of explanatory and target variables
+
+    :param parameters: dictionary of parameters
+    :return: a tuple with the list of explanatory and target variables
+    """
     explanatory_variables = []
     target_variable = None
     for name in parameters['variables'].value:
@@ -88,7 +113,14 @@ def get_variables(**parameters):
 
     return (explanatory_variables, target_variable)
 
+
 def create_univariate_model(**parameters):
+    """
+    From the dictionary of parameters, create an univariate FTS model
+
+    :param parameters: dictionary of parameters
+    :return: univariate FTS model
+    """
     if parameters['order'].value > 1:
         model = parameters['method'].value(partitioner=get_partitioner(parameters['partitioner']),
                                            order=parameters['order'].value, alpha_cut=parameters['alpha_cut'].value,
@@ -99,11 +131,14 @@ def create_univariate_model(**parameters):
     
     return model
 
+
 def slave_train_univariate(data, **parameters):
     """
+    Receive train data, train an univariate FTS model and return the learned rules
 
-    :param data:
-    :return:
+    :param data: train data
+    :param parameters: dictionary of parameters
+    :return: Key/value list of the learned rules
     """
 
     model = create_univariate_model(**parameters)
@@ -117,9 +152,11 @@ def slave_train_univariate(data, **parameters):
 
 def slave_forecast_univariate(data, **parameters):
     """
+    Receive test data, create an univariate FTS model from the parameters and return the forecasted values
 
-    :param data:
-    :return:
+    :param data: test data
+    :param parameters: dictionary of parameters
+    :return: forecasted values from the data input
     """
 
     model = create_univariate_model(**parameters)
@@ -132,6 +169,13 @@ def slave_forecast_univariate(data, **parameters):
 
 
 def create_multivariate_model(**parameters):
+    """
+    From the dictionary of parameters, create a multivariate FTS model
+
+    :param parameters: dictionary of parameters
+    :return: multivariate FTS model
+    """
+
     explanatory_variables, target_variable = get_variables(**parameters)
     #vars = [(v.name, v.name) for v in explanatory_variables]
 
@@ -162,6 +206,13 @@ def create_multivariate_model(**parameters):
 
 
 def slave_train_multivariate(data, **parameters):
+    """
+    Receive train data, train a multivariate FTS model and return the learned rules
+
+    :param data: train data
+    :param parameters: dictionary of parameters
+    :return: Key/value list of the learned rules
+    """
     
     model = create_multivariate_model(**parameters)
 
@@ -180,6 +231,13 @@ def slave_train_multivariate(data, **parameters):
 
 
 def slave_forecast_multivariate(data, **parameters):
+    """
+    Receive test data, create a multivariate FTS model from the parameters and return the forecasted values
+
+    :param data: test data
+    :param parameters: dictionary of parameters
+    :return: forecasted values from the data input
+    """
     
     model = create_multivariate_model(**parameters)
 
@@ -192,6 +250,14 @@ def slave_forecast_multivariate(data, **parameters):
 
 
 def share_parameters(model, context, data):
+    """
+    Create a shared variable with a dictionary of the model parameters and hyperparameters
+
+    :param model: the FTS model to extract the parameters and hyperparameters
+    :param context: Spark context
+    :param data: dataset
+    :return: the shared variable with the dictionary of parameters
+    """
     parameters = {}
     if not model.is_multivariate:
         parameters['type'] = context.broadcast('common')
@@ -242,13 +308,17 @@ def share_parameters(model, context, data):
 
 def distributed_train(model, data, **kwargs):
     """
+    The main method for distributed training of FTS models using Spark clusters.
+
+    It takes an empty model and the train data, connect with the Spark cluster, proceed the
+    distributed training and return the learned model.
 
 
-    :param model:
-    :param data:
-    :param url:
-    :param app:
-    :return:
+    :param model: An empty (non-trained) FTS model
+    :param data: train data
+    :param url: URL of the Spark master node
+    :param app: Application name
+    :return: trained model
     """
     
     num_batches = kwargs.get("num_batches", 4)
@@ -292,13 +362,18 @@ def distributed_train(model, data, **kwargs):
 
 def distributed_predict(data, model, **kwargs):
     """
+    The main method for distributed forecasting with FTS models using Spark clusters.
+
+    It takes a trained FTS model and the test data, connect with the Spark cluster,
+    proceed the distributed forecasting and return the merged forecasted values.
 
 
-    :param model:
-    :param data:
-    :param url:
+
+    :param model: an FTS trained model
+    :param data: test data
+    :param url: URL of the Spark master
     :param app:
-    :return:
+    :return: forecasted values
     """
     
     num_batches = kwargs.get("num_batches", 4)

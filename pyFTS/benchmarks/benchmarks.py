@@ -1748,3 +1748,58 @@ def train_test_time(data, windowsize, train=0.8, **kwargs):
     conn.close()
 
 
+def distributed_model_train_test_time(models, data, windowsize, train=0.8, **kwargs):
+    """
+    Assess the train and test times for a given list of configured models and save the results on a database.
+
+    :param models: A list of FTS models already configured, but not yet trained,
+    :param data: time series data, including train and test data
+    :param windowsize: Train/test data windows
+    :param train: Percent of data window that will be used to train the models
+    :param kwargs:
+    :return:
+    """
+    import time
+
+    tag = __pop('tag', None, kwargs)
+    num_batches = kwargs.get('num_batches', 1)
+    dataset = __pop('dataset', None, kwargs)
+
+    file = kwargs.get('file', "benchmarks.db")
+
+    inc = __pop("inc", 0.5, kwargs)
+
+    conn = bUtil.open_benchmark_db(file)
+
+    for ct, train, test in cUtil.sliding_window(data, windowsize, train, inc=inc, **kwargs):
+        for id, model in enumerate(models):
+            print(dataset, model, ct)
+
+            model.fit(train, **kwargs)
+
+            for time in model.__dict__['training_time']:
+                job = {
+                    'steps': num_batches, 'method': 'train', 'time': time,
+                    'model': model.shortname, 'transformation': None,
+                    'order': model.order, 'partitioner': None,
+                    'partitions': None, 'size': len(model)
+                }
+                data = bUtil.process_common_data2(dataset, tag, 'train', job)
+                common_process_time_jobs(conn, data, job)
+
+            model.predict(train, **kwargs)
+
+            for time in model.__dict__['forecasting_time']:
+                job = {
+                    'steps': num_batches, 'method': 'test', 'time': time,
+                    'model': model.shortname, 'transformation': None,
+                    'order': model.order, 'partitioner': None,
+                    'partitions': None, 'size': len(model)
+                }
+
+                data = bUtil.process_common_data2(dataset, tag, 'test', job)
+                common_process_time_jobs(conn, data, job)
+
+    conn.close()
+
+

@@ -97,7 +97,6 @@ class FTS(object):
             ndata = np.clip(ndata, self.original_min, self.original_max)
         return ndata
 
-
     def predict(self, data, **kwargs):
         """
         Forecast using trained model
@@ -117,6 +116,9 @@ class FTS(object):
 
         :return: a numpy array with the forecasted data
         """
+        import copy
+
+        kw = copy.deepcopy(kwargs)
 
         if self.is_multivariate:
             ndata = data
@@ -125,38 +127,38 @@ class FTS(object):
 
         ndata = self.clip_uod(ndata)
 
-        if 'distributed' in kwargs:
-            distributed = kwargs.pop('distributed')
+        if 'distributed' in kw:
+            distributed = kw.pop('distributed')
         else:
             distributed = False
 
-        if 'type' in kwargs:
-            type = kwargs.pop("type")
+        if 'type' in kw:
+            type = kw.pop("type")
         else:
             type = 'point'
 
         if distributed is None or distributed == False:
 
-            steps_ahead = kwargs.get("steps_ahead", None)
+            steps_ahead = kw.get("steps_ahead", None)
 
             if steps_ahead == None or steps_ahead == 1:
                 if type == 'point':
-                    ret = self.forecast(ndata, **kwargs)
+                    ret = self.forecast(ndata, **kw)
                 elif type == 'interval':
-                    ret = self.forecast_interval(ndata, **kwargs)
+                    ret = self.forecast_interval(ndata, **kw)
                 elif type == 'distribution':
-                    ret = self.forecast_distribution(ndata, **kwargs)
+                    ret = self.forecast_distribution(ndata, **kw)
                 elif type == 'multivariate':
-                    ret = self.forecast_multivariate(ndata, **kwargs)
+                    ret = self.forecast_multivariate(ndata, **kw)
             elif steps_ahead > 1:
                 if type == 'point':
-                    ret = self.forecast_ahead(ndata, steps_ahead, **kwargs)
+                    ret = self.forecast_ahead(ndata, steps_ahead, **kw)
                 elif type == 'interval':
-                    ret = self.forecast_ahead_interval(ndata, steps_ahead, **kwargs)
+                    ret = self.forecast_ahead_interval(ndata, steps_ahead, **kw)
                 elif type == 'distribution':
-                    ret = self.forecast_ahead_distribution(ndata, steps_ahead, **kwargs)
+                    ret = self.forecast_ahead_distribution(ndata, steps_ahead, **kw)
                 elif type == 'multivariate':
-                    ret = self.forecast_ahead_multivariate(ndata, steps_ahead, **kwargs)
+                    ret = self.forecast_ahead_multivariate(ndata, steps_ahead, **kw)
 
             if not ['point', 'interval', 'distribution', 'multivariate'].__contains__(type):
                 raise ValueError('The argument \'type\' has an unknown value.')
@@ -166,20 +168,22 @@ class FTS(object):
             if distributed == 'dispy':
                 from pyFTS.distributed import dispy
 
-                nodes = kwargs.get("nodes", ['127.0.0.1'])
-                num_batches = kwargs.get('num_batches', 10)
+                nodes = kw.pop("nodes", ['127.0.0.1'])
+                num_batches = kw.pop('num_batches', 10)
 
-                ret = dispy.distributed_predict(self, kwargs, nodes, ndata, num_batches)
+                ret = dispy.distributed_predict(self, kw, nodes, ndata, num_batches, **kw)
 
             elif distributed == 'spark':
                 from pyFTS.distributed import spark
 
-                ret = spark.distributed_predict(data=ndata, model=self, **kwargs)
-
+                ret = spark.distributed_predict(data=ndata, model=self, **kw)
 
         if not self.is_multivariate:
-            kwargs['type'] = type
-            ret = self.apply_inverse_transformations(ret, params=[data[self.max_lag - 1:]], **kwargs)
+            kw['type'] = type
+            ret = self.apply_inverse_transformations(ret, params=[data[self.max_lag - 1:]], **kw)
+
+        if 'statistics' in kw:
+            kwargs['statistics'] = kw['statistics']
 
         return ret
 
@@ -312,7 +316,9 @@ class FTS(object):
 
         """
 
-        import datetime
+        import datetime, copy
+
+        kw = copy.deepcopy(kwargs)
 
         if self.is_multivariate:
             data = ndata
@@ -322,29 +328,27 @@ class FTS(object):
             self.original_min = np.nanmin(data)
             self.original_max = np.nanmax(data)
 
-        if 'partitioner' in kwargs:
-            self.partitioner = kwargs.pop('partitioner')
+        if 'partitioner' in kw:
+            self.partitioner = kw.pop('partitioner')
 
         if not self.is_multivariate and not self.is_wrapper and not self.benchmark_only:
             if self.partitioner is None:
                 raise Exception("Fuzzy sets were not provided for the model. Use 'partitioner' parameter. ")
 
-        if 'order' in kwargs:
-            self.order = kwargs.pop('order')
+        if 'order' in kw:
+            self.order = kw.pop('order')
 
-        dump = kwargs.get('dump', None)
+        dump = kw.get('dump', None)
 
-        num_batches = kwargs.get('num_batches', None)
+        num_batches = kw.pop('num_batches', None)
 
-        save = kwargs.get('save_model', False)  # save model on disk
+        save = kw.get('save_model', False)  # save model on disk
 
-        batch_save = kwargs.get('batch_save', False) #save model between batches
+        batch_save = kw.get('batch_save', False) #save model between batches
 
-        file_path = kwargs.get('file_path', None)
+        file_path = kw.get('file_path', None)
 
-        distributed = kwargs.get('distributed', False)
-
-        batch_save_interval = kwargs.get('batch_save_interval', 10)
+        distributed = kw.pop('distributed', False)
 
         if distributed is not None and distributed:
             if num_batches is None:
@@ -352,14 +356,13 @@ class FTS(object):
 
             if distributed == 'dispy':
                 from pyFTS.distributed import dispy
-                nodes = kwargs.get('nodes', False)
+                nodes = kw.pop('nodes', False)
                 train_method = kwargs.get('train_method', dispy.simple_model_train)
                 dispy.distributed_train(self, train_method, nodes, type(self), data, num_batches, {},
-                                       batch_save=batch_save, file_path=file_path,
-                                       batch_save_interval=batch_save_interval)
+                                       **kw)
             elif distributed == 'spark':
                 from pyFTS.distributed import spark
-                url = kwargs.get('url', 'spark://192.168.0.110:7077')
+                url = kwargs.get('url', 'spark://127.0.0.1:7077')
                 app = kwargs.get('app', 'pyFTS')
 
                 spark.distributed_train(self, data, url=url, app=app)
@@ -388,7 +391,7 @@ class FTS(object):
                     else:
                         mdata = data[ct - self.order : ct + batch_size]
 
-                    self.train(mdata, **kwargs)
+                    self.train(mdata, **kw)
 
                     if batch_save:
                         Util.persist_obj(self,file_path)
@@ -399,13 +402,17 @@ class FTS(object):
                     bcount += 1
 
             else:
-                self.train(data, **kwargs)
+                self.train(data, **kw)
 
             if dump == 'time':
                 print("[{0: %H:%M:%S}] Finish training".format(datetime.datetime.now()))
 
         if save:
             Util.persist_obj(self, file_path)
+
+        if 'statistics' in kw:
+            kwargs['statistics'] = kw['statistics']
+            print(kwargs['statistics'])
 
 
     def clone_parameters(self, model):

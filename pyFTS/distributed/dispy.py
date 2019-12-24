@@ -27,7 +27,7 @@ def stop_dispy_cluster(cluster, http_server):
     :param http_server:
     :return:
     """
-    cluster.wait()  # wait for all jobs to finish
+    #cluster.wait()  # wait for all jobs to finish
 
     cluster.print_status()
 
@@ -44,6 +44,7 @@ def get_number_of_cpus(cluster):
 
 
 def simple_model_train(model, data, parameters):
+    import time
     """
     Cluster function that receives a FTS instance 'model' and train using the 'data' and 'parameters'
 
@@ -52,7 +53,10 @@ def simple_model_train(model, data, parameters):
     :param parameters: parameters for the training process
     :return: the trained model
     """
+    _start = time.time()
     model.train(data, **parameters)
+    _end = time.time()
+    model.__dict__['training_time'] = _end - _start
     return model
 
 
@@ -96,6 +100,9 @@ def distributed_train(model, train_method, nodes, fts_method, data, num_batches=
         tmp = job()
         if job.status == dispy.DispyJob.Finished and tmp is not None:
             model.merge(tmp)
+            if 'training_time' not in model.__dict__:
+                model.__dict__['training_time'] = []
+            model.__dict__['training_time'].append(tmp.__dict__['training_time'])
 
             if batch_save and (job.id % batch_save_interval) == 0:
                 Util.persist_obj(model, file_path)
@@ -113,13 +120,15 @@ def distributed_train(model, train_method, nodes, fts_method, data, num_batches=
     return model
 
 
-
 def simple_model_predict(model, data, parameters):
-    return model.predict(data, **parameters)
+    import time
+    _start = time.time()
+    forecasts = model.predict(data, **parameters)
+    _stop = time.time()
+    return forecasts, _stop - _start
 
 
-
-def distributed_predict(model, parameters, nodes, data, num_batches):
+def distributed_predict(model, parameters, nodes, data, num_batches, **kwargs):
     import dispy, dispy.httpd
 
     cluster, http_server = start_dispy_cluster(simple_model_predict, nodes)
@@ -146,9 +155,14 @@ def distributed_predict(model, parameters, nodes, data, num_batches):
         tmp = job()
         if job.status == dispy.DispyJob.Finished and tmp is not None:
             if job.id < batch_size:
-                ret.extend(tmp[:-1])
+                ret.extend(tmp[0][:-1])
             else:
-                ret.extend(tmp)
+                ret.extend(tmp[0])
+
+            if 'forecasting_time' not in model.__dict__:
+                model.__dict__['forecasting_time'] = []
+            model.__dict__['forecasting_time'].append(tmp[1])
+
         else:
             print(job.exception)
             print(job.stdout)
