@@ -365,42 +365,46 @@ def mutation_random_search(individual, **kwargs):
     :param pmut: individual probability o
     :return:
     """
+    import copy
+
+    new = copy.deepcopy(individual)
 
     vars = kwargs.get('variables', None)
     tvar = kwargs.get('target_variable', None)
     l = len(vars)
 
-    il = len(individual['explanatory_variables'])
+    il = len(new['explanatory_variables'])
     #
     if il > 1:
         for l in range(il):
-            il = len(individual['explanatory_variables'])
+            il = len(new['explanatory_variables'])
             rnd = random.uniform(0, 1)
             if rnd > .5:
                 rnd = random.randint(0, il-1)
-                val = individual['explanatory_variables'][rnd]
-                individual['explanatory_variables'].remove(val)
-                individual['explanatory_params'].pop(rnd)
+                if rnd < il and il > 1:
+                    val = individual['explanatory_variables'][rnd]
+                    new['explanatory_variables'].remove(val)
+                    new['explanatory_params'].pop(rnd)
     else:
         rnd = random.randint(0, l-1)
-        while rnd in individual['explanatory_variables']:
+        while rnd in new['explanatory_variables']:
             rnd = random.randint(0, l-1)
-        individual['explanatory_variables'].append(rnd)
-        individual['explanatory_params'].append(random_param(vars[rnd]))
+        new['explanatory_variables'].append(rnd)
+        new['explanatory_params'].append(random_param(vars[rnd]))
 
-    for ct in np.arange(len(individual['explanatory_variables'])):
+    for ct in np.arange(len(new['explanatory_variables'])):
         rnd = random.uniform(0, 1)
         if rnd > .5:
-            mutate_variable_params(individual['explanatory_params'][ct], vars[ct])
+            mutate_variable_params(new['explanatory_params'][ct], vars[ct])
 
     rnd = random.uniform(0, 1)
     if rnd > .5:
-        mutate_variable_params(individual['target_params'], tvar)
+        mutate_variable_params(new['target_params'], tvar)
 
-    individual['f1'] = None
-    individual['f2'] = None
+    new['f1'] = None
+    new['f2'] = None
 
-    return individual
+    return new
 
 
 def mutate_variable_params(param, var):

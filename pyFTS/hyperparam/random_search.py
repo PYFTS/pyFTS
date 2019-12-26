@@ -66,9 +66,7 @@ def execute( dataset, **kwargs):
             new[key] = ret[key]
             new_stat[key] = ret[key]
 
-        print(new)
-
-        if new['f1'] <= individual['f1'] and new['f2'] <= individual['f2']:
+        if new['f1'] < individual['f1'] or (new['f1'] == individual['f1'] and new['f2'] < individual['f2']):
             individual = new
             no_improvement_count = 0
             stat[i] = new_stat

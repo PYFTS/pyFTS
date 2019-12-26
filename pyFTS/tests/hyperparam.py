@@ -58,7 +58,7 @@ target_variable = {'name': 'Load', 'data_label': 'load', 'type': 'common'}
 nodes=['192.168.28.38']
 
 deho_mv.random_search(datsetname, dataset,
-              ngen=200, mgen=200,
+              ngen=200, mgen=70,
               window_size=2000, train_rate=.9, increment_rate=1,
               experiments=1,
               fts_method=wmvfts.WeightedMVFTS,
