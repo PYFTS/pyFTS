@@ -162,12 +162,10 @@ class Partitioner(object):
         nearest = self.search(data, type='index')
         mv = np.zeros(self.partitions)
 
-        try:
-            for ix in nearest:
-                tmp = self[ix].membership(data)
-                mv[ix] = tmp if tmp >= alpha_cut else 0.
-        except:
-            print(ix)
+        for ix in nearest:
+            tmp = self[ix].membership(data)
+            mv[ix] = tmp if tmp >= alpha_cut else 0.
+
 
         ix = np.ravel(np.argwhere(mv > 0.))
 

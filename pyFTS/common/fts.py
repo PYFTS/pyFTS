@@ -410,10 +410,6 @@ class FTS(object):
         if save:
             Util.persist_obj(self, file_path)
 
-        if 'statistics' in kw:
-            kwargs['statistics'] = kw['statistics']
-            print(kwargs['statistics'])
-
 
     def clone_parameters(self, model):
         """

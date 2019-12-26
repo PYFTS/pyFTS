@@ -29,7 +29,7 @@ from pyFTS.common import Membership
 from pyFTS.models import hofts, ifts, pwfts
 from pyFTS.hyperparam import Util as hUtil
 from pyFTS.distributed import dispy as dUtil
-from pyFTS.hyperparam import Evolutionary
+from pyFTS.hyperparam import Evolutionary, random_search as RS
 from pyFTS.models.multivariate import mvfts, wmvfts, variable
 from pyFTS.models.seasonal import partitioner as seasonal
 from pyFTS.models.seasonal.common import DateTime
@@ -315,6 +315,7 @@ def crossover_variable_params(best, worst, var):
     param = {'partitioner': partitioner, 'npart': npart, 'alpha': alpha, 'mf': mf}
     return param
 
+
 def mutation(individual, **kwargs):
     """
     Mutation operator
@@ -336,6 +337,51 @@ def mutation(individual, **kwargs):
         individual['explanatory_variables'].remove(val)
         individual['explanatory_params'].pop(rnd)
     elif rnd < .1 and il < l:
+        rnd = random.randint(0, l-1)
+        while rnd in individual['explanatory_variables']:
+            rnd = random.randint(0, l-1)
+        individual['explanatory_variables'].append(rnd)
+        individual['explanatory_params'].append(random_param(vars[rnd]))
+
+    for ct in np.arange(len(individual['explanatory_variables'])):
+        rnd = random.uniform(0, 1)
+        if rnd > .5:
+            mutate_variable_params(individual['explanatory_params'][ct], vars[ct])
+
+    rnd = random.uniform(0, 1)
+    if rnd > .5:
+        mutate_variable_params(individual['target_params'], tvar)
+
+    individual['f1'] = None
+    individual['f2'] = None
+
+    return individual
+
+def mutation_random_search(individual, **kwargs):
+    """
+    Mutation operator
+
+    :param individual: an individual genotype
+    :param pmut: individual probability o
+    :return:
+    """
+
+    vars = kwargs.get('variables', None)
+    tvar = kwargs.get('target_variable', None)
+    l = len(vars)
+
+    il = len(individual['explanatory_variables'])
+    #
+    if il > 1:
+        for l in range(il):
+            il = len(individual['explanatory_variables'])
+            rnd = random.uniform(0, 1)
+            if rnd > .5:
+                rnd = random.randint(0, il-1)
+                val = individual['explanatory_variables'][rnd]
+                individual['explanatory_variables'].remove(val)
+                individual['explanatory_params'].pop(rnd)
+    else:
         rnd = random.randint(0, l-1)
         while rnd in individual['explanatory_variables']:
             rnd = random.randint(0, l-1)
@@ -458,3 +504,31 @@ def log_result(datasetname, fts_method, result):
         file.write(json.dumps(result))
 
         print(result)
+
+
+def random_search(datasetname, dataset, **kwargs):
+    experiments = kwargs.get('experiments', 30)
+
+    distributed = kwargs.get('distributed', False)
+
+    fts_method = kwargs.get('fts_method', hofts.WeightedHighOrderFTS)
+    shortname = str(fts_method.__module__).split('.')[-1]
+
+    kwargs['mutation_operator'] = mutation_random_search
+    kwargs['evaluation_operator'] = evaluate
+    kwargs['random_individual'] = random_genotype
+
+    ret = []
+    for i in np.arange(experiments):
+        print("Experiment {}".format(i))
+
+        start = time.time()
+        ret, statistics = RS.execute (dataset, **kwargs)
+        end = time.time()
+        ret['time'] = end - start
+        experiment = {'individual': ret, 'statistics': statistics}
+
+        ret = process_experiment(shortname, experiment, datasetname)
+
+
+    return ret

@@ -56,6 +56,20 @@ explanatory_variables =[
 
 target_variable = {'name': 'Load', 'data_label': 'load', 'type': 'common'}
 nodes=['192.168.28.38']
+
+deho_mv.random_search(datsetname, dataset,
+              ngen=200, mgen=200,
+              window_size=2000, train_rate=.9, increment_rate=1,
+              experiments=1,
+              fts_method=wmvfts.WeightedMVFTS,
+              variables=explanatory_variables,
+              target_variable=target_variable,
+              #distributed='dispy', nodes=nodes,
+              parameters=dict(num_batches=5)
+              #parameters=dict(distributed='dispy', nodes=nodes, num_batches=5)
+              )
+
+'''
 deho_mv.execute(datsetname, dataset,
               ngen=20, npop=15,psel=0.6, pcross=.5, pmut=.3,
               window_size=2000, train_rate=.9, increment_rate=1,
@@ -67,7 +81,7 @@ deho_mv.execute(datsetname, dataset,
               parameters=dict(num_batches=5)
               #parameters=dict(distributed='dispy', nodes=nodes, num_batches=5)
               )
-
+'''
 '''
 ret = Evolutionary.execute(datsetname, dataset,
                            ngen=30, npop=20,psel=0.6, pcross=.5, pmut=.3,
