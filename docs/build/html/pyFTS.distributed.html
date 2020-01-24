@@ -120,34 +120,70 @@
 <dl class="function">
 <dt id="pyFTS.distributed.spark.create_multivariate_model">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">create_multivariate_model</code><span class="sig-paren">(</span><em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.create_multivariate_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>From the dictionary of parameters, create a multivariate FTS model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parameters</strong> – dictionary of parameters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">multivariate FTS model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.distributed.spark.create_spark_conf">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">create_spark_conf</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.create_spark_conf" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Configure the Spark master node</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.distributed.spark.create_univariate_model">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">create_univariate_model</code><span class="sig-paren">(</span><em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.create_univariate_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>From the dictionary of parameters, create an univariate FTS model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parameters</strong> – dictionary of parameters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">univariate FTS model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.distributed.spark.distributed_predict">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">distributed_predict</code><span class="sig-paren">(</span><em>data</em>, <em>model</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.distributed_predict" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>The main method for distributed forecasting with FTS models using Spark clusters.</p>
+<p>It takes a trained FTS model and the test data, connect with the Spark cluster,
+proceed the distributed forecasting and return the merged forecasted values.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> – </li>
-<li><strong>data</strong> – </li>
-<li><strong>url</strong> – </li>
+<li><strong>model</strong> – an FTS trained model</li>
+<li><strong>data</strong> – test data</li>
+<li><strong>url</strong> – URL of the Spark master</li>
 <li><strong>app</strong> – </li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">forecasted values</p>
 </td>
 </tr>
 </tbody>
@@ -157,19 +193,22 @@
 <dl class="function">
 <dt id="pyFTS.distributed.spark.distributed_train">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">distributed_train</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.distributed_train" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>The main method for distributed training of FTS models using Spark clusters.</p>
+<p>It takes an empty model and the train data, connect with the Spark cluster, proceed the
+distributed training and return the learned model.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> – </li>
-<li><strong>data</strong> – </li>
-<li><strong>url</strong> – </li>
-<li><strong>app</strong> – </li>
+<li><strong>model</strong> – An empty (non-trained) FTS model</li>
+<li><strong>data</strong> – train data</li>
+<li><strong>url</strong> – URL of the Spark master node</li>
+<li><strong>app</strong> – Application name</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">trained model</p>
 </td>
 </tr>
 </tbody>
@@ -179,18 +218,42 @@
 <dl class="function">
 <dt id="pyFTS.distributed.spark.get_clustered_partitioner">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">get_clustered_partitioner</code><span class="sig-paren">(</span><em>explanatory_variables</em>, <em>target_variable</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.get_clustered_partitioner" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the UoD partitioner from the ‘shared_partitioner’ fuzzy sets, special case for
+clustered multivariate FTS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>explanatory_variables</strong> – the list with the names of the explanatory variables</li>
+<li><strong>target_variable</strong> – the name of the target variable</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Partitioner object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.distributed.spark.get_partitioner">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">get_partitioner</code><span class="sig-paren">(</span><em>shared_partitioner</em>, <em>type='common'</em>, <em>variables=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.get_partitioner" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Return the UoD partitioner from the ‘shared_partitioner’ fuzzy sets</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>part</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>shared_partitioner</strong> – the shared variable with the fuzzy sets</li>
+<li><strong>type</strong> – the type of the partitioner</li>
+<li><strong>variables</strong> – in case of a Multivariate FTS, the list of variables</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Partitioner object</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -199,28 +262,78 @@
 <dl class="function">
 <dt id="pyFTS.distributed.spark.get_variables">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">get_variables</code><span class="sig-paren">(</span><em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.get_variables" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>From the dictionary of parameters, return a tuple with the list of explanatory and target variables</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parameters</strong> – dictionary of parameters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple with the list of explanatory and target variables</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.distributed.spark.share_parameters">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">share_parameters</code><span class="sig-paren">(</span><em>model</em>, <em>context</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.share_parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Create a shared variable with a dictionary of the model parameters and hyperparameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> – the FTS model to extract the parameters and hyperparameters</li>
+<li><strong>context</strong> – Spark context</li>
+<li><strong>data</strong> – dataset</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the shared variable with the dictionary of parameters</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.distributed.spark.slave_forecast_multivariate">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">slave_forecast_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.slave_forecast_multivariate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Receive test data, create a multivariate FTS model from the parameters and return the forecasted values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – test data</li>
+<li><strong>parameters</strong> – dictionary of parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">forecasted values from the data input</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.distributed.spark.slave_forecast_univariate">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">slave_forecast_univariate</code><span class="sig-paren">(</span><em>data</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.slave_forecast_univariate" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Receive test data, create an univariate FTS model from the parameters and return the forecasted values</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – test data</li>
+<li><strong>parameters</strong> – dictionary of parameters</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">forecasted values from the data input</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -229,18 +342,40 @@
 <dl class="function">
 <dt id="pyFTS.distributed.spark.slave_train_multivariate">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">slave_train_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.slave_train_multivariate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Receive train data, train a multivariate FTS model and return the learned rules</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – train data</li>
+<li><strong>parameters</strong> – dictionary of parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Key/value list of the learned rules</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyFTS.distributed.spark.slave_train_univariate">
 <code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">slave_train_univariate</code><span class="sig-paren">(</span><em>data</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.slave_train_univariate" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Receive train data, train an univariate FTS model and return the learned rules</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – train data</li>
+<li><strong>parameters</strong> – dictionary of parameters</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Key/value list of the learned rules</p>
+</td>
 </tr>
 </tbody>
 </table>

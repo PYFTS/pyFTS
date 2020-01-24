@@ -161,6 +161,30 @@
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="pyFTS.benchmarks.benchmarks.distributed_model_train_test_time">
+<code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">distributed_model_train_test_time</code><span class="sig-paren">(</span><em>models</em>, <em>data</em>, <em>windowsize</em>, <em>train=0.8</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.distributed_model_train_test_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assess the train and test times for a given list of configured models and save the results on a database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>models</strong> – A list of FTS models already configured, but not yet trained,</li>
+<li><strong>data</strong> – time series data, including train and test data</li>
+<li><strong>windowsize</strong> – Train/test data windows</li>
+<li><strong>train</strong> – Percent of data window that will be used to train the models</li>
+<li><strong>kwargs</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyFTS.benchmarks.benchmarks.get_benchmark_interval_methods">
 <code class="descclassname">pyFTS.benchmarks.benchmarks.</code><code class="descname">get_benchmark_interval_methods</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.benchmarks.benchmarks.get_benchmark_interval_methods" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all non FTS methods for point_to_interval forecasting</p>

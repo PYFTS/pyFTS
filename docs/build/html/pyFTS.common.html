@@ -885,6 +885,8 @@ bisect but with a simpler API and support for key functions.</p>
 <em class="property">class </em><code class="descclassname">pyFTS.common.Transformations.</code><code class="descname">BoxCox</code><span class="sig-paren">(</span><em>plambda</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.BoxCox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.Transformations.Transformation" title="pyFTS.common.Transformations.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.Transformations.Transformation</span></code></a></p>
 <p>Box-Cox power transformation</p>
+<p>y’(t) = log( y(t) )
+y(t) = exp( y’(t) )</p>
 <dl class="method">
 <dt id="pyFTS.common.Transformations.BoxCox.apply">
 <code class="descname">apply</code><span class="sig-paren">(</span><em>data</em>, <em>param=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.BoxCox.apply" title="Permalink to this definition">¶</a></dt>
@@ -940,6 +942,8 @@ bisect but with a simpler API and support for key functions.</p>
 <em class="property">class </em><code class="descclassname">pyFTS.common.Transformations.</code><code class="descname">Differential</code><span class="sig-paren">(</span><em>lag</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.Differential" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.Transformations.Transformation" title="pyFTS.common.Transformations.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.Transformations.Transformation</span></code></a></p>
 <p>Differentiation data transform</p>
+<p>y’(t) = y(t) - y(t-1)
+y(t) =  y(t-1)  + y’(t)</p>
 <dl class="method">
 <dt id="pyFTS.common.Transformations.Differential.apply">
 <code class="descname">apply</code><span class="sig-paren">(</span><em>data</em>, <em>param=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.Differential.apply" title="Permalink to this definition">¶</a></dt>
@@ -987,6 +991,131 @@ bisect but with a simpler API and support for key functions.</p>
 <dt id="pyFTS.common.Transformations.Differential.parameters">
 <code class="descname">parameters</code><a class="headerlink" href="#pyFTS.common.Transformations.Differential.parameters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyFTS.common.Transformations.LinearTrend">
+<em class="property">class </em><code class="descclassname">pyFTS.common.Transformations.</code><code class="descname">LinearTrend</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.LinearTrend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.common.Transformations.Transformation" title="pyFTS.common.Transformations.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.Transformations.Transformation</span></code></a></p>
+<p>Linear Trend. Estimate</p>
+<p>y’(t) = y(t) - (a*t+b)
+y(t) =  y’(t) + (a*t+b)</p>
+<dl class="method">
+<dt id="pyFTS.common.Transformations.LinearTrend.apply">
+<code class="descname">apply</code><span class="sig-paren">(</span><em>data</em>, <em>param=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.LinearTrend.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the transformation on input data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – input data</li>
+<li><strong>param</strong> – </li>
+<li><strong>kwargs</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy array with transformed data</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.common.Transformations.LinearTrend.generate_indexes">
+<code class="descname">generate_indexes</code><span class="sig-paren">(</span><em>data</em>, <em>value</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.LinearTrend.generate_indexes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.common.Transformations.LinearTrend.increment">
+<code class="descname">increment</code><span class="sig-paren">(</span><em>value</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.LinearTrend.increment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.common.Transformations.LinearTrend.inverse">
+<code class="descname">inverse</code><span class="sig-paren">(</span><em>data</em>, <em>param=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.LinearTrend.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – transformed data</li>
+<li><strong>param</strong> – </li>
+<li><strong>kwargs</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy array with inverse transformed data</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.common.Transformations.LinearTrend.train">
+<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.LinearTrend.train" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.common.Transformations.LinearTrend.trend">
+<code class="descname">trend</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.LinearTrend.trend" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyFTS.common.Transformations.ROI">
+<em class="property">class </em><code class="descclassname">pyFTS.common.Transformations.</code><code class="descname">ROI</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.ROI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.common.Transformations.Transformation" title="pyFTS.common.Transformations.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.Transformations.Transformation</span></code></a></p>
+<p>Return of Investment (ROI) transformation. Retrieved from Sadaei and Lee (2014) - Multilayer Stock
+Forecasting Model Using Fuzzy Time Series</p>
+<p>y’(t) = ( y(t) - y(t-1) ) / y(t-1)
+y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
+<dl class="method">
+<dt id="pyFTS.common.Transformations.ROI.apply">
+<code class="descname">apply</code><span class="sig-paren">(</span><em>data</em>, <em>param=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.ROI.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the transformation on input data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – input data</li>
+<li><strong>param</strong> – </li>
+<li><strong>kwargs</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy array with transformed data</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyFTS.common.Transformations.ROI.inverse">
+<code class="descname">inverse</code><span class="sig-paren">(</span><em>data</em>, <em>param=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.ROI.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – transformed data</li>
+<li><strong>param</strong> – </li>
+<li><strong>kwargs</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy array with inverse transformed data</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -1098,21 +1227,6 @@ bisect but with a simpler API and support for key functions.</p>
 <dl class="function">
 <dt id="pyFTS.common.Transformations.Z">
 <code class="descclassname">pyFTS.common.Transformations.</code><code class="descname">Z</code><span class="sig-paren">(</span><em>original</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.Z" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.common.Transformations.aggregate">
-<code class="descclassname">pyFTS.common.Transformations.</code><code class="descname">aggregate</code><span class="sig-paren">(</span><em>original</em>, <em>operation</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.aggregate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.common.Transformations.roi">
-<code class="descclassname">pyFTS.common.Transformations.</code><code class="descname">roi</code><span class="sig-paren">(</span><em>original</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.roi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.common.Transformations.smoothing">
-<code class="descclassname">pyFTS.common.Transformations.</code><code class="descname">smoothing</code><span class="sig-paren">(</span><em>original</em>, <em>lags</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.common.Transformations.smoothing" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
