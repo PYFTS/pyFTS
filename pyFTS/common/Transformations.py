@@ -250,9 +250,7 @@ class ROI(Transformation):
         return modified
 
     def inverse(self, data, param=None, **kwargs):
-        modified = [param[0]]
-        for i in np.arange(1, len(data)):
-            modified.append((modified[i - 1] * data[i]) + modified[i - 1])
+        modified = [(param[i - 1] * data[i]) + param[i - 1] for i in np.arange(1, len(data))]
         return modified
 
 
