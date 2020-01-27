@@ -3,7 +3,6 @@
 
 import numpy as np
 import pandas as pd
-import pyflux as pf
 import scipy.stats as st
 from pyFTS.common import SortedCollection, fts
 from pyFTS.probabilistic import ProbabilityDistribution
@@ -46,6 +45,7 @@ class ARIMA(fts.FTS):
             self.shortname = "BSTS({},{},{})-{}".format(self.p,self.d,self.q,self.alpha)
 
     def train(self, data, **kwargs):
+        import pyflux as pf
 
         if 'order' in kwargs:
             order = kwargs.pop('order')
@@ -95,8 +95,9 @@ class ARIMA(fts.FTS):
         return ret
 
     def forecast_distribution(self, data, **kwargs):
+        import pyflux as pf
 
-        sim_vector = self.inference(steps)
+        sim_vector = self.inference(1)
 
         ret = []
 
