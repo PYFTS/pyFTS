@@ -28,7 +28,7 @@ from pyFTS.partitioners import Grid, Entropy  # , Huarng
 from pyFTS.common import Membership
 from pyFTS.models import hofts, ifts, pwfts
 from pyFTS.hyperparam import Util as hUtil
-from pyFTS.distributed import dispy as dUtil
+
 from pyFTS.hyperparam import Evolutionary, random_search as RS
 from pyFTS.models.multivariate import mvfts, wmvfts, variable
 from pyFTS.models.seasonal import partitioner as seasonal
@@ -458,6 +458,8 @@ def execute(datasetname, dataset, **kwargs):
     kwargs['random_individual'] = random_genotype
 
     if distributed == 'dispy':
+        from pyFTS.distributed import dispy as dUtil
+        import dispy
         nodes = kwargs.get('nodes', ['127.0.0.1'])
         cluster, http_server = dUtil.start_dispy_cluster(evaluate, nodes=nodes)
         kwargs['cluster'] = cluster

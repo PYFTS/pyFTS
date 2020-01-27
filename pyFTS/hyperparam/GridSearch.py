@@ -4,8 +4,7 @@ from pyFTS.models import hofts
 from pyFTS.partitioners import Grid, Entropy
 from pyFTS.benchmarks import Measures
 from pyFTS.hyperparam import Util as hUtil
-from pyFTS.distributed import dispy as dUtil
-import dispy
+
 import numpy as np
 from itertools import product
 
@@ -73,6 +72,8 @@ def cluster_method(individual, dataset, **kwargs):
 
 
 def process_jobs(jobs, datasetname, conn):
+    from pyFTS.distributed import dispy as dUtil
+    import dispy
     for ct, job in enumerate(jobs):
         print("Processing job {}".format(ct))
         result = job()
@@ -98,6 +99,8 @@ def process_jobs(jobs, datasetname, conn):
     
 
 def execute(hyperparams, datasetname, dataset, **kwargs):
+    from pyFTS.distributed import dispy as dUtil
+    import dispy
 
     nodes = kwargs.get('nodes',['127.0.0.1'])
 
