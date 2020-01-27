@@ -50,7 +50,9 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         self.model = self.fts_method(partitioner=self.partitioner, **self.fts_params)
 
-        ndata = self.check_data(data)
+        ndata = self.apply_transformations(data)
+
+        ndata = self.check_data(ndata)
 
         self.model.train(ndata, fuzzyfied=self.pre_fuzzyfy)
 
@@ -64,13 +66,20 @@ class ClusteredMVFTS(mvfts.MVFTS):
 
         return ndata
 
-    def forecast(self, ndata, **kwargs):
+    def forecast(self, data, **kwargs):
 
-        ndata = self.check_data(ndata)
+        ndata1 = self.apply_transformations(data)
+
+        ndata = self.check_data(ndata1)
 
         pre_fuzz = kwargs.get('pre_fuzzyfy', self.pre_fuzzyfy)
 
-        return self.model.forecast(ndata, fuzzyfied=pre_fuzz, **kwargs)
+        ret = self.model.forecast(ndata, fuzzyfied=pre_fuzz, **kwargs)
+
+        ret = self.target_variable.apply_inverse_transformations(ret,
+                                                                 params=data[self.target_variable.data_label].values)
+
+        return ret
 
     def forecast_interval(self, data, **kwargs):
 

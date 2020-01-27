@@ -74,6 +74,7 @@ dataset['data'] = pd.to_datetime([str(y)+'-'+str(m) for y,m in zip(dataset['Ano'
                                   format='%Y-%m')
 roi = Transformations.ROI()
 
+'''
 
 train = dataset['Total'].values[:30]
 test = dataset['Total'].values[30:]
@@ -96,7 +97,7 @@ ax.plot(test)
 train = dataset.iloc[:30]
 test = dataset.iloc[30:]
 
-from pyFTS.models.multivariate import common, variable, mvfts, wmvfts
+from pyFTS.models.multivariate import common, variable, mvfts, wmvfts, granular
 from pyFTS.partitioners import Grid, Entropy
 from pyFTS.models.seasonal.common import DateTime
 from pyFTS.models.seasonal import partitioner as seasonal
@@ -106,16 +107,16 @@ vmonth = variable.Variable("Month", data_label="data", partitioner=seasonal.Time
                            data=train, partitioner_specific=sp)
 
 vtur = variable.Variable("Turistas", data_label="Total", alias='tur',
-                         partitioner=Grid.GridPartitioner, npart=10, transformation=roi,
+                         partitioner=Grid.GridPartitioner, npart=20, transformation=roi,
                          data=train)
 
-model = wmvfts.WeightedMVFTS(explanatory_variables=[vmonth, vtur], target_variable=vtur)
+#model = wmvfts.WeightedMVFTS(explanatory_variables=[vmonth, vtur], target_variable=vtur)
+model = granular.GranularWMVFTS(explanatory_variables=[vmonth, vtur], target_variable=vtur, order=2, knn=1)
 model.fit(train)
 
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=[10,5])
 
 ax.plot(test['Total'].values)
-'''
 
 forecast = model.predict(test)
 
