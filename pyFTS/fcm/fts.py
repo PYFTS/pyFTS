@@ -11,6 +11,9 @@ class FCM_FTS(hofts.HighOrderFTS):
         self.fcm = common.FuzzyCognitiveMap(**kwargs)
 
     def train(self, data, **kwargs):
+        GA.parameters['num_concepts'] = self.partitioner.partitions
+        GA.parameters['order'] = self.order
+        GA.parameters['partitioner'] = self.partitioner
         ret = GA.execute(data, **kwargs)
         self.fcm.weights = ret['weights']
 
