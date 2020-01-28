@@ -770,7 +770,9 @@ def mv_run_point2(mfts, train_data, test_data, window_key=None, **kwargs):
         _end = time.time()
         times += _end - _start
 
-        eval = Measures.get_point_ahead_statistics(test_data[mfts.order:mfts.order + steps_ahead], forecasts)
+        tmp_test = test_data[mfts.target_variable.data_label].values[mfts.order:mfts.order + steps_ahead]
+
+        eval = Measures.get_point_ahead_statistics(tmp_test, forecasts)
 
         for key in eval.keys():
             eval[key]["time"] = times
@@ -898,7 +900,9 @@ def mv_run_interval2(mfts,train_data, test_data, window_key=None, **kwargs):
         _end = time.time()
         times += _end - _start
 
-        eval = Measures.get_interval_ahead_statistics(test_data[mfts.order:mfts.order+steps_ahead], intervals)
+        tmp_test = test_data[mfts.target_variable.data_label].values[mfts.order:mfts.order + steps_ahead]
+
+        eval = Measures.get_interval_ahead_statistics(tmp_test, intervals)
 
         for key in eval.keys():
             eval[key]["time"] = times
@@ -1017,7 +1021,9 @@ def mv_run_probabilistic2(mfts, train_data, test_data, window_key=None, **kwargs
         _end = time.time()
         times += _end - _start
 
-        eval = Measures.get_distribution_ahead_statistics(test_data[mfts.order:mfts.order+steps_ahead], distributions)
+        tmp_test = test_data[mfts.target_variable.data_label].values[mfts.order:mfts.order + steps_ahead]
+
+        eval = Measures.get_distribution_ahead_statistics(tmp_test, distributions)
 
         for key in eval.keys():
             eval[key]["time"] = times
