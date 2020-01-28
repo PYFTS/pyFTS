@@ -395,7 +395,7 @@ def log_result(conn, datasetname, result):
         hUtil.insert_hyperparam(record, conn)
 
 
-def execute(datasetname, dataset, **kwargs):
+def execute(dataset, **kwargs):
     file = kwargs.get('file', 'hyperparam.db')
 
     conn = hUtil.open_hyperparam_db(file)
@@ -421,7 +421,7 @@ def execute(datasetname, dataset, **kwargs):
         ret['time'] = end - start
         experiment = {'individual': ret, 'statistics': statistics}
 
-        ret = process_experiment(experiment, datasetname, conn)
+        ret = process_experiment(experiment, '', conn)
 
     if distributed == 'dispy':
         dUtil.stop_dispy_cluster(cluster, http_server)
