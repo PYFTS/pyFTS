@@ -4,7 +4,6 @@ import math
 import time
 from functools import reduce
 from operator import itemgetter
-import dispy
 
 import random
 from pyFTS.common import Util
@@ -13,7 +12,6 @@ from pyFTS.partitioners import Grid, Entropy  # , Huarng
 from pyFTS.models import hofts
 from pyFTS.common import Membership
 from pyFTS.hyperparam import Util as hUtil
-from pyFTS.distributed import dispy as dUtil
 
 from pyFTS.fcm import common, fts
 
@@ -267,6 +265,8 @@ def GeneticAlgorithm(dataset, **kwargs):
             ret = evaluate(dataset, individual, **kwargs)
             individual['rmse'] = ret['rmse']
     elif distributed=='dispy':
+        import dispy
+        from pyFTS.distributed import dispy as dUtil
         jobs = []
         for ct, individual in enumerate(population):
             job = cluster.submit(dataset, individual, **kwargs)
@@ -396,13 +396,17 @@ def log_result(conn, datasetname, result):
 
 
 def execute(datasetname, dataset, **kwargs):
-    conn = hUtil.open_hyperparam_db('hyperparam.db')
+    file = kwargs.get('file', 'hyperparam.db')
+
+    conn = hUtil.open_hyperparam_db(file)
 
     experiments = kwargs.get('experiments', 30)
 
     distributed = kwargs.get('distributed', False)
 
     if distributed == 'dispy':
+        import dispy
+        from pyFTS.distributed import dispy as dUtil
         nodes = kwargs.get('nodes', ['127.0.0.1'])
         cluster, http_server = dUtil.start_dispy_cluster(evaluate, nodes=nodes)
         kwargs['cluster'] = cluster

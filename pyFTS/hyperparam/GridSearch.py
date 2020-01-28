@@ -127,7 +127,9 @@ def execute(hyperparams, datasetname, dataset, **kwargs):
     print("Evaluation values: \n {}".format(hp_values))
     
     cluster, http_server = dUtil.start_dispy_cluster(cluster_method, nodes=nodes)
-    conn = hUtil.open_hyperparam_db('hyperparam.db')
+    file = kwargs.get('file', 'hyperparam.db')
+
+    conn = hUtil.open_hyperparam_db(file)
 
     for instance in product(*hp_values):
         partitions = instance[index['partitions']]

@@ -562,7 +562,7 @@ def execute(datasetname, dataset, **kwargs):
 
     :param datasetname:
     :param dataset: The time series to optimize the FTS
-    :keyword database_file:
+    :keyword file:
     :keyword experiments:
     :keyword distributed:
     :keyword ngen: An integer value with the maximum number of generations, default value: 30
@@ -591,7 +591,7 @@ def execute(datasetname, dataset, **kwargs):
     :return: the best genotype
     """
 
-    file = kwargs.get('database_file', 'hyperparam.db')
+    file = kwargs.get('file', 'hyperparam.db')
 
     conn = hUtil.open_hyperparam_db(file)
 

@@ -1,6 +1,6 @@
 from pyFTS.common import fts
 from pyFTS.models import hofts
-from pyFTS.fcm import common
+from pyFTS.fcm import common, GA, Activations
 import numpy as np
 
 
@@ -9,6 +9,10 @@ class FCM_FTS(hofts.HighOrderFTS):
     def __init__(self, **kwargs):
         super(FCM_FTS, self).__init__(**kwargs)
         self.fcm = common.FuzzyCognitiveMap(**kwargs)
+
+    def train(self, data, **kwargs):
+        ret = GA.execute(data, **kwargs)
+        self.fcm.weights = ret['weights']
 
     def forecast(self, ndata, **kwargs):
         ret = []
