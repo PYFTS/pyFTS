@@ -18,6 +18,7 @@ class FCM_FTS(hofts.HighOrderFTS):
             GA.parameters['partitioner'] = self.partitioner
             ret = GA.execute(data, **kwargs)
             self.fcm.weights = ret['weights']
+            self.fcm.bias = ret['bias']
         elif method == 'GD':
             self.fcm.weights = GD.GD(data, self, **kwargs)
 

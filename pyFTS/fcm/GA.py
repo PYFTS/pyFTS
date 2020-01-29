@@ -35,7 +35,10 @@ def genotype():
     """
     num_concepts = parameters['num_concepts']
     order = parameters['order']
-    ind = dict(weights=[np.random.normal(0,1.,(num_concepts,num_concepts)) for k in range(order)])
+    ind = dict(
+        weights=[np.random.normal(0, 1., (num_concepts,num_concepts)) for k in range(order)],
+        bias=[np.random.normal(0, 1., num_concepts) for k in range(order)]
+               )
     return ind
 
 
@@ -77,6 +80,7 @@ def phenotype(individual, train):
     model = fts.FCM_FTS(partitioner=partitioner, order=order)
 
     model.fcm.weights = individual['weights']
+    model.fcm.bias = individual['bias']
 
     return model
 
@@ -165,6 +169,15 @@ def crossover(parents):
 
         descendent['weights'][k] = np.array(new_weight).reshape(weights1.shape)
 
+        new_bias = []
+        bias1 = parents[0]['bias'][k]
+        bias2 = parents[1]['bias'][k]
+
+        for row, a in enumerate(weights1):
+            new_bias.append(.7 * bias1[row] + .3 * bias2[row])
+
+        descendent['bias'][k] = np.array(new_bias).reshape(bias1.shape)
+
     return descendent
 
 
@@ -193,6 +206,9 @@ def mutation(individual, pmut):
 
                 individual['weights'][k][row, col] += np.random.normal(0, .5, 1)
                 individual['weights'][k][row, col] = np.clip(individual['weights'][k][row, col], -1, 1)
+
+                individual['bias'][k][row] += np.random.normal(0, .5, 1)
+
 
     return individual
 
