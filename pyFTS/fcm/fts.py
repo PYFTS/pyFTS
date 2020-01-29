@@ -11,14 +11,15 @@ class FCM_FTS(hofts.HighOrderFTS):
         self.fcm = common.FuzzyCognitiveMap(**kwargs)
 
     def train(self, data, **kwargs):
-        '''
-        GA.parameters['num_concepts'] = self.partitioner.partitions
-        GA.parameters['order'] = self.order
-        GA.parameters['partitioner'] = self.partitioner
-        ret = GA.execute(data, **kwargs)
-        self.fcm.weights = ret['weights']
-        '''
-        self.fcm.weights = GD.GD(data, self, alpha=0.01)
+        method = kwargs.get('method','GA')
+        if method == 'GA':
+            GA.parameters['num_concepts'] = self.partitioner.partitions
+            GA.parameters['order'] = self.order
+            GA.parameters['partitioner'] = self.partitioner
+            ret = GA.execute(data, **kwargs)
+            self.fcm.weights = ret['weights']
+        elif method == 'GD':
+            self.fcm.weights = GD.GD(data, self, **kwargs)
 
     def forecast(self, ndata, **kwargs):
         ret = []
@@ -33,7 +34,10 @@ class FCM_FTS(hofts.HighOrderFTS):
 
             activation = self.fcm.activate(fuzzyfied)
 
-            final = np.dot(midpoints, activation)/np.sum(activation)
+            final = np.dot(midpoints, activation)/np.nanmax([1, np.sum(activation)])
+
+            if str(final) == 'nan' or final == np.nan or final == np.Inf:
+                print('error')
 
             ret.append(final)
 

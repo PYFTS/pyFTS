@@ -3,9 +3,9 @@ import numpy as np
 
 def step(x, deriv=False):
     if deriv:
-        1 * (x == 0)
+        return np.abs(1 * (x == 0))
     else:
-        return 1 * (x > 0)
+        return np.abs(1 * (x > 0))
 
 
 def sigmoid(x, deriv=False):
@@ -26,14 +26,14 @@ def softmax(x, deriv=False):
 
 def tanh(x, deriv=False):
     if deriv:
-        pass
+        return 1 - np.tanh(x)**2
     else:
         return np.tanh(x)
 
 
 def relu(x, deriv=False):
     if deriv:
-        return 1. * (x > 0)
+        return np.abs(1. * (x > 0))
     else:
-        return x * (x > 0)
+        return np.abs(x * (x > 0))
 
