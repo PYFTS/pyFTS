@@ -8,7 +8,7 @@ class FuzzyCognitiveMap(object):
         self.order = kwargs.get('order',1)
         self.concepts = kwargs.get('partitioner',None)
         self.weights = []
-        self.activation_function = kwargs.get('func', Activations.sigmoid)
+        self.activation_function = kwargs.get('activation_function', Activations.sigmoid)
 
     def activate(self, concepts):
         dot_products = np.zeros(len(self.concepts))

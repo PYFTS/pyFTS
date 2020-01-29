@@ -20,7 +20,7 @@ parameters = {}
 
 #
 def genotype():
-    '''
+    """
     Create the individual genotype
 
     :param mf: membership function
@@ -32,30 +32,30 @@ def genotype():
     :param f1: accuracy fitness value
     :param f2: parsimony fitness value
     :return: the genotype, a dictionary with all hyperparameters
-    '''
+    """
     num_concepts = parameters['num_concepts']
     order = parameters['order']
-    ind = dict(weights=[np.random.normal(0,.5,(num_concepts,num_concepts)) for k in range(order)])
+    ind = dict(weights=[np.random.normal(0,1.,(num_concepts,num_concepts)) for k in range(order)])
     return ind
 
 
 def random_genotype():
-    '''
+    """
     Create random genotype
 
     :return: the genotype, a dictionary with all hyperparameters
-    '''
+    """
     return genotype()
 
 
 #
 def initial_population(n):
-    '''
+    """
     Create a random population of size n
 
     :param n: the size of the population
     :return: a list with n random individuals
-    '''
+    """
     pop = []
     for i in range(n):
         pop.append(random_genotype())
@@ -63,14 +63,14 @@ def initial_population(n):
 
 
 def phenotype(individual, train):
-    '''
+    """
     Instantiate the genotype, creating a fitted model with the genotype hyperparameters
 
     :param individual: a genotype
     :param train: the training dataset
     :param parameters: dict with model specific arguments for fit method.
     :return: a fitted FTS model
-    '''
+    """
     partitioner = parameters['partitioner']
     order = parameters['order']
 
@@ -81,9 +81,8 @@ def phenotype(individual, train):
     return model
 
 
-
 def evaluate(dataset, individual, **kwargs):
-    '''
+    """
     Evaluate an individual using a sliding window cross validation over the dataset.
 
     :param dataset: Evaluation dataset
@@ -93,7 +92,7 @@ def evaluate(dataset, individual, **kwargs):
     :param increment_rate: The increment of the scrolling window, relative to the window_size ([0,1])
     :param parameters: dict with model specific arguments for fit method.
     :return: a tuple (len_lags, rmse) with the parsimony fitness value and the accuracy fitness value
-    '''
+    """
     from pyFTS.common import Util
     from pyFTS.benchmarks import Measures
     from pyFTS.fcm.GA import phenotype
@@ -129,15 +128,14 @@ def evaluate(dataset, individual, **kwargs):
     return {'rmse': .6 * _rmse + .4 * _std}
 
 
-
 def tournament(population, objective):
-    '''
+    """
     Simple tournament selection strategy.
 
     :param population: the population
     :param objective: the objective to be considered on tournament
     :return:
-    '''
+    """
     n = len(population) - 1
 
     r1 = random.randint(0, n) if n > 2 else 0
@@ -146,14 +144,13 @@ def tournament(population, objective):
     return population[ix]
 
 
-
 def crossover(parents):
-    '''
+    """
     Crossover operation between two parents
 
     :param parents: a list with two genotypes
     :return: a genotype
-    '''
+    """
     import random
 
     descendent = genotype()
@@ -164,7 +161,7 @@ def crossover(parents):
         weights2 = parents[1]['weights'][k]
 
         for (row, col), a in np.ndenumerate(weights1):
-            new_weight.append(.7*weights1[row, col] + .3*weights2[row, col]  )
+            new_weight.append(.7*weights1[row, col] + .3*weights2[row, col] )
 
         descendent['weights'][k] = np.array(new_weight).reshape(weights1.shape)
 
@@ -172,12 +169,12 @@ def crossover(parents):
 
 
 def mutation(individual, pmut):
-    '''
+    """
     Mutation operator
 
     :param population:
     :return:
-    '''
+    """
     import numpy.random
 
     for k in range(parameters['order']):
@@ -197,18 +194,17 @@ def mutation(individual, pmut):
                 individual['weights'][k][row, col] += np.random.normal(0, .5, 1)
                 individual['weights'][k][row, col] = np.clip(individual['weights'][k][row, col], -1, 1)
 
-
     return individual
 
 
 def elitism(population, new_population):
-    '''
+    """
     Elitism operation, always select the best individual of the population and discard the worst
 
     :param population:
     :param new_population:
     :return:
-    '''
+    """
     population = sorted(population, key=itemgetter('rmse'))
     best = population[0]
 
@@ -220,7 +216,7 @@ def elitism(population, new_population):
 
 
 def GeneticAlgorithm(dataset, **kwargs):
-    '''
+    """
     Genetic algoritm for hyperparameter optimization
 
     :param dataset:
@@ -234,7 +230,7 @@ def GeneticAlgorithm(dataset, **kwargs):
     :param increment_rate: The increment of the scrolling window, relative to the window_size ([0,1])
     :param parameters: dict with model specific arguments for fit method.
     :return: the best genotype
-    '''
+    """
 
     statistics = []
 
