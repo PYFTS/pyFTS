@@ -68,10 +68,32 @@ A Google Colab example can also be found [here](https://drive.google.com/file/d/
 
 This tool is result of collective effort of [MINDS Lab](http://www.minds.eng.ufmg.br/), headed by Prof. Frederico Gadelha Guimaraes. Some of research on FTS which was developed under pyFTS:
 
-1. Alves, M. A., Silva, P. C. L., Severiano, C. A. J., Vieira, G. L., Guimaraes, F. G., Sadaei, H. J. An extension of nonstationary fuzzy sets to heteroskedastic fuzzy time series. 26th European Symposium on Artificial Neural Networks, Computational Intelligence and Machine Learning, 2018.
-2. Silva, P. C. L., Alves, M. A., Alberto, C., Junior, S., Vieira, G. L., Guimaraes, F. G.; Sadaei, H. J. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series. XIII Brazilian Congress on Computational Intelligence, 2017.
-3. Severiano, S. A. Jr, Silva, P. C. L., Sadaei, H. J., Guimaraes, F. G. Very Short-term Solar Forecasting using Fuzzy Time Series. 2017 IEEE International Conference on Fuzzy Systems. DOI10.1109/FUZZ-IEEE.2017.8015732
-4. Silva, P. C. L., Sadaei, H. J., Guimaraes, F. G. Interval Forecasting with Fuzzy Time Series. In: Computational Intelligence (SSCI), 2016 IEEE Symposium Series on. IEEE, 2016. p. 1-8.
+- 2020
+  - ORANG, Omid; Solar Energy Forecasting With Fuzzy Time Series Using High-Order Fuzzy Cognitive Maps. IEEE World Congress On Computational Intelligence 2020 (WCCI).
+  - ALYOUSIFI, Y; FAYE, Othman M; SOKKALINGAM, I; SILVA, P. Markov Weighted Fuzzy Time-Series Model Based on an Optimum Partition Method for Forecasting Air Pollution. International Journal of Fuzzy Systems, 2020. http://doi.org/10.1007/s40815-020-00841-w     
+  - SILVA, Petrônio CL et al. Forecasting in Non-stationary Environments with Fuzzy Time Series. https://arxiv.org/abs/2004.12554
+  - SILVA, Petrônio CL et al. Distributed Evolutionary Hyperparameter Optimization for Fuzzy Time Series. IEEE Transactions on Network and Service Management, 2020. http://doi.org/10.1109/TNSM.2020.2980289
+  - ALYOUSIFI, Yousif et al. Predicting Daily Air Pollution Index Based on Fuzzy Time Series Markov Chain Model. Symmetry, v. 12, n. 2, p. 293, 2020. http://doi.org/10.3390/sym12020293
+
+- 2019
+  - SILVA, Petrônio C. L. Scalable Models of Fuzzy Time Series for Probabilistic Forecasting. PhD Thesis. https://doi.org/10.5281/zenodo.3374641
+  - SADAEI, Hossein J. et al. Short-term load forecasting by using a combined method of convolutional neural networks and fuzzy time series. Energy, v. 175, p. 365-377, 2019. http://doi.org/10.1016/j.energy.2019.03.081
+  - SILVA, Petrônio CL et al. Probabilistic forecasting with fuzzy time series. IEEE Transactions on Fuzzy Systems, 2019.  http://doi.org/10.1109/TFUZZ.2019.2922152
+  - SILVA, Petrônio C. L.; LUCAS, Patrícia de O.; GUIMARÃES, Frederico Gadelha. A Distributed Algorithm for Scalable Fuzzy Time Series. In: International Conference on Green, Pervasive, and Cloud Computing. Springer, Cham, 2019. p. 42-56. http://doi.org/10.1007/978-3-030-19223-5_4 
+  - SILVA, Petrônio Cândido de Lima et al. A New Granular Approach for Multivariate Forecasting. In: Latin American Workshop on Computational Neuroscience. Springer, Cham, 2019. p. 41-58. http://doi.org/10.1007/978-3-030-36636-0_4 
+  - ALVES, Marcos Antonio et al. Otimizaçao Dinâmica Evolucionária para Despacho de Energia em uma Microrrede usando Veıculos Elétricos. Em: Anais do 14º Simpósio Brasileiro de Automação Inteligente. Campinas : GALOÁ. 2019. http://doi.org/10.17648/sbai-2019-111524
+  - LUCAS, Patrícia de O.; SILVA, Petrônio C. L.; GUIMARAES, Frederico G. Otimização Evolutiva de Hiperparâmetros para Modelos de Séries Temporais Nebulosas.Em: Anais do 14º Simpósio Brasileiro de Automação Inteligente. Campinas : GALOÁ. 2019. http://doi.org/10.17648/sbai-2019-111141
+
+- 2018
+  - ALVES, Marcos Antônio et al. An extension of nonstationary fuzzy sets to heteroskedastic fuzzy time series. In: ESANN. 2018.
+
+- 2017
+  - SEVERIANO, Carlos A. et al. Very short-term solar forecasting using fuzzy time series. In: 2017 IEEE international conference on fuzzy systems (FUZZ-IEEE). IEEE, 2017. p. 1-6. http://doi.org/10.1109/FUZZ-IEEE.2017.8015732
+  - SILVA, Petrônio C. L.; et al. Probabilistic forecasting with seasonal ensemble fuzzy time-series. In: XIII Brazilian Congress on Computational Intelligence, Rio de Janeiro. 2017. http://doi.org/10.21528/CBIC2017-54
+  - COSTA, Francirley R. B.; SILVA, Petrônio C. L.; GUIMARAES, Frederico G. REGRESSÃO LINEAR APLICADA NA PREDIÇÃO DE SERIES TEMPORAIS FUZZY. Simpósio Brasileiro de Automação Inteligente (SBAI), 2017.
+
+- 2016
+  - SILVA, Petrônio C. L.; SADAEI, Hossein Javedani; GUIMARAES, Frederico G. Interval forecasting with fuzzy time series. In: 2016 IEEE Symposium Series on Computational Intelligence (SSCI). IEEE, 2016. p. 1-8. http://doi.org/10.1109/SSCI.2016.7850010
  
 
 ## References
