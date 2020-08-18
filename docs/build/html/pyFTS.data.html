@@ -2,10 +2,10 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-55120145-3']);
@@ -20,19 +20,20 @@
     <title>pyFTS.data package &#8212; pyFTS 1.6 documentation</title>
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyFTS.distributed package" href="pyFTS.distributed.html" />
     <link rel="prev" title="pyFTS.common package" href="pyFTS.common.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -52,15 +53,894 @@
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pyFTS.html" accesskey="U">pyFTS package</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="pyFTS.html" accesskey="U">pyFTS package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.data package</a></li> 
       </ul>
-    </div>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyfts-data-package">
+<h1>pyFTS.data package<a class="headerlink" href="#pyfts-data-package" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-pyFTS.data">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.data" title="Permalink to this headline">¶</a></h2>
+<p>Module for pyFTS standard datasets facilities</p>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyFTS.data.common">
+<span id="pyfts-data-common-module"></span><h2>pyFTS.data.common module<a class="headerlink" href="#module-pyFTS.data.common" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pyFTS.data.common.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.common.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">';'</span></em>, <em class="sig-param"><span class="n">compression</span><span class="o">=</span><span class="default_value">'infer'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/common.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.common.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method check if filename already exists, read the file and return its data.
+If the file don’t already exists, it will be downloaded and decompressed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – dataset local filename</p></li>
+<li><p><strong>url</strong> – dataset internet URL</p></li>
+<li><p><strong>sep</strong> – CSV field separator</p></li>
+<li><p><strong>compression</strong> – type of compression</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pandas dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="datasets">
+<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyFTS.data.artificial">
+<span id="artificial-and-synthetic-data-generators"></span><h2>Artificial and synthetic data generators<a class="headerlink" href="#module-pyFTS.data.artificial" title="Permalink to this headline">¶</a></h2>
+<p>Facilities to generate synthetic stochastic processes</p>
+<dl class="py class">
+<dt id="pyFTS.data.artificial.SignalEmulator">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">SignalEmulator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Emulate a complex signal built from several additive and non-additive components</p>
+<dl class="py method">
+<dt id="pyFTS.data.artificial.SignalEmulator.blip">
+<code class="sig-name descname">blip</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.blip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.blip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an outlier greater than the maximum or lower then the minimum previous values of the signal,
+and insert it on a random location of the signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the current SignalEmulator instance, for method chaining</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.data.artificial.SignalEmulator.components">
+<code class="sig-name descname">components</code><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Components of the signal</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.data.artificial.SignalEmulator.incremental_gaussian">
+<code class="sig-name descname">incremental_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mu</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.incremental_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.incremental_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an additive gaussian interference on a previous signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu</strong> – increment on mean</p></li>
+<li><p><strong>sigma</strong> – increment on variance</p></li>
+<li><p><strong>start</strong> – lag index to start this signal, the default value is 0</p></li>
+<li><p><strong>it</strong> – Number of iterations, the default value is 1</p></li>
+<li><p><strong>length</strong> – Number of samples generated on each iteration, the default value is 100</p></li>
+<li><p><strong>vmin</strong> – Lower bound value of generated data, the default value is None</p></li>
+<li><p><strong>vmax</strong> – Upper bound value of generated data, the default value is None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the current SignalEmulator instance, for method chaining</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.data.artificial.SignalEmulator.periodic_gaussian">
+<code class="sig-name descname">periodic_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span></em>, <em class="sig-param"><span class="n">period</span></em>, <em class="sig-param"><span class="n">mu_min</span></em>, <em class="sig-param"><span class="n">sigma_min</span></em>, <em class="sig-param"><span class="n">mu_max</span></em>, <em class="sig-param"><span class="n">sigma_max</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an additive periodic gaussian interference on a previous signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – ‘linear’ or ‘sinoidal’</p></li>
+<li><p><strong>period</strong> – the period of recurrence</p></li>
+<li><p><strong>mu</strong> – increment on mean</p></li>
+<li><p><strong>sigma</strong> – increment on variance</p></li>
+<li><p><strong>start</strong> – lag index to start this signal, the default value is 0</p></li>
+<li><p><strong>it</strong> – Number of iterations, the default value is 1</p></li>
+<li><p><strong>length</strong> – Number of samples generated on each iteration, the default value is 100</p></li>
+<li><p><strong>vmin</strong> – Lower bound value of generated data, the default value is None</p></li>
+<li><p><strong>vmax</strong> – Upper bound value of generated data, the default value is None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the current SignalEmulator instance, for method chaining</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.data.artificial.SignalEmulator.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a list of float values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.data.artificial.SignalEmulator.stationary_gaussian">
+<code class="sig-name descname">stationary_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mu</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.stationary_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.stationary_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a continuous Gaussian signal with mean mu and variance sigma.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu</strong> – mean</p></li>
+<li><p><strong>sigma</strong> – variance</p></li>
+<li><p><strong>additive</strong> – If False it cancels the previous signal and start this one, if True
+this signal is added to the previous one</p></li>
+<li><p><strong>start</strong> – lag index to start this signal, the default value is 0</p></li>
+<li><p><strong>it</strong> – Number of iterations, the default value is 1</p></li>
+<li><p><strong>length</strong> – Number of samples generated on each iteration, the default value is 100</p></li>
+<li><p><strong>vmin</strong> – Lower bound value of generated data, the default value is None</p></li>
+<li><p><strong>vmax</strong> – Upper bound value of generated data, the default value is None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the current SignalEmulator instance, for method chaining</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.artificial.generate_gaussian_linear">
+<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">generate_gaussian_linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mu_ini</span></em>, <em class="sig-param"><span class="n">sigma_ini</span></em>, <em class="sig-param"><span class="n">mu_inc</span></em>, <em class="sig-param"><span class="n">sigma_inc</span></em>, <em class="sig-param"><span class="n">it</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_gaussian_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_gaussian_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate data sampled from Gaussian distribution, with constant or linear changing parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu_ini</strong> – Initial mean</p></li>
+<li><p><strong>sigma_ini</strong> – Initial variance</p></li>
+<li><p><strong>mu_inc</strong> – Mean increment after ‘num’ samples</p></li>
+<li><p><strong>sigma_inc</strong> – Variance increment after ‘num’ samples</p></li>
+<li><p><strong>it</strong> – Number of iterations</p></li>
+<li><p><strong>num</strong> – Number of samples generated on each iteration</p></li>
+<li><p><strong>vmin</strong> – Lower bound value of generated data</p></li>
+<li><p><strong>vmax</strong> – Upper bound value of generated data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of it*num float values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.artificial.generate_linear_periodic_gaussian">
+<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">generate_linear_periodic_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">period</span></em>, <em class="sig-param"><span class="n">mu_min</span></em>, <em class="sig-param"><span class="n">sigma_min</span></em>, <em class="sig-param"><span class="n">mu_max</span></em>, <em class="sig-param"><span class="n">sigma_max</span></em>, <em class="sig-param"><span class="n">it</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_linear_periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_linear_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a periodic linear variation on mean and variance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>period</strong> – the period of recurrence</p></li>
+<li><p><strong>mu_min</strong> – initial (and minimum) mean of each period</p></li>
+<li><p><strong>sigma_min</strong> – initial (and minimum) variance of each period</p></li>
+<li><p><strong>mu_max</strong> – final (and maximum) mean of each period</p></li>
+<li><p><strong>sigma_max</strong> – final (and maximum) variance of each period</p></li>
+<li><p><strong>it</strong> – Number of iterations</p></li>
+<li><p><strong>num</strong> – Number of samples generated on each iteration</p></li>
+<li><p><strong>vmin</strong> – Lower bound value of generated data</p></li>
+<li><p><strong>vmax</strong> – Upper bound value of generated data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of it*num float values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.artificial.generate_sinoidal_periodic_gaussian">
+<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">generate_sinoidal_periodic_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">period</span></em>, <em class="sig-param"><span class="n">mu_min</span></em>, <em class="sig-param"><span class="n">sigma_min</span></em>, <em class="sig-param"><span class="n">mu_max</span></em>, <em class="sig-param"><span class="n">sigma_max</span></em>, <em class="sig-param"><span class="n">it</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_sinoidal_periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_sinoidal_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a periodic sinoidal variation on mean and variance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>period</strong> – the period of recurrence</p></li>
+<li><p><strong>mu_min</strong> – initial (and minimum) mean of each period</p></li>
+<li><p><strong>sigma_min</strong> – initial (and minimum) variance of each period</p></li>
+<li><p><strong>mu_max</strong> – final (and maximum) mean of each period</p></li>
+<li><p><strong>sigma_max</strong> – final (and maximum) variance of each period</p></li>
+<li><p><strong>it</strong> – Number of iterations</p></li>
+<li><p><strong>num</strong> – Number of samples generated on each iteration</p></li>
+<li><p><strong>vmin</strong> – Lower bound value of generated data</p></li>
+<li><p><strong>vmax</strong> – Upper bound value of generated data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of it*num float values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.artificial.generate_uniform_linear">
+<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">generate_uniform_linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_ini</span></em>, <em class="sig-param"><span class="n">max_ini</span></em>, <em class="sig-param"><span class="n">min_inc</span></em>, <em class="sig-param"><span class="n">max_inc</span></em>, <em class="sig-param"><span class="n">it</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_uniform_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_uniform_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate data sampled from Uniform distribution, with constant or  linear changing bounds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu_ini</strong> – Initial mean</p></li>
+<li><p><strong>sigma_ini</strong> – Initial variance</p></li>
+<li><p><strong>mu_inc</strong> – Mean increment after ‘num’ samples</p></li>
+<li><p><strong>sigma_inc</strong> – Variance increment after ‘num’ samples</p></li>
+<li><p><strong>it</strong> – Number of iterations</p></li>
+<li><p><strong>num</strong> – Number of samples generated on each iteration</p></li>
+<li><p><strong>vmin</strong> – Lower bound value of generated data</p></li>
+<li><p><strong>vmax</strong> – Upper bound value of generated data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of it*num float values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.artificial.random_walk">
+<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">random_walk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'gaussian'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#random_walk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.random_walk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple random walk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> – number of samples</p></li>
+<li><p><strong>type</strong> – ‘gaussian’ or ‘uniform’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.artificial.white_noise">
+<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">white_noise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">500</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#white_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.white_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple Gaussian noise signal
+:param n: number of samples
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.AirPassengers">
+<span id="airpassengers-dataset"></span><h2>AirPassengers dataset<a class="headerlink" href="#module-pyFTS.data.AirPassengers" title="Permalink to this headline">¶</a></h2>
+<p>Monthly totals of a airline passengers from USA, from January 1949 through December 1960.</p>
+<p>Source: Hyndman, R.J., Time Series Data Library, <a class="reference external" href="http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/">http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/</a>.</p>
+<dl class="py function">
+<dt id="pyFTS.data.AirPassengers.get_data">
+<code class="sig-prename descclassname">pyFTS.data.AirPassengers.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/AirPassengers.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.AirPassengers.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a simple univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.AirPassengers.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.AirPassengers.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/AirPassengers.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.AirPassengers.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.Bitcoin">
+<span id="bitcoin-dataset"></span><h2>Bitcoin dataset<a class="headerlink" href="#module-pyFTS.data.Bitcoin" title="Permalink to this headline">¶</a></h2>
+<p>Bitcoin to USD quotations</p>
+<p>Daily averaged index, by business day, from 2010 to 2018.</p>
+<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD">https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD</a></p>
+<dl class="py function">
+<dt id="pyFTS.data.Bitcoin.get_data">
+<code class="sig-prename descclassname">pyFTS.data.Bitcoin.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'AVG'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – dataset field to load</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.Bitcoin.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.Bitcoin.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.DowJones">
+<span id="dowjones-dataset"></span><h2>DowJones dataset<a class="headerlink" href="#module-pyFTS.data.DowJones" title="Permalink to this headline">¶</a></h2>
+<p>DJI - Dow Jones</p>
+<p>Daily averaged index, by business day, from 1985 to 2017.</p>
+<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
+<dl class="py function">
+<dt id="pyFTS.data.DowJones.get_data">
+<code class="sig-prename descclassname">pyFTS.data.DowJones.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'AVG'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – dataset field to load</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.DowJones.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.DowJones.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.Enrollments">
+<span id="enrollments-dataset"></span><h2>Enrollments dataset<a class="headerlink" href="#module-pyFTS.data.Enrollments" title="Permalink to this headline">¶</a></h2>
+<p>Yearly University of Alabama enrollments from 1971 to 1992.</p>
+<dl class="py function">
+<dt id="pyFTS.data.Enrollments.get_data">
+<code class="sig-prename descclassname">pyFTS.data.Enrollments.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Enrollments.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Enrollments.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a simple univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.Enrollments.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.Enrollments.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Enrollments.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Enrollments.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.Ethereum">
+<span id="ethereum-dataset"></span><h2>Ethereum dataset<a class="headerlink" href="#module-pyFTS.data.Ethereum" title="Permalink to this headline">¶</a></h2>
+<p>Ethereum to USD quotations</p>
+<p>Daily averaged index, by business day, from 2016 to 2018.</p>
+<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD">https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD</a></p>
+<dl class="py function">
+<dt id="pyFTS.data.Ethereum.get_data">
+<code class="sig-prename descclassname">pyFTS.data.Ethereum.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'AVG'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – dataset field to load</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.Ethereum.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.Ethereum.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.EURGBP">
+<span id="eur-gbp-dataset"></span><h2>EUR-GBP dataset<a class="headerlink" href="#module-pyFTS.data.EURGBP" title="Permalink to this headline">¶</a></h2>
+<p>FOREX market EUR-GBP pair.</p>
+<p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
+<dl class="py function">
+<dt id="pyFTS.data.EURGBP.get_data">
+<code class="sig-prename descclassname">pyFTS.data.EURGBP.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'avg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – dataset field to load</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.EURGBP.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.EURGBP.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.EURUSD">
+<span id="eur-usd-dataset"></span><h2>EUR-USD dataset<a class="headerlink" href="#module-pyFTS.data.EURUSD" title="Permalink to this headline">¶</a></h2>
+<p>FOREX market EUR-USD pair.</p>
+<p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
+<dl class="py function">
+<dt id="pyFTS.data.EURUSD.get_data">
+<code class="sig-prename descclassname">pyFTS.data.EURUSD.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'avg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – dataset field to load</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.EURUSD.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.EURUSD.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.GBPUSD">
+<span id="gbp-usd-dataset"></span><h2>GBP-USD dataset<a class="headerlink" href="#module-pyFTS.data.GBPUSD" title="Permalink to this headline">¶</a></h2>
+<p>FOREX market GBP-USD pair.</p>
+<p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
+<dl class="py function">
+<dt id="pyFTS.data.GBPUSD.get_data">
+<code class="sig-prename descclassname">pyFTS.data.GBPUSD.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'avg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – dataset field to load</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.GBPUSD.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.GBPUSD.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.INMET">
+<span id="inmet-dataset"></span><h2>INMET dataset<a class="headerlink" href="#module-pyFTS.data.INMET" title="Permalink to this headline">¶</a></h2>
+<p>INMET - Instituto Nacional Meteorologia / Brasil</p>
+<p>Belo Horizonte station, from 2000-01-01 to  31/12/2012</p>
+<p>Source: <a class="reference external" href="http://www.inmet.gov.br">http://www.inmet.gov.br</a></p>
+<dl class="py function">
+<dt id="pyFTS.data.INMET.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.INMET.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/INMET.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.INMET.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.Malaysia">
+<span id="malaysia-dataset"></span><h2>Malaysia dataset<a class="headerlink" href="#module-pyFTS.data.Malaysia" title="Permalink to this headline">¶</a></h2>
+<p>Hourly Malaysia eletric load and tempeature</p>
+<dl class="py function">
+<dt id="pyFTS.data.Malaysia.get_data">
+<code class="sig-prename descclassname">pyFTS.data.Malaysia.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'load'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – dataset field to load</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.Malaysia.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.Malaysia.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.NASDAQ">
+<span id="nasdaq-module"></span><h2>NASDAQ module<a class="headerlink" href="#module-pyFTS.data.NASDAQ" title="Permalink to this headline">¶</a></h2>
+<p>National Association of Securities Dealers Automated Quotations - Composite Index (NASDAQ IXIC)</p>
+<p>Daily averaged index by business day, from 2000 to 2016.</p>
+<p>Source: <a class="reference external" href="http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC">http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC</a></p>
+<dl class="py function">
+<dt id="pyFTS.data.NASDAQ.get_data">
+<code class="sig-prename descclassname">pyFTS.data.NASDAQ.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'avg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/NASDAQ.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.NASDAQ.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a simple univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – the dataset field name to extract</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.NASDAQ.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.NASDAQ.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/NASDAQ.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.NASDAQ.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.SONDA">
+<span id="sonda-dataset"></span><h2>SONDA dataset<a class="headerlink" href="#module-pyFTS.data.SONDA" title="Permalink to this headline">¶</a></h2>
+<p>SONDA - Sistema de Organização Nacional de Dados Ambientais, from INPE - Instituto Nacional de Pesquisas Espaciais, Brasil.</p>
+<p>Brasilia station</p>
+<p>Source: <a class="reference external" href="http://sonda.ccst.inpe.br/">http://sonda.ccst.inpe.br/</a></p>
+<dl class="py function">
+<dt id="pyFTS.data.SONDA.get_data">
+<code class="sig-prename descclassname">pyFTS.data.SONDA.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SONDA.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SONDA.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a simple univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – the dataset field name to extract</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.SONDA.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.SONDA.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SONDA.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SONDA.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.SP500">
+<span id="s-p-500-dataset"></span><h2>S&amp;P 500 dataset<a class="headerlink" href="#module-pyFTS.data.SP500" title="Permalink to this headline">¶</a></h2>
+<p>S&amp;P500 - Standard &amp; Poor’s 500</p>
+<p>Daily averaged index, by business day, from 1950 to 2017.</p>
+<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
+<dl class="py function">
+<dt id="pyFTS.data.SP500.get_data">
+<code class="sig-prename descclassname">pyFTS.data.SP500.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SP500.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SP500.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.SP500.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.SP500.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SP500.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SP500.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.TAIEX">
+<span id="taiex-dataset"></span><h2>TAIEX dataset<a class="headerlink" href="#module-pyFTS.data.TAIEX" title="Permalink to this headline">¶</a></h2>
+<p>The Taiwan Stock Exchange Capitalization Weighted Stock Index (TAIEX)</p>
+<p>Daily averaged index by business day, from 1995 to 2014.</p>
+<p>Source: <a class="reference external" href="http://www.twse.com.tw/en/products/indices/Index_Series.php">http://www.twse.com.tw/en/products/indices/Index_Series.php</a></p>
+<dl class="py function">
+<dt id="pyFTS.data.TAIEX.get_data">
+<code class="sig-prename descclassname">pyFTS.data.TAIEX.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/TAIEX.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.TAIEX.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.TAIEX.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.TAIEX.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/TAIEX.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.TAIEX.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.henon">
+<span id="henon-chaotic-time-series"></span><h2>Henon chaotic time series<a class="headerlink" href="#module-pyFTS.data.henon" title="Permalink to this headline">¶</a></h2>
+<ol class="upperalpha simple" start="13">
+<li><p>Hénon. “A two-dimensional mapping with a strange attractor”. Commun. Math. Phys. 50, 69-77 (1976)</p></li>
+</ol>
+<p>dx/dt = a + by(t-1) - x(t-1)^2
+dy/dt = x</p>
+<dl class="py function">
+<dt id="pyFTS.data.henon.get_data">
+<code class="sig-prename descclassname">pyFTS.data.henon.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">1.4</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[1, 1]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/henon.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.henon.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a simple univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>var</strong> – the dataset field name to extract</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.henon.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.henon.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">1.4</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[1, 1]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/henon.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.henon.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dataframe with the bivariate Henon Map time series (x, y).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> – Equation coefficient</p></li>
+<li><p><strong>b</strong> – Equation coefficient</p></li>
+<li><p><strong>initial_values</strong> – numpy array with the initial values of x and y. Default: [1, 1]</p></li>
+<li><p><strong>iterations</strong> – number of iterations. Default: 1000</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Panda dataframe with the x and y values</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.logistic_map">
+<span id="logistic-map-chaotic-time-series"></span><h2>Logistic_map chaotic time series<a class="headerlink" href="#module-pyFTS.data.logistic_map" title="Permalink to this headline">¶</a></h2>
+<p>May, Robert M. (1976). “Simple mathematical models with very complicated dynamics”.
+Nature. 261 (5560): 459–467. doi:10.1038/261459a0.</p>
+<p>x(t) = r * x(t-1) * (1 - x(t -1) )</p>
+<dl class="py function">
+<dt id="pyFTS.data.logistic_map.get_data">
+<code class="sig-prename descclassname">pyFTS.data.logistic_map.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">initial_value</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/logistic_map.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.logistic_map.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the logistic map chaotic time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> – Equation coefficient</p></li>
+<li><p><strong>initial_value</strong> – Initial value of x. Default: 0.3</p></li>
+<li><p><strong>iterations</strong> – number of iterations. Default: 100</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.lorentz">
+<span id="lorentz-chaotic-time-series"></span><h2>Lorentz chaotic time series<a class="headerlink" href="#module-pyFTS.data.lorentz" title="Permalink to this headline">¶</a></h2>
+<p>Lorenz, Edward Norton (1963). “Deterministic nonperiodic flow”. Journal of the Atmospheric Sciences. 20 (2): 130–141.
+<a class="reference external" href="https://doi.org/10.1175/1520-0469(1963">https://doi.org/10.1175/1520-0469(1963</a>)020&lt;0130:DNF&gt;2.0.CO;2</p>
+<p>dx/dt = a(y -x)
+dy/dt = x(b - z) - y
+dz/dt = xy - cz</p>
+<dl class="py function">
+<dt id="pyFTS.data.lorentz.get_data">
+<code class="sig-prename descclassname">pyFTS.data.lorentz.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">10.0</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">28.0</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">2.6666666666666665</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[0.1, 0, 0]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/lorentz.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.lorentz.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a simple univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>var</strong> – the dataset field name to extract</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.lorentz.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.lorentz.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">10.0</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">28.0</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">2.6666666666666665</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[0.1, 0, 0]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/lorentz.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.lorentz.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dataframe with the multivariate Lorenz Map time series (x, y, z).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> – Equation coefficient. Default value: 10</p></li>
+<li><p><strong>b</strong> – Equation coefficient. Default value: 28</p></li>
+<li><p><strong>c</strong> – Equation coefficient. Default value: 8.0/3.0</p></li>
+<li><p><strong>dt</strong> – Time differential for continuous time integration. Default value: 0.01</p></li>
+<li><p><strong>initial_values</strong> – numpy array with the initial values of x,y and z. Default: [0.1, 0, 0]</p></li>
+<li><p><strong>iterations</strong> – number of iterations. Default: 1000</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Panda dataframe with the x, y and z values</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.mackey_glass">
+<span id="mackey-glass-chaotic-time-series"></span><h2>Mackey-Glass chaotic time series<a class="headerlink" href="#module-pyFTS.data.mackey_glass" title="Permalink to this headline">¶</a></h2>
+<p>Mackey, M. C. and Glass, L. (1977). Oscillation and chaos in physiological control systems.
+Science, 197(4300):287-289.</p>
+<p>dy/dt = -by(t)+ cy(t - tau) / 1+y(t-tau)^10</p>
+<dl class="py function">
+<dt id="pyFTS.data.mackey_glass.get_data">
+<code class="sig-prename descclassname">pyFTS.data.mackey_glass.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">tau</span><span class="o">=</span><span class="default_value">17</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">array([0.5, 0.55882353, 0.61764706, 0.67647059, 0.73529412, 0.79411765, 0.85294118, 0.91176471, 0.97058824, 1.02941176, 1.08823529, 1.14705882, 1.20588235, 1.26470588, 1.32352941, 1.38235294, 1.44117647, 1.5])</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/mackey_glass.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.mackey_glass.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the Mackey-Glass chaotic time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – Equation coefficient</p></li>
+<li><p><strong>c</strong> – Equation coefficient</p></li>
+<li><p><strong>tau</strong> – Lag parameter, default: 17</p></li>
+<li><p><strong>initial_values</strong> – numpy array with the initial values of y. Default: np.linspace(0.5,1.5,18)</p></li>
+<li><p><strong>iterations</strong> – number of iterations. Default: 1000</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.rossler">
+<span id="rossler-chaotic-time-series"></span><h2>Rossler chaotic time series<a class="headerlink" href="#module-pyFTS.data.rossler" title="Permalink to this headline">¶</a></h2>
+<ol class="upperalpha simple" start="15">
+<li><ol class="upperalpha simple" start="5">
+<li><p>Rössler, Phys. Lett. 57A, 397 (1976).</p></li>
+</ol>
+</li>
+</ol>
+<p>dx/dt = -z - y
+dy/dt = x + ay
+dz/dt = b + z( x - c )</p>
+<dl class="py function">
+<dt id="pyFTS.data.rossler.get_data">
+<code class="sig-prename descclassname">pyFTS.data.rossler.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">5.7</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[0.001, 0.001, 0.001]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">5000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/rossler.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.rossler.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a simple univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>var</strong> – the dataset field name to extract</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.rossler.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.rossler.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">5.7</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[0.001, 0.001, 0.001]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">5000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/rossler.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.rossler.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dataframe with the multivariate Rössler Map time series (x, y, z).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> – Equation coefficient. Default value: 0.2</p></li>
+<li><p><strong>b</strong> – Equation coefficient. Default value: 0.2</p></li>
+<li><p><strong>c</strong> – Equation coefficient. Default value: 5.7</p></li>
+<li><p><strong>dt</strong> – Time differential for continuous time integration. Default value: 0.01</p></li>
+<li><p><strong>initial_values</strong> – numpy array with the initial values of x,y and z. Default: [0.001, 0.001, 0.001]</p></li>
+<li><p><strong>iterations</strong> – number of iterations. Default: 5000</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Panda dataframe with the x, y and z values</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.data.sunspots">
+<span id="sunspots-dataset"></span><h2>Sunspots dataset<a class="headerlink" href="#module-pyFTS.data.sunspots" title="Permalink to this headline">¶</a></h2>
+<p>Monthly sunspot numbers from 1749 to May 2016</p>
+<p>Source: <a class="reference external" href="https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/">https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/</a></p>
+<dl class="py function">
+<dt id="pyFTS.data.sunspots.get_data">
+<code class="sig-prename descclassname">pyFTS.data.sunspots.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/sunspots.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.sunspots.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a simple univariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.data.sunspots.get_dataframe">
+<code class="sig-prename descclassname">pyFTS.data.sunspots.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/sunspots.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.sunspots.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complete multivariate time series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="index.html">
-              <img class="logo" src="_static/logo_heading2.png" alt="Logo"/>
-            </a></p>
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyFTS.data package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.data">Module contents</a></li>
@@ -106,1034 +986,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="pyfts-data-package">
-<h1>pyFTS.data package<a class="headerlink" href="#pyfts-data-package" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-</div>
-<div class="section" id="module-pyFTS.data">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.data" title="Permalink to this headline">¶</a></h2>
-<p>Module for pyFTS standard datasets facilities</p>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pyFTS.data.common">
-<span id="pyfts-data-common-module"></span><h2>pyFTS.data.common module<a class="headerlink" href="#module-pyFTS.data.common" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="pyFTS.data.common.get_dataframe">
-<code class="descclassname">pyFTS.data.common.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>filename</em>, <em>url</em>, <em>sep=';'</em>, <em>compression='infer'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.common.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method check if filename already exists, read the file and return its data.
-If the file don’t already exists, it will be downloaded and decompressed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> – dataset local filename</li>
-<li><strong>url</strong> – dataset internet URL</li>
-<li><strong>sep</strong> – CSV field separator</li>
-<li><strong>compression</strong> – type of compression</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Pandas dataset</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="datasets">
-<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pyFTS.data.artificial">
-<span id="artificial-and-synthetic-data-generators"></span><h2>Artificial and synthetic data generators<a class="headerlink" href="#module-pyFTS.data.artificial" title="Permalink to this headline">¶</a></h2>
-<p>Facilities to generate synthetic stochastic processes</p>
-<dl class="class">
-<dt id="pyFTS.data.artificial.SignalEmulator">
-<em class="property">class </em><code class="descclassname">pyFTS.data.artificial.</code><code class="descname">SignalEmulator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Emulate a complex signal built from several additive and non-additive components</p>
-<dl class="method">
-<dt id="pyFTS.data.artificial.SignalEmulator.blip">
-<code class="descname">blip</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.blip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an outlier greater than the maximum or lower then the minimum previous values of the signal,
-and insert it on a random location of the signal.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the current SignalEmulator instance, for method chaining</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.data.artificial.SignalEmulator.incremental_gaussian">
-<code class="descname">incremental_gaussian</code><span class="sig-paren">(</span><em>mu</em>, <em>sigma</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.incremental_gaussian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an additive gaussian interference on a previous signal</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mu</strong> – increment on mean</li>
-<li><strong>sigma</strong> – increment on variance</li>
-<li><strong>start</strong> – lag index to start this signal, the default value is 0</li>
-<li><strong>it</strong> – Number of iterations, the default value is 1</li>
-<li><strong>length</strong> – Number of samples generated on each iteration, the default value is 100</li>
-<li><strong>vmin</strong> – Lower bound value of generated data, the default value is None</li>
-<li><strong>vmax</strong> – Upper bound value of generated data, the default value is None</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the current SignalEmulator instance, for method chaining</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.data.artificial.SignalEmulator.periodic_gaussian">
-<code class="descname">periodic_gaussian</code><span class="sig-paren">(</span><em>type</em>, <em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.periodic_gaussian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an additive periodic gaussian interference on a previous signal</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>type</strong> – ‘linear’ or ‘sinoidal’</li>
-<li><strong>period</strong> – the period of recurrence</li>
-<li><strong>mu</strong> – increment on mean</li>
-<li><strong>sigma</strong> – increment on variance</li>
-<li><strong>start</strong> – lag index to start this signal, the default value is 0</li>
-<li><strong>it</strong> – Number of iterations, the default value is 1</li>
-<li><strong>length</strong> – Number of samples generated on each iteration, the default value is 100</li>
-<li><strong>vmin</strong> – Lower bound value of generated data, the default value is None</li>
-<li><strong>vmax</strong> – Upper bound value of generated data, the default value is None</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the current SignalEmulator instance, for method chaining</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.data.artificial.SignalEmulator.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Render the signal</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a list of float values</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.data.artificial.SignalEmulator.stationary_gaussian">
-<code class="descname">stationary_gaussian</code><span class="sig-paren">(</span><em>mu</em>, <em>sigma</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.stationary_gaussian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a continuous Gaussian signal with mean mu and variance sigma.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mu</strong> – mean</li>
-<li><strong>sigma</strong> – variance</li>
-<li><strong>additive</strong> – If False it cancels the previous signal and start this one, if True
-this signal is added to the previous one</li>
-<li><strong>start</strong> – lag index to start this signal, the default value is 0</li>
-<li><strong>it</strong> – Number of iterations, the default value is 1</li>
-<li><strong>length</strong> – Number of samples generated on each iteration, the default value is 100</li>
-<li><strong>vmin</strong> – Lower bound value of generated data, the default value is None</li>
-<li><strong>vmax</strong> – Upper bound value of generated data, the default value is None</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the current SignalEmulator instance, for method chaining</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.artificial.generate_gaussian_linear">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_gaussian_linear</code><span class="sig-paren">(</span><em>mu_ini</em>, <em>sigma_ini</em>, <em>mu_inc</em>, <em>sigma_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.generate_gaussian_linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate data sampled from Gaussian distribution, with constant or linear changing parameters</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mu_ini</strong> – Initial mean</li>
-<li><strong>sigma_ini</strong> – Initial variance</li>
-<li><strong>mu_inc</strong> – Mean increment after ‘num’ samples</li>
-<li><strong>sigma_inc</strong> – Variance increment after ‘num’ samples</li>
-<li><strong>it</strong> – Number of iterations</li>
-<li><strong>num</strong> – Number of samples generated on each iteration</li>
-<li><strong>vmin</strong> – Lower bound value of generated data</li>
-<li><strong>vmax</strong> – Upper bound value of generated data</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.artificial.generate_linear_periodic_gaussian">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_linear_periodic_gaussian</code><span class="sig-paren">(</span><em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.generate_linear_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a periodic linear variation on mean and variance</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>period</strong> – the period of recurrence</li>
-<li><strong>mu_min</strong> – initial (and minimum) mean of each period</li>
-<li><strong>sigma_min</strong> – initial (and minimum) variance of each period</li>
-<li><strong>mu_max</strong> – final (and maximum) mean of each period</li>
-<li><strong>sigma_max</strong> – final (and maximum) variance of each period</li>
-<li><strong>it</strong> – Number of iterations</li>
-<li><strong>num</strong> – Number of samples generated on each iteration</li>
-<li><strong>vmin</strong> – Lower bound value of generated data</li>
-<li><strong>vmax</strong> – Upper bound value of generated data</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.artificial.generate_sinoidal_periodic_gaussian">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_sinoidal_periodic_gaussian</code><span class="sig-paren">(</span><em>period</em>, <em>mu_min</em>, <em>sigma_min</em>, <em>mu_max</em>, <em>sigma_max</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.generate_sinoidal_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a periodic sinoidal variation on mean and variance</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>period</strong> – the period of recurrence</li>
-<li><strong>mu_min</strong> – initial (and minimum) mean of each period</li>
-<li><strong>sigma_min</strong> – initial (and minimum) variance of each period</li>
-<li><strong>mu_max</strong> – final (and maximum) mean of each period</li>
-<li><strong>sigma_max</strong> – final (and maximum) variance of each period</li>
-<li><strong>it</strong> – Number of iterations</li>
-<li><strong>num</strong> – Number of samples generated on each iteration</li>
-<li><strong>vmin</strong> – Lower bound value of generated data</li>
-<li><strong>vmax</strong> – Upper bound value of generated data</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.artificial.generate_uniform_linear">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">generate_uniform_linear</code><span class="sig-paren">(</span><em>min_ini</em>, <em>max_ini</em>, <em>min_inc</em>, <em>max_inc</em>, <em>it=100</em>, <em>num=10</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.generate_uniform_linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate data sampled from Uniform distribution, with constant or  linear changing bounds</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mu_ini</strong> – Initial mean</li>
-<li><strong>sigma_ini</strong> – Initial variance</li>
-<li><strong>mu_inc</strong> – Mean increment after ‘num’ samples</li>
-<li><strong>sigma_inc</strong> – Variance increment after ‘num’ samples</li>
-<li><strong>it</strong> – Number of iterations</li>
-<li><strong>num</strong> – Number of samples generated on each iteration</li>
-<li><strong>vmin</strong> – Lower bound value of generated data</li>
-<li><strong>vmax</strong> – Upper bound value of generated data</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of it*num float values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.artificial.random_walk">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">random_walk</code><span class="sig-paren">(</span><em>n=500</em>, <em>type='gaussian'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.random_walk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simple random walk</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>n</strong> – number of samples</li>
-<li><strong>type</strong> – ‘gaussian’ or ‘uniform’</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.artificial.white_noise">
-<code class="descclassname">pyFTS.data.artificial.</code><code class="descname">white_noise</code><span class="sig-paren">(</span><em>n=500</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.artificial.white_noise" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simple Gaussian noise signal
-:param n: number of samples
-:return:</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.AirPassengers">
-<span id="airpassengers-dataset"></span><h2>AirPassengers dataset<a class="headerlink" href="#module-pyFTS.data.AirPassengers" title="Permalink to this headline">¶</a></h2>
-<p>Monthly totals of a airline passengers from USA, from January 1949 through December 1960.</p>
-<p>Source: Hyndman, R.J., Time Series Data Library, <a class="reference external" href="http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/">http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/</a>.</p>
-<dl class="function">
-<dt id="pyFTS.data.AirPassengers.get_data">
-<code class="descclassname">pyFTS.data.AirPassengers.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.AirPassengers.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a simple univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.AirPassengers.get_dataframe">
-<code class="descclassname">pyFTS.data.AirPassengers.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.AirPassengers.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.Bitcoin">
-<span id="bitcoin-dataset"></span><h2>Bitcoin dataset<a class="headerlink" href="#module-pyFTS.data.Bitcoin" title="Permalink to this headline">¶</a></h2>
-<p>Bitcoin to USD quotations</p>
-<p>Daily averaged index, by business day, from 2010 to 2018.</p>
-<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD">https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD</a></p>
-<dl class="function">
-<dt id="pyFTS.data.Bitcoin.get_data">
-<code class="descclassname">pyFTS.data.Bitcoin.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='AVG'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Bitcoin.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – dataset field to load</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.Bitcoin.get_dataframe">
-<code class="descclassname">pyFTS.data.Bitcoin.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Bitcoin.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.DowJones">
-<span id="dowjones-dataset"></span><h2>DowJones dataset<a class="headerlink" href="#module-pyFTS.data.DowJones" title="Permalink to this headline">¶</a></h2>
-<p>DJI - Dow Jones</p>
-<p>Daily averaged index, by business day, from 1985 to 2017.</p>
-<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
-<dl class="function">
-<dt id="pyFTS.data.DowJones.get_data">
-<code class="descclassname">pyFTS.data.DowJones.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='AVG'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.DowJones.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – dataset field to load</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.DowJones.get_dataframe">
-<code class="descclassname">pyFTS.data.DowJones.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.DowJones.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.Enrollments">
-<span id="enrollments-dataset"></span><h2>Enrollments dataset<a class="headerlink" href="#module-pyFTS.data.Enrollments" title="Permalink to this headline">¶</a></h2>
-<p>Yearly University of Alabama enrollments from 1971 to 1992.</p>
-<dl class="function">
-<dt id="pyFTS.data.Enrollments.get_data">
-<code class="descclassname">pyFTS.data.Enrollments.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Enrollments.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a simple univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.Enrollments.get_dataframe">
-<code class="descclassname">pyFTS.data.Enrollments.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Enrollments.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.Ethereum">
-<span id="ethereum-dataset"></span><h2>Ethereum dataset<a class="headerlink" href="#module-pyFTS.data.Ethereum" title="Permalink to this headline">¶</a></h2>
-<p>Ethereum to USD quotations</p>
-<p>Daily averaged index, by business day, from 2016 to 2018.</p>
-<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD">https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD</a></p>
-<dl class="function">
-<dt id="pyFTS.data.Ethereum.get_data">
-<code class="descclassname">pyFTS.data.Ethereum.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='AVG'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Ethereum.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – dataset field to load</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.Ethereum.get_dataframe">
-<code class="descclassname">pyFTS.data.Ethereum.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Ethereum.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.EURGBP">
-<span id="eur-gbp-dataset"></span><h2>EUR-GBP dataset<a class="headerlink" href="#module-pyFTS.data.EURGBP" title="Permalink to this headline">¶</a></h2>
-<p>FOREX market EUR-GBP pair.</p>
-<p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
-<dl class="function">
-<dt id="pyFTS.data.EURGBP.get_data">
-<code class="descclassname">pyFTS.data.EURGBP.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.EURGBP.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – dataset field to load</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.EURGBP.get_dataframe">
-<code class="descclassname">pyFTS.data.EURGBP.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.EURGBP.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.EURUSD">
-<span id="eur-usd-dataset"></span><h2>EUR-USD dataset<a class="headerlink" href="#module-pyFTS.data.EURUSD" title="Permalink to this headline">¶</a></h2>
-<p>FOREX market EUR-USD pair.</p>
-<p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
-<dl class="function">
-<dt id="pyFTS.data.EURUSD.get_data">
-<code class="descclassname">pyFTS.data.EURUSD.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.EURUSD.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – dataset field to load</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.EURUSD.get_dataframe">
-<code class="descclassname">pyFTS.data.EURUSD.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.EURUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.GBPUSD">
-<span id="gbp-usd-dataset"></span><h2>GBP-USD dataset<a class="headerlink" href="#module-pyFTS.data.GBPUSD" title="Permalink to this headline">¶</a></h2>
-<p>FOREX market GBP-USD pair.</p>
-<p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
-<dl class="function">
-<dt id="pyFTS.data.GBPUSD.get_data">
-<code class="descclassname">pyFTS.data.GBPUSD.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.GBPUSD.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – dataset field to load</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.GBPUSD.get_dataframe">
-<code class="descclassname">pyFTS.data.GBPUSD.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.GBPUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.INMET">
-<span id="inmet-dataset"></span><h2>INMET dataset<a class="headerlink" href="#module-pyFTS.data.INMET" title="Permalink to this headline">¶</a></h2>
-<p>INMET - Instituto Nacional Meteorologia / Brasil</p>
-<p>Belo Horizonte station, from 2000-01-01 to  31/12/2012</p>
-<p>Source: <a class="reference external" href="http://www.inmet.gov.br">http://www.inmet.gov.br</a></p>
-<dl class="function">
-<dt id="pyFTS.data.INMET.get_dataframe">
-<code class="descclassname">pyFTS.data.INMET.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.INMET.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.Malaysia">
-<span id="malaysia-dataset"></span><h2>Malaysia dataset<a class="headerlink" href="#module-pyFTS.data.Malaysia" title="Permalink to this headline">¶</a></h2>
-<p>Hourly Malaysia eletric load and tempeature</p>
-<dl class="function">
-<dt id="pyFTS.data.Malaysia.get_data">
-<code class="descclassname">pyFTS.data.Malaysia.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='load'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Malaysia.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – dataset field to load</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.Malaysia.get_dataframe">
-<code class="descclassname">pyFTS.data.Malaysia.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.Malaysia.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.NASDAQ">
-<span id="nasdaq-module"></span><h2>NASDAQ module<a class="headerlink" href="#module-pyFTS.data.NASDAQ" title="Permalink to this headline">¶</a></h2>
-<p>National Association of Securities Dealers Automated Quotations - Composite Index (NASDAQ IXIC)</p>
-<p>Daily averaged index by business day, from 2000 to 2016.</p>
-<p>Source: <a class="reference external" href="http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC">http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC</a></p>
-<dl class="function">
-<dt id="pyFTS.data.NASDAQ.get_data">
-<code class="descclassname">pyFTS.data.NASDAQ.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field='avg'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.NASDAQ.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a simple univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – the dataset field name to extract</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.NASDAQ.get_dataframe">
-<code class="descclassname">pyFTS.data.NASDAQ.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.NASDAQ.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.SONDA">
-<span id="sonda-dataset"></span><h2>SONDA dataset<a class="headerlink" href="#module-pyFTS.data.SONDA" title="Permalink to this headline">¶</a></h2>
-<p>SONDA - Sistema de Organização Nacional de Dados Ambientais, from INPE - Instituto Nacional de Pesquisas Espaciais, Brasil.</p>
-<p>Brasilia station</p>
-<p>Source: <a class="reference external" href="http://sonda.ccst.inpe.br/">http://sonda.ccst.inpe.br/</a></p>
-<dl class="function">
-<dt id="pyFTS.data.SONDA.get_data">
-<code class="descclassname">pyFTS.data.SONDA.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>field</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.SONDA.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a simple univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> – the dataset field name to extract</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.SONDA.get_dataframe">
-<code class="descclassname">pyFTS.data.SONDA.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.SONDA.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.SP500">
-<span id="s-p-500-dataset"></span><h2>S&amp;P 500 dataset<a class="headerlink" href="#module-pyFTS.data.SP500" title="Permalink to this headline">¶</a></h2>
-<p>S&amp;P500 - Standard &amp; Poor’s 500</p>
-<p>Daily averaged index, by business day, from 1950 to 2017.</p>
-<p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
-<dl class="function">
-<dt id="pyFTS.data.SP500.get_data">
-<code class="descclassname">pyFTS.data.SP500.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.SP500.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.SP500.get_dataframe">
-<code class="descclassname">pyFTS.data.SP500.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.SP500.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.TAIEX">
-<span id="taiex-dataset"></span><h2>TAIEX dataset<a class="headerlink" href="#module-pyFTS.data.TAIEX" title="Permalink to this headline">¶</a></h2>
-<p>The Taiwan Stock Exchange Capitalization Weighted Stock Index (TAIEX)</p>
-<p>Daily averaged index by business day, from 1995 to 2014.</p>
-<p>Source: <a class="reference external" href="http://www.twse.com.tw/en/products/indices/Index_Series.php">http://www.twse.com.tw/en/products/indices/Index_Series.php</a></p>
-<dl class="function">
-<dt id="pyFTS.data.TAIEX.get_data">
-<code class="descclassname">pyFTS.data.TAIEX.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.TAIEX.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.TAIEX.get_dataframe">
-<code class="descclassname">pyFTS.data.TAIEX.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.TAIEX.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.henon">
-<span id="henon-chaotic-time-series"></span><h2>Henon chaotic time series<a class="headerlink" href="#module-pyFTS.data.henon" title="Permalink to this headline">¶</a></h2>
-<ol class="upperalpha simple" start="13">
-<li>Hénon. “A two-dimensional mapping with a strange attractor”. Commun. Math. Phys. 50, 69-77 (1976)</li>
-</ol>
-<p>dx/dt = a + by(t-1) - x(t-1)^2
-dy/dt = x</p>
-<dl class="function">
-<dt id="pyFTS.data.henon.get_data">
-<code class="descclassname">pyFTS.data.henon.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>var, a=1.4, b=0.3, initial_values=[1, 1], iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.henon.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a simple univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> – the dataset field name to extract</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.henon.get_dataframe">
-<code class="descclassname">pyFTS.data.henon.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>a=1.4, b=0.3, initial_values=[1, 1], iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.henon.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dataframe with the bivariate Henon Map time series (x, y).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a</strong> – Equation coefficient</li>
-<li><strong>b</strong> – Equation coefficient</li>
-<li><strong>initial_values</strong> – numpy array with the initial values of x and y. Default: [1, 1]</li>
-<li><strong>iterations</strong> – number of iterations. Default: 1000</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Panda dataframe with the x and y values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.logistic_map">
-<span id="logistic-map-chaotic-time-series"></span><h2>Logistic_map chaotic time series<a class="headerlink" href="#module-pyFTS.data.logistic_map" title="Permalink to this headline">¶</a></h2>
-<p>May, Robert M. (1976). “Simple mathematical models with very complicated dynamics”.
-Nature. 261 (5560): 459–467. doi:10.1038/261459a0.</p>
-<p>x(t) = r * x(t-1) * (1 - x(t -1) )</p>
-<dl class="function">
-<dt id="pyFTS.data.logistic_map.get_data">
-<code class="descclassname">pyFTS.data.logistic_map.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>r=4</em>, <em>initial_value=0.3</em>, <em>iterations=100</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.logistic_map.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list with the logistic map chaotic time series.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – Equation coefficient</li>
-<li><strong>initial_value</strong> – Initial value of x. Default: 0.3</li>
-<li><strong>iterations</strong> – number of iterations. Default: 100</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.lorentz">
-<span id="lorentz-chaotic-time-series"></span><h2>Lorentz chaotic time series<a class="headerlink" href="#module-pyFTS.data.lorentz" title="Permalink to this headline">¶</a></h2>
-<p>Lorenz, Edward Norton (1963). “Deterministic nonperiodic flow”. Journal of the Atmospheric Sciences. 20 (2): 130–141.
-<a class="reference external" href="https://doi.org/10.1175/1520-0469(1963">https://doi.org/10.1175/1520-0469(1963</a>)020&lt;0130:DNF&gt;2.0.CO;2</p>
-<p>dx/dt = a(y -x)
-dy/dt = x(b - z) - y
-dz/dt = xy - cz</p>
-<dl class="function">
-<dt id="pyFTS.data.lorentz.get_data">
-<code class="descclassname">pyFTS.data.lorentz.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>var, a=10.0, b=28.0, c=2.6666666666666665, dt=0.01, initial_values=[0.1, 0, 0], iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.lorentz.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a simple univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> – the dataset field name to extract</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.lorentz.get_dataframe">
-<code class="descclassname">pyFTS.data.lorentz.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>a=10.0, b=28.0, c=2.6666666666666665, dt=0.01, initial_values=[0.1, 0, 0], iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.lorentz.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dataframe with the multivariate Lorenz Map time series (x, y, z).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a</strong> – Equation coefficient. Default value: 10</li>
-<li><strong>b</strong> – Equation coefficient. Default value: 28</li>
-<li><strong>c</strong> – Equation coefficient. Default value: 8.0/3.0</li>
-<li><strong>dt</strong> – Time differential for continuous time integration. Default value: 0.01</li>
-<li><strong>initial_values</strong> – numpy array with the initial values of x,y and z. Default: [0.1, 0, 0]</li>
-<li><strong>iterations</strong> – number of iterations. Default: 1000</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Panda dataframe with the x, y and z values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.mackey_glass">
-<span id="mackey-glass-chaotic-time-series"></span><h2>Mackey-Glass chaotic time series<a class="headerlink" href="#module-pyFTS.data.mackey_glass" title="Permalink to this headline">¶</a></h2>
-<p>Mackey, M. C. and Glass, L. (1977). Oscillation and chaos in physiological control systems.
-Science, 197(4300):287-289.</p>
-<p>dy/dt = -by(t)+ cy(t - tau) / 1+y(t-tau)^10</p>
-<dl class="function">
-<dt id="pyFTS.data.mackey_glass.get_data">
-<code class="descclassname">pyFTS.data.mackey_glass.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>b=0.1</em>, <em>c=0.2</em>, <em>tau=17</em>, <em>initial_values=array([0.5</em>, <em>0.55882353</em>, <em>0.61764706</em>, <em>0.67647059</em>, <em>0.73529412</em>, <em>0.79411765</em>, <em>0.85294118</em>, <em>0.91176471</em>, <em>0.97058824</em>, <em>1.02941176</em>, <em>1.08823529</em>, <em>1.14705882</em>, <em>1.20588235</em>, <em>1.26470588</em>, <em>1.32352941</em>, <em>1.38235294</em>, <em>1.44117647</em>, <em>1.5       ])</em>, <em>iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.mackey_glass.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list with the Mackey-Glass chaotic time series.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>b</strong> – Equation coefficient</li>
-<li><strong>c</strong> – Equation coefficient</li>
-<li><strong>tau</strong> – Lag parameter, default: 17</li>
-<li><strong>initial_values</strong> – numpy array with the initial values of y. Default: np.linspace(0.5,1.5,18)</li>
-<li><strong>iterations</strong> – number of iterations. Default: 1000</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.rossler">
-<span id="rossler-chaotic-time-series"></span><h2>Rossler chaotic time series<a class="headerlink" href="#module-pyFTS.data.rossler" title="Permalink to this headline">¶</a></h2>
-<ol class="upperalpha simple" start="15">
-<li><ol class="first upperalpha" start="5">
-<li>Rössler, Phys. Lett. 57A, 397 (1976).</li>
-</ol>
-</li>
-</ol>
-<p>dx/dt = -z - y
-dy/dt = x + ay
-dz/dt = b + z( x - c )</p>
-<dl class="function">
-<dt id="pyFTS.data.rossler.get_data">
-<code class="descclassname">pyFTS.data.rossler.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>var, a=0.2, b=0.2, c=5.7, dt=0.01, initial_values=[0.001, 0.001, 0.001], iterations=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.rossler.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a simple univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> – the dataset field name to extract</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.rossler.get_dataframe">
-<code class="descclassname">pyFTS.data.rossler.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><em>a=0.2, b=0.2, c=5.7, dt=0.01, initial_values=[0.001, 0.001, 0.001], iterations=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.rossler.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dataframe with the multivariate Rössler Map time series (x, y, z).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a</strong> – Equation coefficient. Default value: 0.2</li>
-<li><strong>b</strong> – Equation coefficient. Default value: 0.2</li>
-<li><strong>c</strong> – Equation coefficient. Default value: 5.7</li>
-<li><strong>dt</strong> – Time differential for continuous time integration. Default value: 0.01</li>
-<li><strong>initial_values</strong> – numpy array with the initial values of x,y and z. Default: [0.001, 0.001, 0.001]</li>
-<li><strong>iterations</strong> – number of iterations. Default: 5000</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Panda dataframe with the x, y and z values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.data.sunspots">
-<span id="sunspots-dataset"></span><h2>Sunspots dataset<a class="headerlink" href="#module-pyFTS.data.sunspots" title="Permalink to this headline">¶</a></h2>
-<p>Monthly sunspot numbers from 1749 to May 2016</p>
-<p>Source: <a class="reference external" href="https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/">https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/</a></p>
-<dl class="function">
-<dt id="pyFTS.data.sunspots.get_data">
-<code class="descclassname">pyFTS.data.sunspots.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.sunspots.get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a simple univariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.data.sunspots.get_dataframe">
-<code class="descclassname">pyFTS.data.sunspots.</code><code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.data.sunspots.get_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the complete multivariate time series data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Pandas DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-</div>
-
-
-          </div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -1155,12 +1016,13 @@ dz/dt = b + z( x - c )</p>
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.data package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
     </div>
   </body>
 </html>

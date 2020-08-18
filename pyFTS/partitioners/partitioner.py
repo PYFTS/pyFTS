@@ -4,6 +4,7 @@ from scipy.spatial import KDTree
 import matplotlib.pylab as plt
 import logging
 
+
 class Partitioner(object):
     """
     Universe of Discourse partitioner. Split data on several fuzzy sets

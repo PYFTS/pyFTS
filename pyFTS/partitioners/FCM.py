@@ -3,6 +3,7 @@ S. T. Li, Y. C. Cheng, and S. Y. Lin, “A FCM-based deterministic forecasting m
 Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j.camwa.2008.07.033.
 """
 import numpy as np
+import pandas as pd
 import math
 import random as rnd
 import functools, operator
@@ -11,7 +12,7 @@ from pyFTS.partitioners import partitioner
 
 
 def fuzzy_distance(x, y):
-    if isinstance(x, list):
+    if isinstance(x, (list, tuple, np.ndarray)):
         tmp = functools.reduce(operator.add, [(x[k] - y[k]) ** 2 for k in range(0, len(x))])
     else:
         tmp = (x - y) ** 2
@@ -28,78 +29,65 @@ def membership(val, vals):
     return soma
 
 
-def fuzzy_cmeans(k, dados, tam, m, deltadist=0.001):
-    tam_dados = len(dados)
+def fuzzy_cmeans(k, data, size, m, deltadist=0.001):
+    data_length = len(data)
 
-    # Inicializa as centróides escolhendo elementos aleatórios dos conjuntos
-    centroides = [dados[rnd.randint(0, tam_dados - 1)] for kk in range(0, k)]
+    # Centroid initialization
+    centroids = [data[rnd.randint(0, data_length - 1)] for kk in range(0, k)]
 
-    # Tabela de pertinência das instâncias aos grupos
-    grupos = [[0 for kk in range(0, k)] for xx in range(0, tam_dados)]
+    # Membership table
+    membership_table = np.zeros((k, data_length)) #[[0 for kk in range(0, k)] for xx in range(0, data_length)]
 
-    alteracaomedia = 1000
+    mean_change = 1000
 
     m_exp = 1 / (m - 1)
 
-    # para cada instância
-    iteracoes = 0
+    iterations = 0
 
-    while iteracoes < 1000 and alteracaomedia > deltadist:
+    while iterations < 1000 and mean_change > deltadist:
 
-        alteracaomedia = 0
-
-        # verifica a distância para cada centroide
-        # Atualiza a pertinencia daquela instância para cada um dos grupos
-
+        mean_change = 0
         inst_count = 0
-        for instancia in dados:
+        for instance in data:
 
-            dist_grupos = [0 for xx in range(0, k)]
+            dist_groups = np.zeros(k) #[0 for xx in range(0, k)]
 
-            grupo_count = 0
-            for grupo in centroides:
-                dist_grupos[grupo_count] = fuzzy_distance(grupo, instancia)
-                grupo_count = grupo_count + 1
+            for group_count, group in enumerate(centroids):
+                dist_groups[group_count] = fuzzy_distance(group, instance)
 
-            dist_grupos_total = functools.reduce(operator.add, [xk for xk in dist_grupos])
+            dist_groups_total = functools.reduce(operator.add, [xk for xk in dist_groups])
 
             for grp in range(0, k):
-                if dist_grupos[grp] == 0:
-                    grupos[inst_count][grp] = 1
+                if dist_groups[grp] == 0:
+                    membership_table[inst_count][grp] = 1
                 else:
-                    grupos[inst_count][grp] = 1 / membership(dist_grupos[grp], dist_grupos)
-                    # grupos[inst_count][grp] = 1/(dist_grupos[grp] / dist_grupos_total)
-                    # grupos[inst_count][grp] = (1/(dist_grupos[grp]**2))**m_exp / (1/(dist_grupos_total**2))**m_exp
+                    membership_table[inst_count][grp] = 1 / membership(dist_groups[grp], dist_groups)
+                    # membership_table[inst_count][grp] = 1/(dist_groups[grp] / dist_grupos_total)
+                    # membership_table[inst_count][grp] = (1/(dist_groups[grp]**2))**m_exp / (1/(dist_grupos_total**2))**m_exp
 
             inst_count = inst_count + 1
 
-        # return centroides
-
-        # atualiza cada centroide com base na Média de todos os padrões ponderados pelo grau de pertinência
-
-        grupo_count = 0
-        for grupo in centroides:
-            if tam > 1:
-                oldgrp = [xx for xx in grupo]
-                for atr in range(0, tam):
+        for group_count, group in enumerate(centroids):
+            if size > 1:
+                oldgrp = [xx for xx in group]
+                for atr in range(0, size):
                     soma = functools.reduce(operator.add,
-                                            [grupos[xk][grupo_count] * dados[xk][atr] for xk in range(0, tam_dados)])
-                    norm = functools.reduce(operator.add, [grupos[xk][grupo_count] for xk in range(0, tam_dados)])
-                    centroides[grupo_count][atr] = soma / norm
+                                            [membership_table[xk][group_count] * data[xk][atr] for xk in range(0, data_length)])
+                    norm = functools.reduce(operator.add, [membership_table[xk][group_count] for xk in range(0, data_length)])
+                    centroids[group_count][atr] = soma / norm
             else:
-                oldgrp = grupo
+                oldgrp = group
                 soma = functools.reduce(operator.add,
-                                        [grupos[xk][grupo_count] * dados[xk] for xk in range(0, tam_dados)])
-                norm = functools.reduce(operator.add, [grupos[xk][grupo_count] for xk in range(0, tam_dados)])
-                centroides[grupo_count] = soma / norm
+                                        [membership_table[xk][group_count] * data[xk] for xk in range(0, data_length)])
+                norm = functools.reduce(operator.add, [membership_table[xk][group_count] for xk in range(0, data_length)])
+                centroids[group_count] = soma / norm
 
-            alteracaomedia = alteracaomedia + fuzzy_distance(oldgrp, grupo)
-            grupo_count = grupo_count + 1
+            mean_change = mean_change + fuzzy_distance(oldgrp, group)
 
-        alteracaomedia = alteracaomedia / k
-        iteracoes = iteracoes + 1
+        mean_change = mean_change / k
+        iterations = iterations + 1
 
-    return centroides
+    return centroids
 
 
 class FCMPartitioner(partitioner.Partitioner):

@@ -2,10 +2,10 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-55120145-3']);
@@ -20,19 +20,20 @@
     <title>pyFTS.models.multivariate package &#8212; pyFTS 1.6 documentation</title>
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyFTS.models.nonstationary package" href="pyFTS.models.nonstationary.html" />
     <link rel="prev" title="pyFTS.models.incremental package" href="pyFTS.models.incremental.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -53,15 +54,831 @@
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" accesskey="U">pyFTS.models package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" accesskey="U">pyFTS.models package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.models.multivariate package</a></li> 
       </ul>
-    </div>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyfts-models-multivariate-package">
+<h1>pyFTS.models.multivariate package<a class="headerlink" href="#pyfts-models-multivariate-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pyFTS.models.multivariate">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.models.multivariate" title="Permalink to this headline">¶</a></h2>
+<p>Multivariate Fuzzy Time Series methods</p>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.FLR">
+<span id="pyfts-models-multivariate-flr-module"></span><h2>pyFTS.models.multivariate.FLR module<a class="headerlink" href="#module-pyFTS.models.multivariate.FLR" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.FLR.FLR">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.FLR.</code><code class="sig-name descname">FLR</code><a class="reference internal" href="_modules/pyFTS/models/multivariate/FLR.html#FLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.FLR.FLR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Multivariate Fuzzy Logical Relationship</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.FLR.FLR.set_lhs">
+<code class="sig-name descname">set_lhs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">set</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/FLR.html#FLR.set_lhs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.FLR.FLR.set_lhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.FLR.FLR.set_rhs">
+<code class="sig-name descname">set_rhs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">set</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/FLR.html#FLR.set_rhs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.FLR.FLR.set_rhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.common">
+<span id="pyfts-models-multivariate-common-module"></span><h2>pyFTS.models.multivariate.common module<a class="headerlink" href="#module-pyFTS.models.multivariate.common" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.common.MultivariateFuzzySet">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.common.</code><code class="sig-name descname">MultivariateFuzzySet</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/common.html#MultivariateFuzzySet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.common.MultivariateFuzzySet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.Composite.FuzzySet" title="pyFTS.common.Composite.FuzzySet"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.Composite.FuzzySet</span></code></a></p>
+<p>Multivariate Composite Fuzzy Set</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.common.MultivariateFuzzySet.append_set">
+<code class="sig-name descname">append_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variable</span></em>, <em class="sig-param"><span class="n">set</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/common.html#MultivariateFuzzySet.append_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.common.MultivariateFuzzySet.append_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends a new fuzzy set from a new variable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable</strong> – an multivariate.variable instance</p></li>
+<li><p><strong>set</strong> – an common.FuzzySet instance</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.common.MultivariateFuzzySet.membership">
+<code class="sig-name descname">membership</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/common.html#MultivariateFuzzySet.membership"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.common.MultivariateFuzzySet.membership" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the membership value of a given input</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – input value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>membership value of x at this fuzzy set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.common.MultivariateFuzzySet.set_target_variable">
+<code class="sig-name descname">set_target_variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variable</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/common.html#MultivariateFuzzySet.set_target_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.common.MultivariateFuzzySet.set_target_variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.models.multivariate.common.fuzzyfy_instance">
+<code class="sig-prename descclassname">pyFTS.models.multivariate.common.</code><code class="sig-name descname">fuzzyfy_instance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_point</span></em>, <em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">tuples</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/common.html#fuzzyfy_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.common.fuzzyfy_instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.models.multivariate.common.fuzzyfy_instance_clustered">
+<code class="sig-prename descclassname">pyFTS.models.multivariate.common.</code><code class="sig-name descname">fuzzyfy_instance_clustered</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_point</span></em>, <em class="sig-param"><span class="n">cluster</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/common.html#fuzzyfy_instance_clustered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.common.fuzzyfy_instance_clustered" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.variable">
+<span id="pyfts-models-multivariate-variable-module"></span><h2>pyFTS.models.multivariate.variable module<a class="headerlink" href="#module-pyFTS.models.multivariate.variable" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.variable.Variable">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.variable.</code><code class="sig-name descname">Variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/variable.html#Variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A variable of a fuzzy time series multivariate model. Each variable contains its own
+transformations and partitioners.</p>
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.variable.Variable.alias">
+<code class="sig-name descname">alias</code><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.alias" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string with the alias of the variable</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.variable.Variable.alpha_cut">
+<code class="sig-name descname">alpha_cut</code><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.alpha_cut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimal membership value to be considered on fuzzyfication process</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.variable.Variable.apply_inverse_transformations">
+<code class="sig-name descname">apply_inverse_transformations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/variable.html#Variable.apply_inverse_transformations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.apply_inverse_transformations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.variable.Variable.apply_transformations">
+<code class="sig-name descname">apply_transformations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/variable.html#Variable.apply_transformations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.apply_transformations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.variable.Variable.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/variable.html#Variable.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.build" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.variable.Variable.data_label">
+<code class="sig-name descname">data_label</code><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.data_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string with the column name on DataFrame</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.variable.Variable.data_type">
+<code class="sig-name descname">data_type</code><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.data_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of the data column on Pandas Dataframe</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.variable.Variable.mask">
+<code class="sig-name descname">mask</code><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>The mask for format the data column on Pandas Dataframe</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.variable.Variable.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string with the name of the variable</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.variable.Variable.partitioner">
+<code class="sig-name descname">partitioner</code><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.partitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>UoD partitioner for the variable data</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.variable.Variable.transformation">
+<code class="sig-name descname">transformation</code><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pre processing transformation for the variable</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.flrg">
+<span id="pyfts-models-multivariate-flrg-module"></span><h2>pyFTS.models.multivariate.flrg module<a class="headerlink" href="#module-pyFTS.models.multivariate.flrg" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.flrg.FLRG">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.flrg.</code><code class="sig-name descname">FLRG</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/flrg.html#FLRG"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.flrg.FLRG" title="pyFTS.common.flrg.FLRG"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.flrg.FLRG</span></code></a></p>
+<p>Multivariate Fuzzy Logical Rule Group</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.flrg.FLRG.append_rhs">
+<code class="sig-name descname">append_rhs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fset</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/flrg.html#FLRG.append_rhs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.flrg.FLRG.get_lower">
+<code class="sig-name descname">get_lower</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sets</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/flrg.html#FLRG.get_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.get_lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the lower bound value for the RHS fuzzy sets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sets</strong> – fuzzy sets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lower bound value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.flrg.FLRG.get_membership">
+<code class="sig-name descname">get_membership</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">variables</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/flrg.html#FLRG.get_membership"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.get_membership" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the membership value of the FLRG for the input data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – input data</p></li>
+<li><p><strong>sets</strong> – fuzzy sets</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the membership value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.flrg.FLRG.get_upper">
+<code class="sig-name descname">get_upper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sets</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/flrg.html#FLRG.get_upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.get_upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the upper bound value for the RHS fuzzy sets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sets</strong> – fuzzy sets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>upper bound value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.flrg.FLRG.set_lhs">
+<code class="sig-name descname">set_lhs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">fset</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/flrg.html#FLRG.set_lhs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.set_lhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.partitioner">
+<span id="pyfts-models-multivariate-partitioner-module"></span><h2>pyFTS.models.multivariate.partitioner module<a class="headerlink" href="#module-pyFTS.models.multivariate.partitioner" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.partitioner.</code><code class="sig-name descname">MultivariatePartitioner</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/partitioner.html#MultivariatePartitioner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.partitioners.html#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
+<p>Base class for partitioners which use the MultivariateFuzzySet</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.append">
+<code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fset</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/partitioner.html#MultivariatePartitioner.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/partitioner.html#MultivariatePartitioner.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – training data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.build_index">
+<code class="sig-name descname">build_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/partitioner.html#MultivariatePartitioner.build_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.build_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.change_target_variable">
+<code class="sig-name descname">change_target_variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variable</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/partitioner.html#MultivariatePartitioner.change_target_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.change_target_variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.format_data">
+<code class="sig-name descname">format_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/partitioner.html#MultivariatePartitioner.format_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.format_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.fuzzyfy">
+<code class="sig-name descname">fuzzyfy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/partitioner.html#MultivariatePartitioner.fuzzyfy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.fuzzyfy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuzzyfy the input data according to this partitioner fuzzy sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – input value to be fuzzyfied</p></li>
+<li><p><strong>alpha_cut</strong> – the minimal membership value to be considered on fuzzyfication (only for mode=’sets’)</p></li>
+<li><p><strong>method</strong> – the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)</p></li>
+<li><p><strong>mode</strong> – the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership</p></li>
+</ul>
+</dd>
+</dl>
+<p>values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )</p>
+<p>:returns a list with the fuzzyfied values, depending on the mode</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.prune">
+<code class="sig-name descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/partitioner.html#MultivariatePartitioner.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.prune" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.search">
+<code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/partitioner.html#MultivariatePartitioner.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a search for the nearest fuzzy sets of the point ‘data’. This function were designed to work with several
+overlapped fuzzy sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – the value to search for the nearest fuzzy sets</p></li>
+<li><p><strong>type</strong> – the return type: ‘index’ for the fuzzy set indexes or ‘name’ for fuzzy set names.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the nearest fuzzy sets</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.grid">
+<span id="pyfts-models-multivariate-grid-module"></span><h2>pyFTS.models.multivariate.grid module<a class="headerlink" href="#module-pyFTS.models.multivariate.grid" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.grid.GridCluster">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.grid.</code><code class="sig-name descname">GridCluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/grid.html#GridCluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.grid.GridCluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner" title="pyFTS.models.multivariate.partitioner.MultivariatePartitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.partitioner.MultivariatePartitioner</span></code></a></p>
+<p>A cartesian product of all fuzzy sets of all variables</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.grid.GridCluster.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/grid.html#GridCluster.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.grid.GridCluster.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – training data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.grid.GridCluster.defuzzyfy">
+<code class="sig-name descname">defuzzyfy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'both'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/grid.html#GridCluster.defuzzyfy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.grid.GridCluster.defuzzyfy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.grid.IncrementalGridCluster">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.grid.</code><code class="sig-name descname">IncrementalGridCluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/grid.html#IncrementalGridCluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.grid.IncrementalGridCluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner" title="pyFTS.models.multivariate.partitioner.MultivariatePartitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.partitioner.MultivariatePartitioner</span></code></a></p>
+<p>Create combinations of fuzzy sets of the variables on demand, incrementally increasing the
+multivariate fuzzy set base.</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.grid.IncrementalGridCluster.fuzzyfy">
+<code class="sig-name descname">fuzzyfy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/grid.html#IncrementalGridCluster.fuzzyfy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.grid.IncrementalGridCluster.fuzzyfy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuzzyfy the input data according to this partitioner fuzzy sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – input value to be fuzzyfied</p></li>
+<li><p><strong>alpha_cut</strong> – the minimal membership value to be considered on fuzzyfication (only for mode=’sets’)</p></li>
+<li><p><strong>method</strong> – the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)</p></li>
+<li><p><strong>mode</strong> – the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership</p></li>
+</ul>
+</dd>
+</dl>
+<p>values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )</p>
+<p>:returns a list with the fuzzyfied values, depending on the mode</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.grid.IncrementalGridCluster.incremental_search">
+<code class="sig-name descname">incremental_search</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/grid.html#IncrementalGridCluster.incremental_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.grid.IncrementalGridCluster.incremental_search" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.grid.IncrementalGridCluster.prune">
+<code class="sig-name descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/grid.html#IncrementalGridCluster.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.grid.IncrementalGridCluster.prune" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.mvfts">
+<span id="pyfts-models-multivariate-mvfts-module"></span><h2>pyFTS.models.multivariate.mvfts module<a class="headerlink" href="#module-pyFTS.models.multivariate.mvfts" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.mvfts.</code><code class="sig-name descname">MVFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
+<p>Multivariate extension of Chen’s ConventionalFTS method</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.append_variable">
+<code class="sig-name descname">append_variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.append_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.append_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append a new endogenous variable to the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>var</strong> – variable object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.apply_transformations">
+<code class="sig-name descname">apply_transformations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">params</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">updateUoD</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.apply_transformations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.apply_transformations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the data transformations for data preprocessing</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – input data</p></li>
+<li><p><strong>params</strong> – transformation parameters</p></li>
+<li><p><strong>updateUoD</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>preprocessed data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.clone_parameters">
+<code class="sig-name descname">clone_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.clone_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.clone_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import the parameters values from other model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> – a model to clone the parameters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast">
+<code class="sig-name descname">forecast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.forecast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead">
+<code class="sig-name descname">forecast_ahead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.forecast_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast n steps ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead_interval">
+<code class="sig-name descname">forecast_ahead_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.forecast_ahead_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interval forecast n steps ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted intervals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast_interval">
+<code class="sig-name descname">forecast_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.forecast_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interval forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the prediction intervals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.format_data">
+<code class="sig-name descname">format_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.format_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.format_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.generate_flrg">
+<code class="sig-name descname">generate_flrg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flrs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.generate_flrg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.generate_flrg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.generate_flrs">
+<code class="sig-name descname">generate_flrs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.generate_flrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.generate_flrs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.generate_lhs_flrs">
+<code class="sig-name descname">generate_lhs_flrs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.generate_lhs_flrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.generate_lhs_flrs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.mvfts.MVFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.models.multivariate.mvfts.product_dict">
+<code class="sig-prename descclassname">pyFTS.models.multivariate.mvfts.</code><code class="sig-name descname">product_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#product_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.product_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code by Seth Johnson
+:param kwargs:
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.wmvfts">
+<span id="pyfts-models-multivariate-wmvfts-module"></span><h2>pyFTS.models.multivariate.wmvfts module<a class="headerlink" href="#module-pyFTS.models.multivariate.wmvfts" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.wmvfts.</code><code class="sig-name descname">WeightedFLRG</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedFLRG"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.flrg.FLRG" title="pyFTS.models.multivariate.flrg.FLRG"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.flrg.FLRG</span></code></a></p>
+<p>Weighted Multivariate Fuzzy Logical Rule Group</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.append_rhs">
+<code class="sig-name descname">append_rhs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fset</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedFLRG.append_rhs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_lower">
+<code class="sig-name descname">get_lower</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sets</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedFLRG.get_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the lower bound value for the RHS fuzzy sets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sets</strong> – fuzzy sets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lower bound value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_midpoint">
+<code class="sig-name descname">get_midpoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sets</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedFLRG.get_midpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_midpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the midpoint value for the RHS fuzzy sets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sets</strong> – fuzzy sets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the midpoint value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_upper">
+<code class="sig-name descname">get_upper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sets</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedFLRG.get_upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the upper bound value for the RHS fuzzy sets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sets</strong> – fuzzy sets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>upper bound value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.weights">
+<code class="sig-name descname">weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedFLRG.weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.weights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedMVFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.wmvfts.</code><code class="sig-name descname">WeightedMVFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedMVFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedMVFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.mvfts.MVFTS" title="pyFTS.models.multivariate.mvfts.MVFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.mvfts.MVFTS</span></code></a></p>
+<p>Weighted Multivariate FTS</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.wmvfts.WeightedMVFTS.generate_flrg">
+<code class="sig-name descname">generate_flrg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flrs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/wmvfts.html#WeightedMVFTS.generate_flrg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedMVFTS.generate_flrg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.cmvfts">
+<span id="pyfts-models-multivariate-cmvfts-module"></span><h2>pyFTS.models.multivariate.cmvfts module<a class="headerlink" href="#module-pyFTS.models.multivariate.cmvfts" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.cmvfts.</code><code class="sig-name descname">ClusteredMVFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.mvfts.MVFTS" title="pyFTS.models.multivariate.mvfts.MVFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.mvfts.MVFTS</span></code></a></p>
+<p>Meta model for high order, clustered multivariate FTS</p>
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.check_data">
+<code class="sig-name descname">check_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.check_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.check_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast">
+<code class="sig-name descname">forecast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.forecast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_distribution">
+<code class="sig-name descname">forecast_ahead_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.forecast_ahead_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Probabilistic forecast n steps ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted Probability Distributions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_multivariate">
+<code class="sig-name descname">forecast_ahead_multivariate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.forecast_ahead_multivariate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_multivariate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multivariate forecast n step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a Pandas Dataframe object representing the forecasted values for each variable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_distribution">
+<code class="sig-name descname">forecast_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.forecast_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Probabilistic forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_interval">
+<code class="sig-name descname">forecast_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.forecast_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interval forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the prediction intervals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_multivariate">
+<code class="sig-name descname">forecast_multivariate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.forecast_multivariate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_multivariate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multivariate forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a Pandas Dataframe object representing the forecasted values for each variable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.fts_method">
+<code class="sig-name descname">fts_method</code><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.fts_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The FTS method to be called when a new model is build</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.fts_params">
+<code class="sig-name descname">fts_params</code><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.fts_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>The FTS method specific parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.fuzzyfy">
+<code class="sig-name descname">fuzzyfy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.fuzzyfy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.fuzzyfy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>The most recent trained model</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.multivariate.granular">
+<span id="pyfts-models-multivariate-granular-module"></span><h2>pyFTS.models.multivariate.granular module<a class="headerlink" href="#module-pyFTS.models.multivariate.granular" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.multivariate.granular.GranularWMVFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.granular.</code><code class="sig-name descname">GranularWMVFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/granular.html#GranularWMVFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.granular.GranularWMVFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS" title="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.cmvfts.ClusteredMVFTS</span></code></a></p>
+<p>Granular multivariate weighted high order FTS</p>
+<dl class="py attribute">
+<dt id="pyFTS.models.multivariate.granular.GranularWMVFTS.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#pyFTS.models.multivariate.granular.GranularWMVFTS.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>The most recent trained model</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.multivariate.granular.GranularWMVFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/granular.html#GranularWMVFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.granular.GranularWMVFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="index.html">
-              <img class="logo" src="_static/logo_heading2.png" alt="Logo"/>
-            </a></p>
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyFTS.models.multivariate package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.models.multivariate">Module contents</a></li>
@@ -94,861 +911,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="pyfts-models-multivariate-package">
-<h1>pyFTS.models.multivariate package<a class="headerlink" href="#pyfts-models-multivariate-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-pyFTS.models.multivariate">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.models.multivariate" title="Permalink to this headline">¶</a></h2>
-<p>Multivariate Fuzzy Time Series methods</p>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.FLR">
-<span id="pyfts-models-multivariate-flr-module"></span><h2>pyFTS.models.multivariate.FLR module<a class="headerlink" href="#module-pyFTS.models.multivariate.FLR" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.FLR.FLR">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.FLR.</code><code class="descname">FLR</code><a class="headerlink" href="#pyFTS.models.multivariate.FLR.FLR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Multivariate Fuzzy Logical Relationship</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.FLR.FLR.set_lhs">
-<code class="descname">set_lhs</code><span class="sig-paren">(</span><em>var</em>, <em>set</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.FLR.FLR.set_lhs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.FLR.FLR.set_rhs">
-<code class="descname">set_rhs</code><span class="sig-paren">(</span><em>set</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.FLR.FLR.set_rhs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.common">
-<span id="pyfts-models-multivariate-common-module"></span><h2>pyFTS.models.multivariate.common module<a class="headerlink" href="#module-pyFTS.models.multivariate.common" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.common.MultivariateFuzzySet">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.common.</code><code class="descname">MultivariateFuzzySet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.common.MultivariateFuzzySet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.Composite.FuzzySet" title="pyFTS.common.Composite.FuzzySet"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.Composite.FuzzySet</span></code></a></p>
-<p>Multivariate Composite Fuzzy Set</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.common.MultivariateFuzzySet.append_set">
-<code class="descname">append_set</code><span class="sig-paren">(</span><em>variable</em>, <em>set</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.common.MultivariateFuzzySet.append_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Appends a new fuzzy set from a new variable</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>variable</strong> – an multivariate.variable instance</li>
-<li><strong>set</strong> – an common.FuzzySet instance</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.common.MultivariateFuzzySet.membership">
-<code class="descname">membership</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.common.MultivariateFuzzySet.membership" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the membership value of a given input</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – input value</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">membership value of x at this fuzzy set</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.common.MultivariateFuzzySet.set_target_variable">
-<code class="descname">set_target_variable</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.common.MultivariateFuzzySet.set_target_variable" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.models.multivariate.common.fuzzyfy_instance">
-<code class="descclassname">pyFTS.models.multivariate.common.</code><code class="descname">fuzzyfy_instance</code><span class="sig-paren">(</span><em>data_point</em>, <em>var</em>, <em>tuples=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.common.fuzzyfy_instance" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.models.multivariate.common.fuzzyfy_instance_clustered">
-<code class="descclassname">pyFTS.models.multivariate.common.</code><code class="descname">fuzzyfy_instance_clustered</code><span class="sig-paren">(</span><em>data_point</em>, <em>cluster</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.common.fuzzyfy_instance_clustered" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.variable">
-<span id="pyfts-models-multivariate-variable-module"></span><h2>pyFTS.models.multivariate.variable module<a class="headerlink" href="#module-pyFTS.models.multivariate.variable" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.variable.Variable">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.variable.</code><code class="descname">Variable</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>A variable of a fuzzy time series multivariate model. Each variable contains its own
-transformations and partitioners.</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.variable.Variable.apply_inverse_transformations">
-<code class="descname">apply_inverse_transformations</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.apply_inverse_transformations" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.variable.Variable.apply_transformations">
-<code class="descname">apply_transformations</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.apply_transformations" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.variable.Variable.build">
-<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable.build" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.flrg">
-<span id="pyfts-models-multivariate-flrg-module"></span><h2>pyFTS.models.multivariate.flrg module<a class="headerlink" href="#module-pyFTS.models.multivariate.flrg" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.flrg.FLRG">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.flrg.</code><code class="descname">FLRG</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.flrg.FLRG" title="pyFTS.common.flrg.FLRG"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.flrg.FLRG</span></code></a></p>
-<p>Multivariate Fuzzy Logical Rule Group</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.flrg.FLRG.append_rhs">
-<code class="descname">append_rhs</code><span class="sig-paren">(</span><em>fset</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.flrg.FLRG.get_lower">
-<code class="descname">get_lower</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.get_lower" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the lower bound value for the RHS fuzzy sets</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">lower bound value</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.flrg.FLRG.get_membership">
-<code class="descname">get_membership</code><span class="sig-paren">(</span><em>data</em>, <em>variables</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.get_membership" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the membership value of the FLRG for the input data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – input data</li>
-<li><strong>sets</strong> – fuzzy sets</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the membership value</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.flrg.FLRG.get_upper">
-<code class="descname">get_upper</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.get_upper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the upper bound value for the RHS fuzzy sets</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">upper bound value</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.flrg.FLRG.set_lhs">
-<code class="descname">set_lhs</code><span class="sig-paren">(</span><em>var</em>, <em>fset</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.flrg.FLRG.set_lhs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.partitioner">
-<span id="pyfts-models-multivariate-partitioner-module"></span><h2>pyFTS.models.multivariate.partitioner module<a class="headerlink" href="#module-pyFTS.models.multivariate.partitioner" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.partitioner.</code><code class="descname">MultivariatePartitioner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyFTS.partitioners.html#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
-<p>Base class for partitioners which use the MultivariateFuzzySet</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.append">
-<code class="descname">append</code><span class="sig-paren">(</span><em>fset</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.append" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.build">
-<code class="descname">build</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.build" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform the partitioning of the Universe of Discourse</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – training data</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.build_index">
-<code class="descname">build_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.build_index" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.change_target_variable">
-<code class="descname">change_target_variable</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.change_target_variable" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.format_data">
-<code class="descname">format_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.format_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.fuzzyfy">
-<code class="descname">fuzzyfy</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.fuzzyfy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fuzzyfy the input data according to this partitioner fuzzy sets.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – input value to be fuzzyfied</li>
-<li><strong>alpha_cut</strong> – the minimal membership value to be considered on fuzzyfication (only for mode=’sets’)</li>
-<li><strong>method</strong> – the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)</li>
-<li><strong>mode</strong> – the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )</p>
-<p>:returns a list with the fuzzyfied values, depending on the mode</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.prune">
-<code class="descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.prune" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.partitioner.MultivariatePartitioner.search">
-<code class="descname">search</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner.search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform a search for the nearest fuzzy sets of the point ‘data’. This function were designed to work with several
-overlapped fuzzy sets.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – the value to search for the nearest fuzzy sets</li>
-<li><strong>type</strong> – the return type: ‘index’ for the fuzzy set indexes or ‘name’ for fuzzy set names.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the nearest fuzzy sets</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.grid">
-<span id="pyfts-models-multivariate-grid-module"></span><h2>pyFTS.models.multivariate.grid module<a class="headerlink" href="#module-pyFTS.models.multivariate.grid" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.grid.GridCluster">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.grid.</code><code class="descname">GridCluster</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.grid.GridCluster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner" title="pyFTS.models.multivariate.partitioner.MultivariatePartitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.partitioner.MultivariatePartitioner</span></code></a></p>
-<p>A cartesian product of all fuzzy sets of all variables</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.grid.GridCluster.build">
-<code class="descname">build</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.grid.GridCluster.build" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform the partitioning of the Universe of Discourse</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – training data</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.grid.GridCluster.defuzzyfy">
-<code class="descname">defuzzyfy</code><span class="sig-paren">(</span><em>values</em>, <em>mode='both'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.grid.GridCluster.defuzzyfy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyFTS.models.multivariate.grid.IncrementalGridCluster">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.grid.</code><code class="descname">IncrementalGridCluster</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.grid.IncrementalGridCluster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.partitioner.MultivariatePartitioner" title="pyFTS.models.multivariate.partitioner.MultivariatePartitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.partitioner.MultivariatePartitioner</span></code></a></p>
-<p>Create combinations of fuzzy sets of the variables on demand, incrementally increasing the
-multivariate fuzzy set base.</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.grid.IncrementalGridCluster.fuzzyfy">
-<code class="descname">fuzzyfy</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.grid.IncrementalGridCluster.fuzzyfy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fuzzyfy the input data according to this partitioner fuzzy sets.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – input value to be fuzzyfied</li>
-<li><strong>alpha_cut</strong> – the minimal membership value to be considered on fuzzyfication (only for mode=’sets’)</li>
-<li><strong>method</strong> – the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)</li>
-<li><strong>mode</strong> – the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )</p>
-<p>:returns a list with the fuzzyfied values, depending on the mode</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.grid.IncrementalGridCluster.incremental_search">
-<code class="descname">incremental_search</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.grid.IncrementalGridCluster.incremental_search" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.grid.IncrementalGridCluster.prune">
-<code class="descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.grid.IncrementalGridCluster.prune" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.mvfts">
-<span id="pyfts-models-multivariate-mvfts-module"></span><h2>pyFTS.models.multivariate.mvfts module<a class="headerlink" href="#module-pyFTS.models.multivariate.mvfts" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.mvfts.</code><code class="descname">MVFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
-<p>Multivariate extension of Chen’s ConventionalFTS method</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.append_variable">
-<code class="descname">append_variable</code><span class="sig-paren">(</span><em>var</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.append_variable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append a new endogenous variable to the model</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> – variable object</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.apply_transformations">
-<code class="descname">apply_transformations</code><span class="sig-paren">(</span><em>data</em>, <em>params=None</em>, <em>updateUoD=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.apply_transformations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply the data transformations for data preprocessing</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – input data</li>
-<li><strong>params</strong> – transformation parameters</li>
-<li><strong>updateUoD</strong> – </li>
-<li><strong>kwargs</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">preprocessed data</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.clone_parameters">
-<code class="descname">clone_parameters</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.clone_parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Import the parameters values from other model</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – a model to clone the parameters</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast">
-<code class="descname">forecast</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead">
-<code class="descname">forecast_ahead</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast n steps ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead_interval">
-<code class="descname">forecast_ahead_interval</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast n steps ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted intervals</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast_interval">
-<code class="descname">forecast_interval</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the prediction intervals</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.format_data">
-<code class="descname">format_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.format_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.generate_flrg">
-<code class="descname">generate_flrg</code><span class="sig-paren">(</span><em>flrs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.generate_flrg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.generate_flrs">
-<code class="descname">generate_flrs</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.generate_flrs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.generate_lhs_flrs">
-<code class="descname">generate_lhs_flrs</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.generate_lhs_flrs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.mvfts.MVFTS.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method specific parameter fitting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – training time series data</li>
-<li><strong>kwargs</strong> – Method specific parameters</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.models.multivariate.mvfts.product_dict">
-<code class="descclassname">pyFTS.models.multivariate.mvfts.</code><code class="descname">product_dict</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.product_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Code by Seth Johnson
-:param kwargs:
-:return:</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.wmvfts">
-<span id="pyfts-models-multivariate-wmvfts-module"></span><h2>pyFTS.models.multivariate.wmvfts module<a class="headerlink" href="#module-pyFTS.models.multivariate.wmvfts" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.wmvfts.</code><code class="descname">WeightedFLRG</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.flrg.FLRG" title="pyFTS.models.multivariate.flrg.FLRG"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.flrg.FLRG</span></code></a></p>
-<p>Weighted Multivariate Fuzzy Logical Rule Group</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.append_rhs">
-<code class="descname">append_rhs</code><span class="sig-paren">(</span><em>fset</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_lower">
-<code class="descname">get_lower</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_lower" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the lower bound value for the RHS fuzzy sets</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">lower bound value</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_midpoint">
-<code class="descname">get_midpoint</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_midpoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the midpoint value for the RHS fuzzy sets</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the midpoint value</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_upper">
-<code class="descname">get_upper</code><span class="sig-paren">(</span><em>sets</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.get_upper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the upper bound value for the RHS fuzzy sets</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sets</strong> – fuzzy sets</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">upper bound value</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.wmvfts.WeightedFLRG.weights">
-<code class="descname">weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedFLRG.weights" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyFTS.models.multivariate.wmvfts.WeightedMVFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.wmvfts.</code><code class="descname">WeightedMVFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedMVFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.mvfts.MVFTS" title="pyFTS.models.multivariate.mvfts.MVFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.mvfts.MVFTS</span></code></a></p>
-<p>Weighted Multivariate FTS</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.wmvfts.WeightedMVFTS.generate_flrg">
-<code class="descname">generate_flrg</code><span class="sig-paren">(</span><em>flrs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.wmvfts.WeightedMVFTS.generate_flrg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.cmvfts">
-<span id="pyfts-models-multivariate-cmvfts-module"></span><h2>pyFTS.models.multivariate.cmvfts module<a class="headerlink" href="#module-pyFTS.models.multivariate.cmvfts" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.cmvfts.</code><code class="descname">ClusteredMVFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.mvfts.MVFTS" title="pyFTS.models.multivariate.mvfts.MVFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.mvfts.MVFTS</span></code></a></p>
-<p>Meta model for high order, clustered multivariate FTS</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.check_data">
-<code class="descname">check_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.check_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast">
-<code class="descname">forecast</code><span class="sig-paren">(</span><em>ndata</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_distribution">
-<code class="descname">forecast_ahead_distribution</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Probabilistic forecast n steps ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted Probability Distributions</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_multivariate">
-<code class="descname">forecast_ahead_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_multivariate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Multivariate forecast n step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a Pandas Dataframe object representing the forecasted values for each variable</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_distribution">
-<code class="descname">forecast_distribution</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Probabilistic forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_interval">
-<code class="descname">forecast_interval</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the prediction intervals</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_multivariate">
-<code class="descname">forecast_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_multivariate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Multivariate forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – Pandas dataframe with one column for each variable and with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a Pandas Dataframe object representing the forecasted values for each variable</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.fuzzyfy">
-<code class="descname">fuzzyfy</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.fuzzyfy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method specific parameter fitting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – training time series data</li>
-<li><strong>kwargs</strong> – Method specific parameters</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.multivariate.granular">
-<span id="pyfts-models-multivariate-granular-module"></span><h2>pyFTS.models.multivariate.granular module<a class="headerlink" href="#module-pyFTS.models.multivariate.granular" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyFTS.models.multivariate.granular.GranularWMVFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.multivariate.granular.</code><code class="descname">GranularWMVFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.granular.GranularWMVFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS" title="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.multivariate.cmvfts.ClusteredMVFTS</span></code></a></p>
-<p>Granular multivariate weighted high order FTS</p>
-<dl class="method">
-<dt id="pyFTS.models.multivariate.granular.GranularWMVFTS.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.multivariate.granular.GranularWMVFTS.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method specific parameter fitting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – training time series data</li>
-<li><strong>kwargs</strong> – Method specific parameters</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-</div>
-
-
-          </div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -971,12 +942,13 @@ multivariate fuzzy set base.</p>
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" >pyFTS.models package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" >pyFTS.models package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.models.multivariate package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
     </div>
   </body>
 </html>

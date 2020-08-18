@@ -2,10 +2,10 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-55120145-3']);
@@ -20,19 +20,20 @@
     <title>pyFTS.models.ensemble package &#8212; pyFTS 1.6 documentation</title>
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyFTS.models.incremental package" href="pyFTS.models.incremental.html" />
     <link rel="prev" title="pyFTS.models package" href="pyFTS.models.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -53,15 +54,351 @@
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" accesskey="U">pyFTS.models package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" accesskey="U">pyFTS.models package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.models.ensemble package</a></li> 
       </ul>
-    </div>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyfts-models-ensemble-package">
+<h1>pyFTS.models.ensemble package<a class="headerlink" href="#pyfts-models-ensemble-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyFTS.models.ensemble.ensemble">
+<span id="pyfts-models-ensemble-ensemble-module"></span><h2>pyFTS.models.ensemble.ensemble module<a class="headerlink" href="#module-pyFTS.models.ensemble.ensemble" title="Permalink to this headline">¶</a></h2>
+<p>EnsembleFTS wraps several FTS methods to ensemble their forecasts, providing point,
+interval and probabilistic forecasting.</p>
+<p>Silva, P. C. L et al. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series
+XIII Brazilian Congress on Computational Intelligence, 2017. Rio de Janeiro, Brazil.</p>
+<dl class="py class">
+<dt id="pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.ensemble.ensemble.</code><code class="sig-name descname">AllMethodEnsembleFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#AllMethodEnsembleFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="pyFTS.models.ensemble.ensemble.EnsembleFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.ensemble.ensemble.EnsembleFTS</span></code></a></p>
+<p>Creates an EnsembleFTS with all point forecast methods, sharing the same partitioner</p>
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.set_transformations">
+<code class="sig-name descname">set_transformations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#AllMethodEnsembleFTS.set_transformations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.set_transformations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#AllMethodEnsembleFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.ensemble.ensemble.</code><code class="sig-name descname">EnsembleFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
+<p>Ensemble FTS</p>
+<dl class="py attribute">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.alpha">
+<code class="sig-name descname">alpha</code><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>The quantiles</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.append_model">
+<code class="sig-name descname">append_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.append_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.append_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append a new trained model to the ensemble</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> – FTS model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast">
+<code class="sig-name descname">forecast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.forecast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_distribution">
+<code class="sig-name descname">forecast_ahead_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.forecast_ahead_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Probabilistic forecast n steps ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted Probability Distributions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_interval">
+<code class="sig-name descname">forecast_ahead_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.forecast_ahead_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interval forecast n steps ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted intervals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_distribution">
+<code class="sig-name descname">forecast_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.forecast_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Probabilistic forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_interval">
+<code class="sig-name descname">forecast_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.forecast_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interval forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the prediction intervals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_UoD">
+<code class="sig-name descname">get_UoD</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.get_UoD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_UoD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the interval of the known bounds of the universe of discourse (UoD), i. e.,
+the known minimum and maximum values of the time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A set with the lower and the upper bounds of the UoD</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_distribution_interquantile">
+<code class="sig-name descname">get_distribution_interquantile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">forecasts</span></em>, <em class="sig-param"><span class="n">alpha</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.get_distribution_interquantile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_distribution_interquantile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_interval">
+<code class="sig-name descname">get_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">forecasts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.get_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_interval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_models_forecasts">
+<code class="sig-name descname">get_models_forecasts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.get_models_forecasts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_models_forecasts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_point">
+<code class="sig-name descname">get_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">forecasts</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.get_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.interval_method">
+<code class="sig-name descname">interval_method</code><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.interval_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The method used to mix the several model’s forecasts into a interval forecast. Options: quantile, extremum, normal</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.models">
+<code class="sig-name descname">models</code><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.models" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of FTS models, the ensemble components</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.parameters">
+<code class="sig-name descname">parameters</code><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list with the parameters for each component model</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.point_method">
+<code class="sig-name descname">point_method</code><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.point_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The method used to mix the several model’s forecasts into a unique point forecast. Options: mean, median, quantile, exponential</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#EnsembleFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.ensemble.ensemble.</code><code class="sig-name descname">SimpleEnsembleFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#SimpleEnsembleFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="pyFTS.models.ensemble.ensemble.EnsembleFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.ensemble.ensemble.EnsembleFTS</span></code></a></p>
+<p>An homogeneous FTS method ensemble with variations on partitionings and orders.</p>
+<dl class="py attribute">
+<dt id="pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.method">
+<code class="sig-name descname">method</code><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.method" title="Permalink to this definition">¶</a></dt>
+<dd><p>FTS method class that will be used on internal models</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.orders">
+<code class="sig-name descname">orders</code><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Possible variations of order on internal models</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.partitioner_method">
+<code class="sig-name descname">partitioner_method</code><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.partitioner_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>UoD partitioner class that will be used on internal methods</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.partitions">
+<code class="sig-name descname">partitions</code><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.partitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Possible variations of number of partitions on internal models</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#SimpleEnsembleFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.models.ensemble.ensemble.sampler">
+<code class="sig-prename descclassname">pyFTS.models.ensemble.ensemble.</code><code class="sig-name descname">sampler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">quantiles</span></em>, <em class="sig-param"><span class="n">bounds</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/ensemble.html#sampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.sampler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.ensemble.multiseasonal">
+<span id="pyfts-models-ensemble-multiseasonal-module"></span><h2>pyFTS.models.ensemble.multiseasonal module<a class="headerlink" href="#module-pyFTS.models.ensemble.multiseasonal" title="Permalink to this headline">¶</a></h2>
+<p>Silva, P. C. L et al. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series
+XIII Brazilian Congress on Computational Intelligence, 2017. Rio de Janeiro, Brazil.</p>
+<dl class="py class">
+<dt id="pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.ensemble.multiseasonal.</code><code class="sig-name descname">SeasonalEnsembleFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/multiseasonal.html#SeasonalEnsembleFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="pyFTS.models.ensemble.ensemble.EnsembleFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.ensemble.ensemble.EnsembleFTS</span></code></a></p>
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.forecast_distribution">
+<code class="sig-name descname">forecast_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/multiseasonal.html#SeasonalEnsembleFTS.forecast_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.forecast_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Probabilistic forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/multiseasonal.html#SeasonalEnsembleFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.update_uod">
+<code class="sig-name descname">update_uod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/multiseasonal.html#SeasonalEnsembleFTS.update_uod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.update_uod" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.models.ensemble.multiseasonal.train_individual_model">
+<code class="sig-prename descclassname">pyFTS.models.ensemble.multiseasonal.</code><code class="sig-name descname">train_individual_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">partitioner</span></em>, <em class="sig-param"><span class="n">train_data</span></em>, <em class="sig-param"><span class="n">indexer</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/ensemble/multiseasonal.html#train_individual_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.train_individual_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.ensemble">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.models.ensemble" title="Permalink to this headline">¶</a></h2>
+<p>Meta FTS that aggregates other FTS methods</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="index.html">
-              <img class="logo" src="_static/logo_heading2.png" alt="Logo"/>
-            </a></p>
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyFTS.models.ensemble package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -86,346 +423,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="pyfts-models-ensemble-package">
-<h1>pyFTS.models.ensemble package<a class="headerlink" href="#pyfts-models-ensemble-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pyFTS.models.ensemble.ensemble">
-<span id="pyfts-models-ensemble-ensemble-module"></span><h2>pyFTS.models.ensemble.ensemble module<a class="headerlink" href="#module-pyFTS.models.ensemble.ensemble" title="Permalink to this headline">¶</a></h2>
-<p>EnsembleFTS wraps several FTS methods to ensemble their forecasts, providing point,
-interval and probabilistic forecasting.</p>
-<p>Silva, P. C. L et al. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series
-XIII Brazilian Congress on Computational Intelligence, 2017. Rio de Janeiro, Brazil.</p>
-<dl class="class">
-<dt id="pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.ensemble.ensemble.</code><code class="descname">AllMethodEnsembleFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="pyFTS.models.ensemble.ensemble.EnsembleFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.ensemble.ensemble.EnsembleFTS</span></code></a></p>
-<p>Creates an EnsembleFTS with all point forecast methods, sharing the same partitioner</p>
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.set_transformations">
-<code class="descname">set_transformations</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.set_transformations" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.AllMethodEnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method specific parameter fitting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – training time series data</li>
-<li><strong>kwargs</strong> – Method specific parameters</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.ensemble.ensemble.</code><code class="descname">EnsembleFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
-<p>Ensemble FTS</p>
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.append_model">
-<code class="descname">append_model</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.append_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append a new trained model to the ensemble</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – FTS model</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast">
-<code class="descname">forecast</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_distribution">
-<code class="descname">forecast_ahead_distribution</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Probabilistic forecast n steps ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted Probability Distributions</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_interval">
-<code class="descname">forecast_ahead_interval</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_ahead_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast n steps ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted intervals</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_distribution">
-<code class="descname">forecast_distribution</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Probabilistic forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_interval">
-<code class="descname">forecast_interval</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.forecast_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the prediction intervals</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_UoD">
-<code class="descname">get_UoD</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_UoD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the interval of the known bounds of the universe of discourse (UoD), i. e.,
-the known minimum and maximum values of the time series.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A set with the lower and the upper bounds of the UoD</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_distribution_interquantile">
-<code class="descname">get_distribution_interquantile</code><span class="sig-paren">(</span><em>forecasts</em>, <em>alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_distribution_interquantile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_interval">
-<code class="descname">get_interval</code><span class="sig-paren">(</span><em>forecasts</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_interval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_models_forecasts">
-<code class="descname">get_models_forecasts</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_models_forecasts" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.get_point">
-<code class="descname">get_point</code><span class="sig-paren">(</span><em>forecasts</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.get_point" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.EnsembleFTS.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method specific parameter fitting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – training time series data</li>
-<li><strong>kwargs</strong> – Method specific parameters</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.ensemble.ensemble.</code><code class="descname">SimpleEnsembleFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="pyFTS.models.ensemble.ensemble.EnsembleFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.ensemble.ensemble.EnsembleFTS</span></code></a></p>
-<p>An homogeneous FTS method ensemble with variations on partitionings and orders.</p>
-<dl class="method">
-<dt id="pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.SimpleEnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method specific parameter fitting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – training time series data</li>
-<li><strong>kwargs</strong> – Method specific parameters</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.models.ensemble.ensemble.sampler">
-<code class="descclassname">pyFTS.models.ensemble.ensemble.</code><code class="descname">sampler</code><span class="sig-paren">(</span><em>data</em>, <em>quantiles</em>, <em>bounds=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.ensemble.sampler" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.ensemble.multiseasonal">
-<span id="pyfts-models-ensemble-multiseasonal-module"></span><h2>pyFTS.models.ensemble.multiseasonal module<a class="headerlink" href="#module-pyFTS.models.ensemble.multiseasonal" title="Permalink to this headline">¶</a></h2>
-<p>Silva, P. C. L et al. Probabilistic Forecasting with Seasonal Ensemble Fuzzy Time-Series
-XIII Brazilian Congress on Computational Intelligence, 2017. Rio de Janeiro, Brazil.</p>
-<dl class="class">
-<dt id="pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.ensemble.multiseasonal.</code><code class="descname">SeasonalEnsembleFTS</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="pyFTS.models.ensemble.ensemble.EnsembleFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.ensemble.ensemble.EnsembleFTS</span></code></a></p>
-<dl class="method">
-<dt id="pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.forecast_distribution">
-<code class="descname">forecast_distribution</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.forecast_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Probabilistic forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with probabilistic.ProbabilityDistribution objects representing the forecasted Probability Distributions</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method specific parameter fitting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – training time series data</li>
-<li><strong>kwargs</strong> – Method specific parameters</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.update_uod">
-<code class="descname">update_uod</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.SeasonalEnsembleFTS.update_uod" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.models.ensemble.multiseasonal.train_individual_model">
-<code class="descclassname">pyFTS.models.ensemble.multiseasonal.</code><code class="descname">train_individual_model</code><span class="sig-paren">(</span><em>partitioner</em>, <em>train_data</em>, <em>indexer</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.ensemble.multiseasonal.train_individual_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.ensemble">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.models.ensemble" title="Permalink to this headline">¶</a></h2>
-<p>Meta FTS that aggregates other FTS methods</p>
-</div>
-</div>
-
-
-          </div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -448,12 +454,13 @@ XIII Brazilian Congress on Computational Intelligence, 2017. Rio de Janeiro, Bra
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" >pyFTS.models package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" >pyFTS.models package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.models.ensemble package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
     </div>
   </body>
 </html>

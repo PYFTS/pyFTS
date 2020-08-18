@@ -51,11 +51,14 @@ class MultivariateFuzzySet(Composite.FuzzySet):
 
 
 def fuzzyfy_instance(data_point, var, tuples=True):
+    #try:
     fsets = var.partitioner.fuzzyfy(data_point, mode='sets', method='fuzzy', alpha_cut=var.alpha_cut)
     if tuples:
         return [(var.name, fs) for fs in fsets]
     else:
         return fsets
+    #except Exception as ex:
+    # print(data_point)
 
 
 def fuzzyfy_instance_clustered(data_point, cluster, **kwargs):

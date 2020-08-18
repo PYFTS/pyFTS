@@ -2,10 +2,10 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-55120145-3']);
@@ -20,19 +20,20 @@
     <title>pyFTS.models.incremental package &#8212; pyFTS 1.6 documentation</title>
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyFTS.models.multivariate package" href="pyFTS.models.multivariate.html" />
     <link rel="prev" title="pyFTS.models.ensemble package" href="pyFTS.models.ensemble.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -53,15 +54,280 @@
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" accesskey="U">pyFTS.models package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" accesskey="U">pyFTS.models package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.models.incremental package</a></li> 
       </ul>
-    </div>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyfts-models-incremental-package">
+<h1>pyFTS.models.incremental package<a class="headerlink" href="#pyfts-models-incremental-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pyFTS.models.incremental">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.models.incremental" title="Permalink to this headline">¶</a></h2>
+<p>FTS methods with incremental/online learning</p>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyFTS.models.incremental.TimeVariant">
+<span id="pyfts-models-incremental-timevariant-module"></span><h2>pyFTS.models.incremental.TimeVariant module<a class="headerlink" href="#module-pyFTS.models.incremental.TimeVariant" title="Permalink to this headline">¶</a></h2>
+<p>Meta model that wraps another FTS method and continously retrain it using a data window with
+the most recent data</p>
+<dl class="py class">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.incremental.TimeVariant.</code><code class="sig-name descname">Retrainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/TimeVariant.html#Retrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
+<p>Meta model for incremental/online learning that retrain its internal model after
+data windows controlled by the parameter ‘batch_size’, using as the training data a
+window of recent lags, whose size is controlled by the parameter ‘window_length’.</p>
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.auto_update">
+<code class="sig-name descname">auto_update</code><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.auto_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>If true the model is updated at each time and not recreated</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.batch_size">
+<code class="sig-name descname">batch_size</code><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.batch_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The batch interval between each retraining</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.forecast">
+<code class="sig-name descname">forecast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/TimeVariant.html#Retrainer.forecast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.forecast_ahead">
+<code class="sig-name descname">forecast_ahead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/TimeVariant.html#Retrainer.forecast_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.forecast_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast n steps ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.fts_method">
+<code class="sig-name descname">fts_method</code><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.fts_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The FTS method to be called when a new model is build</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.fts_params">
+<code class="sig-name descname">fts_params</code><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.fts_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>The FTS method specific parameters</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>The most recent trained model</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.offset">
+<code class="sig-name descname">offset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/TimeVariant.html#Retrainer.offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of lags to skip in the input test data in order to synchronize it with
+the forecasted values given by the predict function. This is necessary due to the order of the
+model, among other parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An integer with the number of lags to skip</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.partitioner">
+<code class="sig-name descname">partitioner</code><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.partitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>The most recent trained partitioner</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.partitioner_method">
+<code class="sig-name descname">partitioner_method</code><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.partitioner_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The partitioner method to be called when a new model is build</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.partitioner_params">
+<code class="sig-name descname">partitioner_params</code><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.partitioner_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>The partitioner method parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/TimeVariant.html#Retrainer.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.window_length">
+<code class="sig-name descname">window_length</code><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.window_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>The memory window length</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyFTS.models.incremental.IncrementalEnsemble">
+<span id="pyfts-models-incremental-incrementalensemble-module"></span><h2>pyFTS.models.incremental.IncrementalEnsemble module<a class="headerlink" href="#module-pyFTS.models.incremental.IncrementalEnsemble" title="Permalink to this headline">¶</a></h2>
+<p>Time Variant/Incremental Ensemble of FTS methods</p>
+<dl class="py class">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.incremental.IncrementalEnsemble.</code><code class="sig-name descname">IncrementalEnsembleFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/IncrementalEnsemble.html#IncrementalEnsembleFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="pyFTS.models.ensemble.ensemble.EnsembleFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.ensemble.ensemble.EnsembleFTS</span></code></a></p>
+<p>Time Variant/Incremental Ensemble of FTS methods</p>
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.batch_size">
+<code class="sig-name descname">batch_size</code><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.batch_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The batch interval between each retraining</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast">
+<code class="sig-name descname">forecast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/IncrementalEnsemble.html#IncrementalEnsembleFTS.forecast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast_ahead">
+<code class="sig-name descname">forecast_ahead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/IncrementalEnsemble.html#IncrementalEnsembleFTS.forecast_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast n steps ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.fts_method">
+<code class="sig-name descname">fts_method</code><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.fts_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The FTS method to be called when a new model is build</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.fts_params">
+<code class="sig-name descname">fts_params</code><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.fts_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>The FTS method specific parameters</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.num_models">
+<code class="sig-name descname">num_models</code><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.num_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of models to hold in the ensemble</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.offset">
+<code class="sig-name descname">offset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/IncrementalEnsemble.html#IncrementalEnsembleFTS.offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of lags to skip in the input test data in order to synchronize it with
+the forecasted values given by the predict function. This is necessary due to the order of the
+model, among other parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An integer with the number of lags to skip</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.partitioner_method">
+<code class="sig-name descname">partitioner_method</code><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.partitioner_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The partitioner method to be called when a new model is build</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.partitioner_params">
+<code class="sig-name descname">partitioner_params</code><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.partitioner_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>The partitioner method parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/incremental/IncrementalEnsemble.html#IncrementalEnsembleFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.window_length">
+<code class="sig-name descname">window_length</code><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.window_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>The memory window length</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="index.html">
-              <img class="logo" src="_static/logo_heading2.png" alt="Logo"/>
-            </a></p>
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyFTS.models.incremental package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.models.incremental">Module contents</a></li>
@@ -86,217 +352,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="pyfts-models-incremental-package">
-<h1>pyFTS.models.incremental package<a class="headerlink" href="#pyfts-models-incremental-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-pyFTS.models.incremental">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.models.incremental" title="Permalink to this headline">¶</a></h2>
-<p>FTS methods with incremental/online learning</p>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pyFTS.models.incremental.TimeVariant">
-<span id="pyfts-models-incremental-timevariant-module"></span><h2>pyFTS.models.incremental.TimeVariant module<a class="headerlink" href="#module-pyFTS.models.incremental.TimeVariant" title="Permalink to this headline">¶</a></h2>
-<p>Meta model that wraps another FTS method and continously retrain it using a data window with
-the most recent data</p>
-<dl class="class">
-<dt id="pyFTS.models.incremental.TimeVariant.Retrainer">
-<em class="property">class </em><code class="descclassname">pyFTS.models.incremental.TimeVariant.</code><code class="descname">Retrainer</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
-<p>Meta model for incremental/online learning that retrain its internal model after
-data windows controlled by the parameter ‘batch_size’, using as the training data a
-window of recent lags, whose size is controlled by the parameter ‘window_length’.</p>
-<dl class="method">
-<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.forecast">
-<code class="descname">forecast</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.forecast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.forecast_ahead">
-<code class="descname">forecast_ahead</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.forecast_ahead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast n steps ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.offset">
-<code class="descname">offset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the number of lags to skip in the input test data in order to synchronize it with
-the forecasted values given by the predict function. This is necessary due to the order of the
-model, among other parameters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An integer with the number of lags to skip</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.incremental.TimeVariant.Retrainer.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.TimeVariant.Retrainer.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method specific parameter fitting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – training time series data</li>
-<li><strong>kwargs</strong> – Method specific parameters</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.models.incremental.IncrementalEnsemble">
-<span id="pyfts-models-incremental-incrementalensemble-module"></span><h2>pyFTS.models.incremental.IncrementalEnsemble module<a class="headerlink" href="#module-pyFTS.models.incremental.IncrementalEnsemble" title="Permalink to this headline">¶</a></h2>
-<p>Time Variant/Incremental Ensemble of FTS methods</p>
-<dl class="class">
-<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS">
-<em class="property">class </em><code class="descclassname">pyFTS.models.incremental.IncrementalEnsemble.</code><code class="descname">IncrementalEnsembleFTS</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyFTS.models.ensemble.html#pyFTS.models.ensemble.ensemble.EnsembleFTS" title="pyFTS.models.ensemble.ensemble.EnsembleFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.ensemble.ensemble.EnsembleFTS</span></code></a></p>
-<p>Time Variant/Incremental Ensemble of FTS methods</p>
-<dl class="method">
-<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast">
-<code class="descname">forecast</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast one step ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>kwargs</strong> – model specific parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast_ahead">
-<code class="descname">forecast_ahead</code><span class="sig-paren">(</span><em>data</em>, <em>steps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast n steps ahead</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</li>
-<li><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</li>
-<li><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list with the forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.offset">
-<code class="descname">offset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the number of lags to skip in the input test data in order to synchronize it with
-the forecasted values given by the predict function. This is necessary due to the order of the
-model, among other parameters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An integer with the number of lags to skip</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.models.incremental.IncrementalEnsemble.IncrementalEnsembleFTS.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method specific parameter fitting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – training time series data</li>
-<li><strong>kwargs</strong> – Method specific parameters</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-</div>
-
-
-          </div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -319,12 +383,13 @@ model, among other parameters.</p>
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" >pyFTS.models package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="pyFTS.models.html" >pyFTS.models package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.models.incremental package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
     </div>
   </body>
 </html>

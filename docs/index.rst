@@ -10,7 +10,6 @@ pyFTS - Fuzzy Time Series for Python
 What is pyFTS Library?
 ----------------------
 
-.. image:: https://badges.frapsoft.com/os/v2/open-source.png?v=103
 .. image:: https://img.shields.io/badge/License-GPLv3-blue.svg
 .. image:: https://img.shields.io/badge/Made%20with-Python-1f425f.svg
 

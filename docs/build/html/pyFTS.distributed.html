@@ -2,10 +2,10 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-55120145-3']);
@@ -20,19 +20,20 @@
     <title>pyFTS.distributed package &#8212; pyFTS 1.6 documentation</title>
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyFTS.hyperparam package" href="pyFTS.hyperparam.html" />
     <link rel="prev" title="pyFTS.data package" href="pyFTS.data.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -52,21 +53,105 @@
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pyFTS.html" accesskey="U">pyFTS package</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="pyFTS.html" accesskey="U">pyFTS package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.distributed package</a></li> 
       </ul>
-    </div>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyfts-distributed-package">
+<h1>pyFTS.distributed package<a class="headerlink" href="#pyfts-distributed-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pyFTS.distributed">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.distributed" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyFTS.distributed.dispy">
+<span id="pyfts-distributed-dispy-module"></span><h2>pyFTS.distributed.dispy module<a class="headerlink" href="#module-pyFTS.distributed.dispy" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.distributed_predict">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">distributed_predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">nodes</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">num_batches</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#distributed_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.distributed_predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.distributed_train">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">distributed_train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">train_method</span></em>, <em class="sig-param"><span class="n">nodes</span></em>, <em class="sig-param"><span class="n">fts_method</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">num_batches</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">train_parameters</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#distributed_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.distributed_train" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.get_number_of_cpus">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">get_number_of_cpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#get_number_of_cpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.get_number_of_cpus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.simple_model_predict">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">simple_model_predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#simple_model_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.simple_model_predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.simple_model_train">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">simple_model_train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#simple_model_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.simple_model_train" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.start_dispy_cluster">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">start_dispy_cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span></em>, <em class="sig-param"><span class="n">nodes</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#start_dispy_cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.start_dispy_cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a new Dispy cluster on ‘nodes’ to execute the method ‘method’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> – function to be executed on each cluster node</p></li>
+<li><p><strong>nodes</strong> – list of node names or IP’s.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the dispy cluster instance and the http_server for monitoring</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.stop_dispy_cluster">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">stop_dispy_cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster</span></em>, <em class="sig-param"><span class="n">http_server</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#stop_dispy_cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.stop_dispy_cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop a dispy cluster and http_server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cluster</strong> – </p></li>
+<li><p><strong>http_server</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="pyfts-distributed-spark-module">
+<h2>pyFTS.distributed.spark module<a class="headerlink" href="#pyfts-distributed-spark-module" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="index.html">
-              <img class="logo" src="_static/logo_heading2.png" alt="Logo"/>
-            </a></p>
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyFTS.distributed package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.distributed">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#pyfts-distributed-dispy-module">pyFTS.distributed.dispy module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.distributed.spark">pyFTS.distributed.spark module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.distributed.dispy">pyFTS.distributed.dispy module</a></li>
+<li><a class="reference internal" href="#pyfts-distributed-spark-module">pyFTS.distributed.spark module</a></li>
 </ul>
 </li>
 </ul>
@@ -85,307 +170,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="pyfts-distributed-package">
-<h1>pyFTS.distributed package<a class="headerlink" href="#pyfts-distributed-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-pyFTS.distributed">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.distributed" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="pyfts-distributed-dispy-module">
-<h2>pyFTS.distributed.dispy module<a class="headerlink" href="#pyfts-distributed-dispy-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pyFTS.distributed.spark">
-<span id="pyfts-distributed-spark-module"></span><h2>pyFTS.distributed.spark module<a class="headerlink" href="#module-pyFTS.distributed.spark" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="pyFTS.distributed.spark.create_multivariate_model">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">create_multivariate_model</code><span class="sig-paren">(</span><em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.create_multivariate_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>From the dictionary of parameters, create a multivariate FTS model</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parameters</strong> – dictionary of parameters</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">multivariate FTS model</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.create_spark_conf">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">create_spark_conf</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.create_spark_conf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Configure the Spark master node</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.create_univariate_model">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">create_univariate_model</code><span class="sig-paren">(</span><em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.create_univariate_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>From the dictionary of parameters, create an univariate FTS model</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parameters</strong> – dictionary of parameters</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">univariate FTS model</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.distributed_predict">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">distributed_predict</code><span class="sig-paren">(</span><em>data</em>, <em>model</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.distributed_predict" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main method for distributed forecasting with FTS models using Spark clusters.</p>
-<p>It takes a trained FTS model and the test data, connect with the Spark cluster,
-proceed the distributed forecasting and return the merged forecasted values.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> – an FTS trained model</li>
-<li><strong>data</strong> – test data</li>
-<li><strong>url</strong> – URL of the Spark master</li>
-<li><strong>app</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">forecasted values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.distributed_train">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">distributed_train</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.distributed_train" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main method for distributed training of FTS models using Spark clusters.</p>
-<p>It takes an empty model and the train data, connect with the Spark cluster, proceed the
-distributed training and return the learned model.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> – An empty (non-trained) FTS model</li>
-<li><strong>data</strong> – train data</li>
-<li><strong>url</strong> – URL of the Spark master node</li>
-<li><strong>app</strong> – Application name</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">trained model</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.get_clustered_partitioner">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">get_clustered_partitioner</code><span class="sig-paren">(</span><em>explanatory_variables</em>, <em>target_variable</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.get_clustered_partitioner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the UoD partitioner from the ‘shared_partitioner’ fuzzy sets, special case for
-clustered multivariate FTS.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>explanatory_variables</strong> – the list with the names of the explanatory variables</li>
-<li><strong>target_variable</strong> – the name of the target variable</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Partitioner object</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.get_partitioner">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">get_partitioner</code><span class="sig-paren">(</span><em>shared_partitioner</em>, <em>type='common'</em>, <em>variables=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.get_partitioner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the UoD partitioner from the ‘shared_partitioner’ fuzzy sets</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>shared_partitioner</strong> – the shared variable with the fuzzy sets</li>
-<li><strong>type</strong> – the type of the partitioner</li>
-<li><strong>variables</strong> – in case of a Multivariate FTS, the list of variables</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Partitioner object</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.get_variables">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">get_variables</code><span class="sig-paren">(</span><em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.get_variables" title="Permalink to this definition">¶</a></dt>
-<dd><p>From the dictionary of parameters, return a tuple with the list of explanatory and target variables</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parameters</strong> – dictionary of parameters</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple with the list of explanatory and target variables</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.share_parameters">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">share_parameters</code><span class="sig-paren">(</span><em>model</em>, <em>context</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.share_parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a shared variable with a dictionary of the model parameters and hyperparameters</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> – the FTS model to extract the parameters and hyperparameters</li>
-<li><strong>context</strong> – Spark context</li>
-<li><strong>data</strong> – dataset</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the shared variable with the dictionary of parameters</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.slave_forecast_multivariate">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">slave_forecast_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.slave_forecast_multivariate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Receive test data, create a multivariate FTS model from the parameters and return the forecasted values</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – test data</li>
-<li><strong>parameters</strong> – dictionary of parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">forecasted values from the data input</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.slave_forecast_univariate">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">slave_forecast_univariate</code><span class="sig-paren">(</span><em>data</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.slave_forecast_univariate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Receive test data, create an univariate FTS model from the parameters and return the forecasted values</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – test data</li>
-<li><strong>parameters</strong> – dictionary of parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">forecasted values from the data input</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.slave_train_multivariate">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">slave_train_multivariate</code><span class="sig-paren">(</span><em>data</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.slave_train_multivariate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Receive train data, train a multivariate FTS model and return the learned rules</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – train data</li>
-<li><strong>parameters</strong> – dictionary of parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Key/value list of the learned rules</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyFTS.distributed.spark.slave_train_univariate">
-<code class="descclassname">pyFTS.distributed.spark.</code><code class="descname">slave_train_univariate</code><span class="sig-paren">(</span><em>data</em>, <em>**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#pyFTS.distributed.spark.slave_train_univariate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Receive train data, train an univariate FTS model and return the learned rules</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – train data</li>
-<li><strong>parameters</strong> – dictionary of parameters</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Key/value list of the learned rules</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-</div>
-
-
-          </div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -407,12 +200,13 @@ clustered multivariate FTS.</p>
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFTS.distributed package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
     </div>
   </body>
 </html>

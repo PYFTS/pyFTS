@@ -51,14 +51,12 @@ There is nothing better than good code examples to start. `Then check out the de
 
 A Google Colab example can also be found `here <https://drive.google.com/file/d/1zRBCHXOawwgmzjEoKBgmvBqkIrKxuaz9/view?usp=sharing>`_.
 
-References
-----------
+A short tutorial on Fuzzy Time Series
+-------------------------------------
 
-1. Q. Song and B. S. Chissom, “Fuzzy time series and its models,” Fuzzy Sets Syst., vol. 54, no. 3, pp. 269–277, 1993.
-2. S.-M. Chen, “Forecasting enrollments based on fuzzy time series,” Fuzzy Sets Syst., vol. 81, no. 3, pp. 311–319, 1996.
-3. C. H. Cheng, R. J. Chang, and C. A. Yeh, “Entropy-based and trapezoidal fuzzification-based fuzzy time series approach for forecasting IT project cost”. Technol. Forecast. Social Change, vol. 73, no. 5, pp. 524–542, Jun. 2006.
-4. K. H. Huarng, “Effective lengths of intervals to improve forecasting in fuzzy time series”. Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.
-5. H.-K. Yu, “Weighted fuzzy time series models for TAIEX forecasting”. Phys. A Stat. Mech. its Appl., vol. 349, no. 3, pp. 609–624, 2005.
-6. R. Efendi, Z. Ismail, and M. M. Deris, “Improved weight Fuzzy Time Series as used in the exchange rates forecasting of US Dollar to Ringgit Malaysia,” Int. J. Comput. Intell. Appl., vol. 12, no. 1, p. 1350005, 2013.
-7. H. J. Sadaei, R. Enayatifar, A. H. Abdullah, and A. Gani, “Short-term load forecasting using a hybrid model with a refined exponentially weighted fuzzy time series and an improved harmony search,” Int. J. Electr. Power Energy Syst., vol. 62, no. from 2005, pp. 118–129, 2014.
-8. C.-H. Cheng, Y.-S. Chen, and Y.-L. Wu, “Forecasting innovation diffusion of products using trend-weighted fuzzy time-series model,” Expert Syst. Appl., vol. 36, no. 2, pp. 1826–1832, 2009.
+Part I: `Introduction to the Fuzzy Logic, Fuzzy Time Series and the pyFTS library <https://towardsdatascience.com/a-short-tutorial-on-fuzzy-time-series-dcc6d4eb1b15>`_.
+
+Part II: `High order, weighted and multivariate methods and a case study of solar energy forecasting. <https://towardsdatascience.com/a-short-tutorial-on-fuzzy-time-series-part-ii-with-an-case-study-on-solar-energy-bda362ecca6d>`_.
+
+Part III: `Interval and probabilistic forecasting, non-stationary time series, concept drifts and time variant models. <https://towardsdatascience.com/a-short-tutorial-on-fuzzy-time-series-part-iii-69445dff83fb>`_.
+

@@ -20,6 +20,54 @@ import os
 
 from pyFTS.data import Malaysia, Enrollments
 
+
+# Esta função cria o grid de data. Dada uma índice e a quantidade de dias out of range e in range ele retorna uma lista com a janela móvel
+def gen_dates(index, time_is, time_os):
+    t = -1
+    t_aux = t
+    size = len(index)
+    dates = []
+    while -size < t - time_is - time_os + 1:
+        t = t_aux
+        end_os = index[t]
+        t -= time_os - 1
+        init_os = index[t]
+        t -= 1
+        t_aux = t
+        end_is = index[t]
+        t -= time_is - 1
+        init_is = index[t]
+        t -= 1
+        row = [init_is, end_is, init_os, end_os]
+        dates.append(row)
+    return dates
+
+
+sp500 = pd.read_csv('/home/petronio/Downloads/sp500.csv', index_col=0)
+stock = sp500.iloc[:, :5]
+
+date_grid = gen_dates (index = stock.index, time_is= 100, time_os = 2)
+
+date_range = date_grid[0]
+init_is, end_is, init_os, end_os = date_range
+train = stock[init_is:end_is]
+test = stock[init_os:end_os]
+
+
+close = variable.Variable("close", data_label='Adj Close', partitioner=Grid.GridPartitioner, npart=20,data=train)
+polarity = variable.Variable("polarity", data_label='sentiment_bert', partitioner=Grid.GridPartitioner, npart=50,data=train)
+
+from pyFTS.models import hofts
+#mpolarity = mvfts.MVFTS(explanatory_variables=[close, polarity], target_variable=polarity)
+mpolarity = hofts.HighOrderFTS(partitioner=polarity.partitioner)
+mpolarity.fit(train['sentiment_bert'].values)
+
+mclose = mvfts.MVFTS(explanatory_variables=[close, polarity], target_variable=close)
+mclose.fit(train)
+
+forecasts = mclose.predict(train[-1:], steps_ahead=2, generators = {'sentiment_bert': mpolarity})
+
+'''
 df = Malaysia.get_dataframe()
 df['time'] = pd.to_datetime(df["time"], format='%m/%d/%y %I:%M %p')
 
@@ -50,7 +98,7 @@ model.fit(train_mv) #, num_batches=10) #, distributed='dispy',nodes=['192.168.0.
 
 print(model)
 
-'''
+
 def sample_by_hour(data):
     return [np.nanmean(data[k:k+60]) for k in np.arange(0,len(data),60)]
 

@@ -4,7 +4,6 @@ Common facilities for pyFTS
 
 import time
 import matplotlib.pyplot as plt
-import dill
 import numpy as np
 import pandas as pd
 import matplotlib.cm as cmx
@@ -515,6 +514,7 @@ def persist_obj(obj, file):
     :param obj: object on memory
     :param file: file name to store the object
     """
+    import dill
     try:
         with open(file, 'wb') as _file:
             dill.dump(obj, _file)
@@ -529,6 +529,7 @@ def load_obj(file):
     :param file: file name where the object is stored
     :return: object
     """
+    import dill
     with open(file, 'rb') as _file:
         obj = dill.load(_file)
     return obj
@@ -540,10 +541,12 @@ def persist_env(file):
 
     :param file: file name to store the environment
     """
+    import dill
     dill.dump_session(file)
 
 
 def load_env(file):
+    import dill
     dill.load_session(file)
 
 
