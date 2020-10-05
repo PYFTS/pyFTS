@@ -7,7 +7,7 @@ from pyFTS.common import Membership, Util
 
 
 def plot_sets(partitioner, start=0, end=10, step=1, tam=[5, 5], colors=None,
-              save=False, file=None, axes=None, data=None, window_size = 1, only_lines=False):
+              save=False, file=None, axes=None, data=None, window_size = 1, only_lines=False, legend=True):
 
     range = np.arange(start,end,step)
     ticks = []
@@ -42,16 +42,17 @@ def plot_sets(partitioner, start=0, end=10, step=1, tam=[5, 5], colors=None,
     axes.set_ylabel("Universe of Discourse")
     axes.set_xlabel("Time")
     plt.xticks([k for k in range], ticks, rotation='vertical')
-
-    handles0, labels0 = axes.get_legend_handles_labels()
-    lgd = axes.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
+    
+    if legend:
+        handles0, labels0 = axes.get_legend_handles_labels()
+        lgd = axes.legend(handles0, labels0, loc=2, bbox_to_anchor=(1, 1))
 
     if data is not None:
         axes.plot(np.arange(start, start + len(data), 1), data,c="black")
 
-    plt.tight_layout()
-
-    Util.show_and_save_image(fig, file, save)
+    if file is not None:
+        plt.tight_layout()
+        Util.show_and_save_image(fig, file, save)
 
 
 def plot_sets_conditional(model, data, step=1, size=[5, 5], colors=None,
