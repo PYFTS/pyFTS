@@ -40,3 +40,36 @@ class GridPartitioner(partitioner.Partitioner):
         self.min = self.min - partlen
 
         return sets
+
+
+class PreFixedGridPartitioner(GridPartitioner):
+    """Prefixed UoD with Even Length Grid Partitioner"""
+
+    def __init__(self, **kwargs):
+        """
+        Fixed UoD with Even Length Grid Partitioner
+        """
+
+        kwargs['preprocess'] = False
+
+        super(GridPartitioner, self).__init__(name="Grid", **kwargs)
+
+        self.max = kwargs.get('max', None)
+        self.min = kwargs.get('min', None)
+
+        if self.max is None or self.min is None:
+            raise Exception("It is mandatory to inform the max and min parameters!")
+
+        self.sets = self.build(None)
+
+        self.partitions = len(self.sets)
+
+        if self.ordered_sets is None and self.setnames is not None:
+            self.ordered_sets = self.setnames[:len(self.sets)]
+        else:
+            self.ordered_sets = FuzzySet.set_ordered(self.sets)
+
+
+
+
+
