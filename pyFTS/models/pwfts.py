@@ -517,7 +517,10 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
 
         start = kwargs.get('start_at', 0)
 
-        ret = data[start: start+self.max_lag].tolist()
+        if isinstance(data, np.ndarray):
+            data = data.tolist()
+
+        ret = data[start: start+self.max_lag]
 
         for k in np.arange(self.max_lag, steps+self.max_lag):
 
