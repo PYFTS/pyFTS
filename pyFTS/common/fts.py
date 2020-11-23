@@ -72,6 +72,7 @@ class FTS(object):
         """"""
         self.is_time_variant = False
         """A boolean value indicating if this model is time variant"""
+        
 
     def fuzzy(self, data):
         """
@@ -104,7 +105,8 @@ class FTS(object):
         :param data: time series with minimal length to the order of the model
 
         :keyword type: the forecasting type, one of these values: point(default), interval, distribution or multivariate.
-        :keyword steps_ahead: The forecasting horizon, i. e., the number of steps ahead to forecast (default value: 1)
+        :keyword steps_ahead: The forecasting path H, i. e., tell the model to forecast from t+1 to t+H.
+        :keyword step_to: The forecasting step H, i. e., tell the model to forecast to t+H for each input sample 
         :keyword start_at: in the multi step forecasting, the index of the data where to start forecasting (default value: 0)
         :keyword distributed: boolean, indicate if the forecasting procedure will be distributed in a dispy cluster (default value: False)
         :keyword nodes: a list with the dispy cluster nodes addresses
@@ -141,7 +143,9 @@ class FTS(object):
 
             steps_ahead = kw.get("steps_ahead", None)
 
-            if steps_ahead == None or steps_ahead == 1:
+            step_to = kw.get("step_to", None)
+
+            if (steps_ahead == None and step_to == None) or (steps_ahead == 1 or step_to ==1):
                 if type == 'point':
                     ret = self.forecast(ndata, **kw)
                 elif type == 'interval':
@@ -150,7 +154,7 @@ class FTS(object):
                     ret = self.forecast_distribution(ndata, **kw)
                 elif type == 'multivariate':
                     ret = self.forecast_multivariate(ndata, **kw)
-            elif steps_ahead > 1:
+            elif step_to == None and steps_ahead > 1:
                 if type == 'point':
                     ret = self.forecast_ahead(ndata, steps_ahead, **kw)
                 elif type == 'interval':
@@ -159,6 +163,11 @@ class FTS(object):
                     ret = self.forecast_ahead_distribution(ndata, steps_ahead, **kw)
                 elif type == 'multivariate':
                     ret = self.forecast_ahead_multivariate(ndata, steps_ahead, **kw)
+            elif step_to > 1:
+                if type == 'point':
+                    ret = self.forecast_step(ndata, step_to, **kw)
+                else:
+                    raise NotImplementedError('This model only perform point step ahead forecasts!')
 
             if not ['point', 'interval', 'distribution', 'multivariate'].__contains__(type):
                 raise ValueError('The argument \'type\' has an unknown value.')
@@ -227,9 +236,10 @@ class FTS(object):
         """
         raise NotImplementedError('This model do not perform one step ahead multivariate forecasts!')
 
+
     def forecast_ahead(self, data, steps, **kwargs):
         """
-        Point forecast n steps ahead
+        Point forecast from 1 to H steps ahead, where H is given by the steps parameter
 
         :param data: time series data with the minimal length equal to the max_lag of the model
         :param steps: the number of steps ahead to forecast (default: 1)
@@ -259,7 +269,7 @@ class FTS(object):
 
     def forecast_ahead_interval(self, data, steps, **kwargs):
         """
-        Interval forecast n steps ahead
+        Interval forecast from 1 to H steps ahead, where H is given by the steps parameter
 
         :param data: time series data with the minimal length equal to the max_lag of the model
         :param steps: the number of steps ahead to forecast
@@ -270,7 +280,7 @@ class FTS(object):
 
     def forecast_ahead_distribution(self, data, steps, **kwargs):
         """
-        Probabilistic forecast n steps ahead
+        Probabilistic forecast from 1 to H steps ahead, where H is given by the steps parameter
 
         :param data: time series data with the minimal length equal to the max_lag of the model
         :param steps: the number of steps ahead to forecast
@@ -289,6 +299,39 @@ class FTS(object):
         :return: a Pandas Dataframe object representing the forecasted values for each variable
         """
         raise NotImplementedError('This model do not perform one step ahead multivariate forecasts!')
+
+    def forecast_step(self, data, step, **kwargs):
+        """
+        Point forecast for H steps ahead, where H is given by the step parameter
+
+        :param data: time series data with the minimal length equal to the max_lag of the model
+        :param step: the forecasting horizon (default: 1)
+        :keyword start_at: in the multi step forecasting, the index of the data where to start forecasting (default: 0)
+        :return: a list with the forecasted values
+        """
+
+        l = len(data)
+
+        ret = []
+
+        if l < self.max_lag:
+            return data
+
+        if isinstance(data, np.ndarray):
+            data = data.tolist()
+
+        start = kwargs.get('start_at',0)
+
+        for k in np.arange(start+self.max_lag, l):
+            sample = data[k-self.max_lag:k]
+            tmp = self.forecast_ahead(sample, step, **kwargs)
+
+            if isinstance(tmp,(list, np.ndarray)):
+                tmp = tmp[-1]
+
+            ret.append(tmp)
+
+        return ret
 
     def train(self, data, **kwargs):
         """

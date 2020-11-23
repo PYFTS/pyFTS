@@ -14,7 +14,7 @@ from pyFTS.benchmarks import benchmarks as bchmk, Measures
 from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei, ifts
 from pyFTS.models.ensemble import ensemble
 from pyFTS.common import Transformations, Membership, Util
-from pyFTS.benchmarks import arima, quantreg, BSTS, gaussianproc, knn
+from pyFTS.benchmarks import arima, quantreg #BSTS, gaussianproc, knn
 from pyFTS.fcm import fts, common, GA
 from pyFTS.common import Transformations
 
@@ -22,32 +22,26 @@ tdiff = Transformations.Differential(1)
 
 boxcox = Transformations.BoxCox(0)
 
-df = pd.read_csv('https://query.data.world/s/l3u4gqbrbm5ymo6ghxl7jmxed7sgyk')
-dados = df.iloc[2710:2960 , 0:1].values # somente a 1 coluna sera usada
-dados = dados.flatten().tolist()
+df = pd.read_csv('https://query.data.world/s/z2xo3t32pkl4mdzp63x6lyne53obmi')
+#dados = df.iloc[2710:2960 , 0:1].values # somente a 1 coluna sera usada
+dados = df['temperature'].values
+#dados = dados.flatten().tolist()
 
-qtde_dt_tr = 150
-dados_treino = dados[:qtde_dt_tr]
+l = len(dados)
 
-#print(dados_treino)
+dados_treino = dados[:int(l*.7)]
+dados_teste = dados[int(l*.7):]
 
-ttr = list(range(len(dados_treino)))
+particionador = Grid.GridPartitioner(data = dados_treino, npart = 15, func = Membership.trimf)
 
-ordem = 1 # ordem do modelo, indica quantos ultimos valores serao usados
-
-dados_teste = dados[qtde_dt_tr - ordem:250]
-tts = list(range(len(dados_treino) - ordem, len(dados_treino) + len(dados_teste) - ordem))
-
-particionador = Grid.GridPartitioner(data = dados_treino, npart = 30, func = Membership.trimf)
-
-modelo = pwfts.ProbabilisticWeightedFTS(partitioner = particionador, order = ordem)
+modelo = pwfts.ProbabilisticWeightedFTS(partitioner = particionador, order = 2)
 
 modelo.fit(dados_treino)
 
-print(modelo)
+# print(modelo)
 
 # Todo o procedimento de inferência é feito pelo método predict
-predicoes = modelo.predict(dados_teste[38:40])
+predicoes = modelo.predict(dados_teste, step_to=30)
 
 print(predicoes)
 

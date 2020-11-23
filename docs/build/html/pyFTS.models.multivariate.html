@@ -78,7 +78,7 @@
 <dl class="py class">
 <dt id="pyFTS.models.multivariate.FLR.FLR">
 <em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.FLR.</code><code class="sig-name descname">FLR</code><a class="reference internal" href="_modules/pyFTS/models/multivariate/FLR.html#FLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.FLR.FLR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Multivariate Fuzzy Logical Relationship</p>
 <dl class="py method">
 <dt id="pyFTS.models.multivariate.FLR.FLR.set_lhs">
@@ -151,7 +151,7 @@
 <dl class="py class">
 <dt id="pyFTS.models.multivariate.variable.Variable">
 <em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.multivariate.variable.</code><code class="sig-name descname">Variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/variable.html#Variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.variable.Variable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A variable of a fuzzy time series multivariate model. Each variable contains its own
 transformations and partitioners.</p>
 <dl class="py attribute">
@@ -514,7 +514,7 @@ multivariate fuzzy set base.</p>
 <dl class="py method">
 <dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead">
 <code class="sig-name descname">forecast_ahead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.forecast_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast n steps ahead</p>
+<dd><p>Point forecast from 1 to H steps ahead, where H is given by the steps parameter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -532,7 +532,7 @@ multivariate fuzzy set base.</p>
 <dl class="py method">
 <dt id="pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead_interval">
 <code class="sig-name descname">forecast_ahead_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/mvfts.html#MVFTS.forecast_ahead_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.mvfts.MVFTS.forecast_ahead_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval forecast n steps ahead</p>
+<dd><p>Interval forecast from 1 to H steps ahead, where H is given by the steps parameter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -715,7 +715,7 @@ multivariate fuzzy set base.</p>
 <dl class="py method">
 <dt id="pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_distribution">
 <code class="sig-name descname">forecast_ahead_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/multivariate/cmvfts.html#ClusteredMVFTS.forecast_ahead_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.multivariate.cmvfts.ClusteredMVFTS.forecast_ahead_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Probabilistic forecast n steps ahead</p>
+<dd><p>Probabilistic forecast from 1 to H steps ahead, where H is given by the steps parameter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

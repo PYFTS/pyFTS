@@ -180,7 +180,7 @@
 <dl class="py class">
 <dt id="pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer">
 <em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.seasonal.SeasonalIndexer.</code><code class="sig-name descname">SeasonalIndexer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_seasons</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/SeasonalIndexer.html#SeasonalIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Seasonal Indexer. Responsible to find the seasonal index of a data point inside its data set</p>
 <dl class="py method">
 <dt id="pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer.get_data">
@@ -242,7 +242,7 @@
 <dl class="py method">
 <dt id="pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.forecast_ahead">
 <code class="sig-name descname">forecast_ahead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/cmsfts.html#ContextualMultiSeasonalFTS.forecast_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast n steps ahead</p>
+<dd><p>Point forecast from 1 to H steps ahead, where H is given by the steps parameter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -301,7 +301,7 @@
 <dl class="py class">
 <dt id="pyFTS.models.seasonal.common.DateTime">
 <em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.seasonal.common.</code><code class="sig-name descname">DateTime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/common.html#DateTime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.common.DateTime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
 <p>Data and Time granularity for time granularity and seasonality identification</p>
 <dl class="py attribute">
 <dt id="pyFTS.models.seasonal.common.DateTime.day_of_month">
@@ -479,7 +479,7 @@
 <dl class="py method">
 <dt id="pyFTS.models.seasonal.msfts.MultiSeasonalFTS.forecast_ahead">
 <code class="sig-name descname">forecast_ahead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/msfts.html#MultiSeasonalFTS.forecast_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.msfts.MultiSeasonalFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Point forecast n steps ahead</p>
+<dd><p>Point forecast from 1 to H steps ahead, where H is given by the steps parameter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
