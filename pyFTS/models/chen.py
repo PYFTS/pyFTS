@@ -51,7 +51,7 @@ class ConventionalFTS(fts.FTS):
     def train(self, data, **kwargs):
 
         tmpdata = self.partitioner.fuzzyfy(data, method='maximum', mode='sets')
-        flrs = FLR.generate_non_recurrent_flrs(tmpdata)
+        flrs = FLR.generate_non_recurrent_flrs(tmpdata, steps=self.standard_horizon)
         self.generate_flrg(flrs)
 
     def forecast(self, ndata, **kwargs):

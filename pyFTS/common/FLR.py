@@ -61,17 +61,19 @@ def generate_high_order_recurrent_flr(fuzzyData):
     return flrs
 
 
-def generate_recurrent_flrs(fuzzyData):
+def generate_recurrent_flrs(fuzzyData, steps = 1):
     """
     Create a ordered FLR set from a list of fuzzy sets with recurrence
 
     :param fuzzyData: ordered list of fuzzy sets
+    :param steps: the number of steps ahead on the right side of FLR
     :return: ordered list of FLR
     """
+    _tmp_steps = steps - 1
     flrs = []
-    for i in np.arange(1,len(fuzzyData)):
+    for i in np.arange(1,len(fuzzyData) - _tmp_steps):
         lhs = [fuzzyData[i - 1]]
-        rhs = [fuzzyData[i]]
+        rhs = [fuzzyData[i+_tmp_steps]]
         for l in np.array(lhs).flatten():
             for r in np.array(rhs).flatten():
                 tmp = FLR(l, r)
@@ -79,14 +81,14 @@ def generate_recurrent_flrs(fuzzyData):
     return flrs
 
 
-def generate_non_recurrent_flrs(fuzzyData):
+def generate_non_recurrent_flrs(fuzzyData, steps = 1):
     """
     Create a ordered FLR set from a list of fuzzy sets without recurrence
 
     :param fuzzyData: ordered list of fuzzy sets
     :return: ordered list of FLR
     """
-    flrs = generate_recurrent_flrs(fuzzyData)
+    flrs = generate_recurrent_flrs(fuzzyData, steps=steps)
     tmp = {}
     for flr in flrs: tmp[str(flr)] = flr
     ret = [value for key, value in tmp.items()]

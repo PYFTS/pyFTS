@@ -158,14 +158,15 @@ class HighOrderFTS(fts.FTS):
         return flrgs
 
     def generate_flrg(self, data):
+        _tmp_steps = self.standard_horizon - 1
         l = len(data)
-        for k in np.arange(self.max_lag, l):
+        for k in np.arange(self.max_lag, l - _tmp_steps):
 
             if self.dump: print("FLR: " + str(k))
 
             sample = data[k - self.max_lag: k]
 
-            rhs = self.partitioner.fuzzyfy(data[k], mode="sets", alpha_cut=self.alpha_cut)
+            rhs = self.partitioner.fuzzyfy(data[k+_tmp_steps], mode="sets", alpha_cut=self.alpha_cut)
 
             flrgs = self.generate_lhs_flrg(sample)
 
@@ -178,13 +179,14 @@ class HighOrderFTS(fts.FTS):
 
 
     def generate_flrg_fuzzyfied(self, data):
+        _tmp_steps = self.standard_horizon - 1
         l = len(data)
         for k in np.arange(self.max_lag, l):
             if self.dump: print("FLR: " + str(k))
 
             sample = data[k - self.max_lag: k]
 
-            rhs = data[k]
+            rhs = data[k+_tmp_steps]
 
             flrgs = self.generate_lhs_flrg_fuzzyfied(sample)
 

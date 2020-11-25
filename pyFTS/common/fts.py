@@ -72,6 +72,8 @@ class FTS(object):
         """"""
         self.is_time_variant = False
         """A boolean value indicating if this model is time variant"""
+        self.standard_horizon = kwargs.get("standard_horizon", 1)
+        """Standard forecasting horizon (Default: 1)"""
         
 
     def fuzzy(self, data):

@@ -12,7 +12,7 @@ import pandas as pd
 from pyFTS.partitioners import Grid #, Entropy, Util as pUtil, Simple
 #from pyFTS.benchmarks import benchmarks as bchmk, Measures
 #from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei, ifts
-from pyFTS.models import pwfts
+from pyFTS.models import pwfts, hofts, chen
 #from pyFTS.models.ensemble import ensemble
 from pyFTS.common import Transformations, Membership, Util
 #from pyFTS.benchmarks import arima, quantreg #BSTS, gaussianproc, knn
@@ -36,13 +36,15 @@ l = len(dados)
 #dados_treino = dados[:int(l*.7)]
 #dados_teste = dados[int(l*.7):]
 
-particionador = Grid.GridPartitioner(data = dados, npart = 5, func = Membership.trimf)
+particionador = Grid.GridPartitioner(data = dados, npart = 10, func = Membership.trimf)
 
-modelo = pwfts.ProbabilisticWeightedFTS(partitioner = particionador, order = 1)
+#modelo = pwfts.ProbabilisticWeightedFTS(partitioner = particionador, order = 1)
+#modelo = hofts.WeightedHighOrderFTS(partitioner = particionador, order = 1, standard_horizon=3)
+modelo = chen.ConventionalFTS(partitioner = particionador, standard_horizon=3)
 
 modelo.fit(dados)
 
-# print(modelo)
+print(modelo)
 
 # Todo o procedimento de inferência é feito pelo método predict
 predicoes = modelo.predict(dados)
