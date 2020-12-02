@@ -6,7 +6,7 @@ import SimpSOM as sps
 from pyFTS.models.multivariate import wmvfts
 from typing import Tuple
 from pyFTS.common.Transformations import Transformation
-
+from typing import List
 
 class SOMTransformation(Transformation):
     def __init__(self,
@@ -22,14 +22,27 @@ class SOMTransformation(Transformation):
         self.name = 'Kohonen Self Organizing Maps FTS'
         self.shortname = 'SOM-FTS'
 
-    # def apply(self, data, endogen_variable, param, **kwargs): #TODO(CASCALHO) MELHORAR DOCSTRING
-    #     """
-    #     Transform dataset from M-DIMENSION to 3-dimension
-    #     """
-    #     pass
+    def apply(self,
+              data: pd.DataFrame,
+              endogen_variable=None,
+              names: List[str] = ['x', 'y'],
+              param=None,
+              **kwargs): #TODO(CASCALHO) MELHORAR DOCSTRING
+        """
+        Transform dataset from M-DIMENSION to 3-dimension
+        """
+        if self.net is None:
+            cols = data.columns[:-1]
+            train = data[cols]
+            self.train(data=train)
+        new_data = self.net.project(data.values)
+        new_data = pd.DataFrame(new_data, columns=names)
+        endogen = endogen_variable if endogen_variable is not None else data.columns[-1]
+        new_data[endogen] = data[endogen]
+        return new_data
 
     def __repr__(self):
-        status = "is trained" if self.is_trained else "not trained"
+        status = "is trained" if self.net is not None else "not trained"
         return f'{self.name}-{status}'
 
     def __str__(self):

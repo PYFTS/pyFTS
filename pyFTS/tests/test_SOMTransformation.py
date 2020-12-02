@@ -2,10 +2,22 @@ import unittest
 from pyFTS.common.transformations.som import SOMTransformation
 import pandas as pd
 import os
+import numpy as np
 
 class MyTestCase(unittest.TestCase):
     def test_apply(self):
-        self.assertEqual(True, False)
+        data = [
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+        ]
+        som = self.som_transformer_trained()
+        transformed = som.apply(data=pd.DataFrame(data))
+        uniques = np.unique(transformed)
+
+        self.assertEqual(1, len(uniques.shape))
+        self.assertEqual(3, transformed.values.shape[1])
 
     def test_save_net(self):
         som_transformer = self.som_transformer_trained()
@@ -21,6 +33,8 @@ class MyTestCase(unittest.TestCase):
             is_in_files = False
 
         self.assertEqual(True, is_in_files)
+
+    # def
 
     def test_train(self):
         self.assertEqual()
