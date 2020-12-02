@@ -7,7 +7,7 @@ from pyFTS.models.multivariate import wmvfts
 from typing import Tuple
 
 
-class SOMFTS:
+class SOMPartitioner:
     def __init__(self,
                  grid_dimension: Tuple,
                  **kwargs):
@@ -17,10 +17,6 @@ class SOMFTS:
         self.grid_dimension: Tuple = grid_dimension
         self.pbc = kwargs.get('PBC', True)
 
-        # fts attributes
-        self.fts_method = kwargs.get('fts_method', wmvfts.WeightedMVFTS)
-        self.order = kwargs.get('order', 2)
-        self.is_trained = False
 
         # debug attributes
         self.name = 'Kohonen Self Organizing Maps FTS'
@@ -61,3 +57,11 @@ class SOMFTS:
             self.net.nodes_graph(colnum=colnum)
         else:
             self.net.diff_graph()
+
+
+
+"""
+Requisitos
+
+
+"""
