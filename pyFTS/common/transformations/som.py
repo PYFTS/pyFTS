@@ -64,6 +64,7 @@ class SOMTransformation(Transformation):
         self.net.train(startLearnRate=leaning_rate,
                        epochs=epochs)
 
+
     def save_net(self,
                  filename: str = "SomNet trained"):
         self.net.save(filename)
@@ -76,10 +77,3 @@ class SOMTransformation(Transformation):
             self.net.nodes_graph(colnum=colnum)
         else:
             self.net.diff_graph()
-
-
-"""
-Requisitos
-    - apply(herdado de transformations): transforma os conjunto de dados 
-    - inverse - não é necessária 
-"""
