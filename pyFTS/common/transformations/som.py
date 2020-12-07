@@ -38,7 +38,7 @@ class SOMTransformation(Transformation):
                                                                    col != endogen_variable]
         if self.net is None:
             train = data[cols]
-            self.train(data=train)
+            self.train(data=train, **kwargs)
         new_data = self.net.project(data[cols].values)
         new_data = pd.DataFrame(new_data, columns=names)
         endogen = endogen_variable if endogen_variable is not None else data.columns[-1]
@@ -88,4 +88,5 @@ if __name__ == '__main__':
     file = '/home/matheus_cascalho/Documentos/matheus_cascalho/MINDS/TimeSeries_Lab/SOM/Appliance Energy Prediction/energydata_complete.csv'
     df = pd.read_csv(file, index_col=0)
     som = SOMTransformation(grid_dimension=(20, 20))
-    new_df = som.apply(df.iloc[:50], endogen_variable='Appliances')
+    new_df = som.apply(df.iloc[:50], endogen_variable='Appliances', epochs=100, leaning_rate=0.1)
+    print(new_df.head())
