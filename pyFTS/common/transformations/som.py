@@ -83,10 +83,3 @@ class SOMTransformation(Transformation):
             self.net.nodes_graph(colnum=colnum)
         else:
             self.net.diff_graph()
-
-if __name__ == '__main__':
-    file = '/home/matheus_cascalho/Documentos/matheus_cascalho/MINDS/TimeSeries_Lab/SOM/Appliance Energy Prediction/energydata_complete.csv'
-    df = pd.read_csv(file, index_col=0)
-    som = SOMTransformation(grid_dimension=(20, 20))
-    new_df = som.apply(df.iloc[:50], endogen_variable='Appliances', epochs=100, leaning_rate=0.1)
-    print(new_df.head())
