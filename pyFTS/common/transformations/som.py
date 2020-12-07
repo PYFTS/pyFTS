@@ -26,12 +26,25 @@ class SOMTransformation(Transformation):
     def apply(self,
               data: pd.DataFrame,
               endogen_variable=None,
-              names: List[str] = ['x', 'y'],
+              names: Tuple[str] = ('x', 'y'),
               param=None,
-              **kwargs): #TODO(CASCALHO) MELHORAR DOCSTRING
+              **kwargs):
         """
-        Transform dataset from M-DIMENSION to 3-dimension
+        Transform a M-dimensional dataset into a 3-dimensional dataset, where one dimension is the endogen variable
+        If endogen_variable = None, the last column will be the endogen_variable.
+        Args:
+            data (pd.DataFrame): M-Dimensional dataset
+            endogen_variable (str):  column of dataset
+            names (Tuple): names for new columns created by SOM Transformation.
+            param:
+            **kwargs: params of SOM's train process
+                percentage_train (float). Percentage of dataset that will be used for train SOM network. default: 0.7
+                leaning_rate (float): leaning rate of SOM network. default: 0.01
+                epochs: epochs of SOM network. default: 10000
+        Returns:
+
         """
+
         if endogen_variable not in data.columns:
             endogen_variable = None
         cols = data.columns[:-1] if endogen_variable is None else [col for col in data.columns if
