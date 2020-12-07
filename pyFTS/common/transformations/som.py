@@ -60,7 +60,7 @@ class SOMTransformation(Transformation):
               percentage_train: float = .7,
               leaning_rate: float = 0.01,
               epochs: int = 10000):
-        data.dropna(inplace=True)
+        data = data.dropna()
         self.data = data.values
         limit = round(len(self.data) * percentage_train)
         train = self.data[:limit]
