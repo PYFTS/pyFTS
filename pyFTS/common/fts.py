@@ -548,7 +548,7 @@ class FTS(object):
                 params = [ None for k in self.transformations]
 
             for c, t in enumerate(self.transformations, start=0):
-                ndata = t.apply(ndata,params[c])
+                ndata = t.apply(ndata, params[c], )
 
         return ndata
 
