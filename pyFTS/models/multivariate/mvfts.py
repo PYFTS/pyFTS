@@ -35,6 +35,12 @@ class MVFTS(fts.FTS):
         self.name = "Multivariate FTS"
         self.uod_clip = False
 
+    def append_transformation(self, transformation, **kwargs):
+        if not transformation.is_multivariate:
+            raise Exception('The transformation is not multivariate')
+        self.transformations.append(transformation)
+        self.transformations_param.append(kwargs)
+
     def append_variable(self, var):
         """
         Append a new endogenous variable to the model
@@ -53,6 +59,9 @@ class MVFTS(fts.FTS):
 
     def apply_transformations(self, data, params=None, updateUoD=False, **kwargs):
         ndata = data.copy(deep=True)
+        for ct, transformation in enumerate(self.transformations):
+            ndata = transformation.apply(ndata, **self.transformations_param[ct])
+
         for var in self.explanatory_variables:
             try:
                 values = ndata[var.data_label].values #if isinstance(ndata, pd.DataFrame) else ndata[var.data_label]

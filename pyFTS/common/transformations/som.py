@@ -18,6 +18,7 @@ class SOMTransformation(Transformation):
         self.data: pd.DataFrame = None
         self.grid_dimension: Tuple = grid_dimension
         self.pbc = kwargs.get('PBC', True)
+        self.is_multivariate = True
 
         # debug attributes
         self.name = 'Kohonen Self Organizing Maps FTS'
@@ -25,8 +26,6 @@ class SOMTransformation(Transformation):
 
     def apply(self,
               data: pd.DataFrame,
-              endogen_variable=None,
-              names: Tuple[str] = ('x', 'y'),
               param=None,
               **kwargs):
         """
@@ -44,6 +43,9 @@ class SOMTransformation(Transformation):
         Returns:
 
         """
+
+        endogen_variable = kwargs.get('endogen_variable', None)
+        names = kwargs.get('names', ('x', 'y'))
 
         if endogen_variable not in data.columns:
             endogen_variable = None
