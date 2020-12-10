@@ -15,6 +15,8 @@ class Transformation(object):
 
     def __init__(self, **kwargs):
         self.is_invertible = True
+        self.is_multivariate = False
+        """detemine if this transformation can be applied to multivariate data"""
         self.minimal_length = 1
         self.name = ''
 
