@@ -39,8 +39,8 @@ l = len(dados)
 particionador = Grid.GridPartitioner(data = dados, npart = 10, func = Membership.trimf)
 
 #modelo = pwfts.ProbabilisticWeightedFTS(partitioner = particionador, order = 1)
-#modelo = hofts.WeightedHighOrderFTS(partitioner = particionador, order = 1, standard_horizon=3)
-modelo = chen.ConventionalFTS(partitioner = particionador, standard_horizon=3)
+modelo = hofts.WeightedHighOrderFTS(partitioner = particionador, order = 1, standard_horizon=1, lags=[2])
+#modelo = chen.ConventionalFTS(partitioner = particionador, standard_horizon=3)
 
 modelo.fit(dados)
 
