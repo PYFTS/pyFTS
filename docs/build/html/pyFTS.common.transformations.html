@@ -410,8 +410,51 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 </dd></dl>
 
 </div>
-<div class="section" id="pyfts-common-transformations-som-module">
-<h2>pyFTS.common.transformations.som module<a class="headerlink" href="#pyfts-common-transformations-som-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyFTS.common.transformations.som">
+<span id="pyfts-common-transformations-som-module"></span><h2>pyFTS.common.transformations.som module<a class="headerlink" href="#module-pyFTS.common.transformations.som" title="Permalink to this headline">¶</a></h2>
+<p>Kohonen Self Organizing Maps for Fuzzy Time Series</p>
+<dl class="py class">
+<dt id="pyFTS.common.transformations.som.SOMTransformation">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.som.</code><code class="sig-name descname">SOMTransformation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid_dimension</span><span class="p">:</span> <span class="n">Tuple</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
+<dl class="py method">
+<dt id="pyFTS.common.transformations.som.SOMTransformation.apply">
+<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a M-dimensional dataset into a 3-dimensional dataset, where one dimension is the endogen variable
+If endogen_variable = None, the last column will be the endogen_variable.
+Args:</p>
+<blockquote>
+<div><p>data (pd.DataFrame): M-Dimensional dataset
+endogen_variable (str):  column of dataset
+names (Tuple): names for new columns created by SOM Transformation.
+param:
+<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: params of SOM’s train process</p>
+<blockquote>
+<div><p>percentage_train (float). Percentage of dataset that will be used for train SOM network. default: 0.7
+leaning_rate (float): leaning rate of SOM network. default: 0.01
+epochs: epochs of SOM network. default: 10000</p>
+</div></blockquote>
+</div></blockquote>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.common.transformations.som.SOMTransformation.save_net">
+<code class="sig-name descname">save_net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'SomNet trained'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.save_net"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.save_net" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.common.transformations.som.SOMTransformation.show_grid">
+<code class="sig-name descname">show_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">graph_type</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'nodes_graph'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.show_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.show_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.common.transformations.som.SOMTransformation.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">percentage_train</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.7</span></em>, <em class="sig-param"><span class="n">leaning_rate</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">epochs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">10000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.train" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyFTS.common.transformations.transformation">
 <span id="pyfts-common-transformations-transformation-module"></span><h2>pyFTS.common.transformations.transformation module<a class="headerlink" href="#module-pyFTS.common.transformations.transformation" title="Permalink to this headline">¶</a></h2>
@@ -582,7 +625,7 @@ y(t) =  y’(t) + (a*t+b)</p>
 <li><a class="reference internal" href="#module-pyFTS.common.transformations.roi">pyFTS.common.transformations.roi module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.common.transformations.scale">pyFTS.common.transformations.scale module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.common.transformations.smoothing">pyFTS.common.transformations.smoothing module</a></li>
-<li><a class="reference internal" href="#pyfts-common-transformations-som-module">pyFTS.common.transformations.som module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.common.transformations.som">pyFTS.common.transformations.som module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.common.transformations.transformation">pyFTS.common.transformations.transformation module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.common.transformations.trend">pyFTS.common.transformations.trend module</a></li>
 </ul>
