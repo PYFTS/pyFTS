@@ -20,17 +20,3 @@ class PCATransformation(Transformation):
         new = pd.DataFrame(transformed, columns=list(names))
         new[endogen_variable] = data[endogen_variable].values
         return new
-
-if __name__ =="__main__":
-    pd.set_option('max_columns', 50)
-
-    file = '/home/matheus_cascalho/Documentos/matheus_cascalho/MINDS/TimeSeries_Lab/SOM/gas_concentration/ethylene_CO.csv'
-
-    df = pd.read_csv(file)
-    df = df[df['Time (seconds)'].apply(lambda x: x % 1 == 0)]
-    ignore = list(df.columns)[:3]
-    endogen_variable = 'TGS2602'
-    pca = PCATransformation()
-    cols = [col for col in df.columns if col not in ignore]
-    # cols.append(endogen_variable)
-    print(pca.apply(df[cols], endogen_variable=endogen_variable))
