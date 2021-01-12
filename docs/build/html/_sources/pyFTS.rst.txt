@@ -8,6 +8,7 @@ Subpackages
 
     pyFTS.benchmarks
     pyFTS.common
+    pyFTS.common.transformations
     pyFTS.data
     pyFTS.distributed
     pyFTS.hyperparam

@@ -5,9 +5,9 @@ import setuptools
 
 setuptools.setup(
     name='pyFTS',
-    packages=['pyFTS', 'pyFTS.benchmarks', 'pyFTS.common', 'pyFTS.data', 'pyFTS.models.ensemble',
-              'pyFTS.models', 'pyFTS.models.seasonal', 'pyFTS.partitioners', 'pyFTS.probabilistic',
-              'pyFTS.tests', 'pyFTS.models.nonstationary', 'pyFTS.models.multivariate',
+    packages=['pyFTS', 'pyFTS.benchmarks', 'pyFTS.common', 'pyFTS.common.transformations', 'pyFTS.data', 
+              'pyFTS.models.ensemble', 'pyFTS.models', 'pyFTS.models.seasonal', 'pyFTS.partitioners', 
+              'pyFTS.probabilistic', 'pyFTS.tests', 'pyFTS.models.nonstationary', 'pyFTS.models.multivariate',
               'pyFTS.models.incremental', 'pyFTS.hyperparam', 'pyFTS.distributed', 'pyFTS.fcm'],	
     version='1.6',
     description='Fuzzy Time Series for Python',

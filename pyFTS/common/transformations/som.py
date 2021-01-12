@@ -7,6 +7,8 @@ from pyFTS.models.multivariate import wmvfts
 from typing import Tuple
 from pyFTS.common.Transformations import Transformation
 from typing import List
+from pyFTS.common.transformations.transformation import Transformation 
+
 
 class SOMTransformation(Transformation):
     def __init__(self,

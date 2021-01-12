@@ -465,31 +465,8 @@ Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j
 </dd></dl>
 
 </div>
-<div class="section" id="module-pyFTS.partitioners.Huarng">
-<span id="pyfts-partitioners-huarng-module"></span><h2>pyFTS.partitioners.Huarng module<a class="headerlink" href="#module-pyFTS.partitioners.Huarng" title="Permalink to this headline">¶</a></h2>
-<p>K. H. Huarng, “Effective lengths of intervals to improve forecasting in fuzzy time series,”
-Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
-<dl class="py class">
-<dt id="pyFTS.partitioners.Huarng.HuarngPartitioner">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.partitioners.Huarng.</code><code class="sig-name descname">HuarngPartitioner</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Huarng.html#HuarngPartitioner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
-<p>Huarng Empirical Partitioner</p>
-<dl class="py method">
-<dt id="pyFTS.partitioners.Huarng.HuarngPartitioner.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Huarng.html#HuarngPartitioner.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.build" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform the partitioning of the Universe of Discourse</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> – training data</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="pyfts-partitioners-huarng-module">
+<h2>pyFTS.partitioners.Huarng module<a class="headerlink" href="#pyfts-partitioners-huarng-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-pyFTS.partitioners.Singleton">
 <span id="pyfts-partitioners-singleton-module"></span><h2>pyFTS.partitioners.Singleton module<a class="headerlink" href="#module-pyFTS.partitioners.Singleton" title="Permalink to this headline">¶</a></h2>
@@ -583,42 +560,11 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
 <dd></dd></dl>
 
 </div>
-<div class="section" id="module-pyFTS.partitioners.Util">
-<span id="pyfts-partitioners-util-module"></span><h2>pyFTS.partitioners.Util module<a class="headerlink" href="#module-pyFTS.partitioners.Util" title="Permalink to this headline">¶</a></h2>
-<p>Facility methods for pyFTS partitioners module</p>
-<dl class="py function">
-<dt id="pyFTS.partitioners.Util.explore_partitioners">
-<code class="sig-prename descclassname">pyFTS.partitioners.Util.</code><code class="sig-name descname">explore_partitioners</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">npart</span></em>, <em class="sig-param"><span class="n">methods</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">transformation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">[12, 10]</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">file</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Util.html#explore_partitioners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Util.explore_partitioners" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create partitioners for the mf membership functions and npart partitions and show the partitioning images.
-:data: Time series data
-:npart: Maximum number of partitions of the universe of discourse
-:methods: A list with the partitioning methods to be used
-:mf: A list with the membership functions to be used
-:transformation: a transformation to be used in partitioner
-:size: list, the size of the output image [width, height]
-:save: boolean, if the image will be saved on disk
-:file: string, the file path to save the image
-:return: the list of the built partitioners</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyFTS.partitioners.Util.plot_partitioners">
-<code class="sig-prename descclassname">pyFTS.partitioners.Util.</code><code class="sig-name descname">plot_partitioners</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">objs</span></em>, <em class="sig-param"><span class="n">tam</span><span class="o">=</span><span class="default_value">[12, 10]</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Util.html#plot_partitioners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Util.plot_partitioners" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="pyFTS.partitioners.Util.plot_sets">
-<code class="sig-prename descclassname">pyFTS.partitioners.Util.</code><code class="sig-name descname">plot_sets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">sets</span></em>, <em class="sig-param"><span class="n">titles</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">[12, 10]</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Util.html#plot_sets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.Util.plot_sets" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="pyfts-partitioners-util-module">
+<h2>pyFTS.partitioners.Util module<a class="headerlink" href="#pyfts-partitioners-util-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-pyFTS.partitioners.parallel_util">
-<span id="pyfts-partitioners-parallel-util-module"></span><h2>pyFTS.partitioners.parallel_util module<a class="headerlink" href="#module-pyFTS.partitioners.parallel_util" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="pyFTS.partitioners.parallel_util.explore_partitioners">
-<code class="sig-prename descclassname">pyFTS.partitioners.parallel_util.</code><code class="sig-name descname">explore_partitioners</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">npart</span></em>, <em class="sig-param"><span class="n">methods</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tam</span><span class="o">=</span><span class="default_value">[12, 10]</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">file</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/parallel_util.html#explore_partitioners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.partitioners.parallel_util.explore_partitioners" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="pyfts-partitioners-parallel-util-module">
+<h2>pyFTS.partitioners.parallel_util module<a class="headerlink" href="#pyfts-partitioners-parallel-util-module" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -639,12 +585,12 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Entropy">pyFTS.partitioners.Entropy module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.FCM">pyFTS.partitioners.FCM module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Grid">pyFTS.partitioners.Grid module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.partitioners.Huarng">pyFTS.partitioners.Huarng module</a></li>
+<li><a class="reference internal" href="#pyfts-partitioners-huarng-module">pyFTS.partitioners.Huarng module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Singleton">pyFTS.partitioners.Singleton module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Simple">pyFTS.partitioners.Simple module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.SubClust">pyFTS.partitioners.SubClust module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.partitioners.Util">pyFTS.partitioners.Util module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.partitioners.parallel_util">pyFTS.partitioners.parallel_util module</a></li>
+<li><a class="reference internal" href="#pyfts-partitioners-util-module">pyFTS.partitioners.Util module</a></li>
+<li><a class="reference internal" href="#pyfts-partitioners-parallel-util-module">pyFTS.partitioners.parallel_util module</a></li>
 </ul>
 </li>
 </ul>
