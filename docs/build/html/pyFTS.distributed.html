@@ -71,8 +71,67 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pyfts-distributed-dispy-module">
-<h2>pyFTS.distributed.dispy module<a class="headerlink" href="#pyfts-distributed-dispy-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyFTS.distributed.dispy">
+<span id="pyfts-distributed-dispy-module"></span><h2>pyFTS.distributed.dispy module<a class="headerlink" href="#module-pyFTS.distributed.dispy" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.distributed_predict">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">distributed_predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">nodes</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">num_batches</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#distributed_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.distributed_predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.distributed_train">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">distributed_train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">train_method</span></em>, <em class="sig-param"><span class="n">nodes</span></em>, <em class="sig-param"><span class="n">fts_method</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">num_batches</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">train_parameters</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#distributed_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.distributed_train" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.get_number_of_cpus">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">get_number_of_cpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#get_number_of_cpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.get_number_of_cpus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.simple_model_predict">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">simple_model_predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#simple_model_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.simple_model_predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.simple_model_train">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">simple_model_train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#simple_model_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.simple_model_train" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.start_dispy_cluster">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">start_dispy_cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span></em>, <em class="sig-param"><span class="n">nodes</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#start_dispy_cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.start_dispy_cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a new Dispy cluster on ‘nodes’ to execute the method ‘method’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> – function to be executed on each cluster node</p></li>
+<li><p><strong>nodes</strong> – list of node names or IP’s.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the dispy cluster instance and the http_server for monitoring</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyFTS.distributed.dispy.stop_dispy_cluster">
+<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">stop_dispy_cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster</span></em>, <em class="sig-param"><span class="n">http_server</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#stop_dispy_cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.stop_dispy_cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop a dispy cluster and http_server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cluster</strong> – </p></li>
+<li><p><strong>http_server</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="pyfts-distributed-spark-module">
 <h2>pyFTS.distributed.spark module<a class="headerlink" href="#pyfts-distributed-spark-module" title="Permalink to this headline">¶</a></h2>
@@ -91,7 +150,7 @@
 <li><a class="reference internal" href="#">pyFTS.distributed package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.distributed">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#pyfts-distributed-dispy-module">pyFTS.distributed.dispy module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.distributed.dispy">pyFTS.distributed.dispy module</a></li>
 <li><a class="reference internal" href="#pyfts-distributed-spark-module">pyFTS.distributed.spark module</a></li>
 </ul>
 </li>

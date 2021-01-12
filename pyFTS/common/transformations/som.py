@@ -2,7 +2,6 @@
 Kohonen Self Organizing Maps for Fuzzy Time Series
 """
 import pandas as pd
-import SimpSOM as sps
 from pyFTS.models.multivariate import wmvfts
 from typing import Tuple
 from pyFTS.common.Transformations import Transformation
@@ -14,6 +13,9 @@ class SOMTransformation(Transformation):
     def __init__(self,
                  grid_dimension: Tuple,
                  **kwargs):
+
+        import SimpSOM as sps
+        
         # SOM attributes
         self.load_file = kwargs.get('loadFile')
         self.net: sps.somNet = None

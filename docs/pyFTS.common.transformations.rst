@@ -60,6 +60,14 @@ pyFTS.common.transformations.scale module
     :undoc-members:
     :show-inheritance:
 
+pyFTS.common.transformations.smoothing module
+---------------------------------------------
+
+.. automodule:: pyFTS.common.transformations.smoothing
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyFTS.common.transformations.som module
 ---------------------------------------
 

@@ -215,8 +215,86 @@
 </dd></dl>
 
 </div>
-<div class="section" id="pyfts-models-seasonal-cmsfts-module">
-<h2>pyFTS.models.seasonal.cmsfts module<a class="headerlink" href="#pyfts-models-seasonal-cmsfts-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyFTS.models.seasonal.cmsfts">
+<span id="pyfts-models-seasonal-cmsfts-module"></span><h2>pyFTS.models.seasonal.cmsfts module<a class="headerlink" href="#module-pyFTS.models.seasonal.cmsfts" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.seasonal.cmsfts.</code><code class="sig-name descname">ContextualMultiSeasonalFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/cmsfts.html#ContextualMultiSeasonalFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.seasonal.sfts.SeasonalFTS" title="pyFTS.models.seasonal.sfts.SeasonalFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.seasonal.sfts.SeasonalFTS</span></code></a></p>
+<p>Contextual Multi-Seasonal Fuzzy Time Series</p>
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.forecast">
+<code class="sig-name descname">forecast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/cmsfts.html#ContextualMultiSeasonalFTS.forecast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.forecast_ahead">
+<code class="sig-name descname">forecast_ahead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/cmsfts.html#ContextualMultiSeasonalFTS.forecast_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast from 1 to H steps ahead, where H is given by the steps parameter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.generate_flrg">
+<code class="sig-name descname">generate_flrg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flrs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/cmsfts.html#ContextualMultiSeasonalFTS.generate_flrg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.generate_flrg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.get_midpoints">
+<code class="sig-name descname">get_midpoints</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flrg</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/cmsfts.html#ContextualMultiSeasonalFTS.get_midpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.get_midpoints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/cmsfts.html#ContextualMultiSeasonalFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.cmsfts.ContextualMultiSeasonalFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyFTS.models.seasonal.cmsfts.ContextualSeasonalFLRG">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.seasonal.cmsfts.</code><code class="sig-name descname">ContextualSeasonalFLRG</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seasonality</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/cmsfts.html#ContextualSeasonalFLRG"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.cmsfts.ContextualSeasonalFLRG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.seasonal.sfts.SeasonalFLRG" title="pyFTS.models.seasonal.sfts.SeasonalFLRG"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.seasonal.sfts.SeasonalFLRG</span></code></a></p>
+<p>Contextual Seasonal Fuzzy Logical Relationship Group</p>
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.cmsfts.ContextualSeasonalFLRG.append_rhs">
+<code class="sig-name descname">append_rhs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flr</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/cmsfts.html#ContextualSeasonalFLRG.append_rhs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.cmsfts.ContextualSeasonalFLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyFTS.models.seasonal.common">
 <span id="pyfts-models-seasonal-common-module"></span><h2>pyFTS.models.seasonal.common module<a class="headerlink" href="#module-pyFTS.models.seasonal.common" title="Permalink to this headline">¶</a></h2>
@@ -374,8 +452,69 @@
 <dd></dd></dl>
 
 </div>
-<div class="section" id="pyfts-models-seasonal-msfts-module">
-<h2>pyFTS.models.seasonal.msfts module<a class="headerlink" href="#pyfts-models-seasonal-msfts-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyFTS.models.seasonal.msfts">
+<span id="pyfts-models-seasonal-msfts-module"></span><h2>pyFTS.models.seasonal.msfts module<a class="headerlink" href="#module-pyFTS.models.seasonal.msfts" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyFTS.models.seasonal.msfts.MultiSeasonalFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.seasonal.msfts.</code><code class="sig-name descname">MultiSeasonalFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">indexer</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/msfts.html#MultiSeasonalFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.msfts.MultiSeasonalFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.models.seasonal.sfts.SeasonalFTS" title="pyFTS.models.seasonal.sfts.SeasonalFTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.models.seasonal.sfts.SeasonalFTS</span></code></a></p>
+<p>Multi-Seasonal Fuzzy Time Series</p>
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.msfts.MultiSeasonalFTS.forecast">
+<code class="sig-name descname">forecast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/msfts.html#MultiSeasonalFTS.forecast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.msfts.MultiSeasonalFTS.forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.msfts.MultiSeasonalFTS.forecast_ahead">
+<code class="sig-name descname">forecast_ahead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/msfts.html#MultiSeasonalFTS.forecast_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.msfts.MultiSeasonalFTS.forecast_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast from 1 to H steps ahead, where H is given by the steps parameter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>steps</strong> – the number of steps ahead to forecast (default: 1)</p></li>
+<li><p><strong>start_at</strong> – in the multi step forecasting, the index of the data where to start forecasting (default: 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.msfts.MultiSeasonalFTS.generate_flrg">
+<code class="sig-name descname">generate_flrg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flrs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/msfts.html#MultiSeasonalFTS.generate_flrg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.msfts.MultiSeasonalFTS.generate_flrg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.msfts.MultiSeasonalFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/msfts.html#MultiSeasonalFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.msfts.MultiSeasonalFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyFTS.models.seasonal.partitioner">
 <span id="pyfts-models-seasonal-partitioner-module"></span><h2>pyFTS.models.seasonal.partitioner module<a class="headerlink" href="#module-pyFTS.models.seasonal.partitioner" title="Permalink to this headline">¶</a></h2>
@@ -451,8 +590,79 @@ overlapped fuzzy sets.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="pyfts-models-seasonal-sfts-module">
-<h2>pyFTS.models.seasonal.sfts module<a class="headerlink" href="#pyfts-models-seasonal-sfts-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyFTS.models.seasonal.sfts">
+<span id="pyfts-models-seasonal-sfts-module"></span><h2>pyFTS.models.seasonal.sfts module<a class="headerlink" href="#module-pyFTS.models.seasonal.sfts" title="Permalink to this headline">¶</a></h2>
+<p>Simple First Order Seasonal Fuzzy Time Series implementation of Song (1999) based of Conventional FTS by Chen (1996)</p>
+<ol class="upperalpha simple" start="17">
+<li><p>Song, “Seasonal forecasting in fuzzy time series,” Fuzzy sets Syst., vol. 107, pp. 235–236, 1999.</p></li>
+</ol>
+<p>S.-M. Chen, “Forecasting enrollments based on fuzzy time series,” Fuzzy Sets Syst., vol. 81, no. 3, pp. 311–319, 1996.</p>
+<dl class="py class">
+<dt id="pyFTS.models.seasonal.sfts.SeasonalFLRG">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.seasonal.sfts.</code><code class="sig-name descname">SeasonalFLRG</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seasonality</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/sfts.html#SeasonalFLRG"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.sfts.SeasonalFLRG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.flrg.FLRG" title="pyFTS.common.flrg.FLRG"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.flrg.FLRG</span></code></a></p>
+<p>First Order Seasonal Fuzzy Logical Relationship Group</p>
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.sfts.SeasonalFLRG.append_rhs">
+<code class="sig-name descname">append_rhs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/sfts.html#SeasonalFLRG.append_rhs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.sfts.SeasonalFLRG.append_rhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.sfts.SeasonalFLRG.get_key">
+<code class="sig-name descname">get_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/sfts.html#SeasonalFLRG.get_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.sfts.SeasonalFLRG.get_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a unique identifier for this FLRG</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyFTS.models.seasonal.sfts.SeasonalFTS">
+<em class="property">class </em><code class="sig-prename descclassname">pyFTS.models.seasonal.sfts.</code><code class="sig-name descname">SeasonalFTS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/sfts.html#SeasonalFTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.sfts.SeasonalFTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyFTS.common.html#pyFTS.common.fts.FTS" title="pyFTS.common.fts.FTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.fts.FTS</span></code></a></p>
+<p>First Order Seasonal Fuzzy Time Series</p>
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.sfts.SeasonalFTS.forecast">
+<code class="sig-name descname">forecast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/sfts.html#SeasonalFTS.forecast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.sfts.SeasonalFTS.forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point forecast one step ahead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – time series data with the minimal length equal to the max_lag of the model</p></li>
+<li><p><strong>kwargs</strong> – model specific parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with the forecasted values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.sfts.SeasonalFTS.generate_flrg">
+<code class="sig-name descname">generate_flrg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flrs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/sfts.html#SeasonalFTS.generate_flrg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.sfts.SeasonalFTS.generate_flrg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.sfts.SeasonalFTS.get_midpoints">
+<code class="sig-name descname">get_midpoints</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flrg</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/sfts.html#SeasonalFTS.get_midpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.sfts.SeasonalFTS.get_midpoints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyFTS.models.seasonal.sfts.SeasonalFTS.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/models/seasonal/sfts.html#SeasonalFTS.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.models.seasonal.sfts.SeasonalFTS.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method specific parameter fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – training time series data</p></li>
+<li><p><strong>kwargs</strong> – Method specific parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyFTS.models.seasonal">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.models.seasonal" title="Permalink to this headline">¶</a></h2>
@@ -471,11 +681,11 @@ overlapped fuzzy sets.</p>
 <li><a class="reference internal" href="#">pyFTS.models.seasonal package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-pyFTS.models.seasonal.SeasonalIndexer">pyFTS.models.seasonal.SeasonalIndexer module</a></li>
-<li><a class="reference internal" href="#pyfts-models-seasonal-cmsfts-module">pyFTS.models.seasonal.cmsfts module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.models.seasonal.cmsfts">pyFTS.models.seasonal.cmsfts module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.models.seasonal.common">pyFTS.models.seasonal.common module</a></li>
-<li><a class="reference internal" href="#pyfts-models-seasonal-msfts-module">pyFTS.models.seasonal.msfts module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.models.seasonal.msfts">pyFTS.models.seasonal.msfts module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.models.seasonal.partitioner">pyFTS.models.seasonal.partitioner module</a></li>
-<li><a class="reference internal" href="#pyfts-models-seasonal-sfts-module">pyFTS.models.seasonal.sfts module</a></li>
+<li><a class="reference internal" href="#module-pyFTS.models.seasonal.sfts">pyFTS.models.seasonal.sfts module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.models.seasonal">Module contents</a></li>
 </ul>
 </li>

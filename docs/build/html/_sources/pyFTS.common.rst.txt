@@ -52,14 +52,6 @@ pyFTS.common.SortedCollection module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.common.transformations module
------------------------------------
-
-.. automodule:: pyFTS.common.Transformations
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pyFTS.common.Util module
 ------------------------
 
