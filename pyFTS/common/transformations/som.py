@@ -2,9 +2,8 @@
 Kohonen Self Organizing Maps for Fuzzy Time Series
 """
 import pandas as pd
-from pyFTS.models.multivariate import wmvfts
+#from pyFTS.models.multivariate import wmvfts
 from typing import Tuple
-from pyFTS.common.Transformations import Transformation
 from typing import List
 from pyFTS.common.transformations.transformation import Transformation 
 

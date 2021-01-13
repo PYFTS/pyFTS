@@ -12,7 +12,7 @@ import pandas as pd
 from pyFTS.partitioners import Grid #, Entropy, Util as pUtil, Simple
 #from pyFTS.benchmarks import benchmarks as bchmk, Measures
 #from pyFTS.models import chen, yu, cheng, ismailefendi, hofts, pwfts, tsaur, song, sadaei, ifts
-from pyFTS.models import pwfts, hofts, chen
+from pyFTS.models import pwfts, hofts
 #from pyFTS.models.ensemble import ensemble
 from pyFTS.common import Transformations, Membership, Util
 #from pyFTS.benchmarks import arima, quantreg #BSTS, gaussianproc, knn
@@ -38,8 +38,8 @@ l = len(dados)
 
 particionador = Grid.GridPartitioner(data = dados, npart = 10, func = Membership.trimf)
 
-#modelo = pwfts.ProbabilisticWeightedFTS(partitioner = particionador, order = 1)
-modelo = hofts.WeightedHighOrderFTS(partitioner = particionador, order = 1, standard_horizon=1, lags=[2])
+modelo = pwfts.ProbabilisticWeightedFTS(partitioner = particionador, order = 1)
+#modelo = hofts.WeightedHighOrderFTS(partitioner = particionador, order = 1, standard_horizon=1, lags=[2])
 #modelo = chen.ConventionalFTS(partitioner = particionador, standard_horizon=3)
 
 modelo.fit(dados)
