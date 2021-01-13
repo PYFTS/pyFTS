@@ -11,7 +11,7 @@ class MovingAverage(Transformation):
     def apply(self, data, param=None, **kwargs):
         steps = param if param is not None else self.steps
         ma = [k for k in data[:steps]]
-        ma.extend([np.mean(data[k-steps:k]) for k in range(q, len(data))])
+        ma.extend([np.mean(data[k-steps:k]) for k in range(steps, len(data))])
         return ma
 
     def inverse(self, data, param=None, **kwargs):
