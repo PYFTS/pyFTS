@@ -137,8 +137,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         self.generate_flrg_fuzzyfied(fuzz)
 
     def generate_flrg_fuzzyfied(self, data):
+        _tmp_steps = self.standard_horizon - 1
         l = len(data)
-        for k in np.arange(self.max_lag, l):
+        for k in np.arange(self.max_lag, l - _tmp_steps):
             sample = data[k - self.max_lag: k]
             set_sample = []
             for instance in sample:
@@ -154,8 +155,8 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 lhs_mv = self.pwflrg_lhs_memberhip_fuzzyfied(flrg, sample)
 
                 mvs = []
-                inst = data[k]
-                for set, mv in inst:
+                rhs = data[k + _tmp_steps]
+                for set, mv in rhs:
                     self.flrgs[flrg.get_key()].append_rhs(set, count=lhs_mv * mv)
                     mvs.append(mv)
 
@@ -203,8 +204,9 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         return flrgs
 
     def generate_flrg(self, data):
+        _tmp_steps = self.standard_horizon - 1
         l = len(data)
-        for k in np.arange(self.max_lag, l):
+        for k in np.arange(self.max_lag, l - _tmp_steps):
             if self.dump: print("FLR: " + str(k))
 
             sample = data[k - self.max_lag: k]
@@ -218,7 +220,7 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
                 if flrg.get_key() not in self.flrgs:
                     self.flrgs[flrg.get_key()] = flrg;
 
-                fuzzyfied = self.partitioner.fuzzyfy(data[k], mode='both', method='fuzzy',
+                fuzzyfied = self.partitioner.fuzzyfy(data[k+_tmp_steps], mode='both', method='fuzzy',
                                                      alpha_cut=self.alpha_cut)
 
                 mvs = []
