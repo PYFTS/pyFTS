@@ -5,6 +5,10 @@ import setuptools
 
 setuptools.setup(
     name='pyFTS',
+    install_requires=[
+          'matplotlib',
+          'numpy',
+          'pandas'],
     packages=['pyFTS', 'pyFTS.benchmarks', 'pyFTS.common', 'pyFTS.common.transformations', 'pyFTS.data', 
               'pyFTS.models.ensemble', 'pyFTS.models', 'pyFTS.models.seasonal', 'pyFTS.partitioners', 
               'pyFTS.probabilistic', 'pyFTS.tests', 'pyFTS.models.nonstationary', 'pyFTS.models.multivariate',
@@ -28,6 +32,6 @@ setuptools.setup(
         'Intended Audience :: Education',
         'Topic :: Scientific/Engineering',
         'Development Status :: 5 - Production/Stable'
-        
+    
     ]
 )

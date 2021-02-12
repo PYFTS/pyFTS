@@ -1,7 +1,5 @@
 from pyFTS.common.transformations.transformation import Transformation 
 import numpy as np
-from math import ceil
-
 
 class MovingAverage(Transformation):
     def __init__(self, **kwargs):
