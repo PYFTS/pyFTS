@@ -1,3 +1,4 @@
+import numpy as np
 from pyFTS.common.transformations.transformation import Transformation 
 
 
