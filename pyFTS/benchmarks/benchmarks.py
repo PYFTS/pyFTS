@@ -16,7 +16,7 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 from itertools import product
 
-from pyFTS.common import Transformations
+from pyFTS.common.transformations.differential import Differential
 from pyFTS.models import song, chen, yu, ismailefendi, sadaei, hofts, pwfts, ifts, cheng, hwang
 from pyFTS.models.multivariate import mvfts, wmvfts, cmvfts
 from pyFTS.models.ensemble import ensemble
@@ -555,7 +555,7 @@ def run_point(mfts, partitioner, train_data, test_data, window_key=None, **kwarg
 
     tmp3 = [Measures.get_point_statistics]
 
-    tmp5 = [Transformations.Differential]
+    tmp5 = [Differential]
 
     indexer = kwargs.get('indexer', None)
 
@@ -806,7 +806,7 @@ def run_point2(fts_method, order, partitioner_method, partitions, transformation
 
     tmp3 = [Measures.get_point_statistics]
 
-    tmp5 = [Transformations.Differential]
+    tmp5 = [Differential]
 
     indexer = kwargs.get('indexer', None)
 
@@ -1384,7 +1384,7 @@ def plot_compared_series(original, models, colors, typeonlegend=False, save=Fals
                     ls = "-"
                 else:
                     ls = "--"
-                tmpmi, tmpma = Util.plot_interval(ax, forecasts, fts.order, label=lbl, typeonlegend=typeonlegend,
+                tmpmi, tmpma = cUtil.plot_interval(ax, forecasts, fts.order, label=lbl, typeonlegend=typeonlegend,
                                              color=colors[count], ls=ls, linewidth=linewidth)
                 mi.append(tmpmi)
                 ma.append(tmpma)
@@ -1417,89 +1417,6 @@ def plotCompared(original, forecasts, labels, title):
     ax.set_xlabel('T')
     ax.set_xlim([0, len(original)])
     ax.set_ylim([min(original), max(original)])
-
-
-def SelecaoSimples_MenorRMSE(original, parameters, modelo):
-    ret = []
-    errors = []
-    forecasted_best = []
-    print("Série Original")
-    fig = plt.figure(figsize=[20, 12])
-    fig.suptitle("Comparação de modelos ")
-    ax0 = fig.add_axes([0, 0.5, 0.65, 0.45])  # left, bottom, width, height
-    ax0.set_xlim([0, len(original)])
-    ax0.set_ylim([min(original), max(original)])
-    ax0.set_title('Série Temporal')
-    ax0.set_ylabel('F(T)')
-    ax0.set_xlabel('T')
-    ax0.plot(original, label="Original")
-    min_rmse = 100000.0
-    best = None
-    for p in parameters:
-        sets = Grid.GridPartitioner(data=original, npart=p).sets
-        fts = modelo(str(p) + " particoes")
-        fts.train(original, sets=sets)
-        # print(original)
-        forecasted = fts.forecast(original)
-        forecasted.insert(0, original[0])
-        # print(forecasted)
-        ax0.plot(forecasted, label=fts.name)
-        error = Measures.rmse(np.array(forecasted), np.array(original))
-        print(p, error)
-        errors.append(error)
-        if error < min_rmse:
-            min_rmse = error
-            best = fts
-            forecasted_best = forecasted
-    handles0, labels0 = ax0.get_legend_handles_labels()
-    ax0.legend(handles0, labels0)
-    ax1 = fig.add_axes([0.7, 0.5, 0.3, 0.45])  # left, bottom, width, height
-    ax1.set_title('Comparação dos Erros Quadráticos Médios')
-    ax1.set_ylabel('RMSE')
-    ax1.set_xlabel('Quantidade de Partições')
-    ax1.set_xlim([min(parameters), max(parameters)])
-    ax1.plot(parameters, errors)
-    ret.append(best)
-    ret.append(forecasted_best)
-    # Modelo diferencial
-    print("\nSérie Diferencial")
-    difffts = Transformations.differential(original)
-    errors = []
-    forecastedd_best = []
-    ax2 = fig.add_axes([0, 0, 0.65, 0.45])  # left, bottom, width, height
-    ax2.set_xlim([0, len(difffts)])
-    ax2.set_ylim([min(difffts), max(difffts)])
-    ax2.set_title('Série Temporal')
-    ax2.set_ylabel('F(T)')
-    ax2.set_xlabel('T')
-    ax2.plot(difffts, label="Original")
-    min_rmse = 100000.0
-    bestd = None
-    for p in parameters:
-        sets = Grid.GridPartitioner(data=difffts, npart=p)
-        fts = modelo(str(p) + " particoes")
-        fts.train(difffts, sets=sets)
-        forecasted = fts.forecast(difffts)
-        forecasted.insert(0, difffts[0])
-        ax2.plot(forecasted, label=fts.name)
-        error = Measures.rmse(np.array(forecasted), np.array(difffts))
-        print(p, error)
-        errors.append(error)
-        if error < min_rmse:
-            min_rmse = error
-            bestd = fts
-            forecastedd_best = forecasted
-    handles0, labels0 = ax2.get_legend_handles_labels()
-    ax2.legend(handles0, labels0)
-    ax3 = fig.add_axes([0.7, 0, 0.3, 0.45])  # left, bottom, width, height
-    ax3.set_title('Comparação dos Erros Quadráticos Médios')
-    ax3.set_ylabel('RMSE')
-    ax3.set_xlabel('Quantidade de Partições')
-    ax3.set_xlim([min(parameters), max(parameters)])
-    ax3.plot(parameters, errors)
-    ret.append(bestd)
-    ret.append(forecastedd_best)
-    return ret
 
 
 def compareModelsPlot(original, models_fo, models_ho):

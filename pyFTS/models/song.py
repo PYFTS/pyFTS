@@ -14,20 +14,18 @@ class ConventionalFTS(fts.FTS):
         super(ConventionalFTS, self).__init__(order=1, name="FTS", **kwargs)
         self.name = "Traditional FTS"
         self.detail = "Song & Chissom"
-        if self.sets is not None and self.partitioner is not None:
-            self.sets = self.partitioner.sets
 
         self.R = None
 
-        if self.sets is not None:
-            l = len(self.sets)
+        if self.partitioner.sets is not None:
+            l = len(self.partitioner.sets)
             self.R = np.zeros((l,l))
 
     def flr_membership_matrix(self, flr):
-        ordered_set = FuzzySet.set_ordered(self.sets)
-        centroids = [self.sets[k].centroid for k in ordered_set]
-        lm = [self.sets[flr.LHS].membership(k) for k in centroids]
-        rm = [self.sets[flr.RHS].membership(k) for k in centroids]
+        ordered_set = FuzzySet.set_ordered(self.partitioner.sets)
+        centroids = [self.partitioner.sets[k].centroid for k in ordered_set]
+        lm = [self.partitioner.sets[flr.LHS].membership(k) for k in centroids]
+        rm = [self.partitioner.sets[flr.RHS].membership(k) for k in centroids]
 
         l = len(ordered_set)
         r = np.zeros((l, l))
@@ -38,7 +36,7 @@ class ConventionalFTS(fts.FTS):
         return r
 
     def operation_matrix(self, flrs):
-        l = len(self.sets)
+        l = len(self.partitioner)
         if self.R is None or len(self.R) == 0 :
             self.R = np.zeros((l, l))
         for k in flrs:
@@ -59,24 +57,24 @@ class ConventionalFTS(fts.FTS):
         if self.partitioner is not None:
             ordered_sets = self.partitioner.ordered_sets
         else:
-            ordered_sets = FuzzySet.set_ordered(self.sets)
+            ordered_sets = FuzzySet.set_ordered(self.partitioner.sets)
 
         l = len(ndata)
-        npart = len(self.sets)
+        npart = len(self.partitioner)
 
         ret = []
 
         for k in np.arange(0, l):
-            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.sets)
+            mv = FuzzySet.fuzzyfy_instance(ndata[k], self.partitioner.sets)
 
             r = [max([ min(self.R[i][j], mv[j]) for j in np.arange(0,npart) ]) for i in np.arange(0,npart)]
 
             fs = np.ravel(np.argwhere(r == max(r)))
 
             if len(fs) == 1:
-                ret.append(self.sets[ordered_sets[fs[0]]].centroid)
+                ret.append(self.partitioner.sets[ordered_sets[fs[0]]].centroid)
             else:
-                mp = [self.sets[ordered_sets[s]].centroid for s in fs]
+                mp = [self.partitioner.sets[ordered_sets[s]].centroid for s in fs]
 
                 ret.append( sum(mp)/len(mp))
 
