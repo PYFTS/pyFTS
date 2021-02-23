@@ -29,7 +29,7 @@ def acf(data, k):
     return 1 / ((n - k) * sigma) * s
 
 
-def rmse(targets, forecasts):
+def rmse(targets, forecasts, order, steps_ahead):
     """
     Root Mean Squared Error
 
@@ -41,9 +41,15 @@ def rmse(targets, forecasts):
         targets = np.array(targets)
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
-    return np.sqrt(np.nanmean((targets - forecasts) ** 2))
+    return np.sqrt(np.nanmean((targets[order+steps_ahead:] - forecasts[:-steps_ahead]) ** 2))
 
 
+def nmrse(targets, forecasts, order, steps_ahead):
+    """ Normalized Root Mean Squared Error """
+    return rmse(targets, forecasts, order, steps_ahead) / (np.max(targets) - np.min(targets)) ## normalizing in targets because on forecasts might explode to inf (when model predict a line)
+
+
+    
 def rmse_interval(targets, forecasts):
     """
     Root Mean Squared Error
