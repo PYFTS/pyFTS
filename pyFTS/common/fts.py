@@ -324,7 +324,7 @@ class FTS(object):
 
         start = kwargs.get('start_at',0)
 
-        for k in np.arange(start+self.max_lag, l):
+        for k in np.arange(start+self.max_lag, l+1):
             sample = data[k-self.max_lag:k]
             tmp = self.forecast_ahead(sample, step, **kwargs)
 
