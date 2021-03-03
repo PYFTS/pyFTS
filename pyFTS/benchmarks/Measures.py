@@ -29,24 +29,30 @@ def acf(data, k):
     return 1 / ((n - k) * sigma) * s
 
 
-def rmse(targets, forecasts, order, steps_ahead):
+def rmse(targets, forecasts, order=0, offset=0):
     """
     Root Mean Squared Error
 
-    :param targets: 
-    :param forecasts: 
+    :param targets: array of targets
+    :param forecasts: array of forecasts
+    :param order: model order
+    :param offset: forecast offset related to target. 
     :return: 
     """
     if isinstance(targets, list):
         targets = np.array(targets)
     if isinstance(forecasts, list):
         forecasts = np.array(forecasts)
-    return np.sqrt(np.nanmean((targets[order+steps_ahead:] - forecasts[:-steps_ahead]) ** 2))
+    
+    if offset == 0:
+        return np.sqrt(np.nanmean((targets[order:] - forecasts[:]) ** 2))
+    else:
+        return np.sqrt(np.nanmean((targets[order+offset:] - forecasts[:-offset]) ** 2))
 
 
-def nmrse(targets, forecasts, order, steps_ahead):
+def nmrse(targets, forecasts, order=0, offset=0):
     """ Normalized Root Mean Squared Error """
-    return rmse(targets, forecasts, order, steps_ahead) / (np.max(targets) - np.min(targets)) ## normalizing in targets because on forecasts might explode to inf (when model predict a line)
+    return rmse(targets, forecasts, order, offset) / (np.max(targets) - np.min(targets)) ## normalizing in targets because on forecasts might explode to inf (when model predict a line)
 
 
     
