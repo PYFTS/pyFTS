@@ -6,14 +6,14 @@ import pandas as pd
 from typing import Tuple
 from typing import List
 from pyFTS.common.transformations.transformation import Transformation 
-
+import SimpSOM as sps
 
 class SOMTransformation(Transformation):
     def __init__(self,
                  grid_dimension: Tuple,
                  **kwargs):
 
-        import SimpSOM as sps
+        
         
         # SOM attributes
         self.load_file = kwargs.get('loadFile')
