@@ -28,5 +28,5 @@ def explore_partitioners(data, npart, methods=None, mf=None, tam=[12, 10], save=
 
     objs = np.ravel(objs).tolist()
 
-    Util.plot_partitioners(data, objs, tam, save, file)
+    Util.plot_partitioners(objs, tam, save, file)
 

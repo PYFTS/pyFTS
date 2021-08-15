@@ -16,7 +16,7 @@ class SignalEmulator(object):
         self.components = []
         """Components of the signal"""
 
-    def stationary_gaussian(self, mu, sigma, **kwargs):
+    def stationary_gaussian(self, mu:float, sigma:float, **kwargs):
         """
         Creates a continuous Gaussian signal with mean mu and variance sigma.
 
@@ -36,7 +36,7 @@ class SignalEmulator(object):
                                 'parameters': parameters, 'args': kwargs})
         return self
 
-    def incremental_gaussian(self, mu, sigma, **kwargs):
+    def incremental_gaussian(self, mu:float, sigma:float, **kwargs):
         """
         Creates an additive gaussian interference on a previous signal
 
