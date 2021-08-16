@@ -10,7 +10,7 @@ from pyFTS.data import common
 import pandas as pd
 
 
-def get_dataframe():
+def get_dataframe() -> pd.DataFrame:
     """
     Get the complete multivariate time series data.
 

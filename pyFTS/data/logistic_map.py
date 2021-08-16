@@ -8,7 +8,7 @@ x(t) = r * x(t-1) * (1 - x(t -1) )
 import numpy as np
 
 
-def get_data(r = 4, initial_value = 0.3, iterations=100):
+def get_data(r: float = 4, initial_value: float = 0.3, iterations: int=100) -> list:
     '''
     Return a list with the logistic map chaotic time series.
 

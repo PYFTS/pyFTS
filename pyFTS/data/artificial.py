@@ -54,7 +54,7 @@ class SignalEmulator(object):
                                 'parameters': parameters, 'args': kwargs})
         return self
 
-    def periodic_gaussian(self, type, period, mu_min, sigma_min, mu_max, sigma_max, **kwargs):
+    def periodic_gaussian(self, type:str, period:int, mu_min:float, sigma_min:float, mu_max:float, sigma_max:float, **kwargs):
         """
         Creates an additive periodic gaussian interference on a previous signal
 

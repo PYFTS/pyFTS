@@ -8,7 +8,7 @@ dy/dt = -by(t)+ cy(t - tau) / 1+y(t-tau)^10
 import numpy as np
 
 
-def get_data(b=0.1, c=0.2, tau=17, initial_values = np.linspace(0.5,1.5, 18), iterations=1000):
+def get_data(b: float=0.1, c: float=0.2, tau: float =17, initial_values: np.ndarray = np.linspace(0.5,1.5, 18), iterations: int=1000) -> list:
     '''
     Return a list with the Mackey-Glass chaotic time series.
 
