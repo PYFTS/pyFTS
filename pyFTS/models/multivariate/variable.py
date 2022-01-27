@@ -47,11 +47,11 @@ class Variable:
         :param kwargs:
         :return:
         """
-        fs = kwargs.get('partitioner', Grid.GridPartitioner)
-        mf = kwargs.get('func', Membership.trimf)
-        np = kwargs.get('npart', 10)
+        fs = kwargs.pop('partitioner', Grid.GridPartitioner)
+        mf = kwargs.pop('func', Membership.trimf)
+        np = kwargs.pop('npart', 10)
         data = kwargs.get('data', None)
-        kw = kwargs.get('partitioner_specific', {})
+        kw = kwargs.pop('partitioner_specific', {})
         self.partitioner = fs(data=data[self.data_label].values, npart=np, func=mf,
                               transformation=self.transformation, prefix=self.alias,
                               variable=self.name, **kw)
