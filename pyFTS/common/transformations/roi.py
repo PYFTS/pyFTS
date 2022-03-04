@@ -1,4 +1,5 @@
 from pyFTS.common.transformations.transformation import Transformation 
+import numpy as np
 
 
 class ROI(Transformation):
