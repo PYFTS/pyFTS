@@ -5,33 +5,21 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
-
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-55120145-3']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>pyFTS.data package &#8212; pyFTS 1.6 documentation</title>
-    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyFTS.data package &#8212; pyFTS 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyFTS.distributed package" href="pyFTS.distributed.html" />
     <link rel="prev" title="pyFTS.common.transformations package" href="pyFTS.common.transformations.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -51,7 +39,7 @@
         <li class="right" >
           <a href="pyFTS.common.transformations.html" title="pyFTS.common.transformations package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" accesskey="U">pyFTS package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.data package</a></li> 
@@ -77,8 +65,8 @@
 <div class="section" id="module-pyFTS.data.common">
 <span id="pyfts-data-common-module"></span><h2>pyFTS.data.common module<a class="headerlink" href="#module-pyFTS.data.common" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="pyFTS.data.common.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.common.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">';'</span></em>, <em class="sig-param"><span class="n">compression</span><span class="o">=</span><span class="default_value">'infer'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/common.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.common.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.common.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.common.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">';'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'infer'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/common.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.common.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method check if filename already exists, read the file and return its data.
 If the file don’t already exists, it will be downloaded and decompressed.</p>
 <dl class="field-list simple">
@@ -104,13 +92,13 @@ If the file don’t already exists, it will be downloaded and decompressed.</p>
 <span id="artificial-and-synthetic-data-generators"></span><h2>Artificial and synthetic data generators<a class="headerlink" href="#module-pyFTS.data.artificial" title="Permalink to this headline">¶</a></h2>
 <p>Facilities to generate synthetic stochastic processes</p>
 <dl class="py class">
-<dt id="pyFTS.data.artificial.SignalEmulator">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">SignalEmulator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.SignalEmulator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.data.artificial.</span></span><span class="sig-name descname"><span class="pre">SignalEmulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Emulate a complex signal built from several additive and non-additive components</p>
 <dl class="py method">
-<dt id="pyFTS.data.artificial.SignalEmulator.blip">
-<code class="sig-name descname">blip</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.blip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.blip" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.SignalEmulator.blip">
+<span class="sig-name descname"><span class="pre">blip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.blip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.blip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an outlier greater than the maximum or lower then the minimum previous values of the signal,
 and insert it on a random location of the signal.</p>
 <dl class="field-list simple">
@@ -121,14 +109,14 @@ and insert it on a random location of the signal.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.data.artificial.SignalEmulator.components">
-<code class="sig-name descname">components</code><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.components" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.SignalEmulator.components">
+<span class="sig-name descname"><span class="pre">components</span></span><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.components" title="Permalink to this definition">¶</a></dt>
 <dd><p>Components of the signal</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.data.artificial.SignalEmulator.incremental_gaussian">
-<code class="sig-name descname">incremental_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mu</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.incremental_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.incremental_gaussian" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.SignalEmulator.incremental_gaussian">
+<span class="sig-name descname"><span class="pre">incremental_gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.incremental_gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.incremental_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an additive gaussian interference on a previous signal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -149,8 +137,8 @@ and insert it on a random location of the signal.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.data.artificial.SignalEmulator.periodic_gaussian">
-<code class="sig-name descname">periodic_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span></em>, <em class="sig-param"><span class="n">period</span></em>, <em class="sig-param"><span class="n">mu_min</span></em>, <em class="sig-param"><span class="n">sigma_min</span></em>, <em class="sig-param"><span class="n">mu_max</span></em>, <em class="sig-param"><span class="n">sigma_max</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.SignalEmulator.periodic_gaussian">
+<span class="sig-name descname"><span class="pre">periodic_gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.periodic_gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.periodic_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an additive periodic gaussian interference on a previous signal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -173,8 +161,8 @@ and insert it on a random location of the signal.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.data.artificial.SignalEmulator.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.run" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.SignalEmulator.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render the signal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -184,8 +172,8 @@ and insert it on a random location of the signal.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.data.artificial.SignalEmulator.stationary_gaussian">
-<code class="sig-name descname">stationary_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mu</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.stationary_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.stationary_gaussian" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.SignalEmulator.stationary_gaussian">
+<span class="sig-name descname"><span class="pre">stationary_gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#SignalEmulator.stationary_gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.SignalEmulator.stationary_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a continuous Gaussian signal with mean mu and variance sigma.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -210,8 +198,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.artificial.generate_gaussian_linear">
-<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">generate_gaussian_linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mu_ini</span></em>, <em class="sig-param"><span class="n">sigma_ini</span></em>, <em class="sig-param"><span class="n">mu_inc</span></em>, <em class="sig-param"><span class="n">sigma_inc</span></em>, <em class="sig-param"><span class="n">it</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_gaussian_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_gaussian_linear" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.generate_gaussian_linear">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.artificial.</span></span><span class="sig-name descname"><span class="pre">generate_gaussian_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu_ini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_ini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_inc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_inc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_gaussian_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_gaussian_linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate data sampled from Gaussian distribution, with constant or linear changing parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -233,8 +221,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.artificial.generate_linear_periodic_gaussian">
-<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">generate_linear_periodic_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">period</span></em>, <em class="sig-param"><span class="n">mu_min</span></em>, <em class="sig-param"><span class="n">sigma_min</span></em>, <em class="sig-param"><span class="n">mu_max</span></em>, <em class="sig-param"><span class="n">sigma_max</span></em>, <em class="sig-param"><span class="n">it</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_linear_periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_linear_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.generate_linear_periodic_gaussian">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.artificial.</span></span><span class="sig-name descname"><span class="pre">generate_linear_periodic_gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_linear_periodic_gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_linear_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a periodic linear variation on mean and variance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -257,8 +245,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.artificial.generate_sinoidal_periodic_gaussian">
-<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">generate_sinoidal_periodic_gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">period</span></em>, <em class="sig-param"><span class="n">mu_min</span></em>, <em class="sig-param"><span class="n">sigma_min</span></em>, <em class="sig-param"><span class="n">mu_max</span></em>, <em class="sig-param"><span class="n">sigma_max</span></em>, <em class="sig-param"><span class="n">it</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_sinoidal_periodic_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_sinoidal_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.generate_sinoidal_periodic_gaussian">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.artificial.</span></span><span class="sig-name descname"><span class="pre">generate_sinoidal_periodic_gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_sinoidal_periodic_gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_sinoidal_periodic_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a periodic sinoidal variation on mean and variance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -281,8 +269,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.artificial.generate_uniform_linear">
-<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">generate_uniform_linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_ini</span></em>, <em class="sig-param"><span class="n">max_ini</span></em>, <em class="sig-param"><span class="n">min_inc</span></em>, <em class="sig-param"><span class="n">max_inc</span></em>, <em class="sig-param"><span class="n">it</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_uniform_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_uniform_linear" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.generate_uniform_linear">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.artificial.</span></span><span class="sig-name descname"><span class="pre">generate_uniform_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_ini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_ini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_inc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_inc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#generate_uniform_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.generate_uniform_linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate data sampled from Uniform distribution, with constant or  linear changing bounds</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -304,8 +292,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.artificial.random_walk">
-<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">random_walk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'gaussian'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#random_walk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.random_walk" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.random_walk">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.artificial.</span></span><span class="sig-name descname"><span class="pre">random_walk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaussian'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#random_walk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.random_walk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple random walk</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -321,8 +309,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.artificial.white_noise">
-<code class="sig-prename descclassname">pyFTS.data.artificial.</code><code class="sig-name descname">white_noise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">500</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#white_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.artificial.white_noise" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.artificial.white_noise">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.artificial.</span></span><span class="sig-name descname"><span class="pre">white_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/artificial.html#white_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.artificial.white_noise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple Gaussian noise signal
 :param n: number of samples
 :return:</p>
@@ -334,8 +322,8 @@ this signal is added to the previous one</p></li>
 <p>Monthly totals of a airline passengers from USA, from January 1949 through December 1960.</p>
 <p>Source: Hyndman, R.J., Time Series Data Library, <a class="reference external" href="http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/">http://www-personal.buseco.monash.edu.au/~hyndman/TSDL/</a>.</p>
 <dl class="py function">
-<dt id="pyFTS.data.AirPassengers.get_data">
-<code class="sig-prename descclassname">pyFTS.data.AirPassengers.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/AirPassengers.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.AirPassengers.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.AirPassengers.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.AirPassengers.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/AirPassengers.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.AirPassengers.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -345,8 +333,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.AirPassengers.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.AirPassengers.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/AirPassengers.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.AirPassengers.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.AirPassengers.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.AirPassengers.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/AirPassengers.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.AirPassengers.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -362,8 +350,8 @@ this signal is added to the previous one</p></li>
 <p>Daily averaged index, by business day, from 2010 to 2018.</p>
 <p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD">https://finance.yahoo.com/quote/BTC-USD?p=BTC-USD</a></p>
 <dl class="py function">
-<dt id="pyFTS.data.Bitcoin.get_data">
-<code class="sig-prename descclassname">pyFTS.data.Bitcoin.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'AVG'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.Bitcoin.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.Bitcoin.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AVG'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -376,8 +364,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.Bitcoin.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.Bitcoin.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.Bitcoin.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.Bitcoin.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/Bitcoin.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.Bitcoin.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -393,8 +381,8 @@ this signal is added to the previous one</p></li>
 <p>Daily averaged index, by business day, from 1985 to 2017.</p>
 <p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
 <dl class="py function">
-<dt id="pyFTS.data.DowJones.get_data">
-<code class="sig-prename descclassname">pyFTS.data.DowJones.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'AVG'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.DowJones.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.DowJones.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AVG'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -407,8 +395,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.DowJones.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.DowJones.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.DowJones.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.DowJones.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/DowJones.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.DowJones.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -422,8 +410,8 @@ this signal is added to the previous one</p></li>
 <span id="enrollments-dataset"></span><h2>Enrollments dataset<a class="headerlink" href="#module-pyFTS.data.Enrollments" title="Permalink to this headline">¶</a></h2>
 <p>Yearly University of Alabama enrollments from 1971 to 1992.</p>
 <dl class="py function">
-<dt id="pyFTS.data.Enrollments.get_data">
-<code class="sig-prename descclassname">pyFTS.data.Enrollments.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Enrollments.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Enrollments.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.Enrollments.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.Enrollments.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/Enrollments.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.Enrollments.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -433,8 +421,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.Enrollments.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.Enrollments.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Enrollments.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Enrollments.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.Enrollments.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.Enrollments.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/Enrollments.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.Enrollments.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -444,8 +432,8 @@ this signal is added to the previous one</p></li>
 <p>Daily averaged index, by business day, from 2016 to 2018.</p>
 <p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD">https://finance.yahoo.com/quote/ETH-USD?p=ETH-USD</a></p>
 <dl class="py function">
-<dt id="pyFTS.data.Ethereum.get_data">
-<code class="sig-prename descclassname">pyFTS.data.Ethereum.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'AVG'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.Ethereum.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.Ethereum.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AVG'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -458,8 +446,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.Ethereum.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.Ethereum.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.Ethereum.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.Ethereum.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/Ethereum.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.Ethereum.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -474,8 +462,8 @@ this signal is added to the previous one</p></li>
 <p>FOREX market EUR-GBP pair.</p>
 <p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
 <dl class="py function">
-<dt id="pyFTS.data.EURGBP.get_data">
-<code class="sig-prename descclassname">pyFTS.data.EURGBP.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'avg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.EURGBP.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.EURGBP.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'avg'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -488,8 +476,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.EURGBP.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.EURGBP.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.EURGBP.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.EURGBP.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/EURGBP.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.EURGBP.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -504,8 +492,8 @@ this signal is added to the previous one</p></li>
 <p>FOREX market EUR-USD pair.</p>
 <p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
 <dl class="py function">
-<dt id="pyFTS.data.EURUSD.get_data">
-<code class="sig-prename descclassname">pyFTS.data.EURUSD.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'avg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.EURUSD.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.EURUSD.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'avg'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -518,8 +506,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.EURUSD.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.EURUSD.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.EURUSD.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.EURUSD.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/EURUSD.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.EURUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -534,8 +522,8 @@ this signal is added to the previous one</p></li>
 <p>FOREX market GBP-USD pair.</p>
 <p>Daily averaged quotations, by business day, from 2016 to 2018.</p>
 <dl class="py function">
-<dt id="pyFTS.data.GBPUSD.get_data">
-<code class="sig-prename descclassname">pyFTS.data.GBPUSD.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'avg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.GBPUSD.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.GBPUSD.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'avg'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -548,8 +536,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.GBPUSD.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.GBPUSD.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.GBPUSD.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.GBPUSD.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/GBPUSD.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.GBPUSD.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -565,8 +553,8 @@ this signal is added to the previous one</p></li>
 <p>Belo Horizonte station, from 2000-01-01 to  31/12/2012</p>
 <p>Source: <a class="reference external" href="http://www.inmet.gov.br">http://www.inmet.gov.br</a></p>
 <dl class="py function">
-<dt id="pyFTS.data.INMET.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.INMET.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/INMET.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.INMET.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.INMET.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.INMET.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/INMET.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.INMET.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -580,8 +568,8 @@ this signal is added to the previous one</p></li>
 <span id="malaysia-dataset"></span><h2>Malaysia dataset<a class="headerlink" href="#module-pyFTS.data.Malaysia" title="Permalink to this headline">¶</a></h2>
 <p>Hourly Malaysia eletric load and tempeature</p>
 <dl class="py function">
-<dt id="pyFTS.data.Malaysia.get_data">
-<code class="sig-prename descclassname">pyFTS.data.Malaysia.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'load'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.Malaysia.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.Malaysia.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'load'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -594,8 +582,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.Malaysia.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.Malaysia.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.Malaysia.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.Malaysia.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/Malaysia.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.Malaysia.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -611,8 +599,8 @@ this signal is added to the previous one</p></li>
 <p>Daily averaged index by business day, from 2000 to 2016.</p>
 <p>Source: <a class="reference external" href="http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC">http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=IXIC&amp;selected=IXIC</a></p>
 <dl class="py function">
-<dt id="pyFTS.data.NASDAQ.get_data">
-<code class="sig-prename descclassname">pyFTS.data.NASDAQ.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'avg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/NASDAQ.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.NASDAQ.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.NASDAQ.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.NASDAQ.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'avg'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/NASDAQ.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.NASDAQ.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -625,8 +613,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.NASDAQ.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.NASDAQ.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/NASDAQ.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.NASDAQ.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.NASDAQ.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.NASDAQ.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/NASDAQ.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.NASDAQ.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -642,8 +630,8 @@ this signal is added to the previous one</p></li>
 <p>Brasilia station</p>
 <p>Source: <a class="reference external" href="http://sonda.ccst.inpe.br/">http://sonda.ccst.inpe.br/</a></p>
 <dl class="py function">
-<dt id="pyFTS.data.SONDA.get_data">
-<code class="sig-prename descclassname">pyFTS.data.SONDA.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SONDA.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SONDA.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.SONDA.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.SONDA.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/SONDA.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.SONDA.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -656,8 +644,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.SONDA.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.SONDA.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SONDA.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SONDA.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.SONDA.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.SONDA.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/SONDA.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.SONDA.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -673,8 +661,8 @@ this signal is added to the previous one</p></li>
 <p>Daily averaged index, by business day, from 1950 to 2017.</p>
 <p>Source: <a class="reference external" href="https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC">https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC</a></p>
 <dl class="py function">
-<dt id="pyFTS.data.SP500.get_data">
-<code class="sig-prename descclassname">pyFTS.data.SP500.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SP500.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SP500.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.SP500.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.SP500.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/SP500.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.SP500.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -684,8 +672,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.SP500.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.SP500.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/SP500.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.SP500.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.SP500.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.SP500.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/SP500.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.SP500.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -701,8 +689,8 @@ this signal is added to the previous one</p></li>
 <p>Daily averaged index by business day, from 1995 to 2014.</p>
 <p>Source: <a class="reference external" href="http://www.twse.com.tw/en/products/indices/Index_Series.php">http://www.twse.com.tw/en/products/indices/Index_Series.php</a></p>
 <dl class="py function">
-<dt id="pyFTS.data.TAIEX.get_data">
-<code class="sig-prename descclassname">pyFTS.data.TAIEX.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/TAIEX.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.TAIEX.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.TAIEX.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.TAIEX.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/TAIEX.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.TAIEX.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -712,8 +700,8 @@ this signal is added to the previous one</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.TAIEX.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.TAIEX.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/TAIEX.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.TAIEX.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.TAIEX.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.TAIEX.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/TAIEX.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.TAIEX.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -731,8 +719,8 @@ this signal is added to the previous one</p></li>
 <p>dx/dt = a + by(t-1) - x(t-1)^2
 dy/dt = x</p>
 <dl class="py function">
-<dt id="pyFTS.data.henon.get_data">
-<code class="sig-prename descclassname">pyFTS.data.henon.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">1.4</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[1, 1]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/henon.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.henon.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.henon.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.henon.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[1,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/henon.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.henon.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -745,8 +733,8 @@ dy/dt = x</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.henon.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.henon.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">1.4</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[1, 1]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/henon.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.henon.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.henon.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.henon.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[1,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/henon.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.henon.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dataframe with the bivariate Henon Map time series (x, y).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -770,8 +758,8 @@ dy/dt = x</p>
 Nature. 261 (5560): 459–467. doi:10.1038/261459a0.</p>
 <p>x(t) = r * x(t-1) * (1 - x(t -1) )</p>
 <dl class="py function">
-<dt id="pyFTS.data.logistic_map.get_data">
-<code class="sig-prename descclassname">pyFTS.data.logistic_map.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">initial_value</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/logistic_map.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.logistic_map.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.logistic_map.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.logistic_map.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/pyFTS/data/logistic_map.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.logistic_map.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with the logistic map chaotic time series.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -796,8 +784,8 @@ Nature. 261 (5560): 459–467. doi:10.1038/261459a0.</p>
 dy/dt = x(b - z) - y
 dz/dt = xy - cz</p>
 <dl class="py function">
-<dt id="pyFTS.data.lorentz.get_data">
-<code class="sig-prename descclassname">pyFTS.data.lorentz.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">10.0</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">28.0</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">2.6666666666666665</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[0.1, 0, 0]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/lorentz.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.lorentz.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.lorentz.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.lorentz.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">28.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.6666666666666665</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[0.1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/lorentz.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.lorentz.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -810,8 +798,8 @@ dz/dt = xy - cz</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.lorentz.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.lorentz.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">10.0</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">28.0</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">2.6666666666666665</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[0.1, 0, 0]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/lorentz.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.lorentz.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.lorentz.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.lorentz.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">28.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.6666666666666665</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[0.1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/lorentz.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.lorentz.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dataframe with the multivariate Lorenz Map time series (x, y, z).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -837,8 +825,8 @@ dz/dt = xy - cz</p>
 Science, 197(4300):287-289.</p>
 <p>dy/dt = -by(t)+ cy(t - tau) / 1+y(t-tau)^10</p>
 <dl class="py function">
-<dt id="pyFTS.data.mackey_glass.get_data">
-<code class="sig-prename descclassname">pyFTS.data.mackey_glass.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">tau</span><span class="o">=</span><span class="default_value">17</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">array([0.5, 0.55882353, 0.61764706, 0.67647059, 0.73529412, 0.79411765, 0.85294118, 0.91176471, 0.97058824, 1.02941176, 1.08823529, 1.14705882, 1.20588235, 1.26470588, 1.32352941, 1.38235294, 1.44117647, 1.5])</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/mackey_glass.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.mackey_glass.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.mackey_glass.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.mackey_glass.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">17</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([0.5,</span> <span class="pre">0.55882353,</span> <span class="pre">0.61764706,</span> <span class="pre">0.67647059,</span> <span class="pre">0.73529412,</span> <span class="pre">0.79411765,</span> <span class="pre">0.85294118,</span> <span class="pre">0.91176471,</span> <span class="pre">0.97058824,</span> <span class="pre">1.02941176,</span> <span class="pre">1.08823529,</span> <span class="pre">1.14705882,</span> <span class="pre">1.20588235,</span> <span class="pre">1.26470588,</span> <span class="pre">1.32352941,</span> <span class="pre">1.38235294,</span> <span class="pre">1.44117647,</span> <span class="pre">1.5])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/pyFTS/data/mackey_glass.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.mackey_glass.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with the Mackey-Glass chaotic time series.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -869,8 +857,8 @@ Science, 197(4300):287-289.</p>
 dy/dt = x + ay
 dz/dt = b + z( x - c )</p>
 <dl class="py function">
-<dt id="pyFTS.data.rossler.get_data">
-<code class="sig-prename descclassname">pyFTS.data.rossler.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">5.7</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[0.001, 0.001, 0.001]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">5000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/rossler.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.rossler.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.rossler.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.rossler.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[0.001,</span> <span class="pre">0.001,</span> <span class="pre">0.001]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/rossler.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.rossler.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -883,8 +871,8 @@ dz/dt = b + z( x - c )</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.rossler.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.rossler.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">5.7</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">initial_values</span><span class="o">=</span><span class="default_value">[0.001, 0.001, 0.001]</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">5000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/rossler.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.rossler.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.rossler.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.rossler.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[0.001,</span> <span class="pre">0.001,</span> <span class="pre">0.001]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/rossler.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.rossler.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dataframe with the multivariate Rössler Map time series (x, y, z).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -909,8 +897,8 @@ dz/dt = b + z( x - c )</p>
 <p>Monthly sunspot numbers from 1749 to May 2016</p>
 <p>Source: <a class="reference external" href="https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/">https://www.esrl.noaa.gov/psd/gcos_wgsp/Timeseries/SUNSPOT/</a></p>
 <dl class="py function">
-<dt id="pyFTS.data.sunspots.get_data">
-<code class="sig-prename descclassname">pyFTS.data.sunspots.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/sunspots.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.sunspots.get_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.sunspots.get_data">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.sunspots.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pyFTS/data/sunspots.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.sunspots.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a simple univariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -920,8 +908,8 @@ dz/dt = b + z( x - c )</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.data.sunspots.get_dataframe">
-<code class="sig-prename descclassname">pyFTS.data.sunspots.</code><code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/data/sunspots.html#get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.data.sunspots.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.data.sunspots.get_dataframe">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.data.sunspots.</span></span><span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyFTS/data/sunspots.html#get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.data.sunspots.get_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the complete multivariate time series data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -940,8 +928,9 @@ dz/dt = b + z( x - c )</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">pyFTS.data package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.data">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -972,12 +961,17 @@ dz/dt = b + z( x - c )</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="pyFTS.common.transformations.html"
-                        title="previous chapter">pyFTS.common.transformations package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="pyFTS.distributed.html"
-                        title="next chapter">pyFTS.distributed package</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="pyFTS.common.transformations.html"
+                          title="previous chapter">pyFTS.common.transformations package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="pyFTS.distributed.html"
+                          title="next chapter">pyFTS.distributed package</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -989,7 +983,7 @@ dz/dt = b + z( x - c )</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -1014,15 +1008,15 @@ dz/dt = b + z( x - c )</p>
         <li class="right" >
           <a href="pyFTS.common.transformations.html" title="pyFTS.common.transformations package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.data package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+        &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>

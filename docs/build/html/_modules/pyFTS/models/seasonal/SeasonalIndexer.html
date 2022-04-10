@@ -5,31 +5,19 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
-
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-55120145-3']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>pyFTS.models.seasonal.SeasonalIndexer &#8212; pyFTS 1.6 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyFTS.models.seasonal.SeasonalIndexer &#8212; pyFTS 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/bizstyle.css" />
     
-    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/language_data.js"></script>
     <script src="../../../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -43,7 +31,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.models.seasonal.SeasonalIndexer</a></li> 
       </ul>
@@ -57,14 +45,14 @@
   <h1>Source code for pyFTS.models.seasonal.SeasonalIndexer</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pyFTS.models.seasonal</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models.seasonal</span> <span class="k">import</span> <span class="n">common</span>
 
 
 <div class="viewcode-block" id="SeasonalIndexer"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.SeasonalIndexer">[docs]</a><span class="k">class</span> <span class="nc">SeasonalIndexer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Seasonal Indexer. Responsible to find the seasonal index of a data point inside its data set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num_seasons</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num_seasons</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_seasons</span> <span class="o">=</span> <span class="n">num_seasons</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
@@ -89,7 +77,7 @@
 
 <div class="viewcode-block" id="LinearSeasonalIndexer"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.LinearSeasonalIndexer">[docs]</a><span class="k">class</span> <span class="nc">LinearSeasonalIndexer</span><span class="p">(</span><span class="n">SeasonalIndexer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Use the data array/list position to index the seasonality &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seasons</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seasons</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Indexer for array/list position</span>
 <span class="sd">        :param seasons: A list with the season group (i.e: 7 for week, 30 for month, etc)</span>
@@ -147,7 +135,7 @@
 
 <div class="viewcode-block" id="DataFrameSeasonalIndexer"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DataFrameSeasonalIndexer">[docs]</a><span class="k">class</span> <span class="nc">DataFrameSeasonalIndexer</span><span class="p">(</span><span class="n">SeasonalIndexer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Use the Pandas.DataFrame index position to index the seasonality &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index_fields</span><span class="p">,</span><span class="n">index_seasons</span><span class="p">,</span> <span class="n">data_field</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index_fields</span><span class="p">,</span><span class="n">index_seasons</span><span class="p">,</span> <span class="n">data_field</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param index_fields: DataFrame field to use as index</span>
@@ -199,7 +187,7 @@
 
 <div class="viewcode-block" id="DateTimeSeasonalIndexer"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.SeasonalIndexer.DateTimeSeasonalIndexer">[docs]</a><span class="k">class</span> <span class="nc">DateTimeSeasonalIndexer</span><span class="p">(</span><span class="n">SeasonalIndexer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Use a Pandas.DataFrame date field to index the seasonality &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">date_field</span><span class="p">,</span> <span class="n">index_fields</span><span class="p">,</span> <span class="n">index_seasons</span><span class="p">,</span> <span class="n">data_field</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">date_field</span><span class="p">,</span> <span class="n">index_fields</span><span class="p">,</span> <span class="n">index_seasons</span><span class="p">,</span> <span class="n">data_field</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param date_field: DataFrame field that contains the datetime field used on index</span>
@@ -269,7 +257,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -288,14 +276,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.models.seasonal.SeasonalIndexer</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+        &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>

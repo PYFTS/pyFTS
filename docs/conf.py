@@ -20,13 +20,13 @@ sys.path.insert(0, os.path.abspath('../pyFTS'))
 # -- Project information -----------------------------------------------------
 
 project = 'pyFTS'
-copyright = '2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil'
-author = 'Machine Intelligence and Data Science Laboratory - UFMG - Brazil'
+copyright = '2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil'
+author = 'Petrônio Cândido de Lima e Silva'
 
 # The short X.Y version
 version = '1'
 # The full version, including alpha/beta/rc tags
-release = '1.6'
+release = '1.7'
 
 
 # -- General configuration ---------------------------------------------------
@@ -46,7 +46,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'sphinxcontrib.googleanalytics'
+    #'sphinxcontrib.googleanalytics'
 ]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -5,31 +5,19 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
-
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-55120145-3']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>pyFTS.models.nonstationary.honsfts &#8212; pyFTS 1.6 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyFTS.models.nonstationary.honsfts &#8212; pyFTS 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/bizstyle.css" />
     
-    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/language_data.js"></script>
     <script src="../../../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -43,7 +31,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.models.nonstationary.honsfts</a></li> 
       </ul>
@@ -56,15 +44,15 @@
             
   <h1>Source code for pyFTS.models.nonstationary.honsfts</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="kn">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">FLR</span><span class="p">,</span> <span class="n">fts</span>
-<span class="kn">from</span> <span class="nn">pyFTS.models</span> <span class="kn">import</span> <span class="n">hofts</span>
-<span class="kn">from</span> <span class="nn">pyFTS.models.nonstationary</span> <span class="kn">import</span> <span class="n">common</span><span class="p">,</span> <span class="n">flrg</span><span class="p">,</span> <span class="n">nsfts</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">FLR</span><span class="p">,</span> <span class="n">fts</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models</span> <span class="k">import</span> <span class="n">hofts</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models.nonstationary</span> <span class="k">import</span> <span class="n">common</span><span class="p">,</span> <span class="n">flrg</span><span class="p">,</span> <span class="n">nsfts</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
 
 
 <div class="viewcode-block" id="HighOrderNonStationaryFLRG"><a class="viewcode-back" href="../../../../pyFTS.models.nonstationary.html#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFLRG">[docs]</a><span class="k">class</span> <span class="nc">HighOrderNonStationaryFLRG</span><span class="p">(</span><span class="n">flrg</span><span class="o">.</span><span class="n">NonStationaryFLRG</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;First Order NonStationary Fuzzy Logical Relationship Group&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">HighOrderNonStationaryFLRG</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">LHS</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span> <span class="o">=</span> <span class="p">{}</span>
@@ -103,7 +91,7 @@
         <span class="n">upper</span> <span class="o">=</span> <span class="n">up</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">upper</span></div>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">_str</span> <span class="o">+=</span> <span class="s2">&quot;, &quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_str</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
@@ -111,13 +99,13 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; -&gt; &quot;</span> <span class="o">+</span> <span class="n">_str</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="HighOrderNonStationaryFTS"><a class="viewcode-back" href="../../../../pyFTS.models.nonstationary.html#pyFTS.models.nonstationary.honsfts.HighOrderNonStationaryFTS">[docs]</a><span class="k">class</span> <span class="nc">HighOrderNonStationaryFTS</span><span class="p">(</span><span class="n">nsfts</span><span class="o">.</span><span class="n">NonStationaryFTS</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;NonStationaryFTS Fuzzy Time Series&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">HighOrderNonStationaryFTS</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;High Order Non Stationary FTS&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shortname</span> <span class="o">=</span> <span class="s2">&quot;HONSFTS&quot;</span>
@@ -308,7 +296,7 @@
 
         <span class="k">return</span> <span class="n">ret</span></div>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;:</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">:</span>
             <span class="n">tmp</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flrgs</span><span class="p">[</span><span class="n">r</span><span class="p">]))</span>
@@ -325,7 +313,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -344,14 +332,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.models.nonstationary.honsfts</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+        &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>

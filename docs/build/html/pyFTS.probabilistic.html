@@ -5,32 +5,20 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
-
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-55120145-3']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>pyFTS.probabilistic package &#8212; pyFTS 1.6 documentation</title>
-    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyFTS.probabilistic package &#8212; pyFTS 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="pyFTS.partitioners package" href="pyFTS.partitioners.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -47,7 +35,7 @@
         <li class="right" >
           <a href="pyFTS.partitioners.html" title="pyFTS.partitioners package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" accesskey="U">pyFTS package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.probabilistic package</a></li> 
@@ -71,15 +59,15 @@
 <div class="section" id="module-pyFTS.probabilistic.ProbabilityDistribution">
 <span id="pyfts-probabilistic-probabilitydistribution-module"></span><h2>pyFTS.probabilistic.ProbabilityDistribution module<a class="headerlink" href="#module-pyFTS.probabilistic.ProbabilityDistribution" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.probabilistic.ProbabilityDistribution.</code><code class="sig-name descname">ProbabilityDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'KDE'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.probabilistic.ProbabilityDistribution.</span></span><span class="sig-name descname"><span class="pre">ProbabilityDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'KDE'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Represents a discrete or continous probability distribution
 If type is histogram, the PDF is discrete
 If type is KDE the PDF is continuous</p>
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append">
-<code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increment the frequency count for the values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -89,8 +77,8 @@ If type is KDE the PDF is continuous</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append_interval">
-<code class="sig-name descname">append_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">intervals</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.append_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append_interval" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append_interval">
+<span class="sig-name descname"><span class="pre">append_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intervals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.append_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.append_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increment the frequency count for all values inside an interval</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -100,8 +88,8 @@ If type is KDE the PDF is continuous</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.averageloglikelihood">
-<code class="sig-name descname">averageloglikelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.averageloglikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.averageloglikelihood" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.averageloglikelihood">
+<span class="sig-name descname"><span class="pre">averageloglikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.averageloglikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.averageloglikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Average log likelihood of the probability distribution with respect to data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -114,19 +102,19 @@ If type is KDE the PDF is continuous</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.bins">
-<code class="sig-name descname">bins</code><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.bins" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.bins">
+<span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.bins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of bins on a discrete PDF</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.build_cdf_qtl">
-<code class="sig-name descname">build_cdf_qtl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.build_cdf_qtl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.build_cdf_qtl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.build_cdf_qtl">
+<span class="sig-name descname"><span class="pre">build_cdf_qtl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.build_cdf_qtl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.build_cdf_qtl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy">
-<code class="sig-name descname">crossentropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.crossentropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy">
+<span class="sig-name descname"><span class="pre">crossentropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.crossentropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.crossentropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cross entropy between the actual probability distribution and the informed one, 
 H(P,Q) = - ∑ P(x) log ( Q(x) )</p>
 <dl class="field-list simple">
@@ -140,8 +128,8 @@ H(P,Q) = - ∑ P(x) log ( Q(x) )</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative">
-<code class="sig-name descname">cumulative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.cumulative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative">
+<span class="sig-name descname"><span class="pre">cumulative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.cumulative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.cumulative" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the cumulative probability densities for the input values,
 such that F(x) = P(X &lt;= x)</p>
 <dl class="field-list simple">
@@ -155,8 +143,8 @@ such that F(x) = P(X &lt;= x)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.density">
-<code class="sig-name descname">density</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.density" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.density">
+<span class="sig-name descname"><span class="pre">density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the probability densities for the input values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -169,8 +157,8 @@ such that F(x) = P(X &lt;= x)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.differential_offset">
-<code class="sig-name descname">differential_offset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.differential_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.differential_offset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.differential_offset">
+<span class="sig-name descname"><span class="pre">differential_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.differential_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.differential_offset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Auxiliary function for probability distributions of differentiated data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -183,8 +171,8 @@ such that F(x) = P(X &lt;= x)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood">
-<code class="sig-name descname">empiricalloglikelihood</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.empiricalloglikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood">
+<span class="sig-name descname"><span class="pre">empiricalloglikelihood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.empiricalloglikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.empiricalloglikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Empirical Log Likelihood of the probability distribution, L(P) = ∑ log( P(x) )</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -194,15 +182,15 @@ such that F(x) = P(X &lt;= x)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy">
-<code class="sig-name descname">entropy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy">
+<span class="sig-name descname"><span class="pre">entropy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.entropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the entropy of the probability distribution, H(P) = E[ -ln P(X) ] = - ∑ P(x) log ( P(x) )</p>
 <p>:return:the entropy of the probability distribution</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.expected_value">
-<code class="sig-name descname">expected_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.expected_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.expected_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.expected_value">
+<span class="sig-name descname"><span class="pre">expected_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.expected_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.expected_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the expected value of the distribution, as E[X] = ∑ x * P(x)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -212,8 +200,8 @@ such that F(x) = P(X &lt;= x)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence">
-<code class="sig-name descname">kullbackleiblerdivergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.kullbackleiblerdivergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence">
+<span class="sig-name descname"><span class="pre">kullbackleiblerdivergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.kullbackleiblerdivergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.kullbackleiblerdivergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Kullback-Leibler divergence between the actual probability distribution and the informed one.
 DKL(P || Q) = - ∑ P(x) log( P(X) / Q(x) )</p>
 <dl class="field-list simple">
@@ -227,19 +215,19 @@ DKL(P || Q) = - ∑ P(x) log( P(X) / Q(x) )</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.labels">
-<code class="sig-name descname">labels</code><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.labels" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.labels">
+<span class="sig-name descname"><span class="pre">labels</span></span><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bins labels on a discrete PDF</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.plot">
-<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'black'</span></em>, <em class="sig-param"><span class="n">tam</span><span class="o">=</span><span class="default_value">[10, 6]</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.plot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[10,</span> <span class="pre">6]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.pseudologlikelihood">
-<code class="sig-name descname">pseudologlikelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.pseudologlikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.pseudologlikelihood" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.pseudologlikelihood">
+<span class="sig-name descname"><span class="pre">pseudologlikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.pseudologlikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.pseudologlikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pseudo log likelihood of the probability distribution with respect to data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -252,8 +240,8 @@ DKL(P || Q) = - ∑ P(x) log( P(X) / Q(x) )</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile">
-<code class="sig-name descname">quantile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.quantile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile">
+<span class="sig-name descname"><span class="pre">quantile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.quantile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.quantile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the Universe of Discourse values in relation to the quantile input values,
 such that Q(tau) = min( {x | F(x) &gt;= tau })</p>
 <dl class="field-list simple">
@@ -267,8 +255,8 @@ such that Q(tau) = min( {x | F(x) &gt;= tau })</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.set">
-<code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">density</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.set" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#ProbabilityDistribution.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assert a probability ‘density’ for a certain value ‘value’, such that P(value) = density</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -281,23 +269,23 @@ such that Q(tau) = min( {x | F(x) &gt;= tau })</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.type">
-<code class="sig-name descname">type</code><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>If type is histogram, the PDF is discrete
 If type is KDE the PDF is continuous</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.uod">
-<code class="sig-name descname">uod</code><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.uod" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.uod">
+<span class="sig-name descname"><span class="pre">uod</span></span><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.ProbabilityDistribution.uod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Universe of discourse</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyFTS.probabilistic.ProbabilityDistribution.from_point">
-<code class="sig-prename descclassname">pyFTS.probabilistic.ProbabilityDistribution.</code><code class="sig-name descname">from_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#from_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.from_point" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.ProbabilityDistribution.from_point">
+<span class="sig-prename descclassname"><span class="pre">pyFTS.probabilistic.ProbabilityDistribution.</span></span><span class="sig-name descname"><span class="pre">from_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/ProbabilityDistribution.html#from_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.ProbabilityDistribution.from_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a probability distribution from a scalar value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -317,25 +305,25 @@ If type is KDE the PDF is continuous</p>
 <span id="pyfts-probabilistic-kde-module"></span><h2>pyFTS.probabilistic.kde module<a class="headerlink" href="#module-pyFTS.probabilistic.kde" title="Permalink to this headline">¶</a></h2>
 <p>Kernel Density Estimation</p>
 <dl class="py class">
-<dt id="pyFTS.probabilistic.kde.KernelSmoothing">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.probabilistic.kde.</code><code class="sig-name descname">KernelSmoothing</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/kde.html#KernelSmoothing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.kde.KernelSmoothing">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.probabilistic.kde.</span></span><span class="sig-name descname"><span class="pre">KernelSmoothing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/kde.html#KernelSmoothing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Kernel Density Estimation</p>
 <dl class="py attribute">
-<dt id="pyFTS.probabilistic.kde.KernelSmoothing.h">
-<code class="sig-name descname">h</code><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing.h" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.kde.KernelSmoothing.h">
+<span class="sig-name descname"><span class="pre">h</span></span><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing.h" title="Permalink to this definition">¶</a></dt>
 <dd><p>Width parameter</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.probabilistic.kde.KernelSmoothing.kernel">
-<code class="sig-name descname">kernel</code><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing.kernel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.kde.KernelSmoothing.kernel">
+<span class="sig-name descname"><span class="pre">kernel</span></span><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing.kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Kernel function</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.kde.KernelSmoothing.kernel_function">
-<code class="sig-name descname">kernel_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/kde.html#KernelSmoothing.kernel_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing.kernel_function" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.kde.KernelSmoothing.kernel_function">
+<span class="sig-name descname"><span class="pre">kernel_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/kde.html#KernelSmoothing.kernel_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing.kernel_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the kernel</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -348,8 +336,8 @@ If type is KDE the PDF is continuous</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.probabilistic.kde.KernelSmoothing.probability">
-<code class="sig-name descname">probability</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/kde.html#KernelSmoothing.probability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing.probability" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.probabilistic.kde.KernelSmoothing.probability">
+<span class="sig-name descname"><span class="pre">probability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/probabilistic/kde.html#KernelSmoothing.probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.probabilistic.kde.KernelSmoothing.probability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Probability of the point x on data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -376,8 +364,9 @@ If type is KDE the PDF is continuous</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">pyFTS.probabilistic package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.probabilistic">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -387,9 +376,12 @@ If type is KDE the PDF is continuous</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="pyFTS.partitioners.html"
-                        title="previous chapter">pyFTS.partitioners package</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="pyFTS.partitioners.html"
+                          title="previous chapter">pyFTS.partitioners package</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -401,7 +393,7 @@ If type is KDE the PDF is continuous</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -423,15 +415,15 @@ If type is KDE the PDF is continuous</p>
         <li class="right" >
           <a href="pyFTS.partitioners.html" title="pyFTS.partitioners package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.probabilistic package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+        &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>

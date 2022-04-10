@@ -12,7 +12,7 @@ import pandas as pd
 
 
 def get_data(var: str, a: float = 10.0, b: float = 28.0, c: float = 8.0 / 3.0, dt: float = 0.01,
-                  initial_values: list[float] = [0.1, 0, 0], iterations: int=1000) -> pd.DataFrame:
+                  initial_values: list = [0.1, 0, 0], iterations: int=1000) -> pd.DataFrame:
     """
         Get a simple univariate time series data.
 
@@ -23,7 +23,7 @@ def get_data(var: str, a: float = 10.0, b: float = 28.0, c: float = 8.0 / 3.0, d
 
 
 def get_dataframe(a: float = 10.0, b: float = 28.0, c: float = 8.0 / 3.0, dt: float = 0.01,
-                  initial_values: list[float] = [0.1, 0, 0], iterations: int=1000)-> pd.DataFrame:
+                  initial_values: list = [0.1, 0, 0], iterations: int=1000)-> pd.DataFrame:
     '''
     Return a dataframe with the multivariate Lorenz Map time series (x, y, z).
 

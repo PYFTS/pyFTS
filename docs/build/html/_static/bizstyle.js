@@ -36,6 +36,6 @@ $(window).resize(function(){
         $("li.nav-item-0 a").text("Top");
     }
     else {
-        $("li.nav-item-0 a").text("pyFTS 1.6 documentation");
+        $("li.nav-item-0 a").text("pyFTS 1.7 documentation");
     }
 });

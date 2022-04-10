@@ -8,7 +8,7 @@ class FuzzySet(object):
     Fuzzy Set
     """
 
-    def __init__(self, name, mf, parameters, centroid, alpha=1.0, **kwargs):
+    def __init__(self, name : str, mf, parameters : list, centroid : float, alpha : float=1.0, **kwargs):
         """
         Create a Fuzzy Set
         """
@@ -22,7 +22,7 @@ class FuzzySet(object):
         """The fuzzy set center of mass (or midpoint)"""
         self.alpha : float = alpha
         """The alpha cut value"""
-        self.type = kwargs.get('type', 'common')
+        self.type : str = kwargs.get('type', 'common')
         """The fuzzy set type (common, composite, nonstationary, etc)"""
         self.variable = kwargs.get('variable', None)
         """In multivariate time series, indicate for which variable this fuzzy set belogs"""
@@ -125,6 +125,7 @@ def fuzzyfy(data, partitioner, **kwargs):
     :keyword method: the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)
     :keyword mode: the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership
     values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )
+    
     :returns a list with the fuzzyfied values, depending on the mode
 
     """
@@ -209,7 +210,7 @@ def fuzzyfy_instances(data : list, fuzzy_sets : dict, ordered_sets=None) -> list
     return ret
 
 
-def get_fuzzysets(inst, fuzzy_sets : dict, ordered_sets : list =None, alpha_cut : flota =0.0) -> list:
+def get_fuzzysets(inst, fuzzy_sets : dict, ordered_sets : list =None, alpha_cut : float =0.0) -> list:
     """
     Return the fuzzy sets which membership value for a inst is greater than the alpha_cut
 

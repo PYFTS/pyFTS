@@ -107,7 +107,7 @@ class FTS(object):
         """
         Forecast using trained model
 
-        :param data: time series with minimal length to the order of the model
+        :param data: time series with minimal length to the order of the model. The type of the data is list or np.array for univariate models and pd.DataFrame for multivariate models. 
 
         :keyword type: the forecasting type, one of these values: point(default), interval, distribution or multivariate.
         :keyword steps_ahead: The forecasting path H, i. e., tell the model to forecast from t+1 to t+H.
@@ -205,9 +205,11 @@ class FTS(object):
         """
         Point forecast one step ahead
 
-        :param data: time series data with the minimal length equal to the max_lag of the model
+        :param data: time series data with the minimal length equal to the max_lag of the model. The type of the data is list or np.array for univariate models and pd.DataFrame for multivariate models. 
         :param kwargs: model specific parameters
+
         :return: a list with the forecasted values
+        
         """
         raise NotImplementedError('This model do not perform one step ahead point forecasts!')
 
@@ -221,7 +223,7 @@ class FTS(object):
         """
         raise NotImplementedError('This model do not perform one step ahead interval forecasts!')
 
-    def forecast_distribution(self, data, **kwargs) -> list[ProbabilityDistribution.ProbabilityDistribution]:
+    def forecast_distribution(self, data, **kwargs) -> list:
         """
         Probabilistic forecast one step ahead
 
@@ -283,7 +285,7 @@ class FTS(object):
         """
         raise NotImplementedError('This model do not perform multi step ahead interval forecasts!')
 
-    def forecast_ahead_distribution(self, data, steps, **kwargs) -> list[ProbabilityDistribution.ProbabilityDistribution]:
+    def forecast_ahead_distribution(self, data, steps, **kwargs) -> list:
         """
         Probabilistic forecast from 1 to H steps ahead, where H is given by the steps parameter
 
