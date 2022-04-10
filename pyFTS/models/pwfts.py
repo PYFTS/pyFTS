@@ -661,22 +661,29 @@ class ProbabilisticWeightedFTS(ifts.IntervalFTS):
         return tmp
 
 
-def visualize_distributions(model, **kwargs):
-    import matplotlib.pyplot as plt
-    from matplotlib import gridspec
-    import seaborn as sns
-
+def highorder_fuzzy_markov_chain(model):
     ordered_sets = model.partitioner.ordered_sets
+    
     ftpg_keys = sorted(model.flrgs.keys(), key=lambda x: model.flrgs[x].get_midpoint(model.sets))
-
-    lhs_probs = [model.flrg_lhs_unconditional_probability(model.flrgs[k])
-                 for k in ftpg_keys]
+    
+    lhs_probs = np.array([model.flrg_lhs_unconditional_probability(model.flrgs[k])
+                 for k in ftpg_keys])
 
     mat = np.zeros((len(ftpg_keys), len(ordered_sets)))
     for row, w in enumerate(ftpg_keys):
         for col, k in enumerate(ordered_sets):
             if k in model.flrgs[w].RHS:
                 mat[row, col] = model.flrgs[w].rhs_unconditional_probability(k)
+                
+    return ftpg_keys, ordered_sets, lhs_probs, mat
+
+    
+def visualize_distributions(model, **kwargs):
+    import matplotlib.pyplot as plt
+    from matplotlib import gridspec
+    import seaborn as sns
+    
+    ftpg_keys, ordered_sets, lhs_probs, mat = highorder_fuzzy_markov_chain(model)
 
     size = kwargs.get('size', (5,10))
 
@@ -695,3 +702,5 @@ def visualize_distributions(model, **kwargs):
     ax.set_xticklabels(ordered_sets)
     ax.grid(True)
     ax.xaxis.set_tick_params(rotation=90)
+    
+
