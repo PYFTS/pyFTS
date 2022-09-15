@@ -13,6 +13,7 @@ This project is continously under improvement and contributors are well come.
 ## How to reference pyFTS?
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.597359.svg)](https://doi.org/10.5281/zenodo.597359)
+[![Citation Badge](https://api.juleskreuer.eu/citation-badge.php?doi=10.5281/zenodo.597359)](https://juleskreuer.eu/projekte/citation-badge/)
 
  Silva, P. C. L. et al. *pyFTS: Fuzzy Time Series for Python.* Belo Horizonte. 2018. DOI: 10.5281/zenodo.597359. Url: <http://doi.org/10.5281/zenodo.597359>
 
