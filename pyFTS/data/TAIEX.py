@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 
 
-def get_data():
+def get_data() -> np.ndarray:
     """
     Get the univariate time series data.
 
@@ -21,7 +21,7 @@ def get_data():
     return dat
 
 
-def get_dataframe():
+def get_dataframe() -> pd.DataFrame:
     """
     Get the complete multivariate time series data.
 

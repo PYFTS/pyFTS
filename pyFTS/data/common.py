@@ -7,7 +7,7 @@ from pathlib import Path
 from urllib import request
 
 
-def get_dataframe(filename, url, sep=";", compression='infer'):
+def get_dataframe(filename: str, url: str, sep:str=";", compression:str='infer') -> pd.DataFrame:
     """
     This method check if filename already exists, read the file and return its data.
     If the file don't already exists, it will be downloaded and decompressed.

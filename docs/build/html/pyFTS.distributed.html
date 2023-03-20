@@ -5,33 +5,21 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
-
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-55120145-3']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>pyFTS.distributed package &#8212; pyFTS 1.6 documentation</title>
-    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyFTS.distributed package &#8212; pyFTS 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyFTS.hyperparam package" href="pyFTS.hyperparam.html" />
     <link rel="prev" title="pyFTS.data package" href="pyFTS.data.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -51,7 +39,7 @@
         <li class="right" >
           <a href="pyFTS.data.html" title="pyFTS.data package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" accesskey="U">pyFTS package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.distributed package</a></li> 
@@ -71,67 +59,8 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-pyFTS.distributed.dispy">
-<span id="pyfts-distributed-dispy-module"></span><h2>pyFTS.distributed.dispy module<a class="headerlink" href="#module-pyFTS.distributed.dispy" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="pyFTS.distributed.dispy.distributed_predict">
-<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">distributed_predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">nodes</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">num_batches</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#distributed_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.distributed_predict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="pyFTS.distributed.dispy.distributed_train">
-<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">distributed_train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">train_method</span></em>, <em class="sig-param"><span class="n">nodes</span></em>, <em class="sig-param"><span class="n">fts_method</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">num_batches</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">train_parameters</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#distributed_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.distributed_train" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="pyFTS.distributed.dispy.get_number_of_cpus">
-<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">get_number_of_cpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#get_number_of_cpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.get_number_of_cpus" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="pyFTS.distributed.dispy.simple_model_predict">
-<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">simple_model_predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#simple_model_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.simple_model_predict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="pyFTS.distributed.dispy.simple_model_train">
-<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">simple_model_train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#simple_model_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.simple_model_train" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="pyFTS.distributed.dispy.start_dispy_cluster">
-<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">start_dispy_cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span></em>, <em class="sig-param"><span class="n">nodes</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#start_dispy_cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.start_dispy_cluster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start a new Dispy cluster on ‘nodes’ to execute the method ‘method’</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> – function to be executed on each cluster node</p></li>
-<li><p><strong>nodes</strong> – list of node names or IP’s.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the dispy cluster instance and the http_server for monitoring</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyFTS.distributed.dispy.stop_dispy_cluster">
-<code class="sig-prename descclassname">pyFTS.distributed.dispy.</code><code class="sig-name descname">stop_dispy_cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster</span></em>, <em class="sig-param"><span class="n">http_server</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/distributed/dispy.html#stop_dispy_cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.distributed.dispy.stop_dispy_cluster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stop a dispy cluster and http_server</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cluster</strong> – </p></li>
-<li><p><strong>http_server</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="pyfts-distributed-dispy-module">
+<h2>pyFTS.distributed.dispy module<a class="headerlink" href="#pyfts-distributed-dispy-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="pyfts-distributed-spark-module">
 <h2>pyFTS.distributed.spark module<a class="headerlink" href="#pyfts-distributed-spark-module" title="Permalink to this headline">¶</a></h2>
@@ -145,23 +74,29 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">pyFTS.distributed package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.distributed">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-pyFTS.distributed.dispy">pyFTS.distributed.dispy module</a></li>
+<li><a class="reference internal" href="#pyfts-distributed-dispy-module">pyFTS.distributed.dispy module</a></li>
 <li><a class="reference internal" href="#pyfts-distributed-spark-module">pyFTS.distributed.spark module</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="pyFTS.data.html"
-                        title="previous chapter">pyFTS.data package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="pyFTS.hyperparam.html"
-                        title="next chapter">pyFTS.hyperparam package</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="pyFTS.data.html"
+                          title="previous chapter">pyFTS.data package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="pyFTS.hyperparam.html"
+                          title="next chapter">pyFTS.hyperparam package</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -173,7 +108,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -198,15 +133,15 @@
         <li class="right" >
           <a href="pyFTS.data.html" title="pyFTS.data package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.distributed package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+        &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>

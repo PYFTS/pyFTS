@@ -5,16 +5,17 @@ import pandas as pd
 #from pyFTS.models.multivariate import wmvfts
 from typing import Tuple
 from typing import List
-from pyFTS.common.transformations.transformation import Transformation 
+from pyFTS.common.transformations.transformation import Transformation
 
 
 class SOMTransformation(Transformation):
+    
     def __init__(self,
                  grid_dimension: Tuple,
                  **kwargs):
 
         import SimpSOM as sps
-        
+
         # SOM attributes
         self.load_file = kwargs.get('loadFile')
         self.net: sps.somNet = None
@@ -34,6 +35,7 @@ class SOMTransformation(Transformation):
         """
         Transform a M-dimensional dataset into a 3-dimensional dataset, where one dimension is the endogen variable
         If endogen_variable = None, the last column will be the endogen_variable.
+
         Args:
             data (pd.DataFrame): M-Dimensional dataset
             endogen_variable (str):  column of dataset
@@ -43,6 +45,7 @@ class SOMTransformation(Transformation):
                 percentage_train (float). Percentage of dataset that will be used for train SOM network. default: 0.7
                 leaning_rate (float): leaning rate of SOM network. default: 0.01
                 epochs: epochs of SOM network. default: 10000
+        
         Returns:
 
         """
@@ -83,10 +86,10 @@ class SOMTransformation(Transformation):
         limit = round(len(self.data) * percentage_train)
         train = self.data[:limit]
         x, y = self.grid_dimension
-        self.net = sps.somNet(x, y, train, PBC=self.pbc, loadFile=self.load_file)
+        self.net = sps.somNet(x, y, train, PBC=self.pbc,
+                              loadFile=self.load_file)
         self.net.train(startLearnRate=leaning_rate,
                        epochs=epochs)
-
 
     def save_net(self,
                  filename: str = "SomNet trained"):

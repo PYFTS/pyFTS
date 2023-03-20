@@ -5,33 +5,21 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script type="text/javascript">
-
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-55120145-3']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>pyFTS.common.transformations package &#8212; pyFTS 1.6 documentation</title>
-    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyFTS.common.transformations package &#8212; pyFTS 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyFTS.data package" href="pyFTS.data.html" />
     <link rel="prev" title="pyFTS.common package" href="pyFTS.common.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -51,7 +39,7 @@
         <li class="right" >
           <a href="pyFTS.common.html" title="pyFTS.common package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" accesskey="U">pyFTS package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.common.transformations package</a></li> 
@@ -77,15 +65,15 @@
 <div class="section" id="module-pyFTS.common.transformations.boxcox">
 <span id="pyfts-common-transformations-boxcox-module"></span><h2>pyFTS.common.transformations.boxcox module<a class="headerlink" href="#module-pyFTS.common.transformations.boxcox" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="pyFTS.common.transformations.boxcox.BoxCox">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.boxcox.</code><code class="sig-name descname">BoxCox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plambda</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/boxcox.html#BoxCox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.boxcox.BoxCox" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.boxcox.BoxCox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.boxcox.</span></span><span class="sig-name descname"><span class="pre">BoxCox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plambda</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/boxcox.html#BoxCox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.boxcox.BoxCox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
 <p>Box-Cox power transformation</p>
 <p>y’(t) = log( y(t) )
 y(t) = exp( y’(t) )</p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.boxcox.BoxCox.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/boxcox.html#BoxCox.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.boxcox.BoxCox.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.boxcox.BoxCox.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/boxcox.html#BoxCox.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.boxcox.BoxCox.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the transformation on input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -102,8 +90,8 @@ y(t) = exp( y’(t) )</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.boxcox.BoxCox.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/boxcox.html#BoxCox.inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.boxcox.BoxCox.inverse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.boxcox.BoxCox.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/boxcox.html#BoxCox.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.boxcox.BoxCox.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -118,9 +106,9 @@ y(t) = exp( y’(t) )</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="pyFTS.common.transformations.boxcox.BoxCox.parameters">
-<em class="property">property </em><code class="sig-name descname">parameters</code><a class="headerlink" href="#pyFTS.common.transformations.boxcox.BoxCox.parameters" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyFTS.common.transformations.boxcox.BoxCox.parameters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#pyFTS.common.transformations.boxcox.BoxCox.parameters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -129,15 +117,15 @@ y(t) = exp( y’(t) )</p>
 <div class="section" id="module-pyFTS.common.transformations.differential">
 <span id="pyfts-common-transformations-differential-module"></span><h2>pyFTS.common.transformations.differential module<a class="headerlink" href="#module-pyFTS.common.transformations.differential" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="pyFTS.common.transformations.differential.Differential">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.differential.</code><code class="sig-name descname">Differential</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lag</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/differential.html#Differential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.differential.Differential" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.differential.Differential">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.differential.</span></span><span class="sig-name descname"><span class="pre">Differential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/differential.html#Differential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.differential.Differential" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
 <p>Differentiation data transform</p>
 <p>y’(t) = y(t) - y(t-1)
 y(t) =  y(t-1)  + y’(t)</p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.differential.Differential.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/differential.html#Differential.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.differential.Differential.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.differential.Differential.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/differential.html#Differential.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.differential.Differential.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the transformation on input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -154,8 +142,8 @@ y(t) =  y(t-1)  + y’(t)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.differential.Differential.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/differential.html#Differential.inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.differential.Differential.inverse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.differential.Differential.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/differential.html#Differential.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.differential.Differential.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -170,9 +158,9 @@ y(t) =  y(t-1)  + y’(t)</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="pyFTS.common.transformations.differential.Differential.parameters">
-<em class="property">property </em><code class="sig-name descname">parameters</code><a class="headerlink" href="#pyFTS.common.transformations.differential.Differential.parameters" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyFTS.common.transformations.differential.Differential.parameters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#pyFTS.common.transformations.differential.Differential.parameters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -181,12 +169,12 @@ y(t) =  y(t-1)  + y’(t)</p>
 <div class="section" id="module-pyFTS.common.transformations.normalization">
 <span id="pyfts-common-transformations-normalization-module"></span><h2>pyFTS.common.transformations.normalization module<a class="headerlink" href="#module-pyFTS.common.transformations.normalization" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="pyFTS.common.transformations.normalization.Normalization">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.normalization.</code><code class="sig-name descname">Normalization</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/normalization.html#Normalization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.normalization.Normalization" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.normalization.Normalization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.normalization.</span></span><span class="sig-name descname"><span class="pre">Normalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/normalization.html#Normalization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.normalization.Normalization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.normalization.Normalization.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/normalization.html#Normalization.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.normalization.Normalization.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.normalization.Normalization.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/normalization.html#Normalization.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.normalization.Normalization.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the transformation on input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -203,8 +191,8 @@ y(t) =  y(t-1)  + y’(t)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.normalization.Normalization.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/normalization.html#Normalization.inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.normalization.Normalization.inverse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.normalization.Normalization.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/normalization.html#Normalization.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.normalization.Normalization.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -220,8 +208,8 @@ y(t) =  y(t-1)  + y’(t)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.normalization.Normalization.train">
-<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/normalization.html#Normalization.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.normalization.Normalization.train" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.normalization.Normalization.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/normalization.html#Normalization.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.normalization.Normalization.train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -230,16 +218,16 @@ y(t) =  y(t-1)  + y’(t)</p>
 <div class="section" id="module-pyFTS.common.transformations.roi">
 <span id="pyfts-common-transformations-roi-module"></span><h2>pyFTS.common.transformations.roi module<a class="headerlink" href="#module-pyFTS.common.transformations.roi" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="pyFTS.common.transformations.roi.ROI">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.roi.</code><code class="sig-name descname">ROI</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/roi.html#ROI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.roi.ROI" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.roi.ROI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.roi.</span></span><span class="sig-name descname"><span class="pre">ROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/roi.html#ROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.roi.ROI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
 <p>Return of Investment (ROI) transformation. Retrieved from Sadaei and Lee (2014) - Multilayer Stock
 Forecasting Model Using Fuzzy Time Series</p>
 <p>y’(t) = ( y(t) - y(t-1) ) / y(t-1)
 y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.roi.ROI.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/roi.html#ROI.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.roi.ROI.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.roi.ROI.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/roi.html#ROI.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.roi.ROI.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the transformation on input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -256,8 +244,8 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.roi.ROI.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/roi.html#ROI.inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.roi.ROI.inverse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.roi.ROI.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/roi.html#ROI.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.roi.ROI.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -278,13 +266,13 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 <div class="section" id="module-pyFTS.common.transformations.scale">
 <span id="pyfts-common-transformations-scale-module"></span><h2>pyFTS.common.transformations.scale module<a class="headerlink" href="#module-pyFTS.common.transformations.scale" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="pyFTS.common.transformations.scale.Scale">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.scale.</code><code class="sig-name descname">Scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/scale.html#Scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.scale.Scale" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.scale.Scale">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.scale.</span></span><span class="sig-name descname"><span class="pre">Scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/scale.html#Scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.scale.Scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
 <p>Scale data inside a interval [min, max]</p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.scale.Scale.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/scale.html#Scale.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.scale.Scale.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.scale.Scale.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/scale.html#Scale.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.scale.Scale.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the transformation on input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -301,8 +289,8 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.scale.Scale.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/scale.html#Scale.inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.scale.Scale.inverse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.scale.Scale.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/scale.html#Scale.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.scale.Scale.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -317,9 +305,9 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="pyFTS.common.transformations.scale.Scale.parameters">
-<em class="property">property </em><code class="sig-name descname">parameters</code><a class="headerlink" href="#pyFTS.common.transformations.scale.Scale.parameters" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyFTS.common.transformations.scale.Scale.parameters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#pyFTS.common.transformations.scale.Scale.parameters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -328,12 +316,12 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 <div class="section" id="module-pyFTS.common.transformations.smoothing">
 <span id="pyfts-common-transformations-smoothing-module"></span><h2>pyFTS.common.transformations.smoothing module<a class="headerlink" href="#module-pyFTS.common.transformations.smoothing" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="pyFTS.common.transformations.smoothing.ExponentialSmoothing">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.smoothing.</code><code class="sig-name descname">ExponentialSmoothing</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#ExponentialSmoothing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.ExponentialSmoothing" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.AveragePooling">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.smoothing.</span></span><span class="sig-name descname"><span class="pre">AveragePooling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#AveragePooling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.AveragePooling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.smoothing.ExponentialSmoothing.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#ExponentialSmoothing.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.ExponentialSmoothing.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.AveragePooling.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#AveragePooling.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.AveragePooling.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the transformation on input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -350,8 +338,8 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.smoothing.ExponentialSmoothing.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#ExponentialSmoothing.inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.ExponentialSmoothing.inverse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.AveragePooling.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#AveragePooling.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.AveragePooling.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -369,12 +357,12 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="pyFTS.common.transformations.smoothing.MovingAverage">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.smoothing.</code><code class="sig-name descname">MovingAverage</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#MovingAverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.MovingAverage" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.ExponentialSmoothing">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.smoothing.</span></span><span class="sig-name descname"><span class="pre">ExponentialSmoothing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#ExponentialSmoothing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.ExponentialSmoothing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.smoothing.MovingAverage.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#MovingAverage.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.MovingAverage.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.ExponentialSmoothing.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#ExponentialSmoothing.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.ExponentialSmoothing.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the transformation on input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -391,8 +379,90 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.smoothing.MovingAverage.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#MovingAverage.inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.MovingAverage.inverse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.ExponentialSmoothing.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#ExponentialSmoothing.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.ExponentialSmoothing.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – transformed data</p></li>
+<li><p><strong>param</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array with inverse transformed data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.MaxPooling">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.smoothing.</span></span><span class="sig-name descname"><span class="pre">MaxPooling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#MaxPooling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.MaxPooling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.MaxPooling.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#MaxPooling.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.MaxPooling.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the transformation on input data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – input data</p></li>
+<li><p><strong>param</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array with transformed data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.MaxPooling.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#MaxPooling.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.MaxPooling.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – transformed data</p></li>
+<li><p><strong>param</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array with inverse transformed data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.MovingAverage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.smoothing.</span></span><span class="sig-name descname"><span class="pre">MovingAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#MovingAverage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.MovingAverage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.MovingAverage.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#MovingAverage.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.MovingAverage.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the transformation on input data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – input data</p></li>
+<li><p><strong>param</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array with transformed data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyFTS.common.transformations.smoothing.MovingAverage.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/smoothing.html#MovingAverage.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.smoothing.MovingAverage.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -414,17 +484,16 @@ y(t) = ( y(t-1) * y’(t) ) + y(t-1)</p>
 <span id="pyfts-common-transformations-som-module"></span><h2>pyFTS.common.transformations.som module<a class="headerlink" href="#module-pyFTS.common.transformations.som" title="Permalink to this headline">¶</a></h2>
 <p>Kohonen Self Organizing Maps for Fuzzy Time Series</p>
 <dl class="py class">
-<dt id="pyFTS.common.transformations.som.SOMTransformation">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.som.</code><code class="sig-name descname">SOMTransformation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid_dimension</span><span class="p">:</span> <span class="n">Tuple</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.som.SOMTransformation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.som.</span></span><span class="sig-name descname"><span class="pre">SOMTransformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.som.SOMTransformation.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.som.SOMTransformation.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform a M-dimensional dataset into a 3-dimensional dataset, where one dimension is the endogen variable
-If endogen_variable = None, the last column will be the endogen_variable.
-Args:</p>
-<blockquote>
-<div><p>data (pd.DataFrame): M-Dimensional dataset
+If endogen_variable = None, the last column will be the endogen_variable.</p>
+<dl>
+<dt>Args:</dt><dd><p>data (pd.DataFrame): M-Dimensional dataset
 endogen_variable (str):  column of dataset
 names (Tuple): names for new columns created by SOM Transformation.
 param:
@@ -434,23 +503,24 @@ param:
 leaning_rate (float): leaning rate of SOM network. default: 0.01
 epochs: epochs of SOM network. default: 10000</p>
 </div></blockquote>
-</div></blockquote>
+</dd>
+</dl>
 <p>Returns:</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.som.SOMTransformation.save_net">
-<code class="sig-name descname">save_net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'SomNet trained'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.save_net"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.save_net" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.som.SOMTransformation.save_net">
+<span class="sig-name descname"><span class="pre">save_net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'SomNet</span> <span class="pre">trained'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.save_net"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.save_net" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.som.SOMTransformation.show_grid">
-<code class="sig-name descname">show_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">graph_type</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'nodes_graph'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.show_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.show_grid" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.som.SOMTransformation.show_grid">
+<span class="sig-name descname"><span class="pre">show_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'nodes_graph'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.show_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.show_grid" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.som.SOMTransformation.train">
-<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">percentage_train</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.7</span></em>, <em class="sig-param"><span class="n">leaning_rate</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">epochs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">10000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.train" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.som.SOMTransformation.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage_train</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaning_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/som.html#SOMTransformation.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.som.SOMTransformation.train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -459,13 +529,13 @@ epochs: epochs of SOM network. default: 10000</p>
 <div class="section" id="module-pyFTS.common.transformations.transformation">
 <span id="pyfts-common-transformations-transformation-module"></span><h2>pyFTS.common.transformations.transformation module<a class="headerlink" href="#module-pyFTS.common.transformations.transformation" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="pyFTS.common.transformations.transformation.Transformation">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.transformation.</code><code class="sig-name descname">Transformation</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/transformation.html#Transformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.transformation.Transformation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.transformation.Transformation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.transformation.</span></span><span class="sig-name descname"><span class="pre">Transformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/transformation.html#Transformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.transformation.Transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Data transformation used on pre and post processing of the FTS</p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.transformation.Transformation.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/transformation.html#Transformation.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.transformation.Transformation.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.transformation.Transformation.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/transformation.html#Transformation.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.transformation.Transformation.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the transformation on input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -482,8 +552,8 @@ epochs: epochs of SOM network. default: 10000</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.transformation.Transformation.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/transformation.html#Transformation.inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.transformation.Transformation.inverse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.transformation.Transformation.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/transformation.html#Transformation.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.transformation.Transformation.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -499,8 +569,8 @@ epochs: epochs of SOM network. default: 10000</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.common.transformations.transformation.Transformation.is_multivariate">
-<code class="sig-name descname">is_multivariate</code><a class="headerlink" href="#pyFTS.common.transformations.transformation.Transformation.is_multivariate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.transformation.Transformation.is_multivariate">
+<span class="sig-name descname"><span class="pre">is_multivariate</span></span><a class="headerlink" href="#pyFTS.common.transformations.transformation.Transformation.is_multivariate" title="Permalink to this definition">¶</a></dt>
 <dd><p>detemine if this transformation can be applied to multivariate data</p>
 </dd></dl>
 
@@ -510,15 +580,15 @@ epochs: epochs of SOM network. default: 10000</p>
 <div class="section" id="module-pyFTS.common.transformations.trend">
 <span id="pyfts-common-transformations-trend-module"></span><h2>pyFTS.common.transformations.trend module<a class="headerlink" href="#module-pyFTS.common.transformations.trend" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="pyFTS.common.transformations.trend.LinearTrend">
-<em class="property">class </em><code class="sig-prename descclassname">pyFTS.common.transformations.trend.</code><code class="sig-name descname">LinearTrend</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.common.transformations.trend.</span></span><span class="sig-name descname"><span class="pre">LinearTrend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.common.transformations.transformation.Transformation" title="pyFTS.common.transformations.transformation.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.common.transformations.transformation.Transformation</span></code></a></p>
 <p>Linear Trend. Estimate</p>
 <p>y’(t) = y(t) - (a*t+b)
 y(t) =  y’(t) + (a*t+b)</p>
 <dl class="py method">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the transformation on input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -535,42 +605,42 @@ y(t) =  y’(t) + (a*t+b)</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.data_field">
-<code class="sig-name descname">data_field</code><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.data_field" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.data_field">
+<span class="sig-name descname"><span class="pre">data_field</span></span><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.data_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Pandas Dataframe column to use as data</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.datetime_mask">
-<code class="sig-name descname">datetime_mask</code><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.datetime_mask" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.datetime_mask">
+<span class="sig-name descname"><span class="pre">datetime_mask</span></span><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.datetime_mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Pandas Dataframe mask for datetime indexes</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.generate_indexes">
-<code class="sig-name descname">generate_indexes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.generate_indexes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.generate_indexes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.generate_indexes">
+<span class="sig-name descname"><span class="pre">generate_indexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.generate_indexes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.generate_indexes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.increment">
-<code class="sig-name descname">increment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.increment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.increment" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.increment">
+<span class="sig-name descname"><span class="pre">increment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.increment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.increment" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.index_field">
-<code class="sig-name descname">index_field</code><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.index_field" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.index_field">
+<span class="sig-name descname"><span class="pre">index_field</span></span><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.index_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Pandas Dataframe column to use as index</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.index_type">
-<code class="sig-name descname">index_type</code><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.index_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.index_type">
+<span class="sig-name descname"><span class="pre">index_type</span></span><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.index_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>The type of the time index used to train the regression coefficients. Available types are: field, datetime</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">param</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.inverse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -586,19 +656,19 @@ y(t) =  y’(t) + (a*t+b)</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.model">
-<code class="sig-name descname">model</code><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.model" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Regression model</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.train">
-<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.train" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="pyFTS.common.transformations.trend.LinearTrend.trend">
-<code class="sig-name descname">trend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.trend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.trend" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyFTS.common.transformations.trend.LinearTrend.trend">
+<span class="sig-name descname"><span class="pre">trend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/common/transformations/trend.html#LinearTrend.trend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.common.transformations.trend.LinearTrend.trend" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -613,8 +683,9 @@ y(t) =  y’(t) + (a*t+b)</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">pyFTS.common.transformations package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.common.transformations">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -632,12 +703,17 @@ y(t) =  y’(t) + (a*t+b)</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="pyFTS.common.html"
-                        title="previous chapter">pyFTS.common package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="pyFTS.data.html"
-                        title="next chapter">pyFTS.data package</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="pyFTS.common.html"
+                          title="previous chapter">pyFTS.common package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="pyFTS.data.html"
+                          title="next chapter">pyFTS.data package</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -649,7 +725,7 @@ y(t) =  y’(t) + (a*t+b)</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -674,15 +750,15 @@ y(t) =  y’(t) + (a*t+b)</p>
         <li class="right" >
           <a href="pyFTS.common.html" title="pyFTS.common package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFTS 1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyFTS</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyFTS.html" >pyFTS package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyFTS.common.transformations package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+        &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>

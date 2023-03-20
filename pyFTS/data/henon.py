@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 
-def get_data(var, a=1.4, b=0.3, initial_values = [1, 1], iterations=1000):
+def get_data(var: str, a:float=1.4, b:float=0.3, initial_values: list = [1, 1], iterations:int=1000) -> pd.DataFrame:
     """
     Get a simple univariate time series data.
 
@@ -19,7 +19,7 @@ def get_data(var, a=1.4, b=0.3, initial_values = [1, 1], iterations=1000):
     return get_dataframe(a,b, initial_values, iterations)[var].values
 
 
-def get_dataframe(a=1.4, b=0.3, initial_values = [1, 1], iterations=1000):
+def get_dataframe(a:float=1.4, b:float=0.3, initial_values: list = [1, 1], iterations:int=1000) -> pd.DataFrame:
     '''
     Return a dataframe with the bivariate Henon Map time series (x, y).
 

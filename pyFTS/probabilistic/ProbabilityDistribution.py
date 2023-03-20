@@ -1,7 +1,6 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-from pyFTS.common import FuzzySet,SortedCollection,tree
+from pyFTS.common import SortedCollection 
 from pyFTS.probabilistic import kde
 
 

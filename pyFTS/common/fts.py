@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
-from pyFTS.common import FuzzySet, SortedCollection, tree, Util
+from pyFTS.common import FuzzySet, Util
+from pyFTS.common.transformations import transformation
+from pyFTS.partitioners import partitioner
+from pyFTS.probabilistic import ProbabilityDistribution
 
 
 class FTS(object):
@@ -11,72 +14,72 @@ class FTS(object):
         """
         Create a Fuzzy Time Series model
         """
-        self.flrgs = {}
+        self.flrgs: dict = {}
         """The list of Fuzzy Logical Relationship Groups - FLRG"""
-        self.order = kwargs.get('order',1)
+        self.order : int = kwargs.get('order',1)
         """A integer with the model order (number of past lags are used on forecasting)"""
-        self.shortname = kwargs.get('name',"")
+        self.shortname : str = kwargs.get('name',"")
         """A string with a short name or alias for the model"""
-        self.name = kwargs.get('name',"")
+        self.name : str = kwargs.get('name',"")
         """A string with the model name"""
-        self.detail = kwargs.get('name',"")
+        self.detail : str = kwargs.get('name',"")
         """A string with the model detailed information"""
-        self.is_wrapper = False
+        self.is_wrapper : bool = False
         """Indicates that this model is a wrapper for other(s) method(s)"""
-        self.is_high_order = False
+        self.is_high_order : bool = False
         """A boolean value indicating if the model support orders greater than 1, default: False"""
-        self.min_order = 1
+        self.min_order : int = 1
         """In high order models, this integer value indicates the minimal order supported for the model, default: 1"""
-        self.has_seasonality = False
+        self.has_seasonality : bool = False
         """A boolean value indicating if the model supports seasonal indexers, default: False"""
-        self.has_point_forecasting = True
+        self.has_point_forecasting : bool = True
         """A boolean value indicating if the model supports point forecasting, default: True"""
-        self.has_interval_forecasting = False
+        self.has_interval_forecasting : bool = False
         """A boolean value indicating if the model supports interval forecasting, default: False"""
-        self.has_probability_forecasting = False
+        self.has_probability_forecasting : bool = False
         """A boolean value indicating if the model support probabilistic forecasting, default: False"""
-        self.is_multivariate = False
+        self.is_multivariate : bool = False
         """A boolean value indicating if the model support multivariate time series (Pandas DataFrame), default: False"""
-        self.is_clustered = False
+        self.is_clustered : bool = False
         """A boolean value indicating if the model support multivariate time series (Pandas DataFrame), but works like 
         a monovariate method, default: False"""
-        self.dump = False
-        self.transformations = []
+        self.dump : bool = False
+        self.transformations : list[transformation.Transformation] = []
         """A list with the data transformations (common.Transformations) applied on model pre and post processing, default: []"""
-        self.transformations_param = []
+        self.transformations_param : list = []
         """A list with the specific parameters for each data transformation"""
-        self.original_max = 0
+        self.original_max : float = 0.0
         """A float with the upper limit of the Universe of Discourse, the maximal value found on training data"""
-        self.original_min = 0
+        self.original_min : float = 0.0
         """A float with the lower limit of the Universe of Discourse, the minimal value found on training data"""
-        self.partitioner = kwargs.get("partitioner", None)
+        self.partitioner : partitioner.Partitioner = kwargs.get("partitioner", None)
         """A pyFTS.partitioners.Partitioner object with the Universe of Discourse partitioner used on the model. This is a mandatory dependecy. """
         if self.partitioner != None:
             self.sets = self.partitioner.sets
-        self.auto_update = False
+        self.auto_update : bool = False
         """A boolean value indicating that model is incremental"""
-        self.benchmark_only = False
+        self.benchmark_only : bool = False
         """A boolean value indicating a façade for external (non-FTS) model used on benchmarks or ensembles."""
         self.indexer = kwargs.get("indexer", None)
         """An pyFTS.models.seasonal.Indexer object for indexing the time series data"""
-        self.uod_clip = kwargs.get("uod_clip", True)
+        self.uod_clip : bool = kwargs.get("uod_clip", True)
         """Flag indicating if the test data will be clipped inside the training Universe of Discourse"""
-        self.alpha_cut = kwargs.get("alpha_cut", 0.0)
+        self.alpha_cut : float = kwargs.get("alpha_cut", 0.0)
         """A float with the minimal membership to be considered on fuzzyfication process"""
-        self.lags = kwargs.get("lags", None)
+        self.lags : list[int] = kwargs.get("lags", None)
         """The list of lag indexes for high order models"""
-        self.max_lag = self.order
+        self.max_lag : int = self.order
         """A integer indicating the largest lag used by the model. This value also indicates the minimum number of past lags 
         needed to forecast a single step ahead"""
-        self.log = pd.DataFrame([],columns=["Datetime","Operation","Value"])
+        self.log : pd.DataFrame = pd.DataFrame([],columns=["Datetime","Operation","Value"])
         """"""
-        self.is_time_variant = False
+        self.is_time_variant : bool = False
         """A boolean value indicating if this model is time variant"""
-        self.standard_horizon = kwargs.get("standard_horizon", 1)
+        self.standard_horizon : int = kwargs.get("standard_horizon", 1)
         """Standard forecasting horizon (Default: 1)"""
         
 
-    def fuzzy(self, data):
+    def fuzzy(self, data) -> dict:
         """
         Fuzzify a data point
 
@@ -104,7 +107,7 @@ class FTS(object):
         """
         Forecast using trained model
 
-        :param data: time series with minimal length to the order of the model
+        :param data: time series with minimal length to the order of the model. The type of the data is list or np.array for univariate models and pd.DataFrame for multivariate models. 
 
         :keyword type: the forecasting type, one of these values: point(default), interval, distribution or multivariate.
         :keyword steps_ahead: The forecasting path H, i. e., tell the model to forecast from t+1 to t+H.
@@ -198,17 +201,19 @@ class FTS(object):
 
         return ret
 
-    def forecast(self, data, **kwargs):
+    def forecast(self, data, **kwargs) -> list:
         """
         Point forecast one step ahead
 
-        :param data: time series data with the minimal length equal to the max_lag of the model
+        :param data: time series data with the minimal length equal to the max_lag of the model. The type of the data is list or np.array for univariate models and pd.DataFrame for multivariate models. 
         :param kwargs: model specific parameters
+
         :return: a list with the forecasted values
+        
         """
         raise NotImplementedError('This model do not perform one step ahead point forecasts!')
 
-    def forecast_interval(self, data, **kwargs):
+    def forecast_interval(self, data, **kwargs) -> list:
         """
         Interval forecast one step ahead
 
@@ -218,7 +223,7 @@ class FTS(object):
         """
         raise NotImplementedError('This model do not perform one step ahead interval forecasts!')
 
-    def forecast_distribution(self, data, **kwargs):
+    def forecast_distribution(self, data, **kwargs) -> list:
         """
         Probabilistic forecast one step ahead
 
@@ -228,7 +233,7 @@ class FTS(object):
         """
         raise NotImplementedError('This model do not perform one step ahead distribution forecasts!')
 
-    def forecast_multivariate(self, data, **kwargs):
+    def forecast_multivariate(self, data, **kwargs) -> pd.DataFrame:
         """
         Multivariate forecast one step ahead
 
@@ -239,7 +244,7 @@ class FTS(object):
         raise NotImplementedError('This model do not perform one step ahead multivariate forecasts!')
 
 
-    def forecast_ahead(self, data, steps, **kwargs):
+    def forecast_ahead(self, data, steps, **kwargs) -> list:
         """
         Point forecast from 1 to H steps ahead, where H is given by the steps parameter
 
@@ -269,7 +274,7 @@ class FTS(object):
 
         return ret[-steps:]
 
-    def forecast_ahead_interval(self, data, steps, **kwargs):
+    def forecast_ahead_interval(self, data, steps, **kwargs) -> list:
         """
         Interval forecast from 1 to H steps ahead, where H is given by the steps parameter
 
@@ -280,7 +285,7 @@ class FTS(object):
         """
         raise NotImplementedError('This model do not perform multi step ahead interval forecasts!')
 
-    def forecast_ahead_distribution(self, data, steps, **kwargs):
+    def forecast_ahead_distribution(self, data, steps, **kwargs) -> list:
         """
         Probabilistic forecast from 1 to H steps ahead, where H is given by the steps parameter
 
@@ -291,7 +296,7 @@ class FTS(object):
         """
         raise NotImplementedError('This model do not perform multi step ahead distribution forecasts!')
 
-    def forecast_ahead_multivariate(self, data, steps, **kwargs):
+    def forecast_ahead_multivariate(self, data, steps, **kwargs) -> pd.DataFrame:
         """
         Multivariate forecast n step ahead
 
@@ -302,7 +307,7 @@ class FTS(object):
         """
         raise NotImplementedError('This model do not perform one step ahead multivariate forecasts!')
 
-    def forecast_step(self, data, step, **kwargs):
+    def forecast_step(self, data, step, **kwargs) -> list:
         """
         Point forecast for H steps ahead, where H is given by the step parameter
 
@@ -573,7 +578,7 @@ class FTS(object):
         else:
             return data
 
-    def get_UoD(self):
+    def get_UoD(self) -> set:
         """
         Returns the interval of the known bounds of the universe of discourse (UoD), i. e.,
         the known minimum and maximum values of the time series.
@@ -585,7 +590,7 @@ class FTS(object):
         else:
             return (self.original_min, self.original_max)
         
-    def offset(self):
+    def offset(self) -> int:
         """
         Returns the number of lags to skip in the input test data in order to synchronize it with
         the forecasted values given by the predict function. This is necessary due to the order of the

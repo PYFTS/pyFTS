@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 
 
-def get_data(field='load'):
+def get_data(field: str='load') -> np.ndarray:
     """
     Get the univariate time series data.
 
@@ -19,7 +19,7 @@ def get_data(field='load'):
     return np.array(dat[field])
 
 
-def get_dataframe():
+def get_dataframe() -> pd.DataFrame:
     """
     Get the complete multivariate time series data.
 

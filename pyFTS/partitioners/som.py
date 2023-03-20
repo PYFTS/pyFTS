@@ -8,6 +8,7 @@ from typing import Tuple
 
 
 class SOMPartitioner:
+    """Self Organized Map Partitioner"""
     def __init__(self,
                  grid_dimension: Tuple,
                  **kwargs):
@@ -19,8 +20,8 @@ class SOMPartitioner:
 
 
         # debug attributes
-        self.name = 'Kohonen Self Organizing Maps FTS'
-        self.shortname = 'SOM-FTS'
+        self.name = 'Kohonen Self Organizing Map Partitioner'
+        self.shortname = 'SOM-Partitioner'
 
     def __repr__(self):
         status = "is trained" if self.is_trained else "not trained"

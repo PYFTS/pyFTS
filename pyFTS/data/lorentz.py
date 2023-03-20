@@ -11,8 +11,8 @@ import numpy as np
 import pandas as pd
 
 
-def get_data(var, a = 10.0, b = 28.0, c = 8.0 / 3.0, dt = 0.01,
-                  initial_values = [0.1, 0, 0], iterations=1000):
+def get_data(var: str, a: float = 10.0, b: float = 28.0, c: float = 8.0 / 3.0, dt: float = 0.01,
+                  initial_values: list = [0.1, 0, 0], iterations: int=1000) -> pd.DataFrame:
     """
         Get a simple univariate time series data.
 
@@ -22,8 +22,8 @@ def get_data(var, a = 10.0, b = 28.0, c = 8.0 / 3.0, dt = 0.01,
     return get_dataframe(a, b, c, dt, initial_values, iterations)[var].values
 
 
-def get_dataframe(a = 10.0, b = 28.0, c = 8.0 / 3.0, dt = 0.01,
-                  initial_values = [0.1, 0, 0], iterations=1000):
+def get_dataframe(a: float = 10.0, b: float = 28.0, c: float = 8.0 / 3.0, dt: float = 0.01,
+                  initial_values: list = [0.1, 0, 0], iterations: int=1000)-> pd.DataFrame:
     '''
     Return a dataframe with the multivariate Lorenz Map time series (x, y, z).
 

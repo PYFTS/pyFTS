@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 
 
-def get_data():
+def get_data() -> np.ndarray:
     """
     Get a simple univariate time series data.
 
@@ -19,7 +19,7 @@ def get_data():
     dat = np.array(dat["Passengers"])
     return dat
 
-def get_dataframe():
+def get_dataframe() -> pd.DataFrame:
     """
     Get the complete multivariate time series data.
 

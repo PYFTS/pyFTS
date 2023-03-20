@@ -18,7 +18,11 @@ all_methods = [Grid.GridPartitioner, Entropy.EntropyPartitioner, FCM.FCMPartitio
 mfs = [Membership.trimf, Membership.gaussmf, Membership.trapmf]
 
 
-def plot_sets(data, sets, titles, size=[12, 10], save=False, file=None, axis=None):
+def plot_sets(data, sets: dict, titles : list, size=[12, 10], save=False, file=None, axis=None):
+    """
+    Plot all fuzzy sets in a Partitioner
+    
+    """
     num = len(sets)
 
     if axis is None:
@@ -53,7 +57,7 @@ def plot_sets(data, sets, titles, size=[12, 10], save=False, file=None, axis=Non
 def plot_partitioners(data, objs, tam=[12, 10], save=False, file=None, axis=None):
     sets = [k.sets for k in objs]
     titles = [k.name for k in objs]
-    plot_sets(data, sets, titles, tam, save, file, axis)
+    plot_sets(sets, titles, tam, save, file, axis)
 
 
 def explore_partitioners(data, npart, methods=None, mf=None, transformation=None,
@@ -84,6 +88,6 @@ def explore_partitioners(data, npart, methods=None, mf=None, transformation=None
             obj.name = obj.name  + " - " + obj.membership_function.__name__
             objs.append(obj)
 
-    plot_partitioners(data, objs, size, save, file)
+    plot_partitioners(objs, size, save, file)
 
     return objs

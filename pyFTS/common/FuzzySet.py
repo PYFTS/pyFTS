@@ -8,21 +8,21 @@ class FuzzySet(object):
     Fuzzy Set
     """
 
-    def __init__(self, name, mf, parameters, centroid, alpha=1.0, **kwargs):
+    def __init__(self, name : str, mf, parameters : list, centroid : float, alpha : float=1.0, **kwargs):
         """
         Create a Fuzzy Set
         """
-        self.name = name
+        self.name : str = name
         """The fuzzy set name"""
-        self.mf = mf
+        self.mf  = mf
         """The membership function"""
-        self.parameters = parameters
+        self.parameters : list = parameters
         """The parameters of the membership function"""
-        self.centroid = centroid
+        self.centroid : float = centroid
         """The fuzzy set center of mass (or midpoint)"""
-        self.alpha = alpha
+        self.alpha : float = alpha
         """The alpha cut value"""
-        self.type = kwargs.get('type', 'common')
+        self.type : str = kwargs.get('type', 'common')
         """The fuzzy set type (common, composite, nonstationary, etc)"""
         self.variable = kwargs.get('variable', None)
         """In multivariate time series, indicate for which variable this fuzzy set belogs"""
@@ -125,6 +125,7 @@ def fuzzyfy(data, partitioner, **kwargs):
     :keyword method: the fuzzyfication method (fuzzy: all fuzzy memberships, maximum: only the maximum membership)
     :keyword mode: the fuzzyfication mode (sets: return the fuzzy sets names, vector: return a vector with the membership
     values for all fuzzy sets, both: return a list with tuples (fuzzy set, membership value) )
+    
     :returns a list with the fuzzyfied values, depending on the mode
 
     """
@@ -170,7 +171,7 @@ def set_ordered(fuzzy_sets):
         return [k.name for k in sorted(tmp1, key=lambda x: x.centroid)]
 
 
-def fuzzyfy_instance(inst, fuzzy_sets, ordered_sets=None):
+def fuzzyfy_instance(inst, fuzzy_sets : dict , ordered_sets : list =None):
     """
     Calculate the membership values for a data point given fuzzy sets
 
@@ -191,7 +192,7 @@ def fuzzyfy_instance(inst, fuzzy_sets, ordered_sets=None):
     return mv
 
 
-def fuzzyfy_instances(data, fuzzy_sets, ordered_sets=None):
+def fuzzyfy_instances(data : list, fuzzy_sets : dict, ordered_sets=None) -> list:
     """
     Calculate the membership values for a data point given fuzzy sets
 
@@ -209,7 +210,7 @@ def fuzzyfy_instances(data, fuzzy_sets, ordered_sets=None):
     return ret
 
 
-def get_fuzzysets(inst, fuzzy_sets, ordered_sets=None, alpha_cut=0.0):
+def get_fuzzysets(inst, fuzzy_sets : dict, ordered_sets : list =None, alpha_cut : float =0.0) -> list:
     """
     Return the fuzzy sets which membership value for a inst is greater than the alpha_cut
 
@@ -232,7 +233,7 @@ def get_fuzzysets(inst, fuzzy_sets, ordered_sets=None, alpha_cut=0.0):
         raise ex
 
 
-def get_maximum_membership_fuzzyset(inst, fuzzy_sets, ordered_sets=None):
+def get_maximum_membership_fuzzyset(inst, fuzzy_sets, ordered_sets=None) -> FuzzySet:
     """
     Fuzzify a data point, returning the fuzzy set with maximum membership value
 
@@ -248,7 +249,7 @@ def get_maximum_membership_fuzzyset(inst, fuzzy_sets, ordered_sets=None):
     return fuzzy_sets[key]
 
 
-def get_maximum_membership_fuzzyset_index(inst, fuzzy_sets):
+def get_maximum_membership_fuzzyset_index(inst, fuzzy_sets) -> int:
     """
     Fuzzify a data point, returning the fuzzy set with maximum membership value
 
