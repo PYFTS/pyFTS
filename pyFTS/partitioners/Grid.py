@@ -26,7 +26,7 @@ class GridPartitioner(partitioner.Partitioner):
         partlen = dlen / self.partitions
 
         count = 0
-        for c in np.arange(self.min, self.max, partlen):
+        for c in np.linspace(self.min, self.max, self.partitions, endpoint=False):
             _name = self.get_name(count)
             if self.membership_function == Membership.trimf:
                 sets[_name] = FuzzySet.FuzzySet(_name, Membership.trimf, [c - partlen, c, c + partlen],c,**kwargs)
