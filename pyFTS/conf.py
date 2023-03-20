@@ -26,7 +26,7 @@ author = 'Petrônio Cândido de Lima e Silva'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '1.2.2'
+release = '1.7'
 
 
 # -- General configuration ---------------------------------------------------
