@@ -323,7 +323,7 @@ class Partitioner(object):
         it represents the fuzzy set name.
         :return: the fuzzy set
         """
-        if isinstance(item, (int, np.int, np.int8, np.int16, np.int32, np.int64)):
+        if isinstance(item, (int, np.int8, np.int16, np.int32, np.int64)): 
             if item < 0 or item >= self.partitions:
                 raise ValueError("The fuzzy set index must be between 0 and {}.".format(self.partitions))
             return self.sets[self.ordered_sets[item]]
