@@ -45,14 +45,14 @@
   <h1>Source code for pyFTS.models.seasonal.common</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">Membership</span>
-<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">Grid</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span> <span class="k">as</span> <span class="n">dt</span><span class="p">,</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dtm</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="kn">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">Membership</span>
+<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="kn">import</span> <span class="n">partitioner</span><span class="p">,</span> <span class="n">Grid</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span> <span class="k">as</span> <span class="n">dt</span><span class="p">,</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dtm</span>
 
 
 <div class="viewcode-block" id="DateTime"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.common.DateTime">[docs]</a><span class="k">class</span> <span class="nc">DateTime</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Data and Time granularity for time granularity and seasonality identification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">year</span> <span class="o">=</span> <span class="mi">1</span>
@@ -140,11 +140,11 @@
 
 
 <div class="viewcode-block" id="FuzzySet"><a class="viewcode-back" href="../../../../pyFTS.models.seasonal.html#pyFTS.models.seasonal.common.FuzzySet">[docs]</a><span class="k">class</span> <span class="nc">FuzzySet</span><span class="p">(</span><span class="n">FuzzySet</span><span class="o">.</span><span class="n">FuzzySet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Temporal/Seasonal Fuzzy Set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datepart</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datepart</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FuzzySet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span>
                                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datepart</span> <span class="o">=</span> <span class="n">datepart</span>
@@ -195,7 +195,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

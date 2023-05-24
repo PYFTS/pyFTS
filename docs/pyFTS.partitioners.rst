@@ -19,7 +19,15 @@ pyFTS.partitioners.partitioner module
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
+pyFTS.partitioners.ClassPartitioner module
+-----------------------------------
+
+.. automodule:: pyFTS.partitioners.ClassPartitioner
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyFTS.partitioners.CMeans module
 --------------------------------
 

@@ -5,7 +5,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>pyFTS.hyperparam package &#8212; pyFTS 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
@@ -51,15 +52,15 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyfts-hyperparam-package">
+  <section id="pyfts-hyperparam-package">
 <h1>pyFTS.hyperparam package<a class="headerlink" href="#pyfts-hyperparam-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-pyFTS.hyperparam">
+<section id="module-pyFTS.hyperparam">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.hyperparam" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="submodules">
+</section>
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pyFTS.hyperparam.Util">
+</section>
+<section id="module-pyFTS.hyperparam.Util">
 <span id="pyfts-hyperparam-util-module"></span><h2>pyFTS.hyperparam.Util module<a class="headerlink" href="#module-pyFTS.hyperparam.Util" title="Permalink to this headline">¶</a></h2>
 <p>Common facilities for hyperparameter optimization</p>
 <dl class="py function">
@@ -118,346 +119,14 @@ Value: the measure value</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-pyFTS.hyperparam.GridSearch">
-<span id="pyfts-hyperparam-gridsearch-module"></span><h2>pyFTS.hyperparam.GridSearch module<a class="headerlink" href="#module-pyFTS.hyperparam.GridSearch" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.GridSearch.cluster_method">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.GridSearch.</span></span><span class="sig-name descname"><span class="pre">cluster_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/GridSearch.html#cluster_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.GridSearch.cluster_method" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.GridSearch.dict_individual">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.GridSearch.</span></span><span class="sig-name descname"><span class="pre">dict_individual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partitioner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partitions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_cut</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/GridSearch.html#dict_individual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.GridSearch.dict_individual" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.GridSearch.execute">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.GridSearch.</span></span><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hyperparams</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasetname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/GridSearch.html#execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.GridSearch.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.GridSearch.process_jobs">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.GridSearch.</span></span><span class="sig-name descname"><span class="pre">process_jobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasetname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/GridSearch.html#process_jobs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.GridSearch.process_jobs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.hyperparam.Evolutionary">
-<span id="pyfts-hyperparam-evolutionary-module"></span><h2>pyFTS.hyperparam.Evolutionary module<a class="headerlink" href="#module-pyFTS.hyperparam.Evolutionary" title="Permalink to this headline">¶</a></h2>
-<p>Distributed Evolutionary Hyperparameter Optimization (DEHO) for MVFTS</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.GeneticAlgorithm">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">GeneticAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#GeneticAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.GeneticAlgorithm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Genetic algoritm for Distributed Evolutionary Hyperparameter Optimization (DEHO)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> – The time series to optimize the FTS</p></li>
-<li><p><strong>ngen</strong> – An integer value with the maximum number of generations, default value: 30</p></li>
-<li><p><strong>mgen</strong> – An integer value with the maximum number of generations without improvement to stop, default value 7</p></li>
-<li><p><strong>npop</strong> – An integer value with the population size, default value: 20</p></li>
-<li><p><strong>pcross</strong> – A float value between 0 and 1 with the probability of crossover, default: .5</p></li>
-<li><p><strong>psel</strong> – A float value between 0 and 1 with the probability of selection, default: .5</p></li>
-<li><p><strong>pmut</strong> – A float value between 0 and 1 with the probability of mutation, default: .3</p></li>
-<li><p><strong>fts_method</strong> – The FTS method to optimize</p></li>
-<li><p><strong>parameters</strong> – dict with model specific arguments for fts_method</p></li>
-<li><p><strong>elitism</strong> – A boolean value indicating if the best individual must always survive to next population</p></li>
-<li><p><strong>initial_operator</strong> – a function that receives npop and return a random population with size npop</p></li>
-<li><p><strong>evalutation_operator</strong> – a function that receives a dataset and an individual and return its fitness</p></li>
-<li><p><strong>selection_operator</strong> – a function that receives the whole population and return a selected individual</p></li>
-<li><p><strong>crossover_operator</strong> – a function that receives the whole population and return a descendent individual</p></li>
-<li><p><strong>mutation_operator</strong> – a function that receives one individual and return a changed individual</p></li>
-<li><p><strong>window_size</strong> – An integer value with the the length of scrolling window for train/test on dataset</p></li>
-<li><p><strong>train_rate</strong> – A float value between 0 and 1 with the train/test split ([0,1])</p></li>
-<li><p><strong>increment_rate</strong> – A float value between 0 and 1 with the the increment of the scrolling window,
-relative to the window_size ([0,1])</p></li>
-<li><p><strong>collect_statistics</strong> – A boolean value indicating to collect statistics for each generation</p></li>
-<li><p><strong>distributed</strong> – A value indicating it the execution will be local and sequential (distributed=False),
-or parallel and distributed (distributed=’dispy’ or distributed=’spark’)</p></li>
-<li><p><strong>cluster</strong> – If distributed=’dispy’ the list of cluster nodes, else if distributed=’spark’ it is the master node</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the best genotype</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.crossover">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">crossover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">population</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#crossover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.crossover" title="Permalink to this definition">¶</a></dt>
-<dd><p>Crossover operation between two parents</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>population</strong> – the original population</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a genotype</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.double_tournament">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">double_tournament</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">population</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#double_tournament"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.double_tournament" title="Permalink to this definition">¶</a></dt>
-<dd><p>Double tournament selection strategy.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>population</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.elitism">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">elitism</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">population</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_population</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#elitism"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.elitism" title="Permalink to this definition">¶</a></dt>
-<dd><p>Elitism operation, always select the best individual of the population and discard the worst</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>population</strong> – </p></li>
-<li><p><strong>new_population</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.evaluate">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.evaluate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate an individual using a sliding window cross validation over the dataset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> – Evaluation dataset</p></li>
-<li><p><strong>individual</strong> – genotype to be tested</p></li>
-<li><p><strong>window_size</strong> – The length of scrolling window for train/test on dataset</p></li>
-<li><p><strong>train_rate</strong> – The train/test split ([0,1])</p></li>
-<li><p><strong>increment_rate</strong> – The increment of the scrolling window, relative to the window_size ([0,1])</p></li>
-<li><p><strong>parameters</strong> – dict with model specific arguments for fit method.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a tuple (len_lags, rmse) with the parsimony fitness value and the accuracy fitness value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.execute">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasetname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Batch execution of Distributed Evolutionary Hyperparameter Optimization (DEHO) for monovariate methods</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>datasetname</strong> – </p></li>
-<li><p><strong>dataset</strong> – The time series to optimize the FTS</p></li>
-<li><p><strong>file</strong> – </p></li>
-<li><p><strong>experiments</strong> – </p></li>
-<li><p><strong>distributed</strong> – </p></li>
-<li><p><strong>ngen</strong> – An integer value with the maximum number of generations, default value: 30</p></li>
-<li><p><strong>mgen</strong> – An integer value with the maximum number of generations without improvement to stop, default value 7</p></li>
-<li><p><strong>npop</strong> – An integer value with the population size, default value: 20</p></li>
-<li><p><strong>pcross</strong> – A float value between 0 and 1 with the probability of crossover, default: .5</p></li>
-<li><p><strong>psel</strong> – A float value between 0 and 1 with the probability of selection, default: .5</p></li>
-<li><p><strong>pmut</strong> – A float value between 0 and 1 with the probability of mutation, default: .3</p></li>
-<li><p><strong>fts_method</strong> – The FTS method to optimize</p></li>
-<li><p><strong>parameters</strong> – dict with model specific arguments for fts_method</p></li>
-<li><p><strong>elitism</strong> – A boolean value indicating if the best individual must always survive to next population</p></li>
-<li><p><strong>initial_operator</strong> – a function that receives npop and return a random population with size npop</p></li>
-<li><p><strong>random_individual</strong> – create an random genotype</p></li>
-<li><p><strong>evalutation_operator</strong> – a function that receives a dataset and an individual and return its fitness</p></li>
-<li><p><strong>selection_operator</strong> – a function that receives the whole population and return a selected individual</p></li>
-<li><p><strong>crossover_operator</strong> – a function that receives the whole population and return a descendent individual</p></li>
-<li><p><strong>mutation_operator</strong> – a function that receives one individual and return a changed individual</p></li>
-<li><p><strong>window_size</strong> – An integer value with the the length of scrolling window for train/test on dataset</p></li>
-<li><p><strong>train_rate</strong> – A float value between 0 and 1 with the train/test split ([0,1])</p></li>
-<li><p><strong>increment_rate</strong> – A float value between 0 and 1 with the the increment of the scrolling window,
-relative to the window_size ([0,1])</p></li>
-<li><p><strong>collect_statistics</strong> – A boolean value indicating to collect statistics for each generation</p></li>
-<li><p><strong>distributed</strong> – A value indicating it the execution will be local and sequential (distributed=False),
-or parallel and distributed (distributed=’dispy’ or distributed=’spark’)</p></li>
-<li><p><strong>cluster</strong> – If distributed=’dispy’ the list of cluster nodes, else if distributed=’spark’ it is the master node</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the best genotype</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.genotype">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">genotype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partitioner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#genotype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.genotype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create the individual genotype</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>mf</strong> – membership function</p></li>
-<li><p><strong>npart</strong> – number of partitions</p></li>
-<li><p><strong>partitioner</strong> – partitioner method</p></li>
-<li><p><strong>order</strong> – model order</p></li>
-<li><p><strong>alpha</strong> – alpha-cut</p></li>
-<li><p><strong>lags</strong> – array with lag indexes</p></li>
-<li><p><strong>f1</strong> – accuracy fitness value</p></li>
-<li><p><strong>f2</strong> – parsimony fitness value</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the genotype, a dictionary with all hyperparameters</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.initial_population">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">initial_population</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#initial_population"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.initial_population" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a random population of size n</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n</strong> – the size of the population</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a list with n random individuals</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.lag_crossover2">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">lag_crossover2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">best</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worst</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#lag_crossover2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.lag_crossover2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cross over two lag genes</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>best</strong> – best genotype</p></li>
-<li><p><strong>worst</strong> – worst genotype</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a tuple (order, lags)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.log_result">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">log_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasetname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fts_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#log_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.log_result" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.mutation">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">mutation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#mutation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.mutation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mutation operator</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>individual</strong> – an individual genotype</p></li>
-<li><p><strong>pmut</strong> – individual probability o</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.mutation_lags">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">mutation_lags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#mutation_lags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.mutation_lags" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mutation operation for lags gene</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>lags</strong> – </p></li>
-<li><p><strong>order</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.persist_statistics">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">persist_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasetname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#persist_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.persist_statistics" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.phenotype">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">phenotype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fts_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#phenotype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.phenotype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instantiate the genotype, creating a fitted model with the genotype hyperparameters</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>individual</strong> – a genotype</p></li>
-<li><p><strong>train</strong> – the training dataset</p></li>
-<li><p><strong>fts_method</strong> – the FTS method</p></li>
-<li><p><strong>parameters</strong> – dict with model specific arguments for fit method.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a fitted FTS model</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.process_experiment">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">process_experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fts_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasetname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#process_experiment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.process_experiment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Persist the results of an DEHO execution in sqlite database (best hyperparameters) and json file (generation statistics)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fts_method</strong> – </p></li>
-<li><p><strong>result</strong> – </p></li>
-<li><p><strong>datasetname</strong> – </p></li>
-<li><p><strong>conn</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.random_genotype">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">random_genotype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#random_genotype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.random_genotype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create random genotype</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the genotype, a dictionary with all hyperparameters</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.hyperparam.Evolutionary.tournament">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.hyperparam.Evolutionary.</span></span><span class="sig-name descname"><span class="pre">tournament</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">population</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/hyperparam/Evolutionary.html#tournament"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.hyperparam.Evolutionary.tournament" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simple tournament selection strategy.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>population</strong> – the population</p></li>
-<li><p><strong>objective</strong> – the objective to be considered on tournament</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-</div>
+</section>
+<section id="pyfts-hyperparam-gridsearch-module">
+<h2>pyFTS.hyperparam.GridSearch module<a class="headerlink" href="#pyfts-hyperparam-gridsearch-module" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="pyfts-hyperparam-evolutionary-module">
+<h2>pyFTS.hyperparam.Evolutionary module<a class="headerlink" href="#pyfts-hyperparam-evolutionary-module" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
 
 
             <div class="clearer"></div>
@@ -466,30 +135,24 @@ or parallel and distributed (distributed=’dispy’ or distributed=’spark’)
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="index.html">Table of Contents</a></h3>
-    <ul>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
 <li><a class="reference internal" href="#">pyFTS.hyperparam package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.hyperparam">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-pyFTS.hyperparam.Util">pyFTS.hyperparam.Util module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.hyperparam.GridSearch">pyFTS.hyperparam.GridSearch module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.hyperparam.Evolutionary">pyFTS.hyperparam.Evolutionary module</a></li>
+<li><a class="reference internal" href="#pyfts-hyperparam-gridsearch-module">pyFTS.hyperparam.GridSearch module</a></li>
+<li><a class="reference internal" href="#pyfts-hyperparam-evolutionary-module">pyFTS.hyperparam.Evolutionary module</a></li>
 </ul>
 </li>
 </ul>
 
-  </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="pyFTS.distributed.html"
-                          title="previous chapter">pyFTS.distributed package</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="pyFTS.models.html"
-                          title="next chapter">pyFTS.models package</a></p>
-  </div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyFTS.distributed.html"
+                        title="previous chapter">pyFTS.distributed package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyFTS.models.html"
+                        title="next chapter">pyFTS.models package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -534,7 +197,7 @@ or parallel and distributed (distributed=’dispy’ or distributed=’spark’)
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

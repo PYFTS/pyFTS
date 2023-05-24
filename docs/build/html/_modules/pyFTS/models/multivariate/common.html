@@ -45,15 +45,15 @@
   <h1>Source code for pyFTS.models.multivariate.common</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">Composite</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="kn">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">Composite</span>
 
 
 <div class="viewcode-block" id="MultivariateFuzzySet"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.MultivariateFuzzySet">[docs]</a><span class="k">class</span> <span class="nc">MultivariateFuzzySet</span><span class="p">(</span><span class="n">Composite</span><span class="o">.</span><span class="n">FuzzySet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Multivariate Composite Fuzzy Set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an empty composite fuzzy set</span>
 <span class="sd">        :param name: fuzzy set name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -62,7 +62,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MultivariateFuzzySet.append_set"><a class="viewcode-back" href="../../../../pyFTS.models.multivariate.html#pyFTS.models.multivariate.common.MultivariateFuzzySet.append_set">[docs]</a>    <span class="k">def</span> <span class="nf">append_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Appends a new fuzzy set from a new variable</span>
 
 <span class="sd">        :param variable: an multivariate.variable instance</span>
@@ -158,7 +158,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

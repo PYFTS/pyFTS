@@ -51,18 +51,18 @@
 
 
 <div class="viewcode-block" id="SignalEmulator"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.SignalEmulator">[docs]</a><span class="k">class</span> <span class="nc">SignalEmulator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emulate a complex signal built from several additive and non-additive components</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SignalEmulator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="sd">&quot;&quot;&quot;Components of the signal&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Components of the signal&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SignalEmulator.stationary_gaussian"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.SignalEmulator.stationary_gaussian">[docs]</a>    <span class="k">def</span> <span class="nf">stationary_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a continuous Gaussian signal with mean mu and variance sigma.</span>
 
 <span class="sd">        :param mu: mean</span>
@@ -82,7 +82,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="SignalEmulator.incremental_gaussian"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.SignalEmulator.incremental_gaussian">[docs]</a>    <span class="k">def</span> <span class="nf">incremental_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates an additive gaussian interference on a previous signal</span>
 
 <span class="sd">        :param mu: increment on mean</span>
@@ -100,7 +100,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="SignalEmulator.periodic_gaussian"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.SignalEmulator.periodic_gaussian">[docs]</a>    <span class="k">def</span> <span class="nf">periodic_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">period</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">mu_min</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">sigma_min</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">mu_max</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">sigma_max</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates an additive periodic gaussian interference on a previous signal</span>
 
 <span class="sd">        :param type: &#39;linear&#39; or &#39;sinoidal&#39;</span>
@@ -121,7 +121,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="SignalEmulator.blip"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.SignalEmulator.blip">[docs]</a>    <span class="k">def</span> <span class="nf">blip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates an outlier greater than the maximum or lower then the minimum previous values of the signal,</span>
 <span class="sd">        and insert it on a random location of the signal.</span>
 
@@ -133,7 +133,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="SignalEmulator.run"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.SignalEmulator.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Render the signal</span>
 
 <span class="sd">        :return: a list of float values</span>
@@ -180,7 +180,7 @@
                     <span class="n">_mn</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">_mn</span><span class="p">,</span> <span class="n">vmin</span><span class="p">)</span> <span class="k">if</span> <span class="n">vmin</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">_mn</span><span class="p">,</span> <span class="n">vmin</span><span class="p">)</span>
 
                 <span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
-                <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">_mx</span><span class="p">]</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="o">.</span><span class="mi">5</span> <span class="k">else</span> <span class="p">[</span><span class="o">-</span><span class="n">_mn</span><span class="p">]</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">_mx</span><span class="p">]</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mf">.5</span> <span class="k">else</span> <span class="p">[</span><span class="o">-</span><span class="n">_mn</span><span class="p">]</span>
 
             <span class="n">last_num</span> <span class="o">=</span> <span class="n">num</span>
             <span class="n">last_it</span> <span class="o">=</span> <span class="n">it</span>
@@ -193,7 +193,7 @@
 
 
 <div class="viewcode-block" id="generate_gaussian_linear"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.generate_gaussian_linear">[docs]</a><span class="k">def</span> <span class="nf">generate_gaussian_linear</span><span class="p">(</span><span class="n">mu_ini</span><span class="p">,</span> <span class="n">sigma_ini</span><span class="p">,</span> <span class="n">mu_inc</span><span class="p">,</span> <span class="n">sigma_inc</span><span class="p">,</span> <span class="n">it</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate data sampled from Gaussian distribution, with constant or linear changing parameters</span>
 
 <span class="sd">    :param mu_ini: Initial mean</span>
@@ -222,7 +222,7 @@
 
 
 <div class="viewcode-block" id="generate_linear_periodic_gaussian"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.generate_linear_periodic_gaussian">[docs]</a><span class="k">def</span> <span class="nf">generate_linear_periodic_gaussian</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">mu_min</span><span class="p">,</span> <span class="n">sigma_min</span><span class="p">,</span> <span class="n">mu_max</span><span class="p">,</span> <span class="n">sigma_max</span><span class="p">,</span> <span class="n">it</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a periodic linear variation on mean and variance</span>
 
 <span class="sd">    :param period: the period of recurrence</span>
@@ -267,7 +267,7 @@
 
 
 <div class="viewcode-block" id="generate_sinoidal_periodic_gaussian"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.generate_sinoidal_periodic_gaussian">[docs]</a><span class="k">def</span> <span class="nf">generate_sinoidal_periodic_gaussian</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">mu_min</span><span class="p">,</span> <span class="n">sigma_min</span><span class="p">,</span> <span class="n">mu_max</span><span class="p">,</span> <span class="n">sigma_max</span><span class="p">,</span> <span class="n">it</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a periodic sinoidal variation on mean and variance</span>
 
 <span class="sd">    :param period: the period of recurrence</span>
@@ -304,7 +304,7 @@
 
 
 <div class="viewcode-block" id="generate_uniform_linear"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.generate_uniform_linear">[docs]</a><span class="k">def</span> <span class="nf">generate_uniform_linear</span><span class="p">(</span><span class="n">min_ini</span><span class="p">,</span> <span class="n">max_ini</span><span class="p">,</span> <span class="n">min_inc</span><span class="p">,</span> <span class="n">max_inc</span><span class="p">,</span> <span class="n">it</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate data sampled from Uniform distribution, with constant or  linear changing bounds</span>
 
 <span class="sd">    :param mu_ini: Initial mean</span>
@@ -333,7 +333,7 @@
 
 
 <div class="viewcode-block" id="white_noise"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.white_noise">[docs]</a><span class="k">def</span> <span class="nf">white_noise</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple Gaussian noise signal</span>
 <span class="sd">    :param n: number of samples</span>
 <span class="sd">    :return:</span>
@@ -342,7 +342,7 @@
 
 
 <div class="viewcode-block" id="random_walk"><a class="viewcode-back" href="../../../pyFTS.data.html#pyFTS.data.artificial.random_walk">[docs]</a><span class="k">def</span> <span class="nf">random_walk</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple random walk</span>
 
 <span class="sd">    :param n: number of samples</span>
@@ -421,7 +421,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

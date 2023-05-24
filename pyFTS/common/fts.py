@@ -40,6 +40,8 @@ class FTS(object):
         """A boolean value indicating if the model support probabilistic forecasting, default: False"""
         self.is_multivariate : bool = False
         """A boolean value indicating if the model support multivariate time series (Pandas DataFrame), default: False"""
+        self.has_classification : bool = False
+        """A boolean value indicating if the model support time series classification, default: False"""
         self.is_clustered : bool = False
         """A boolean value indicating if the model support multivariate time series (Pandas DataFrame), but works like 
         a monovariate method, default: False"""
@@ -159,6 +161,8 @@ class FTS(object):
                     ret = self.forecast_distribution(ndata, **kw)
                 elif type == 'multivariate':
                     ret = self.forecast_multivariate(ndata, **kw)
+                elif type == 'class':
+                    ret = self.classify(ndata, **kw)
             elif step_to == None and steps_ahead > 1:
                 if type == 'point':
                     ret = self.forecast_ahead(ndata, steps_ahead, **kw)
@@ -168,13 +172,16 @@ class FTS(object):
                     ret = self.forecast_ahead_distribution(ndata, steps_ahead, **kw)
                 elif type == 'multivariate':
                     ret = self.forecast_ahead_multivariate(ndata, steps_ahead, **kw)
+                elif type == 'class':
+                    raise NotImplementedError('Classification is not implemented for many steps ahead !')
+
             elif step_to > 1:
                 if type == 'point':
                     ret = self.forecast_step(ndata, step_to, **kw)
                 else:
                     raise NotImplementedError('This model only perform point step ahead forecasts!')
 
-            if not ['point', 'interval', 'distribution', 'multivariate'].__contains__(type):
+            if not ['point', 'interval', 'distribution', 'multivariate', 'class'].__contains__(type):
                 raise ValueError('The argument \'type\' has an unknown value.')
 
         else:
@@ -339,6 +346,15 @@ class FTS(object):
             ret.append(tmp)
 
         return ret
+
+    def classify(self, data, **kwargs) -> list:
+        """
+        Predict the one step ahead sample classification. The endogenous variable must be discrete with singleton partitioner
+
+        :param data: time series data with the minimal length equal to the max_lag of the model
+        :return: a list of dictionaries indicating the class probabilities.
+        """
+        raise NotImplementedError('This model do not perform time series sample classification!')
 
     def train(self, data, **kwargs):
         """

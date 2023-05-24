@@ -49,15 +49,15 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rnd</span>
 <span class="kn">import</span> <span class="nn">functools</span><span class="o">,</span> <span class="nn">operator</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">Membership</span>
-<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">partitioner</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="kn">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">Membership</span>
+<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="kn">import</span> <span class="n">partitioner</span>
 
 
 <div class="viewcode-block" id="SimplePartitioner"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.Simple.SimplePartitioner">[docs]</a><span class="k">class</span> <span class="nc">SimplePartitioner</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="n">Partitioner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Simple Partitioner for manually informed fuzzy sets&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple Partitioner for manually informed fuzzy sets&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Simple Partitioner - the fuzzy sets are informed manually</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;preprocess&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
@@ -76,7 +76,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ordered_sets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">upper</span></div>
 
 <div class="viewcode-block" id="SimplePartitioner.append"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.Simple.SimplePartitioner.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Append a new partition (fuzzy set) to the partitioner</span>
 
 <span class="sd">        :param name: Fuzzy set name</span>
@@ -168,7 +168,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

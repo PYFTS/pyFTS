@@ -12,6 +12,14 @@ Module contents
 Submodules
 ----------
 
+pyFTS.common.Activations module
+-------------------------------
+
+.. automodule:: pyFTS.common.Activations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyFTS.common.Composite module
 -----------------------------
 

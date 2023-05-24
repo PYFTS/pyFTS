@@ -52,8 +52,8 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rnd</span>
 <span class="kn">import</span> <span class="nn">functools</span><span class="o">,</span> <span class="nn">operator</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">Membership</span>
-<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">partitioner</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="kn">import</span> <span class="n">FuzzySet</span><span class="p">,</span> <span class="n">Membership</span>
+<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="kn">import</span> <span class="n">partitioner</span>
 
 
 <div class="viewcode-block" id="splitBelow"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.Entropy.splitBelow">[docs]</a><span class="k">def</span> <span class="nf">splitBelow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">threshold</span><span class="p">):</span>
@@ -125,8 +125,8 @@
 
 
 <div class="viewcode-block" id="EntropyPartitioner"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.Entropy.EntropyPartitioner">[docs]</a><span class="k">class</span> <span class="nc">EntropyPartitioner</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="n">Partitioner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Huarng Entropy Partitioner&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Huarng Entropy Partitioner&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">EntropyPartitioner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Entropy&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="EntropyPartitioner.build"><a class="viewcode-back" href="../../../pyFTS.partitioners.html#pyFTS.partitioners.Entropy.EntropyPartitioner.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -191,7 +191,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

@@ -5,7 +5,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>pyFTS.partitioners package &#8212; pyFTS 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
@@ -51,21 +52,21 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyfts-partitioners-package">
+  <section id="pyfts-partitioners-package">
 <h1>pyFTS.partitioners package<a class="headerlink" href="#pyfts-partitioners-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-pyFTS.partitioners">
+<section id="module-pyFTS.partitioners">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyFTS.partitioners" title="Permalink to this headline">¶</a></h2>
 <p>Module for pyFTS  Universe of Discourse partitioners.</p>
-</div>
-<div class="section" id="submodules">
+</section>
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pyFTS.partitioners.partitioner">
+</section>
+<section id="module-pyFTS.partitioners.partitioner">
 <span id="pyfts-partitioners-partitioner-module"></span><h2>pyFTS.partitioners.partitioner module<a class="headerlink" href="#module-pyFTS.partitioners.partitioner" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.partitioner.</span></span><span class="sig-name descname"><span class="pre">Partitioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/partitioner.html#Partitioner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Universe of Discourse partitioner. Split data on several fuzzy sets</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.build">
@@ -147,13 +148,13 @@ fuzzy set.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">scipy.spatial.kdtree.KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.kdtree" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">scipy.spatial._kdtree.KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.kdtree" title="Permalink to this definition">¶</a></dt>
 <dd><p>A spatial index to help in fuzzyfication</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
 </dd></dl>
 
@@ -170,7 +171,7 @@ fuzzy set.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.margin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.margin" title="Permalink to this definition">¶</a></dt>
 <dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
 </dd></dl>
 
@@ -182,19 +183,19 @@ fuzzy set.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.name" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>partitioner name</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
 <dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.partitions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.partitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
 </dd></dl>
 
@@ -225,7 +226,7 @@ fuzzy set.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.prefix" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.prefix" title="Permalink to this definition">¶</a></dt>
 <dd><p>prefix of auto generated partition names</p>
 </dd></dl>
 
@@ -250,13 +251,13 @@ overlapped fuzzy sets.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.setnames" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.setnames" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.sets" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.sets" title="Permalink to this definition">¶</a></dt>
 <dd><p>The fuzzy sets dictionary</p>
 </dd></dl>
 
@@ -268,13 +269,13 @@ overlapped fuzzy sets.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.type" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>The type of fuzzy sets that are generated by this partitioner</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyFTS.partitioners.partitioner.Partitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.partitioner.Partitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
 </dd></dl>
 
@@ -297,8 +298,33 @@ overlapped fuzzy sets.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pyFTS.partitioners.CMeans">
+</section>
+<section id="pyfts-partitioners-classpartitioner-module">
+<h2>pyFTS.partitioners.ClassPartitioner module<a class="headerlink" href="#pyfts-partitioners-classpartitioner-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-pyFTS.partitioners.ClassPartitioner"></span><p>Class Partitioner with Singleton Fuzzy Sets</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyFTS.partitioners.ClassPartitioner.ClassPartitioner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.ClassPartitioner.</span></span><span class="sig-name descname"><span class="pre">ClassPartitioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/ClassPartitioner.html#ClassPartitioner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.ClassPartitioner.ClassPartitioner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
+<p>Class Partitioner: Given a dictionary with class/values pairs, create singleton fuzzy sets for each class</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyFTS.partitioners.ClassPartitioner.ClassPartitioner.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/ClassPartitioner.html#ClassPartitioner.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.ClassPartitioner.ClassPartitioner.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the partitioning of the Universe of Discourse</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – training data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyFTS.partitioners.CMeans">
 <span id="pyfts-partitioners-cmeans-module"></span><h2>pyFTS.partitioners.CMeans module<a class="headerlink" href="#module-pyFTS.partitioners.CMeans" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner">
@@ -318,72 +344,6 @@ overlapped fuzzy sets.</p>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.kdtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>A spatial index to help in fuzzyfication</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>partitioner name</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.partitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>prefix of auto generated partition names</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.setnames" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuzzy sets dictionary</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of fuzzy sets that are generated by this partitioner</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.CMeans.CMeansPartitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.CMeans.CMeansPartitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
@@ -396,8 +356,8 @@ overlapped fuzzy sets.</p>
 <span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.CMeans.</span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/CMeans.html#distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.CMeans.distance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="module-pyFTS.partitioners.Entropy">
+</section>
+<section id="module-pyFTS.partitioners.Entropy">
 <span id="pyfts-partitioners-entropy-module"></span><h2>pyFTS.partitioners.Entropy module<a class="headerlink" href="#module-pyFTS.partitioners.Entropy" title="Permalink to this headline">¶</a></h2>
 <p>C. H. Cheng, R. J. Chang, and C. A. Yeh, “Entropy-based and trapezoidal fuzzification-based fuzzy time series approach for forecasting IT project cost,”
 Technol. Forecast. Social Change, vol. 73, no. 5, pp. 524–542, Jun. 2006.</p>
@@ -418,72 +378,6 @@ Technol. Forecast. Social Change, vol. 73, no. 5, pp. 524–542, Jun. 2006.</p>
 <dd class="field-even"><p></p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.kdtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>A spatial index to help in fuzzyfication</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>partitioner name</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.partitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>prefix of auto generated partition names</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.setnames" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuzzy sets dictionary</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of fuzzy sets that are generated by this partitioner</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Entropy.EntropyPartitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Entropy.EntropyPartitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
 </dd></dl>
 
 </dd></dl>
@@ -518,8 +412,8 @@ Technol. Forecast. Social Change, vol. 73, no. 5, pp. 524–542, Jun. 2006.</p>
 <span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.Entropy.</span></span><span class="sig-name descname"><span class="pre">splitBelow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Entropy.html#splitBelow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Entropy.splitBelow" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="module-pyFTS.partitioners.FCM">
+</section>
+<section id="module-pyFTS.partitioners.FCM">
 <span id="pyfts-partitioners-fcm-module"></span><h2>pyFTS.partitioners.FCM module<a class="headerlink" href="#module-pyFTS.partitioners.FCM" title="Permalink to this headline">¶</a></h2>
 <p>S. T. Li, Y. C. Cheng, and S. Y. Lin, “A FCM-based deterministic forecasting model for fuzzy time series,”
 Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j.camwa.2008.07.033.</p>
@@ -541,72 +435,6 @@ Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.kdtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>A spatial index to help in fuzzyfication</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>partitioner name</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.partitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>prefix of auto generated partition names</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.setnames" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuzzy sets dictionary</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of fuzzy sets that are generated by this partitioner</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.FCM.FCMPartitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.FCM.FCMPartitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
@@ -624,8 +452,8 @@ Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j
 <span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.FCM.</span></span><span class="sig-name descname"><span class="pre">membership</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/FCM.html#membership"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.FCM.membership" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="module-pyFTS.partitioners.Grid">
+</section>
+<section id="module-pyFTS.partitioners.Grid">
 <span id="pyfts-partitioners-grid-module"></span><h2>pyFTS.partitioners.Grid module<a class="headerlink" href="#module-pyFTS.partitioners.Grid" title="Permalink to this headline">¶</a></h2>
 <p>Even Length Grid Partitioner</p>
 <dl class="py class">
@@ -647,72 +475,6 @@ Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.kdtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>A spatial index to help in fuzzyfication</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>partitioner name</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.partitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>prefix of auto generated partition names</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.setnames" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuzzy sets dictionary</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of fuzzy sets that are generated by this partitioner</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.GridPartitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.GridPartitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -720,168 +482,13 @@ Comput. Math. Appl., vol. 56, no. 12, pp. 3052–3063, Dec. 2008. DOI: 10.1016/j
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.Grid.</span></span><span class="sig-name descname"><span class="pre">PreFixedGridPartitioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Grid.html#PreFixedGridPartitioner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.Grid.GridPartitioner" title="pyFTS.partitioners.Grid.GridPartitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.Grid.GridPartitioner</span></code></a></p>
 <p>Prefixed UoD with Even Length Grid Partitioner</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.kdtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>A spatial index to help in fuzzyfication</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>partitioner name</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.partitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>prefix of auto generated partition names</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.setnames" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuzzy sets dictionary</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of fuzzy sets that are generated by this partitioner</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Grid.PreFixedGridPartitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Grid.PreFixedGridPartitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.partitioners.Huarng">
-<span id="pyfts-partitioners-huarng-module"></span><h2>pyFTS.partitioners.Huarng module<a class="headerlink" href="#module-pyFTS.partitioners.Huarng" title="Permalink to this headline">¶</a></h2>
-<p>K. H. Huarng, “Effective lengths of intervals to improve forecasting in fuzzy time series,”
-Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.Huarng.</span></span><span class="sig-name descname"><span class="pre">HuarngPartitioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Huarng.html#HuarngPartitioner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyFTS.partitioners.partitioner.Partitioner" title="pyFTS.partitioners.partitioner.Partitioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyFTS.partitioners.partitioner.Partitioner</span></code></a></p>
-<p>Huarng Empirical Partitioner</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.build">
-<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Huarng.html#HuarngPartitioner.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.build" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform the partitioning of the Universe of Discourse</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> – training data</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.kdtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>A spatial index to help in fuzzyfication</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>partitioner name</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.partitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>prefix of auto generated partition names</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.setnames" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuzzy sets dictionary</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of fuzzy sets that are generated by this partitioner</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Huarng.HuarngPartitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Huarng.HuarngPartitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.partitioners.Singleton">
+</section>
+<section id="pyfts-partitioners-huarng-module">
+<h2>pyFTS.partitioners.Huarng module<a class="headerlink" href="#pyfts-partitioners-huarng-module" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-pyFTS.partitioners.Singleton">
 <span id="pyfts-partitioners-singleton-module"></span><h2>pyFTS.partitioners.Singleton module<a class="headerlink" href="#module-pyFTS.partitioners.Singleton" title="Permalink to this headline">¶</a></h2>
 <p>Even Length Grid Partitioner</p>
 <dl class="py class">
@@ -891,7 +498,7 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
 <p>Singleton Partitioner: Create singleton fuzzy sets for each distinct value in UoD</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.build">
-<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Singleton.html#SingletonPartitioner.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.build" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Singleton.html#SingletonPartitioner.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform the partitioning of the Universe of Discourse</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -903,76 +510,10 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.kdtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>A spatial index to help in fuzzyfication</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>partitioner name</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.partitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>prefix of auto generated partition names</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.setnames" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuzzy sets dictionary</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of fuzzy sets that are generated by this partitioner</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Singleton.SingletonPartitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Singleton.SingletonPartitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.partitioners.Simple">
+</section>
+<section id="module-pyFTS.partitioners.Simple">
 <span id="pyfts-partitioners-simple-module"></span><h2>pyFTS.partitioners.Simple module<a class="headerlink" href="#module-pyFTS.partitioners.Simple" title="Permalink to this headline">¶</a></h2>
 <p>Simple Partitioner for manually informed fuzzy sets</p>
 <dl class="py class">
@@ -1001,76 +542,10 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
 <span class="sig-name descname"><span class="pre">append_complex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Simple.html#SimplePartitioner.append_complex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.append_complex" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.kdtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>A spatial index to help in fuzzyfication</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>partitioner name</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.partitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>prefix of auto generated partition names</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.setnames" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuzzy sets dictionary</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of fuzzy sets that are generated by this partitioner</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Simple.SimplePartitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.Simple.SimplePartitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.partitioners.SubClust">
+</section>
+<section id="module-pyFTS.partitioners.SubClust">
 <span id="pyfts-partitioners-subclust-module"></span><h2>pyFTS.partitioners.SubClust module<a class="headerlink" href="#module-pyFTS.partitioners.SubClust" title="Permalink to this headline">¶</a></h2>
 <p>Chiu, Stephen L. “Fuzzy model identification based on cluster estimation.” Journal of Intelligent &amp; fuzzy systems 2.3 (1994): 267-278.</p>
 <dl class="py class">
@@ -1092,72 +567,6 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.kdtree">
-<span class="sig-name descname"><span class="pre">kdtree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">KDTree</span></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.kdtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>A spatial index to help in fuzzyfication</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.lower_margin">
-<span class="sig-name descname"><span class="pre">lower_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.lower_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific lower exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.margin">
-<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>The upper and lower exceeding margins for the known UoD. The default value is .1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>partitioner name</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.ordered_sets">
-<span class="sig-name descname"><span class="pre">ordered_sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.ordered_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ordered list of the fuzzy sets names, sorted by their middle point</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.partitions">
-<span class="sig-name descname"><span class="pre">partitions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.partitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of universe of discourse partitions, i.e., the number of fuzzy sets that will be created</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.prefix">
-<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>prefix of auto generated partition names</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.setnames">
-<span class="sig-name descname"><span class="pre">setnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.setnames" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of partitions names. If None is given the partitions will be auto named with prefix</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.sets">
-<span class="sig-name descname"><span class="pre">sets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuzzy sets dictionary</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of fuzzy sets that are generated by this partitioner</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyFTS.partitioners.SubClust.SubClustPartitioner.upper_margin">
-<span class="sig-name descname"><span class="pre">upper_margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#pyFTS.partitioners.SubClust.SubClustPartitioner.upper_margin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specific upper exceeding margins for the known UoD. The default value is the self.margin parameter</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
@@ -1170,46 +579,14 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
 <span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.SubClust.</span></span><span class="sig-name descname"><span class="pre">subclust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_sup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/SubClust.html#subclust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.SubClust.subclust" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="module-pyFTS.partitioners.Util">
-<span id="pyfts-partitioners-util-module"></span><h2>pyFTS.partitioners.Util module<a class="headerlink" href="#module-pyFTS.partitioners.Util" title="Permalink to this headline">¶</a></h2>
-<p>Facility methods for pyFTS partitioners module</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Util.explore_partitioners">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.Util.</span></span><span class="sig-name descname"><span class="pre">explore_partitioners</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[12,</span> <span class="pre">10]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Util.html#explore_partitioners"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Util.explore_partitioners" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create partitioners for the mf membership functions and npart partitions and show the partitioning images.
-:data: Time series data
-:npart: Maximum number of partitions of the universe of discourse
-:methods: A list with the partitioning methods to be used
-:mf: A list with the membership functions to be used
-:transformation: a transformation to be used in partitioner
-:size: list, the size of the output image [width, height]
-:save: boolean, if the image will be saved on disk
-:file: string, the file path to save the image
-:return: the list of the built partitioners</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Util.plot_partitioners">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.Util.</span></span><span class="sig-name descname"><span class="pre">plot_partitioners</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[12,</span> <span class="pre">10]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Util.html#plot_partitioners"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Util.plot_partitioners" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.partitioners.Util.plot_sets">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.Util.</span></span><span class="sig-name descname"><span class="pre">plot_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">titles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[12,</span> <span class="pre">10]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/Util.html#plot_sets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.Util.plot_sets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all fuzzy sets in a Partitioner</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyFTS.partitioners.parallel_util">
-<span id="pyfts-partitioners-parallel-util-module"></span><h2>pyFTS.partitioners.parallel_util module<a class="headerlink" href="#module-pyFTS.partitioners.parallel_util" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="pyFTS.partitioners.parallel_util.explore_partitioners">
-<span class="sig-prename descclassname"><span class="pre">pyFTS.partitioners.parallel_util.</span></span><span class="sig-name descname"><span class="pre">explore_partitioners</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[12,</span> <span class="pre">10]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyFTS/partitioners/parallel_util.html#explore_partitioners"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyFTS.partitioners.parallel_util.explore_partitioners" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-</div>
+</section>
+<section id="pyfts-partitioners-util-module">
+<h2>pyFTS.partitioners.Util module<a class="headerlink" href="#pyfts-partitioners-util-module" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="pyfts-partitioners-parallel-util-module">
+<h2>pyFTS.partitioners.parallel_util module<a class="headerlink" href="#pyfts-partitioners-parallel-util-module" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
 
 
             <div class="clearer"></div>
@@ -1218,38 +595,33 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="index.html">Table of Contents</a></h3>
-    <ul>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
 <li><a class="reference internal" href="#">pyFTS.partitioners package</a><ul>
 <li><a class="reference internal" href="#module-pyFTS.partitioners">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.partitioner">pyFTS.partitioners.partitioner module</a></li>
+<li><a class="reference internal" href="#pyfts-partitioners-classpartitioner-module">pyFTS.partitioners.ClassPartitioner module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.CMeans">pyFTS.partitioners.CMeans module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Entropy">pyFTS.partitioners.Entropy module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.FCM">pyFTS.partitioners.FCM module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Grid">pyFTS.partitioners.Grid module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.partitioners.Huarng">pyFTS.partitioners.Huarng module</a></li>
+<li><a class="reference internal" href="#pyfts-partitioners-huarng-module">pyFTS.partitioners.Huarng module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Singleton">pyFTS.partitioners.Singleton module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.Simple">pyFTS.partitioners.Simple module</a></li>
 <li><a class="reference internal" href="#module-pyFTS.partitioners.SubClust">pyFTS.partitioners.SubClust module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.partitioners.Util">pyFTS.partitioners.Util module</a></li>
-<li><a class="reference internal" href="#module-pyFTS.partitioners.parallel_util">pyFTS.partitioners.parallel_util module</a></li>
+<li><a class="reference internal" href="#pyfts-partitioners-util-module">pyFTS.partitioners.Util module</a></li>
+<li><a class="reference internal" href="#pyfts-partitioners-parallel-util-module">pyFTS.partitioners.parallel_util module</a></li>
 </ul>
 </li>
 </ul>
 
-  </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="pyFTS.models.seasonal.html"
-                          title="previous chapter">pyFTS.models.seasonal package</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="pyFTS.probabilistic.html"
-                          title="next chapter">pyFTS.probabilistic package</a></p>
-  </div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyFTS.models.seasonal.html"
+                        title="previous chapter">pyFTS.models.seasonal package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyFTS.probabilistic.html"
+                        title="next chapter">pyFTS.probabilistic package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -1294,7 +666,7 @@ Fuzzy Sets Syst., vol. 123, no. 3, pp. 387–394, Nov. 2001.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

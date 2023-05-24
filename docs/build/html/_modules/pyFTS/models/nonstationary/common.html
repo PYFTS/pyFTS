@@ -51,37 +51,37 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyFTS</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span> <span class="k">as</span> <span class="n">FS</span><span class="p">,</span> <span class="n">Membership</span><span class="p">,</span> <span class="n">FLR</span>
-<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">partitioner</span>
-<span class="kn">from</span> <span class="nn">pyFTS.models.nonstationary</span> <span class="k">import</span> <span class="n">perturbation</span>
+<span class="kn">from</span> <span class="nn">pyFTS</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="kn">import</span> <span class="n">FuzzySet</span> <span class="k">as</span> <span class="n">FS</span><span class="p">,</span> <span class="n">Membership</span><span class="p">,</span> <span class="n">FLR</span>
+<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="kn">import</span> <span class="n">partitioner</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models.nonstationary</span> <span class="kn">import</span> <span class="n">perturbation</span>
 
 
 <div class="viewcode-block" id="FuzzySet"><a class="viewcode-back" href="../../../../pyFTS.models.nonstationary.html#pyFTS.models.nonstationary.common.FuzzySet">[docs]</a><span class="k">class</span> <span class="nc">FuzzySet</span><span class="p">(</span><span class="n">FS</span><span class="o">.</span><span class="n">FuzzySet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Non Stationary Fuzzy Sets</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FuzzySet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">mf</span><span class="o">=</span><span class="n">mf</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span> <span class="n">centroid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
         <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;location&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;Pertubation function that affects the location of the membership function&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pertubation function that affects the location of the membership function&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">location_params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;location_params&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;Parameters for location pertubation function&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters for location pertubation function&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">location_roots</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;location_roots&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;Pertubation function that affects the width of the membership function&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pertubation function that affects the width of the membership function&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">width_params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;width_params&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;Parameters for width pertubation function&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters for width pertubation function&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">width_roots</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;width_roots&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;noise&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;Pertubation function that adds noise on the membership function&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pertubation function that adds noise on the membership function&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">noise_params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;noise_params&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;Parameters for noise pertubation function&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters for noise pertubation function&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">perturbated_parameters</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;nonstationary&#39;</span>
     
@@ -141,7 +141,7 @@
             <span class="k">return</span> <span class="n">param</span></div>
     
 <div class="viewcode-block" id="FuzzySet.membership"><a class="viewcode-back" href="../../../../pyFTS.models.nonstationary.html#pyFTS.models.nonstationary.common.FuzzySet.membership">[docs]</a>    <span class="k">def</span> <span class="nf">membership</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the membership value of a given input</span>
 
 <span class="sd">        :param x: input value</span>
@@ -217,7 +217,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">param</span></div>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tmp</span> <span class="o">+=</span> <span class="s2">&quot;Location: &quot;</span>
@@ -232,7 +232,7 @@
 
 
 <div class="viewcode-block" id="fuzzify"><a class="viewcode-back" href="../../../../pyFTS.models.nonstationary.html#pyFTS.models.nonstationary.common.fuzzify">[docs]</a><span class="k">def</span> <span class="nf">fuzzify</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">fuzzySets</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the membership values for a data point given nonstationary fuzzy sets</span>
 
 <span class="sd">    :param inst: data points</span>
@@ -323,7 +323,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

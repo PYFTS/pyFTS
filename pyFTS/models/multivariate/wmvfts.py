@@ -1,4 +1,4 @@
-from pyFTS.common import fts, FuzzySet, FLR, Membership, tree
+from pyFTS.common import fts, FuzzySet, FLR, Membership, tree, Activations
 from pyFTS.partitioners import Grid
 from pyFTS.models.multivariate import mvfts, FLR as MVFLR, common, flrg as mvflrg
 
@@ -68,6 +68,7 @@ class WeightedMVFTS(mvfts.MVFTS):
         super(WeightedMVFTS, self).__init__(order=1, **kwargs)
         self.shortname = "WeightedMVFTS"
         self.name = "Weighted Multivariate FTS"
+        self.has_classification = True
 
     def generate_flrg(self, flrs):
         for flr in flrs:
@@ -77,3 +78,28 @@ class WeightedMVFTS(mvfts.MVFTS):
                 self.flrgs[flrg.get_key()] = flrg
 
             self.flrgs[flrg.get_key()].append_rhs(flr.RHS)
+
+    def classify(self, data, **kwargs):
+        ret = []
+        ndata = self.apply_transformations(data)
+        activation = kwargs.get('activation', Activations.scale)
+        for index, row in ndata.iterrows() if isinstance(ndata, pd.DataFrame) else enumerate(ndata):
+            data_point = self.format_data(row)
+            flrs = self.generate_lhs_flrs(data_point)
+            classification = {k : 0 for k in self.target_variable.partitioner.sets.keys()}
+            memberships = 0
+            weights = 0
+            for flr in flrs:
+                flrg = mvflrg.FLRG(lhs=flr.LHS)
+                if flrg.get_key() in self.flrgs:
+                    _flrg = self.flrgs[flrg.get_key()]
+                    mb = _flrg.get_membership(data_point, self.explanatory_variables)
+                    memberships += mb
+                    for k,v in _flrg.RHS.items():
+                        classification[k] += (v / _flrg.count) * mb
+                
+            classification = activation(classification)
+
+            ret.append(classification)
+
+        return ret

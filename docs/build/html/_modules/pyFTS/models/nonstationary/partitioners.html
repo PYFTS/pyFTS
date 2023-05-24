@@ -44,18 +44,18 @@
             
   <h1>Source code for pyFTS.models.nonstationary.partitioners</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">partitioner</span>
-<span class="kn">from</span> <span class="nn">pyFTS.models.nonstationary</span> <span class="k">import</span> <span class="n">common</span><span class="p">,</span> <span class="n">perturbation</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span> <span class="k">as</span> <span class="n">stationary_fs</span>
+<span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="kn">import</span> <span class="n">partitioner</span>
+<span class="kn">from</span> <span class="nn">pyFTS.models.nonstationary</span> <span class="kn">import</span> <span class="n">common</span><span class="p">,</span> <span class="n">perturbation</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="kn">import</span> <span class="n">FuzzySet</span> <span class="k">as</span> <span class="n">stationary_fs</span>
 
 
 <div class="viewcode-block" id="PolynomialNonStationaryPartitioner"><a class="viewcode-back" href="../../../../pyFTS.models.nonstationary.html#pyFTS.models.nonstationary.partitioners.PolynomialNonStationaryPartitioner">[docs]</a><span class="k">class</span> <span class="nc">PolynomialNonStationaryPartitioner</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="n">Partitioner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Non Stationary Universe of Discourse Partitioner</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">part</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">part</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PolynomialNonStationaryPartitioner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">npart</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">partitions</span><span class="p">,</span>
                                                                  <span class="n">func</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">membership_function</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">setnames</span><span class="p">,</span>
                                                                  <span class="n">prefix</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">transformation</span><span class="p">,</span>
@@ -155,12 +155,12 @@
 
 
 <div class="viewcode-block" id="SimpleNonStationaryPartitioner"><a class="viewcode-back" href="../../../../pyFTS.models.nonstationary.html#pyFTS.models.nonstationary.partitioners.SimpleNonStationaryPartitioner">[docs]</a><span class="k">class</span> <span class="nc">SimpleNonStationaryPartitioner</span><span class="p">(</span><span class="n">partitioner</span><span class="o">.</span><span class="n">Partitioner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Non Stationary Universe of Discourse Partitioner</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">part</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">part</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SimpleNonStationaryPartitioner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">npart</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">partitions</span><span class="p">,</span>
                                                              <span class="n">func</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">membership_function</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">setnames</span><span class="p">,</span>
                                                              <span class="n">prefix</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="n">part</span><span class="o">.</span><span class="n">transformation</span><span class="p">,</span>
@@ -181,8 +181,8 @@
 
 
 <div class="viewcode-block" id="simplenonstationary_gridpartitioner_builder"><a class="viewcode-back" href="../../../../pyFTS.models.nonstationary.html#pyFTS.models.nonstationary.partitioners.simplenonstationary_gridpartitioner_builder">[docs]</a><span class="k">def</span> <span class="nf">simplenonstationary_gridpartitioner_builder</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">npart</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="k">import</span> <span class="n">Grid</span>
-    <span class="kn">from</span> <span class="nn">pyFTS.models.nonstationary</span> <span class="k">import</span> <span class="n">perturbation</span><span class="p">,</span> <span class="n">partitioners</span>
+    <span class="kn">from</span> <span class="nn">pyFTS.partitioners</span> <span class="kn">import</span> <span class="n">Grid</span>
+    <span class="kn">from</span> <span class="nn">pyFTS.models.nonstationary</span> <span class="kn">import</span> <span class="n">perturbation</span><span class="p">,</span> <span class="n">partitioners</span>
 
     <span class="n">tmp_fs</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">GridPartitioner</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">npart</span><span class="o">=</span><span class="n">npart</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="n">transformation</span><span class="p">)</span>
     <span class="n">fs</span> <span class="o">=</span> <span class="n">partitioners</span><span class="o">.</span><span class="n">SimpleNonStationaryPartitioner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tmp_fs</span><span class="p">,</span>
@@ -231,7 +231,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

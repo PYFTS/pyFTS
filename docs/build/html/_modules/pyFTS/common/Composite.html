@@ -48,16 +48,16 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyFTS</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">Membership</span><span class="p">,</span> <span class="n">FuzzySet</span>
+<span class="kn">from</span> <span class="nn">pyFTS</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="kn">import</span> <span class="n">Membership</span><span class="p">,</span> <span class="n">FuzzySet</span>
 
 
 <div class="viewcode-block" id="FuzzySet"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Composite.FuzzySet">[docs]</a><span class="k">class</span> <span class="nc">FuzzySet</span><span class="p">(</span><span class="n">FuzzySet</span><span class="o">.</span><span class="n">FuzzySet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Composite Fuzzy Set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">superset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">superset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an empty composite fuzzy set</span>
 <span class="sd">        :param name: fuzzy set name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -77,7 +77,7 @@
 
 
 <div class="viewcode-block" id="FuzzySet.membership"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Composite.FuzzySet.membership">[docs]</a>    <span class="k">def</span> <span class="nf">membership</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the membership value of a given input</span>
 
 <span class="sd">        :param x: input value</span>
@@ -92,7 +92,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FuzzySet.append"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Composite.FuzzySet.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a new function to composition</span>
 
 <span class="sd">        :param mf:</span>
@@ -103,7 +103,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FuzzySet.append_set"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.Composite.FuzzySet.append_set">[docs]</a>    <span class="k">def</span> <span class="nf">append_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a new function to composition</span>
 
 <span class="sd">        :param mf:</span>
@@ -122,7 +122,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">centroid</span></div>
 
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sets</span><span class="p">])</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span></div>
 
@@ -165,7 +165,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

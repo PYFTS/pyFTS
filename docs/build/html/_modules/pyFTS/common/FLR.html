@@ -48,44 +48,44 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="k">import</span> <span class="n">FuzzySet</span>
+<span class="kn">from</span> <span class="nn">pyFTS.common</span> <span class="kn">import</span> <span class="n">FuzzySet</span>
 
 
 <div class="viewcode-block" id="FLR"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FLR.FLR">[docs]</a><span class="k">class</span> <span class="nc">FLR</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fuzzy Logical Relationship</span>
 
 <span class="sd">    Represents a temporal transition of the fuzzy set LHS on time t for the fuzzy set RHS on time t+1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">LHS</span><span class="p">,</span> <span class="n">RHS</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">LHS</span><span class="p">,</span> <span class="n">RHS</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a Fuzzy Logical Relationship</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">LHS</span> <span class="o">=</span> <span class="n">LHS</span>
-        <span class="sd">&quot;&quot;&quot;Left Hand Side fuzzy set&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Left Hand Side fuzzy set&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span> <span class="o">=</span> <span class="n">RHS</span>
-        <span class="sd">&quot;&quot;&quot;Right Hand Side fuzzy set&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Right Hand Side fuzzy set&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LHS</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; -&gt; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IndexedFLR"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FLR.IndexedFLR">[docs]</a><span class="k">class</span> <span class="nc">IndexedFLR</span><span class="p">(</span><span class="n">FLR</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Season Indexed Fuzzy Logical Relationship&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">LHS</span><span class="p">,</span> <span class="n">RHS</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Season Indexed Fuzzy Logical Relationship&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">LHS</span><span class="p">,</span> <span class="n">RHS</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a Season Indexed Fuzzy Logical Relationship</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">IndexedFLR</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">LHS</span><span class="p">,</span> <span class="n">RHS</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
-        <span class="sd">&quot;&quot;&quot;seasonal index&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;seasonal index&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LHS</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; -&gt; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="generate_high_order_recurrent_flr"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FLR.generate_high_order_recurrent_flr">[docs]</a><span class="k">def</span> <span class="nf">generate_high_order_recurrent_flr</span><span class="p">(</span><span class="n">fuzzyData</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a ordered FLR set from a list of fuzzy sets with recurrence</span>
 
 <span class="sd">    :param fuzzyData: ordered list of fuzzy sets</span>
@@ -107,7 +107,7 @@
 
 
 <div class="viewcode-block" id="generate_recurrent_flrs"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FLR.generate_recurrent_flrs">[docs]</a><span class="k">def</span> <span class="nf">generate_recurrent_flrs</span><span class="p">(</span><span class="n">fuzzyData</span><span class="p">,</span> <span class="n">steps</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a ordered FLR set from a list of fuzzy sets with recurrence</span>
 
 <span class="sd">    :param fuzzyData: ordered list of fuzzy sets</span>
@@ -127,7 +127,7 @@
 
 
 <div class="viewcode-block" id="generate_non_recurrent_flrs"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FLR.generate_non_recurrent_flrs">[docs]</a><span class="k">def</span> <span class="nf">generate_non_recurrent_flrs</span><span class="p">(</span><span class="n">fuzzyData</span><span class="p">,</span> <span class="n">steps</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a ordered FLR set from a list of fuzzy sets without recurrence</span>
 
 <span class="sd">    :param fuzzyData: ordered list of fuzzy sets</span>
@@ -141,7 +141,7 @@
 
 
 <div class="viewcode-block" id="generate_indexed_flrs"><a class="viewcode-back" href="../../../pyFTS.common.html#pyFTS.common.FLR.generate_indexed_flrs">[docs]</a><span class="k">def</span> <span class="nf">generate_indexed_flrs</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">indexer</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha_cut</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a season-indexed ordered FLR set from a list of fuzzy sets with recurrence</span>
 
 <span class="sd">    :param sets: fuzzy sets</span>
@@ -201,7 +201,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Machine Intelligence and Data Science Laboratory - UFMG - Brazil.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>
