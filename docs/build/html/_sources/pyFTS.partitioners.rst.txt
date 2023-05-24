@@ -20,10 +20,10 @@ pyFTS.partitioners.partitioner module
     :undoc-members:
     :show-inheritance:
 
-pyFTS.partitioners.ClassPartitioner module
------------------------------------
+pyFTS.partitioners.Class module
+-------------------------------
 
-.. automodule:: pyFTS.partitioners.ClassPartitioner
+.. automodule:: pyFTS.partitioners.Class
     :members:
     :undoc-members:
     :show-inheritance:
