@@ -93,7 +93,7 @@ html_theme_options = {
 #	'full_logo': True
 }
 
-html_logo = 'logo_heading2.png'
+html_logo = 'static/logo_heading2.png'
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
