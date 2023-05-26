@@ -82,6 +82,8 @@ class WeightedMVFTS(mvfts.MVFTS):
             self.flrgs[flrg.get_key()].append_rhs(flr.RHS)
 
     def classify(self, data, **kwargs):
+        if len(self.class_weights) == 0:
+            self.class_weights = {k : 1.0 for k in self.target_variable.partitioner.sets.keys()}
         ret = []
         ndata = self.apply_transformations(data)
         activation = kwargs.get('activation', Activations.scale)
