@@ -4,68 +4,70 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/pyFTS/)
 
-## What is pyFTS Library?
+## What is the pyFTS Library?
 
-This package is intended for students, researchers, data scientists or whose want to exploit the Fuzzy Time Series methods. These methods provide simple, easy to use, computationally cheap and human-readable models, suitable for statistic laymans to experts.
+This package is intended for students, researchers, data scientists or whoever else wants to explore the Fuzzy Time Series methods. These methods provide simple, easy to use, computationally cheap and human-readable models that are apt for use by statistical laymen, experts and everyone in between.
 
-This project is continously under improvement and contributors are well come.
+This project is continuously under improvement and contributors are welcome.
 
-## How to reference pyFTS?
+## How to reference pyFTS
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.597359.svg)](https://doi.org/10.5281/zenodo.597359)
 
- Silva, P. C. L. et al. *pyFTS: Fuzzy Time Series for Python.* Belo Horizonte. 2018. DOI: 10.5281/zenodo.597359. Url: <http://doi.org/10.5281/zenodo.597359>
+Silva, P. C. L. et al. *pyFTS: Fuzzy Time Series for Python.* Belo Horizonte. 2018. DOI: 10.5281/zenodo.597359. Url: <http://doi.org/10.5281/zenodo.597359>
 
-## How to install pyFTS?
+## How to install pyFTS
 
-First of all pyFTS was developed and tested with Python 3.6. To install pyFTS using pip tool
+First of all, pyFTS was developed and tested with Python 3.6. 
+
+pyFTS (1.6) can be installed from PyPi using pip
 
 ```
 pip install -U pyFTS
 ```
 
-Ou pull directly from the GitHub repo:
+The latest version can be installed by pulling directly from the GitHub repo:
 
 ```
 pip install -U git+https://github.com/PYFTS/pyFTS
 ```
 
 ## What are Fuzzy Time Series (FTS)?
-Fuzzy Time Series (FTS) are non parametric methods for time series forecasting based on Fuzzy Theory.  The original method was proposed by [1] and improved later by many researchers. The general approach of the FTS methods, based on [2] is listed below:
+Fuzzy Time Series (FTS) are non-parametric methods for time series forecasting based on Fuzzy Theory. The original method was proposed by [1] and improved later by many researchers. The general approach to the FTS methods, based on [2] is listed below:
 
-1. **Data preprocessing**: Data transformation functions contained at [pyFTS.common.Transformations](https://github.com/PYFTS/pyFTS/blob/master/pyFTS/common/Transformations.py), like differentiation, Box-Cox, scaling and normalization.
+1. **Data preprocessing**: Data transformation functions contained in [pyFTS.common.Transformations](https://github.com/PYFTS/pyFTS/blob/master/pyFTS/common/Transformations.py), like differentiation, Box-Cox, scaling and normalization.
 
-2. **Universe of Discourse Partitioning**: This is the most important step. Here, the range of values of the numerical time series *Y(t)* will be splited in overlapped intervals and for each interval will be created a Fuzzy Set. This step is performed by pyFTS.partition module and its classes (for instance GridPartitioner, EntropyPartitioner, etc). The main parameters are:
+2. **Universe of Discourse Partitioning**: This is the most important step. Here, the range of values of the numerical time series *Y(t)* will be split in overlapping intervals and for each interval a Fuzzy Set will be created. This step is performed by the pyFTS.partition module and its classes (i.e GridPartitioner, EntropyPartitioner, etc). The main parameters are:
  - the number of intervals
- - which fuzzy membership function (on [pyFTS.common.Membership](https://github.com/PYFTS/pyFTS/blob/master/pyFTS/common/Membership.py))
+ - which fuzzy membership function (in [pyFTS.common.Membership](https://github.com/PYFTS/pyFTS/blob/master/pyFTS/common/Membership.py))
  - partition scheme ([GridPartitioner](https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Grid.py), [EntropyPartitioner](https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Entropy.py)[3], [FCMPartitioner](https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/FCM.py), [CMeansPartitioner](https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/CMeans.py), [HuarngPartitioner](https://github.com/PYFTS/pyFTS/blob/master/pyFTS/partitioners/Huarng.py)[4])
  
- Check out the jupyter notebook on [notebooks/Partitioners.ipynb](https://github.com/PYFTS/notebooks/blob/master/Partitioners.ipynb) for sample codes.
+ Check out the jupyter notebook [notebooks/Partitioners.ipynb](https://github.com/PYFTS/notebooks/blob/master/Partitioners.ipynb) for sample codes.
  
 3. **Data Fuzzyfication**: Each data point of the numerical time series *Y(t)* will be translated to a fuzzy representation (usually one or more fuzzy sets), and then a fuzzy time series *F(t)* is created.
 
-4. **Generation of Fuzzy Rules**: In this step the temporal transition rules are created. These rules depends on the method and their characteristics:
-- *order*: the number of time lags used on forecasting
-- *weights*: the weighted models introduce weights on fuzzy rules for smoothing [5],[6],[7]
-- *seasonality*: seasonality models depends [8]
-- *steps ahead*: the number of steps ahed to predict. Almost all standard methods are based on one-step-ahead forecasting
+4. **Generation of Fuzzy Rules**: On this step, the temporal transition rules are created. These rules depends on the method and their characteristics:
+- *order*: the number of time lags used on forecasting.
+- *weights*: the weighted models introduce weights on fuzzy rules for smoothing [5],[6],[7].
+- *seasonality*: seasonality models depends [8].
+- *steps ahead*: the number of steps ahead to predict. Almost all standard methods are based on one-step-ahead forecasting.
 - *forecasting type*: Almost all standard methods are point-based, but pyFTS also provides intervalar and probabilistic forecasting methods.
 
-5. **Forecasting**: The forecasting step takes a sample (with minimum length equal to the model's order) and generate a fuzzy outputs (fuzzy set(s)) for the next time ahead. 
+5. **Forecasting**: The forecasting step takes a sample (with minimum length equal to the model's order) and generate fuzzy outputs (fuzzy set(s)) for the next time ahead. 
 
-6. **Defuzzyfication**: This step transform the fuzzy forecast into a real number.
+6. **Defuzzyfication**: This step transforms the fuzzy forecast into a real number.
 
 7. **Data postprocessing**: The inverse operations of step 1.
 
 ## Usage examples
 
-There is nothing better than good code examples to start. [Then check out the demo Jupyter Notebooks of the implemented method os pyFTS!](https://github.com/PYFTS/notebooks).
+There is nothing better than good code examples to start. [Then check out the demo Jupyter Notebooks of the implemented method of pyFTS!](https://github.com/PYFTS/notebooks).
 
 A Google Colab example can also be found [here](https://drive.google.com/file/d/1zRBCHXOawwgmzjEoKBgmvBqkIrKxuaz9/view?usp=sharing).
 
 ## MINDS - Machine Intelligence And Data Science Lab
 
-This tool is result of collective effort of [MINDS Lab](http://www.minds.eng.ufmg.br/), headed by Prof. Frederico Gadelha Guimaraes. Some of research on FTS which was developed under pyFTS:
+This tool is the result of the collective effort of the [MINDS Lab](http://www.minds.eng.ufmg.br/), headed by Prof. Frederico Gadelha Guimaraes. Some of the research on FTS which was developed under pyFTS:
 
 - 2020
   - ORANG, Omid; Solar Energy Forecasting With Fuzzy Time Series Using High-Order Fuzzy Cognitive Maps. IEEE World Congress On Computational Intelligence 2020 (WCCI).
