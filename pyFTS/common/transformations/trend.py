@@ -1,5 +1,4 @@
 from pyFTS.common.transformations.transformation import Transformation 
-from pandas import datetime
 from sklearn.linear_model import LinearRegression
 import numpy as np
 import pandas as pd
