@@ -1,8 +1,15 @@
 from pyFTS.common.transformations.transformation import Transformation 
-from pandas import datetime
+"""
+pandas lib does not have datetime class 
+this throw error for code that uses LinearTrend Class
+"""
+# from pandas import datetime
 from sklearn.linear_model import LinearRegression
 import numpy as np
 import pandas as pd
+# adding datetime incase it breaks functionality
+import datetime
+from datetime import datetime
 
 
 class LinearTrend(Transformation):
