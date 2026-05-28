@@ -36,6 +36,7 @@ class HuarngPartitioner(partitioner.Partitioner):
 
         dlen = self.max - self.min
         npart = math.ceil(dlen / base)
+        self.partitions = npart
         partition = math.ceil(self.min)
         for c in range(npart):
             _name = self.get_name(c)
